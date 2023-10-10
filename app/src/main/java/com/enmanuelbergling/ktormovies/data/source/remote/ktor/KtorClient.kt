@@ -6,6 +6,9 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+
+typealias KtorClient = HttpClient
 
 val ktorClient = HttpClient(CIO) {
     defaultRequest {
@@ -17,6 +20,11 @@ val ktorClient = HttpClient(CIO) {
     }
 
     install(ContentNegotiation){
-        json()
+        json(
+            Json {
+                prettyPrint = true
+                isLenient = true
+            }
+        )
     }
 }
