@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.enmanuelbergling.ktormovies.di.appModule
+import com.enmanuelbergling.ktormovies.ui.screen.HomeScreen
 import com.enmanuelbergling.ktormovies.ui.screen.detail.DetailsScreen
 import com.enmanuelbergling.ktormovies.ui.theme.KtorMoviesTheme
 import org.koin.android.ext.koin.androidContext
@@ -27,7 +28,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DetailsScreen(id = 238)
+//                    DetailsScreen(id = 238)
+                    HomeScreen(onDetails = {})
                 }
             }
         }

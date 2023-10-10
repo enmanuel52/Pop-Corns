@@ -68,6 +68,7 @@ fun KtorMoviesTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,
+            shapes = Shape,
             content = content
         )
     }
