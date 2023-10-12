@@ -42,8 +42,8 @@ data class MovieDetails(
     val duration: String
         get() = buildString {
             val hours = runtime / 60
-            append("$hours h")
+            append("$hours h ")
             val minutes = runtime % 60
-            append("m$minutes m")
+            append("$minutes m")
         }
 }

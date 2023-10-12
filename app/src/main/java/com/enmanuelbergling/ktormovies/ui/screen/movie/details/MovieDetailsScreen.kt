@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +48,7 @@ fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
 
     LaunchedEffect(key1 = Unit, block = { viewModel.getDetails(id) })
 
-    UiStateHandler(uiState = uiState, viewModel::hideErrorDialog)
+    UiStateHandler(uiState = uiState, onDismissDialog = onBack)
 
     details?.let { MovieDetailsScreen(it, onBack) }
 }
@@ -55,7 +57,7 @@ fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
 fun MovieDetailsScreen(details: MovieDetails, onBack: () -> Unit) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
 
-        detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath, onBack = onBack)
+        detailsImage(backdropUrl = BASE_IMAGE_URL + details.posterPath, onBack = onBack)
 
         information(
             details.title,
@@ -73,8 +75,8 @@ private fun LazyListScope.overview(overview: String) {
     item {
         Text(
             text = overview,
-            modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(all = MaterialTheme.dimen.small),
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
@@ -87,20 +89,20 @@ private fun LazyListScope.information(
     duration: String
 ) {
     item {
-        Column {
+        Column(Modifier.padding(MaterialTheme.dimen.small)) {
             Row(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = MaterialTheme.dimen.small),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     //getting year
                     text = "$title ($year)",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
 
                 //it comes 10 for server
@@ -121,7 +123,7 @@ private fun LazyListScope.detailsImage(
     onBack: () -> Unit
 ) {
     item {
-        Box {
+        Box(Modifier.animateContentSize()) {
             AsyncImage(
                 model = backdropUrl,
                 contentDescription = "poster image",
@@ -138,7 +140,12 @@ private fun LazyListScope.detailsImage(
                 onClick = onBack,
                 modifier = Modifier
                     .padding(MaterialTheme.dimen.small)
-                    .align(Alignment.TopStart)
+                    .align(Alignment.TopStart),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(
+                        alpha = .5f
+                    )
+                )
             ) {
                 Icon(imageVector = Icons.Rounded.ArrowBackIos, contentDescription = "back icon")
             }
@@ -147,7 +154,12 @@ private fun LazyListScope.detailsImage(
                 onClick = { /*TODO*/ },
                 modifier = Modifier
                     .padding(MaterialTheme.dimen.small)
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.TopEnd),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(
+                        alpha = .5f
+                    )
+                )
             ) {
                 Icon(
                     imageVector = Icons.Rounded.FavoriteBorder,

@@ -19,6 +19,7 @@ class MovieDetailsVM(private val getMovieDetailsUC: GetMovieDetailsUC) : ViewMod
     val detailsState get() = _detailsState.asStateFlow()
 
     fun getDetails(id: Int) = viewModelScope.launch {
+        _uiState.update { MovieDetailsUi.Loading }
         when (val result = getMovieDetailsUC(id)) {
             is ResultHandler.Error -> _uiState.update { MovieDetailsUi.Error(result.exception.message.orEmpty()) }
             is ResultHandler.Success -> {
@@ -28,7 +29,7 @@ class MovieDetailsVM(private val getMovieDetailsUC: GetMovieDetailsUC) : ViewMod
         }
     }
 
-    fun hideErrorDialog(){
+    fun hideErrorDialog() {
         _uiState.update { MovieDetailsUi.Idle }
     }
 }
