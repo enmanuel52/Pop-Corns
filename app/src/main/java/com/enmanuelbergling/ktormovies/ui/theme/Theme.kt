@@ -3,7 +3,9 @@ package com.enmanuelbergling.ktormovies.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -16,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.enmanuelbergling.ktormovies.ui.core.LocalDimen
+import com.enmanuelbergling.ktormovies.ui.core.LocalTopAppScrollBehaviour
 
 private val lightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -82,8 +85,9 @@ private val darkColorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KtorMoviesTheme(
+fun CornTimeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
@@ -107,7 +111,12 @@ fun KtorMoviesTheme(
         }
     }
 
-    CompositionLocalProvider(values = arrayOf(LocalDimen provides Dimen())) {
+    CompositionLocalProvider(
+        values = arrayOf(
+            LocalDimen provides Dimen(),
+            LocalTopAppScrollBehaviour provides TopAppBarDefaults.enterAlwaysScrollBehavior()
+        )
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,

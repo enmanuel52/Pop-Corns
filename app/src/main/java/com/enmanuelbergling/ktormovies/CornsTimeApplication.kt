@@ -5,12 +5,12 @@ import com.enmanuelbergling.ktormovies.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-class MoviesApp: Application() {
+class CornsTimeApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
         startKoin {
-            androidContext(this@MoviesApp)
+            androidContext(this@CornsTimeApplication)
             modules(appModule)
         }
     }

@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.details
+package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,11 +12,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,28 +29,30 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
+import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.model.MovieDetails
 import com.enmanuelbergling.ktormovies.ui.components.DefaultErrorDialog
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.screen.detail.BASE_IMAGE_URL
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun DetailsScreen(id: Int, onBack: () -> Unit) {
+fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
 
-    val viewModel = koinViewModel<DetailsVM>()
+    val viewModel = koinViewModel<MovieDetailsVM>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val details by viewModel.detailsState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(key1 = Unit, block = { viewModel.getDetails(id) })
+
     UiStateHandler(uiState = uiState, viewModel::hideErrorDialog)
 
-    details?.let { DetailsScreen(it, onBack) }
+    details?.let { MovieDetailsScreen(it, onBack) }
 }
 
 @Composable
-fun DetailsScreen(details: MovieDetails, onBack: () -> Unit) {
+fun MovieDetailsScreen(details: MovieDetails, onBack: () -> Unit) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
 
         detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath, onBack = onBack)
@@ -123,16 +126,15 @@ private fun LazyListScope.detailsImage(
                 model = backdropUrl,
                 contentDescription = "poster image",
                 placeholder = painterResource(
-                    id = R.drawable.pop_corn_and_cinema
+                    id = R.drawable.pop_corn_and_cinema_backdrop
                 ),
                 error = painterResource(
-                    id = R.drawable.pop_corn_and_cinema
+                    id = R.drawable.pop_corn_and_cinema_backdrop
                 ),
-//                modifier = Modifier.aspectRatio(.8f),
                 contentScale = ContentScale.Crop,
             )
 
-            FilledTonalIconButton(
+            IconButton(
                 onClick = onBack,
                 modifier = Modifier
                     .padding(MaterialTheme.dimen.small)
@@ -141,7 +143,7 @@ private fun LazyListScope.detailsImage(
                 Icon(imageVector = Icons.Rounded.ArrowBackIos, contentDescription = "back icon")
             }
 
-            FilledTonalIconButton(
+            IconButton(
                 onClick = { /*TODO*/ },
                 modifier = Modifier
                     .padding(MaterialTheme.dimen.small)
@@ -157,22 +159,22 @@ private fun LazyListScope.detailsImage(
 }
 
 @Composable
-private fun UiStateHandler(uiState: DetailsUi, onDismissDialog: () -> Unit) {
+private fun UiStateHandler(uiState: MovieDetailsUi, onDismissDialog: () -> Unit) {
     when (uiState) {
-        is DetailsUi.Error -> {
+        is MovieDetailsUi.Error -> {
             DefaultErrorDialog(
                 onDismissDialog,
                 uiState.message.ifBlank { "An error just happen, please check your connection and try again ;)" }
             )
         }
 
-        DetailsUi.Idle -> {}
-        DetailsUi.Loading -> {
+        MovieDetailsUi.Idle -> {}
+        MovieDetailsUi.Loading -> {
             Dialog(onDismissRequest = { }) {
                 CircularProgressIndicator()
             }
         }
 
-        DetailsUi.Success -> {}
+        MovieDetailsUi.Success -> {}
     }
 }

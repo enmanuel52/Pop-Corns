@@ -4,7 +4,7 @@ package com.enmanuelbergling.ktormovies.domain.model
 data class MovieDetails(
     val adult: Boolean,
     val backdropPath: String,
-    val belongsToCollection: BelongsToCollection,
+    val belongsToCollection: BelongsToCollection?,
     val budget: Int,
     val genres: List<Genre>,
     val homepage: String,
