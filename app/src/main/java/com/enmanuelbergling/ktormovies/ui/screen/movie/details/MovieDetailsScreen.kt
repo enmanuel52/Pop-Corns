@@ -1,8 +1,8 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,17 +12,24 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,30 +60,77 @@ fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
     details?.let { MovieDetailsScreen(it, onBack) }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailsScreen(details: MovieDetails, onBack: () -> Unit) {
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
 
-        detailsImage(backdropUrl = BASE_IMAGE_URL + details.posterPath, onBack = onBack)
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-        information(
-            details.title,
-            details.releaseDate.substring(0..3),
-            details.voteAverage.toFloat(),
-            details.formattedGenres,
-            details.duration
-        )
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = "Details") },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBack,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBackIos,
+                            contentDescription = "back icon"
+                        )
+                    }
+                }, actions = {
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.FavoriteBorder,
+                            contentDescription = "favorite"
+                        )
+                    }
+                }, scrollBehavior = scrollBehavior
+            )
+        }
+    ) { paddingValues ->
 
-        overview(details.overview)
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+            modifier = Modifier
+                .padding(paddingValues)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        ) {
+
+            detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
+
+            information(
+                details.title,
+                details.releaseDate.substring(0..3),
+                details.voteAverage.toFloat(),
+                details.formattedGenres,
+                details.duration
+            )
+
+            overview(details.overview)
+        }
     }
+
 }
 
 private fun LazyListScope.overview(overview: String) {
     item {
+        var expanded by remember {
+            mutableStateOf(false)
+        }
+
         Text(
             text = overview,
-            modifier = Modifier.padding(all = MaterialTheme.dimen.small),
-            style = MaterialTheme.typography.bodyLarge
+            modifier = Modifier
+                .padding(all = MaterialTheme.dimen.small)
+                .clickable { expanded = !expanded }
+                .animateContentSize(),
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = if (expanded) Int.MAX_VALUE else 3,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -99,7 +153,7 @@ private fun LazyListScope.information(
                 Text(
                     //getting year
                     text = "$title ($year)",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -111,7 +165,7 @@ private fun LazyListScope.information(
 
             Text(
                 text = "$genres - $duration",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Light
             )
         }
@@ -120,53 +174,20 @@ private fun LazyListScope.information(
 
 private fun LazyListScope.detailsImage(
     backdropUrl: String?,
-    onBack: () -> Unit
 ) {
     item {
-        Box(Modifier.animateContentSize()) {
-            AsyncImage(
-                model = backdropUrl,
-                contentDescription = "poster image",
-                placeholder = painterResource(
-                    id = R.drawable.pop_corn_and_cinema_backdrop
-                ),
-                error = painterResource(
-                    id = R.drawable.pop_corn_and_cinema_backdrop
-                ),
-                contentScale = ContentScale.Crop,
-            )
-
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier
-                    .padding(MaterialTheme.dimen.small)
-                    .align(Alignment.TopStart),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(
-                        alpha = .5f
-                    )
-                )
-            ) {
-                Icon(imageVector = Icons.Rounded.ArrowBackIos, contentDescription = "back icon")
-            }
-
-            IconButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .padding(MaterialTheme.dimen.small)
-                    .align(Alignment.TopEnd),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(
-                        alpha = .5f
-                    )
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.FavoriteBorder,
-                    contentDescription = "favorite"
-                )
-            }
-        }
+        AsyncImage(
+            model = backdropUrl,
+            contentDescription = "poster image",
+            placeholder = painterResource(
+                id = R.drawable.pop_corn_and_cinema_backdrop
+            ),
+            error = painterResource(
+                id = R.drawable.pop_corn_and_cinema_backdrop
+            ),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.animateContentSize(),
+        )
     }
 }
 
