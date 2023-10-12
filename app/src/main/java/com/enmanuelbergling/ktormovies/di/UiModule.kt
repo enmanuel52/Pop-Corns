@@ -8,4 +8,5 @@ import org.koin.dsl.module
 val vmModule = module {
     viewModelOf(::DetailsVM)
     viewModelOf(::HomeVM)
+    viewModelOf(::DetailsVM)
 }

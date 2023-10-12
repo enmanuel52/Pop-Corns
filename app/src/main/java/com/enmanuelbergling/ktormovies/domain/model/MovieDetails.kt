@@ -27,4 +27,23 @@ data class MovieDetails(
     val video: Boolean,
     val voteAverage: Double,
     val voteCount: Int
-)
+) {
+    val formattedGenres: String
+        get() = buildString {
+            if (genres.isEmpty()) append("Unavailable")
+            else {
+                genres.forEachIndexed { index, genre ->
+                    if (index == 0) append(" - " + genre.name)
+                    else append("/${genre.name}")
+                }
+            }
+        }
+
+    val duration: String
+        get() = buildString {
+            val hours = runtime / 60
+            append("$hours h")
+            val minutes = runtime % 60
+            append("m$minutes m")
+        }
+}
