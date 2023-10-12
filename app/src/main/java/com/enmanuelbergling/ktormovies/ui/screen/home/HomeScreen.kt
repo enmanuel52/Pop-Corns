@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.ViewStream
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -27,10 +28,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -41,6 +48,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
+import com.enmanuelbergling.ktormovies.domain.model.CinemaContent
 import com.enmanuelbergling.ktormovies.domain.model.Movie
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.detail.BASE_IMAGE_URL
@@ -55,18 +63,59 @@ fun HomeScreen(onDetails: (id: Int) -> Unit) {
     val topRatedMovies = viewModel.topRatedMovies.collectAsLazyPagingItems()
 
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         topBar = {
-            TopAppBar(title = {}, actions = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Rounded.Search, contentDescription = "search icon")
-                }
-            },
-                scrollBehavior = scrollBehaviour
+            TopAppBar(
+                title = { }, actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Rounded.Search, contentDescription = "search icon")
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            imageVector = Icons.Rounded.ViewStream,
+                            contentDescription = "menu icon"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehaviour,
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         }
     ) { paddingValues ->
-        Column(Modifier.padding(paddingValues)) {
+        Column(
+            Modifier.padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.superSmall)
+        ) {
+            var selectedTabIndex by remember {
+                mutableIntStateOf(0)
+            }
+            ScrollableTabRow(
+                selectedTabIndex = selectedTabIndex,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = MaterialTheme.dimen.small),
+                divider = {},
+            ) {
+                CinemaContent.values().forEach { cinemaContent ->
+                    Tab(
+                        selected = cinemaContent.ordinal == selectedTabIndex,
+                        onClick = { selectedTabIndex = cinemaContent.ordinal },
+                    ) {
+                        Icon(
+                            imageVector = cinemaContent.icon,
+                            contentDescription = "tab icon",
+                        )
+                        Text(
+                            text = cinemaContent.toString(),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+
             MoviesGrid(
                 movies = topRatedMovies,
                 onDetails = onDetails,
@@ -90,6 +139,8 @@ fun MoviesGrid(
     modifier: Modifier = Modifier,
     onDetails: (id: Int) -> Unit
 ) {
+
+
     LazyVerticalStaggeredGrid(
         modifier = modifier.fillMaxWidth(),
         columns = StaggeredGridCells.Adaptive(150.dp),
@@ -141,7 +192,14 @@ fun LazyStaggeredGridScope.filters() {
                 FilterChip(
                     selected = false,
                     onClick = { /*TODO*/ },
-                    label = { Text(text = gender) },
+                    label = {
+                        Text(
+                            text = gender,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(MaterialTheme.dimen.small),
+                        )
+                    },
                     shape = MaterialTheme.shapes.small,
                 )
             }
@@ -172,7 +230,9 @@ fun MovieItem(
 @Composable
 fun MoviesShimmerGrid(modifier: Modifier = Modifier) {
     LazyVerticalGrid(
-        modifier = modifier.fillMaxWidth().shimmer(),
+        modifier = modifier
+            .fillMaxWidth()
+            .shimmer(),
         columns = GridCells.Adaptive(150.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
