@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 
 import com.enmanuelbergling.ktormovies.BuildConfig
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieCreditsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.MoviePageDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.KtorClient
@@ -24,6 +25,13 @@ internal class MovieService(private val httpClient: KtorClient) {
             url {
                 appendPathSegments("$id")
 
+                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
+            }
+        }.body()
+
+    suspend fun getMovieCredits(id: Int): MovieCreditsDTO = httpClient
+        .get("movie/$id/credits") {
+            url {
                 parameters.append(name = "api_key", value = BuildConfig.API_KEY)
             }
         }.body()
