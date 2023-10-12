@@ -1,15 +1,21 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.mappers
 
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.BelongsToCollectionDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.CastDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.CrewDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.GenreDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieCreditsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.ProductionCompanyDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.ProductionCountryDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.SpokenLanguageDTO
 import com.enmanuelbergling.ktormovies.domain.model.BelongsToCollection
+import com.enmanuelbergling.ktormovies.domain.model.Cast
+import com.enmanuelbergling.ktormovies.domain.model.Crew
 import com.enmanuelbergling.ktormovies.domain.model.Genre
 import com.enmanuelbergling.ktormovies.domain.model.Movie
+import com.enmanuelbergling.ktormovies.domain.model.MovieCredits
 import com.enmanuelbergling.ktormovies.domain.model.MovieDetails
 import com.enmanuelbergling.ktormovies.domain.model.ProductionCompany
 import com.enmanuelbergling.ktormovies.domain.model.ProductionCountry
@@ -83,3 +89,35 @@ internal fun SpokenLanguageDTO.toModel() = SpokenLanguage(
     iso6391 = iso6391,
     name = name
 )
+
+internal fun CastDTO.toModel() = Cast(
+    adult = adult,
+    gender = gender,
+    id = id,
+    knownForDepartment = knownForDepartment,
+    name = name,
+    originalName = originalName,
+    popularity = popularity,
+    profilePath = profilePath,
+    castId = castId,
+    character = character,
+    creditId = creditId,
+    order = order
+)
+
+internal fun CrewDTO.toModel() = Crew(
+    adult = adult,
+    gender = gender,
+    id = id,
+    knownForDepartment = knownForDepartment,
+    name = name,
+    originalName = originalName,
+    popularity = popularity,
+    profilePath = profilePath,
+    creditId = creditId,
+    department = department,
+    job = job
+)
+
+internal fun MovieCreditsDTO.toModel() =
+    MovieCredits(id = id, cast = cast.map { it.toModel() }, crew = crew.map { it.toModel() })
