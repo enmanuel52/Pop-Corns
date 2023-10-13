@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import com.enmanuelbergling.ktormovies.CornsTimeAppState
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
+import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
 
 @Composable
 fun CtiNavHost(
@@ -15,5 +16,7 @@ fun CtiNavHost(
     NavHost(navController = navController, startDestination = state.startDestination) {
 
         moviesGraph(navController::popBackStack, navController::navigateToMoviesDetails)
+
+        seriesGraph()
     }
 }

@@ -49,7 +49,10 @@ fun CornsTimeApp(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.superSmall)
         ) {
             if (state.shouldShowMainTopAppBar) {
-                DestinationTabs(selectedTabIndex) { index -> selectedTabIndex = index }
+                DestinationTabs(selectedTabIndex) { index ->
+                    selectedTabIndex = index
+                    state.navigateToTopDestination(TopDestination.values()[index])
+                }
             }
 
             CtiNavHost(state)

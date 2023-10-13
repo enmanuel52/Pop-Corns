@@ -6,8 +6,11 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
+import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
+import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
 
 @Composable
 fun rememberCtiAppState(
@@ -33,4 +36,25 @@ class CornsTimeAppState(
 
     val shouldShowMainTopAppBar: Boolean
         @Composable get() = isTopDetination
+
+    fun navigateToTopDestination(destination: TopDestination) {
+        when (destination) {
+            TopDestination.Movie -> navController.navigateToMoviesGraph(
+                navOptions {
+                    launchSingleTop = true
+                    popUpTo(MOVIES_GRAPH_ROUTE) {
+
+                    }
+                }
+            )
+            TopDestination.Series -> navController.navigateToSeriesGraph(
+                navOptions {
+                    launchSingleTop = true
+                    popUpTo(MOVIES_GRAPH_ROUTE) {
+
+                    }
+                }
+            )
+        }
+    }
 }

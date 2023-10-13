@@ -153,7 +153,7 @@ private fun LazyStaggeredGridScope.headersMovies(
             modifier = Modifier
                 .padding(horizontal = MaterialTheme.dimen.small)
         ) {
-            HeaderFilter(selectedHeader){selectedHeader=it}
+            HeaderFilter(selectedHeader) { selectedHeader = it }
 
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
@@ -178,7 +178,8 @@ private fun HeaderMovies(
         userScrollEnabled = when (selectedHeader) {
             HeaderMovie.Upcoming -> upcoming.isNotEmpty()
             HeaderMovie.NowPlaying -> nowPlaying.isNotEmpty()
-        }
+        },
+        pageSpacing = MaterialTheme.dimen.verySmall
     ) { pageIndex ->
 
         when (selectedHeader) {
@@ -199,7 +200,7 @@ private fun HeaderMovies(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeaderFilter(filter: HeaderMovie, onFilter:(HeaderMovie)->Unit) {
+fun HeaderFilter(filter: HeaderMovie, onFilter: (HeaderMovie) -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
