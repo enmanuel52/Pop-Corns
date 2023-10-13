@@ -35,4 +35,22 @@ internal class MovieService(private val httpClient: KtorClient) {
                 parameters.append(name = "api_key", value = BuildConfig.API_KEY)
             }
         }.body()
+
+    //https://api.themoviedb.org/3/movie/now_playing Now Playing
+    suspend fun getNowPlayingMovies(page: Int): MoviePageDTO = httpClient
+        .get("movie/now_playing") {
+            url {
+                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
+                parameters.append(name = "page", value = "$page")
+            }
+        }.body()
+
+    //https://api.themoviedb.org/3/movie/upcoming Coming Soon
+    suspend fun getUpcomingMovies(page: Int): MoviePageDTO = httpClient
+        .get("movie/upcoming") {
+            url {
+                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
+                parameters.append(name = "page", value = "$page")
+            }
+        }.body()
 }

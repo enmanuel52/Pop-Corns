@@ -29,6 +29,7 @@ val ktorClient = HttpClient(CIO) {
             Json {
                 prettyPrint = true
                 isLenient = true
+                ignoreUnknownKeys = true
             }
         )
     }

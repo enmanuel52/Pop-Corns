@@ -1,13 +1,17 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,18 +21,36 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DirectionsRun
+import androidx.compose.material.icons.rounded.Upcoming
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -48,11 +70,16 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit) {
     val viewModel = koinViewModel<MoviesVM>()
     val topRatedMovies = viewModel.topRatedMovies.collectAsLazyPagingItems()
 
+    val upcomingMovies by viewModel.upcomingState.collectAsStateWithLifecycle()
+    val nowPlayingMovies by viewModel.nowPlayingState.collectAsStateWithLifecycle()
+
     val scrollBehaviour = LocalTopAppScrollBehaviour.current!!
 
-    Column{
+    Column {
         MoviesGrid(
             movies = topRatedMovies,
+            nowPlaying = nowPlayingMovies,
+            upcoming = upcomingMovies,
             onDetails = onDetails,
             modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection)
         )
@@ -67,9 +94,17 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit) {
     }
 }
 
+enum class HeaderMovie(val title: String, val icon: ImageVector) {
+    Upcoming("Upcoming", Icons.Rounded.Upcoming),
+    NowPlaying("Now Playing", Icons.Rounded.DirectionsRun);
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesGrid(
     movies: LazyPagingItems<Movie>,
+    nowPlaying: List<Movie>,
+    upcoming: List<Movie>,
     modifier: Modifier = Modifier,
     onDetails: (id: Int) -> Unit
 ) {
@@ -83,6 +118,8 @@ fun MoviesGrid(
         verticalItemSpacing = MaterialTheme.dimen.small,
         userScrollEnabled = movies.itemCount > 0
     ) {
+        headersMovies(upcoming, nowPlaying, onDetails)
+
         forYouText()
 
         filters()
@@ -99,6 +136,142 @@ fun MoviesGrid(
 
     if (movies.itemCount == 0 && movies.loadState.refresh == LoadState.Loading) {
         MoviesShimmerGrid()
+    }
+}
+
+private fun LazyStaggeredGridScope.headersMovies(
+    upcoming: List<Movie>,
+    nowPlaying: List<Movie>,
+    onDetails: (id: Int) -> Unit
+) {
+    item(span = StaggeredGridItemSpan.FullLine) {
+        var selectedHeader by remember {
+            mutableStateOf(HeaderMovie.NowPlaying)
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(horizontal = MaterialTheme.dimen.small)
+        ) {
+            HeaderFilter(selectedHeader){selectedHeader=it}
+
+            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+            HeaderMovies(selectedHeader, upcoming, nowPlaying, onDetails)
+
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun HeaderMovies(
+    selectedHeader: HeaderMovie,
+    upcoming: List<Movie>,
+    nowPlaying: List<Movie>,
+    onDetails: (id: Int) -> Unit
+) {
+    val pagerState = rememberPagerState { 10 }
+
+    HorizontalPager(
+        state = pagerState,
+        userScrollEnabled = when (selectedHeader) {
+            HeaderMovie.Upcoming -> upcoming.isNotEmpty()
+            HeaderMovie.NowPlaying -> nowPlaying.isNotEmpty()
+        }
+    ) { pageIndex ->
+
+        when (selectedHeader) {
+            HeaderMovie.Upcoming -> if (upcoming.isEmpty()) {
+                HeaderMoviePlaceholder(Modifier.shimmer())
+            } else {
+                HeaderMovie(movie = upcoming[pageIndex], onDetails)
+            }
+
+            HeaderMovie.NowPlaying -> if (nowPlaying.isEmpty()) {
+                HeaderMoviePlaceholder(Modifier.shimmer())
+            } else {
+                HeaderMovie(movie = nowPlaying[pageIndex], onDetails)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HeaderFilter(filter: HeaderMovie, onFilter:(HeaderMovie)->Unit) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        HeaderMovie.values().forEach {
+            FilterChip(
+                selected = it == filter,
+                onClick = { onFilter(it) },
+                label = {
+                    Text(
+                        text = it.title,
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = it.icon,
+                        contentDescription = "header switch icon"
+                    )
+                },
+                shape = MaterialTheme.shapes.small,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HeaderMoviePlaceholder(modifier: Modifier = Modifier) {
+    Column(modifier) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1.6f)
+                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
+        )
+
+        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+        Box(
+            modifier = Modifier
+                .align(CenterHorizontally)
+                .fillMaxWidth(.7f)
+                .height(16.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HeaderMovie(movie: Movie, onClick: (id: Int) -> Unit) {
+    OutlinedCard(onClick = { onClick(movie.id) }) {
+        AsyncImage(
+            model = BASE_IMAGE_URL + movie.backdropPath,
+            contentDescription = "header image",
+            placeholder = painterResource(
+                id = R.drawable.pop_corn_and_cinema_backdrop
+            ),
+            error = painterResource(
+                id = R.drawable.pop_corn_and_cinema_backdrop
+            ),
+            modifier = Modifier.clip(MaterialTheme.shapes.medium)
+        )
+
+        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+        Text(
+            text = movie.title,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
