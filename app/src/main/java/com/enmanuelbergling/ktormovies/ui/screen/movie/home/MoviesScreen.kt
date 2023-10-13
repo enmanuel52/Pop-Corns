@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -33,9 +31,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,21 +77,44 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit) {
 
     val scrollBehaviour = LocalTopAppScrollBehaviour.current!!
 
-    Column {
-        MoviesGrid(
-            movies = topRatedMovies,
-            nowPlaying = nowPlayingMovies,
-            upcoming = upcomingMovies,
-            onDetails = onDetails,
-            modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection)
-        )
+    var selectedGenreIndex by remember {
+        mutableIntStateOf(0)
+    }
 
-        if (topRatedMovies.itemCount != 0 && topRatedMovies.loadState.append == LoadState.Loading) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = MaterialTheme.dimen.superSmall)
+    Scaffold { paddingValues ->
+        Column(modifier = Modifier.padding(paddingValues)) {
+            ScrollableTabRow(
+                selectedTabIndex = selectedGenreIndex,
+                modifier = Modifier.padding(vertical = MaterialTheme.dimen.verySmall),
+
+            ) {
+                genreFilters.forEachIndexed { index, genre ->
+                    Tab(
+                        selected = index == selectedGenreIndex,
+                        onClick = { selectedGenreIndex = index },
+                        text = {
+                            Text(
+                                text = genre
+                            )
+                        })
+                }
+            }
+
+            MoviesGrid(
+                movies = topRatedMovies,
+                nowPlaying = nowPlayingMovies,
+                upcoming = upcomingMovies,
+                onDetails = onDetails,
+                modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection)
             )
+
+            if (topRatedMovies.itemCount != 0 && topRatedMovies.loadState.append == LoadState.Loading) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = MaterialTheme.dimen.superSmall)
+                )
+            }
         }
     }
 }
@@ -99,7 +124,6 @@ enum class HeaderMovie(val title: String, val icon: ImageVector) {
     NowPlaying("Now Playing", Icons.Rounded.DirectionsRun);
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesGrid(
     movies: LazyPagingItems<Movie>,
@@ -121,8 +145,6 @@ fun MoviesGrid(
         headersMovies(upcoming, nowPlaying, onDetails)
 
         forYouText()
-
-        filters()
 
         items(movies.itemCount) { index ->
             movies[index]?.let { movie ->
@@ -287,33 +309,8 @@ private fun LazyStaggeredGridScope.forYouText() {
     }
 }
 
-val genderFilters = listOf("Action", "Thriller", "Comedy", "Drama", "Romantic", "Psycho")
+val genreFilters = listOf("Action", "Thriller", "Comedy", "Drama", "Romantic", "Psycho")
 
-@OptIn(ExperimentalMaterial3Api::class)
-fun LazyStaggeredGridScope.filters() {
-    item(span = StaggeredGridItemSpan.FullLine) {
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.medium),
-            contentPadding = PaddingValues(horizontal = MaterialTheme.dimen.small)
-        ) {
-            items(genderFilters) { gender ->
-                FilterChip(
-                    selected = false,
-                    onClick = { /*TODO*/ },
-                    label = {
-                        Text(
-                            text = gender,
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(MaterialTheme.dimen.small),
-                        )
-                    },
-                    shape = MaterialTheme.shapes.small,
-                )
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
