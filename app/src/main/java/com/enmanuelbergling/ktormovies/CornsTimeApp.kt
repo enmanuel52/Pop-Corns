@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,11 +14,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -27,8 +32,8 @@ import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.core.LocalTopAppScrollBehaviour
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.util.TAG
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CornsTimeApp(
     state: CornsTimeAppState = rememberCtiAppState()
@@ -37,12 +42,15 @@ fun CornsTimeApp(
         mutableIntStateOf(0)
     }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
         topBar = {
             if (state.shouldShowMainTopAppBar) {
                 MainTopAppBar()
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
             Modifier.padding(paddingValues),
@@ -58,6 +66,20 @@ fun CornsTimeApp(
             CtiNavHost(state)
         }
     }
+
+    LaunchedEffect(key1 = state.isOnline, block = {
+        Log.d(TAG, "isOnline: ${state.isOnline}")
+        if (!state.isOnline) {
+            snackbarHostState.showSnackbar(
+                "You're offline",
+                actionLabel = "Dismiss",
+                true,
+                duration = SnackbarDuration.Indefinite
+            )
+        } else {
+            snackbarHostState.currentSnackbarData?.dismiss()
+        }
+    })
 }
 
 @Composable

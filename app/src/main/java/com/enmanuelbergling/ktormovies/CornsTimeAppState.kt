@@ -14,13 +14,15 @@ import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSer
 
 @Composable
 fun rememberCtiAppState(
-    navController: NavHostController = rememberNavController()
-) = CornsTimeAppState(navController)
+    navController: NavHostController = rememberNavController(),
+    isOnline:Boolean=true,
+) = CornsTimeAppState(navController,isOnline)
 
 
 @Stable
 class CornsTimeAppState(
-    val navController: NavHostController
+    val navController: NavHostController,
+    val isOnline:Boolean=true,
 ) {
     private val currentDestination: NavDestination?
         @Composable get() = navController
