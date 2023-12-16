@@ -20,6 +20,7 @@ android {
             resolutionStrategy {
                 force("androidx.emoji2:emoji2-views-helper:1.3.0")
                 force("androidx.emoji2:emoji2:1.3.0")
+                force("androidx.activity:activity-compose:1.7.2")
             }
         }
 
@@ -139,8 +140,23 @@ dependencies {
     implementation("androidx.paging:paging-compose:1.0.0-alpha16")
 
     //Shimmer
-    implementation("com.valentinilk.shimmer:compose-shimmer:1.0.4")
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.0.5")
 
     //Rating Bar
     implementation("com.github.a914-gowtham:compose-ratingbar:1.3.4")
+
+    val precompose_version = "1.5.8"
+
+    implementation("moe.tlaster:precompose:$precompose_version"){
+        exclude(group = "androidx.activity", module = "activity-ktx")
+    }
+
+     // For ViewModel intergration
+    implementation("moe.tlaster:precompose-viewmodel:$precompose_version") {
+        exclude(group = "androidx.activity", module = "activity-ktx")
+    }
+    // For Koin intergration
+    /*implementation("moe.tlaster:precompose-koin:$precompose_version"){
+        exclude(group = "androidx.activity", module = "activity-ktx")
+    }*/
 }
