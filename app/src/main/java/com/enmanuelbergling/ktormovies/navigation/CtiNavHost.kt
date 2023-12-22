@@ -7,6 +7,8 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
 
+import moe.tlaster.precompose.navigation.NavHost as PreNavHost
+
 @Composable
 fun CtiNavHost(
     state: CornsTimeAppState
@@ -18,5 +20,16 @@ fun CtiNavHost(
         moviesGraph(navController::popBackStack, navController::navigateToMoviesDetails)
 
         seriesGraph()
+    }
+}
+
+@Composable
+fun PreCtiNavHost(
+    state: CornsTimeAppState
+) {
+    val navigator = state.navigator
+    PreNavHost(navigator = navigator, initialRoute = state.startDestination){
+
+        moviesGraph(navigator::popBackStack, navigator::navigateToMoviesDetails)
     }
 }

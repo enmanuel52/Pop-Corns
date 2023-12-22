@@ -11,18 +11,22 @@ import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
+import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.rememberNavigator
 
 @Composable
 fun rememberCtiAppState(
     navController: NavHostController = rememberNavController(),
-    isOnline:Boolean=true,
-) = CornsTimeAppState(navController,isOnline)
+    isOnline: Boolean = true,
+    navigator: Navigator = rememberNavigator(),
+) = CornsTimeAppState(navController,isOnline, navigator)
 
 
 @Stable
 class CornsTimeAppState(
     val navController: NavHostController,
-    val isOnline:Boolean=true,
+    val isOnline: Boolean = true,
+    val navigator: Navigator,
 ) {
     private val currentDestination: NavDestination?
         @Composable get() = navController

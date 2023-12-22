@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
+import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.core.LocalTopAppScrollBehaviour
 import com.enmanuelbergling.ktormovies.ui.core.dimen
@@ -63,7 +64,7 @@ fun CornsTimeApp(
             Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.superSmall)
         ) {
-            CtiNavHost(state)
+            PreCtiNavHost(state)
         }
     }
 

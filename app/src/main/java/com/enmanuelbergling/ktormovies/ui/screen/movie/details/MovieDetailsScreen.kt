@@ -1,6 +1,8 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -329,7 +331,9 @@ private fun LazyListScope.overview(overview: String) {
             modifier = Modifier
                 .padding(all = MaterialTheme.dimen.small)
                 .clickable { expanded = !expanded }
-                .animateContentSize(),
+                .animateContentSize(
+                    spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)
+                ),
             style = MaterialTheme.typography.bodyMedium,
             maxLines = if (expanded) Int.MAX_VALUE else 3,
             overflow = TextOverflow.Ellipsis,
