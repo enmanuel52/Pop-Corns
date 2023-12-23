@@ -140,7 +140,7 @@ fun MoviesGrid(
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
         verticalItemSpacing = MaterialTheme.dimen.small,
-        userScrollEnabled = movies.itemCount > 0
+//        userScrollEnabled = movies.itemCount > 0
     ) {
         headersMovies(upcoming, nowPlaying, onDetails)
 
