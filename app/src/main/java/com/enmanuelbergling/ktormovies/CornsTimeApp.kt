@@ -64,7 +64,7 @@ fun CornsTimeApp(
             Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.superSmall)
         ) {
-            PreCtiNavHost(state)
+            CtiNavHost(state)
         }
     }
 
