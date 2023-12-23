@@ -51,10 +51,21 @@ val Context.isOnline: Flow<Boolean>
         /**
          *send the latest connectivity status to the underlying channel
          *  */
-        channel.trySend(connectivityManager.isDefaultNetworkActive)
+        channel.trySend(connectivityManager.isNetworkActive)
 
         awaitClose {
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }
         .conflate()
+
+val ConnectivityManager.isNetworkActive: Boolean
+    get() = run {
+        val netCapabilities = getNetworkCapabilities(activeNetwork)
+
+        netCapabilities?.run {
+            hasCapability(NetworkCapabilities.NET_CAPABILITY_IMS) //vpn
+                    || hasCapability(NetworkCapabilities.NET_CAPABILITY_MMS) //cellular
+                    || hasCapability(NetworkCapabilities.NET_CAPABILITY_SUPL) //wifi
+        } ?: false
+    }
