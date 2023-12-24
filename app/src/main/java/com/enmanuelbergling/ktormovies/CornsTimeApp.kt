@@ -1,18 +1,27 @@
 package com.enmanuelbergling.ktormovies
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.ViewStream
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -20,51 +29,73 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
-import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
+import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.core.LocalTopAppScrollBehaviour
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.util.TAG
+import kotlinx.coroutines.launch
 
 @Composable
 fun CornsTimeApp(
-    state: CornsTimeAppState = rememberCtiAppState()
+    state: CornsTimeAppState = rememberCtiAppState(),
 ) {
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
 
+    val scope = rememberCoroutineScope()
+
     val snackbarHostState = remember { SnackbarHostState() }
 
-    Scaffold(
-        topBar = {
-            if (state.shouldShowMainTopAppBar) {
-                MainTopAppBar()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    ModalNavigationDrawer(drawerContent = {
+        if (state.isTopDestination) {
+            DrawerContent(state::navigateToDrawerDestination, state.currentRoute)
+        }
+    }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
+        Scaffold(
+            bottomBar = {
+                if (state.shouldShowMainTopAppBar) {
+                    CornBottomNav(
+                        currentRoute = state.currentRoute,
+                        onDestination = state::navigateToTopDestination
+                    )
+                }
+            },
+            snackbarHost = { SnackbarHost(snackbarHostState) }
+        ) { paddingValues ->
+            Box(
+                Modifier.padding(paddingValues)
+            ) {
+                CtiNavHost(state)
+                if (state.isTopDestination) {
+                    FilledTonalIconButton(
+                        onClick = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(MaterialTheme.dimen.verySmall)
+                    ) {
+                        Icon(imageVector = Icons.Rounded.Menu, contentDescription = "drawer icon")
+                    }
+                }
             }
-        },
-        bottomBar = {
-            if (state.shouldShowMainTopAppBar) {
-                CornBottomNav(
-                    currentRoute = state.currentRoute,
-                    onDestination = state::navigateToTopDestination
-                )
-            }
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { paddingValues ->
-        Column(
-            Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.superSmall)
-        ) {
-            CtiNavHost(state)
         }
     }
 
@@ -81,6 +112,30 @@ fun CornsTimeApp(
             snackbarHostState.currentSnackbarData?.dismiss()
         }
     })
+}
+
+@Composable
+fun DrawerContent(onDrawerDestination: (DrawerDestination) -> Unit, currentRoute: String?) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(.4f)
+            .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large)
+    ) {
+        DrawerDestination.values().forEach { destination ->
+            NavigationDrawerItem(
+                label = { Text(text = destination.toString()) },
+                selected = currentRoute in destination.routes,
+                onClick = { onDrawerDestination(destination) },
+                icon = {
+                    Icon(
+                        imageVector = if (currentRoute in destination.routes) destination.icon else destination.unselectedIcon,
+                        contentDescription = "nav icon"
+                    )
+                })
+        }
+    }
 }
 
 @Composable

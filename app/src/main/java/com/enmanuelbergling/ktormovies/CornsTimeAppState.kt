@@ -7,8 +7,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
-import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.ACTORS_GRAPH_ROUTE
+import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
@@ -36,13 +37,13 @@ class CornsTimeAppState(
     val currentRoute: String?
         @Composable get() = currentDestination?.route
 
-    val startDestination = ACTORS_GRAPH_ROUTE//MOVIES_GRAPH_ROUTE
+    val startDestination = MOVIES_GRAPH_ROUTE
 
-    val isTopDetination: Boolean
-        @Composable get() = currentRoute in TopDestination.values().map { it.route }
+    val isTopDestination: Boolean
+        @Composable get() = currentRoute in DrawerDestination.values().map { it.routes }.flatten()
 
     val shouldShowMainTopAppBar: Boolean
-        @Composable get() = isTopDetination
+        @Composable get() = isTopDestination
 
     fun navigateToTopDestination(destination: TopDestination) {
         when (destination) {
@@ -61,6 +62,25 @@ class CornsTimeAppState(
                     popUpTo(MOVIES_GRAPH_ROUTE) {
 
                     }
+                }
+            )
+        }
+    }
+
+    fun navigateToDrawerDestination(destination: DrawerDestination) {
+        when (destination) {
+            DrawerDestination.Home -> navController.navigateToMoviesGraph(
+                navOptions {
+                    launchSingleTop = true
+                    popUpTo(MOVIES_GRAPH_ROUTE) {
+
+                    }
+                }
+            )
+
+            DrawerDestination.Actor -> navController.navigateToActorsGraph(
+                navOptions {
+                    launchSingleTop = true
                 }
             )
         }
