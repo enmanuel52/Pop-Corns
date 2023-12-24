@@ -19,11 +19,19 @@ fun CtiNavHost(
 
     NavHost(navController = navController, startDestination = state.startDestination) {
 
-        moviesGraph(navController::popBackStack, navController::navigateToMoviesDetails)
+        moviesGraph(
+            navController::popBackStack,
+            navController::navigateToMoviesDetails,
+            navController::navigateToActorsDetails
+        )
 
         seriesGraph()
 
-        actorsGraph(navController::popBackStack, navController::navigateToActorsDetails)
+        actorsGraph(
+            navController::popBackStack,
+            navController::navigateToActorsDetails,
+            navController::navigateToMoviesDetails
+        )
     }
 }
 
@@ -34,6 +42,10 @@ fun PreCtiNavHost(
     val navigator = state.navigator
     PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
 
-        moviesGraph(navigator::popBackStack, navigator::navigateToMoviesDetails)
+        moviesGraph(
+            navigator::popBackStack,
+            navigator::navigateToMoviesDetails,
+            navigator::navigateToActorsDetails
+        )
     }
 }

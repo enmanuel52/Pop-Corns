@@ -347,7 +347,7 @@ fun MoviesShimmerGrid(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
         userScrollEnabled = false
     ) {
-        items(8) {
+        items(50) {
             MovieShimmerItem()
         }
     }

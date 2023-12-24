@@ -33,7 +33,11 @@ fun Navigator.navigateToActorsDetails(id: Int) {
     navigate("/$ACTORS_DETAILS_SCREEN_ROUTE/$id")
 }
 
-fun NavGraphBuilder.actorsGraph(onBack: () -> Unit, onActor: (id: Int) -> Unit) {
+fun NavGraphBuilder.actorsGraph(
+    onBack: () -> Unit,
+    onActor: (id: Int) -> Unit,
+    onMovie: (movieId: Int) -> Unit,
+) {
     navigation(startDestination = ACTORS_SCREEN_ROUTE, route = ACTORS_GRAPH_ROUTE) {
         composable(ACTORS_SCREEN_ROUTE) {
             ActorsScreen(onDetails = onActor)
@@ -46,12 +50,15 @@ fun NavGraphBuilder.actorsGraph(onBack: () -> Unit, onActor: (id: Int) -> Unit) 
                 }
             )) {
             val id = it.arguments!!.getInt(ID_ARG)
-            ActorDetailsScreen(id = id, onBack)
+            ActorDetailsScreen(id = id, onMovie, onBack)
         }
     }
 }
 
-fun RouteBuilder.actorsGraph(onBack: () -> Unit, onActor: (id: Int) -> Unit) {
+fun RouteBuilder.actorsGraph(
+    onBack: () -> Unit, onActor: (id: Int) -> Unit,
+    onMovie: (movieId: Int) -> Unit,
+) {
     group(ACTORS_GRAPH_ROUTE, "/$ACTORS_SCREEN_ROUTE") {
         scene(
             "/$ACTORS_SCREEN_ROUTE", navTransition = NavTransition()
@@ -61,7 +68,7 @@ fun RouteBuilder.actorsGraph(onBack: () -> Unit, onActor: (id: Int) -> Unit) {
 
         scene("/$ACTORS_DETAILS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()) {
             val id: Int = it.path(ID_ARG, 0)!!
-            ActorDetailsScreen(id = id, onBack)
+            ActorDetailsScreen(id = id, onMovie, onBack)
         }
     }
 }

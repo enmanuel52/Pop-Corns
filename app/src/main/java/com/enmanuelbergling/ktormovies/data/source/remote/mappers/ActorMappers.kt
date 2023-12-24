@@ -2,10 +2,10 @@ package com.enmanuelbergling.ktormovies.data.source.remote.mappers
 
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.ActorDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.ActorDetailsDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.ActorKnownForDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.KnownMovieDTO
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.domain.model.actor.ActorDetails
-import com.enmanuelbergling.ktormovies.domain.model.actor.ActorKnownFor
+import com.enmanuelbergling.ktormovies.domain.model.actor.KnownMovie
 
 internal fun ActorDetailsDTO.toModel() = ActorDetails(
     adult = adult,
@@ -33,4 +33,11 @@ internal fun ActorDTO.toModel() = Actor(
     originalName = originalName,
     popularity = popularity,
     profilePath = profilePath
+)
+
+internal fun KnownMovieDTO.toModel() = KnownMovie(
+    id = id,
+    posterPath = posterPath,
+    title = title,
+    voteAverage = voteAverage
 )

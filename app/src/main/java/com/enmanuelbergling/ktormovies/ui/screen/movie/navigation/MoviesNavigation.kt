@@ -13,8 +13,6 @@ import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder
 import moe.tlaster.precompose.navigation.path
 import moe.tlaster.precompose.navigation.transition.NavTransition
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModel
 
 const val MOVIES_GRAPH_ROUTE = "movies_graph_route"
 
@@ -35,7 +33,11 @@ fun Navigator.navigateToMoviesDetails(id: Int) {
     navigate("/$MOVIES_DETAILS_SCREEN_ROUTE/$id")
 }
 
-fun NavGraphBuilder.moviesGraph(onBack: () -> Unit, onMovie: (id: Int) -> Unit) {
+fun NavGraphBuilder.moviesGraph(
+    onBack: () -> Unit,
+    onMovie: (id: Int) -> Unit,
+    onActor: (actorId: Int) -> Unit,
+) {
     navigation(startDestination = MOVIES_SCREEN_ROUTE, route = MOVIES_GRAPH_ROUTE) {
         composable(MOVIES_SCREEN_ROUTE) {
             MoviesScreen(onDetails = onMovie)
@@ -48,12 +50,12 @@ fun NavGraphBuilder.moviesGraph(onBack: () -> Unit, onMovie: (id: Int) -> Unit) 
                 }
             )) {
             val id = it.arguments!!.getInt(ID_ARG)
-            MovieDetailsScreen(id = id, onBack)
+            MovieDetailsScreen(id = id, onActor,onBack)
         }
     }
 }
 
-fun RouteBuilder.moviesGraph(onBack: () -> Unit, onMovie: (id: Int) -> Unit) {
+fun RouteBuilder.moviesGraph(onBack: () -> Unit, onMovie: (id: Int) -> Unit, onActor: (actorId: Int) -> Unit) {
     group(MOVIES_GRAPH_ROUTE, "/$MOVIES_SCREEN_ROUTE") {
         scene(
             "/$MOVIES_SCREEN_ROUTE", navTransition = NavTransition()
@@ -63,7 +65,7 @@ fun RouteBuilder.moviesGraph(onBack: () -> Unit, onMovie: (id: Int) -> Unit) {
 
         scene("/$MOVIES_DETAILS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()) {
             val id: Int = it.path(ID_ARG, 0)!!
-            MovieDetailsScreen(id = id, onBack)
+            MovieDetailsScreen(id = id, onActor, onBack)
         }
     }
 }

@@ -24,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,14 +52,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
-import com.enmanuelbergling.ktormovies.ui.components.DefaultErrorDialog
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.components.UiStateHandler
 import com.enmanuelbergling.ktormovies.ui.core.dimen
@@ -69,7 +65,7 @@ import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
+fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> Unit) {
 
     val viewModel = koinViewModel<MovieDetailsVM>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -86,6 +82,7 @@ fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
         MovieDetailsScreen(
             details = it,
             credits = creditsState,
+            onActor = onActor,
             onBack = onBack
         ) { viewModel.getMovieCredits(id) }
     }
@@ -96,8 +93,9 @@ fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
 private fun MovieDetailsScreen(
     details: MovieDetails,
     credits: CreditsUiState,
+    onActor: (actorId: Int) -> Unit,
     onBack: () -> Unit,
-    onGetCredits: () -> Unit
+    onGetCredits: () -> Unit,
 ) {
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -167,14 +165,14 @@ private fun MovieDetailsScreen(
 
             overview(details.overview)
 
-            castAndCrew(credits)
+            castAndCrew(credits, onActor)
         }
     }
 
 }
 
-private fun LazyListScope.castAndCrew(credits: CreditsUiState) {
-    casts(credits)
+private fun LazyListScope.castAndCrew(credits: CreditsUiState, onActor: (actorId: Int) -> Unit) {
+    casts(credits, onActor)
 
     crew(credits)
 }
@@ -213,7 +211,7 @@ private fun LazyListScope.crew(credits: CreditsUiState) {
     }
 }
 
-private fun LazyListScope.casts(credits: CreditsUiState) {
+private fun LazyListScope.casts(credits: CreditsUiState, onActor: (actorId: Int) -> Unit) {
     item {
         Column {
             Text(
@@ -232,13 +230,14 @@ private fun LazyListScope.casts(credits: CreditsUiState) {
                         ProfileItem(
                             photo = BASE_IMAGE_URL + cast.profilePath,
                             name = cast.name,
-                            modifier = Modifier.padding(
-                                start = if (index == 0) MaterialTheme.dimen.small else 0.dp,
-                                end = if (index == casts
-                                        .count() - 1
-                                ) MaterialTheme.dimen.small else 0.dp,
-                            )
-                        )
+                            modifier = Modifier
+                                .padding(
+                                    start = if (index == 0) MaterialTheme.dimen.small else 0.dp,
+                                    end = if (index == casts
+                                            .count() - 1
+                                    ) MaterialTheme.dimen.small else 0.dp,
+                                )
+                        ) { onActor(cast.id) }
                     }
                 }
             } else if (credits is CreditsUiState.Loading) {
@@ -261,7 +260,12 @@ private fun ProfilesShimmer() {
 }
 
 @Composable
-private fun ProfileItem(photo: String?, name: String, modifier: Modifier = Modifier) {
+private fun ProfileItem(
+    photo: String?,
+    name: String,
+    modifier: Modifier = Modifier,
+    onCLick: () -> Unit = {},
+) {
     Column(
         modifier = modifier.widthIn(max = 130.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -270,7 +274,9 @@ private fun ProfileItem(photo: String?, name: String, modifier: Modifier = Modif
             model = photo,
             contentDescription = "actor image",
             contentScale = ContentScale.FillWidth,
-            modifier = Modifier.clip(MaterialTheme.shapes.medium),
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.medium)
+                .clickable { onCLick() },
             placeholder = painterResource(id = R.drawable.mr_bean),
             error = painterResource(id = R.drawable.mr_bean),
         )
@@ -348,7 +354,7 @@ private fun LazyListScope.information(
     year: String,
     rating: Float,
     genres: String,
-    duration: String
+    duration: String,
 ) {
     item {
         Column(Modifier.padding(MaterialTheme.dimen.small)) {

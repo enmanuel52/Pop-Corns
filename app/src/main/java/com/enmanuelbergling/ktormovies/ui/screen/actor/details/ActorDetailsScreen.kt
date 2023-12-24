@@ -7,13 +7,15 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -43,30 +45,46 @@ import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.TAG
 import com.enmanuelbergling.ktormovies.domain.model.actor.ActorDetails
+import com.enmanuelbergling.ktormovies.domain.model.actor.KnownMovie
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.components.UiStateHandler
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MovieItem
+import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MovieShimmerItem
+import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun ActorDetailsScreen(id: Int, onBack: () -> Unit) {
+fun ActorDetailsScreen(id: Int, onMovie: (movieId: Int) -> Unit, onBack: () -> Unit) {
 
     val viewModel = koinViewModel<ActorDetailsVM> { parametersOf(id) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val details by viewModel.detailsState.collectAsStateWithLifecycle()
 
-    UiStateHandler(uiState = uiState, onDismissDialog = onBack)
+    val knownMovies by viewModel.knownMoviesState.collectAsStateWithLifecycle()
+
+    UiStateHandler(uiState = uiState, onDismissDialog = viewModel::onDismissDialog)
 
     details?.let {
-        ActorDetailsScreen(details = it, onBack = onBack)
+        ActorDetailsScreen(
+            details = it,
+            onBack = onBack,
+            knownMovies = knownMovies,
+            onMovie = onMovie
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ActorDetailsScreen(details: ActorDetails, onBack: () -> Unit) {
+private fun ActorDetailsScreen(
+    details: ActorDetails,
+    knownMovies: List<KnownMovie>,
+    onMovie: (movieId: Int) -> Unit,
+    onBack: () -> Unit,
+) {
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -96,22 +114,83 @@ private fun ActorDetailsScreen(details: ActorDetails, onBack: () -> Unit) {
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-            modifier = Modifier
+        Column(
+            Modifier
                 .padding(paddingValues)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                modifier = Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                contentPadding = PaddingValues(horizontal = MaterialTheme.dimen.mediumSmall)
+            ) {
 
-            detailsHeader(
-                imageUrl = BASE_IMAGE_URL + details.profilePath,
-                name = details.name,
-                popularity = details.popularity
-            )
+                detailsHeader(
+                    imageUrl = BASE_IMAGE_URL + details.profilePath,
+                    name = details.name,
+                    popularity = details.popularity
+                )
 
-            about(details.biography)
+                about(details.biography)
 
+                knownMovies(knownMovies, onMovie)
+            }
 
+        }
+    }
+}
+
+private fun LazyListScope.knownMovies(
+    knownMovies: List<KnownMovie>,
+    onMovie: (movieId: Int) -> Unit,
+) {
+    item {
+        Text(
+            text = "Known movies",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+    itemsIndexed(knownMovies) { index, movie ->
+        if (index % 2 == 0) {
+            Row(
+                Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
+            ) {
+                MovieItem(
+                    imageUrl = BASE_IMAGE_URL + movie.posterPath,
+                    onCLick = { onMovie(movie.id) },
+                    modifier = Modifier.then(
+                        if (index + 1 in knownMovies.indices) {
+                            Modifier.weight(1f)
+                        } else Modifier.fillMaxWidth(.5f)
+                    )
+                )
+
+                knownMovies.getOrNull(index + 1)?.let { nextMovie ->
+                    MovieItem(
+                        imageUrl = BASE_IMAGE_URL + nextMovie.posterPath,
+                        onCLick = { onMovie(nextMovie.id) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
+    }
+
+    if (knownMovies.isEmpty()) {
+        item {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .shimmer(),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
+            ) {
+                MovieShimmerItem(Modifier.weight(1f))
+
+                MovieShimmerItem(Modifier.weight(1f))
+            }
         }
     }
 }
@@ -119,8 +198,7 @@ private fun ActorDetailsScreen(details: ActorDetails, onBack: () -> Unit) {
 private fun LazyListScope.about(biography: String) {
     item {
         Column(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall),
-            modifier = Modifier.padding(MaterialTheme.dimen.mediumSmall)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall)
         ) {
             Text(
                 text = "About",
@@ -158,7 +236,7 @@ private fun LazyListScope.detailsHeader(imageUrl: String, name: String, populari
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),
                 modifier = Modifier
-                    .padding(MaterialTheme.dimen.mediumSmall)
+                    .padding(MaterialTheme.dimen.small)
             )
             Column(
                 modifier = Modifier
@@ -176,8 +254,11 @@ private fun LazyListScope.detailsHeader(imageUrl: String, name: String, populari
                     fontWeight = FontWeight.SemiBold
                 )
 
-                LaunchedEffect(key1 = Unit){
-                    Log.d(TAG, "detailsHeader: $popularity, ${popularity.div(100).times(5).toFloat()}")
+                LaunchedEffect(key1 = Unit) {
+                    Log.d(
+                        TAG,
+                        "detailsHeader: $popularity, ${popularity.div(100).times(5).toFloat()}"
+                    )
                 }
                 RatingStars(
                     value = popularity.div(100).times(5).toFloat(),
