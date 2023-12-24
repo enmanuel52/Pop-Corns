@@ -58,6 +58,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
+import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
 import com.enmanuelbergling.ktormovies.ui.components.DefaultErrorDialog
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
@@ -398,22 +399,22 @@ private fun LazyListScope.detailsImage(
 }
 
 @Composable
-private fun UiStateHandler(uiState: MovieDetailsUi, onDismissDialog: () -> Unit) {
+private fun UiStateHandler(uiState: SimplerUi, onDismissDialog: () -> Unit) {
     when (uiState) {
-        is MovieDetailsUi.Error -> {
+        is SimplerUi.Error -> {
             DefaultErrorDialog(
                 onDismissDialog,
                 uiState.message.ifBlank { "An error just happen, please check your connection and try again ;)" }
             )
         }
 
-        MovieDetailsUi.Idle -> {}
-        MovieDetailsUi.Loading -> {
+        SimplerUi.Idle -> {}
+        SimplerUi.Loading -> {
             Dialog(onDismissRequest = { }) {
                 CircularProgressIndicator()
             }
         }
 
-        MovieDetailsUi.Success -> {}
+        SimplerUi.Success -> {}
     }
 }

@@ -3,6 +3,8 @@ package com.enmanuelbergling.ktormovies.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import com.enmanuelbergling.ktormovies.CornsTimeAppState
+import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.actorsGraph
+import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
@@ -11,7 +13,7 @@ import moe.tlaster.precompose.navigation.NavHost as PreNavHost
 
 @Composable
 fun CtiNavHost(
-    state: CornsTimeAppState
+    state: CornsTimeAppState,
 ) {
     val navController = state.navController
 
@@ -20,15 +22,17 @@ fun CtiNavHost(
         moviesGraph(navController::popBackStack, navController::navigateToMoviesDetails)
 
         seriesGraph()
+
+        actorsGraph(navController::popBackStack, navController::navigateToActorsDetails)
     }
 }
 
 @Composable
 fun PreCtiNavHost(
-    state: CornsTimeAppState
+    state: CornsTimeAppState,
 ) {
     val navigator = state.navigator
-    PreNavHost(navigator = navigator, initialRoute = state.startDestination){
+    PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
 
         moviesGraph(navigator::popBackStack, navigator::navigateToMoviesDetails)
     }

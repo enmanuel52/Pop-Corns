@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieCreditsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieDetailsUC
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ class MovieDetailsVM(
     private val getMovieCreditsUC: GetMovieCreditsUC,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<MovieDetailsUi>(MovieDetailsUi.Idle)
+    private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
     val uiState = _uiState.asStateFlow()
 
     private val _creditsState = MutableStateFlow<CreditsUiState>(CreditsUiState.Loading)
@@ -26,20 +27,16 @@ class MovieDetailsVM(
     val detailsState get() = _detailsState.asStateFlow()
 
     fun getDetails(id: Int) = viewModelScope.launch {
-        _uiState.update { MovieDetailsUi.Loading }
+        _uiState.update { SimplerUi.Loading }
         when (val result = getMovieDetailsUC(id)) {
-            is ResultHandler.Error -> _uiState.update { MovieDetailsUi.Error(result.exception.message.orEmpty()) }
+            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
             is ResultHandler.Success -> {
                 _detailsState.update { result.data }
-                _uiState.update { MovieDetailsUi.Success }
+                _uiState.update { SimplerUi.Success }
                 //once the main details are loaded
                 getMovieCredits(id)
             }
         }
-    }
-
-    fun hideErrorDialog() {
-        _uiState.update { MovieDetailsUi.Idle }
     }
 
     fun getMovieCredits(id: Int) = viewModelScope.launch {
