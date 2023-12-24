@@ -9,7 +9,7 @@ internal data class ActorPageDTO(
     @SerialName("page")
     val page: Int,
     @SerialName("results")
-    val actors: List<ActorDTO>,
+    val results: List<ActorDTO>,
     @SerialName("total_pages")
     val totalPages: Int,
     @SerialName("total_results")

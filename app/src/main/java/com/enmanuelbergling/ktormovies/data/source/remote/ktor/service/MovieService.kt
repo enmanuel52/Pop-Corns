@@ -1,6 +1,5 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 
-import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieCreditsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MoviePageDTO
@@ -15,7 +14,6 @@ internal class MovieService(private val httpClient: KtorClient) {
         .get("movie/top_rated") {
             url {
                 parameters.append(name = "page", value = "$page")
-                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
             }
         }
         .body()
@@ -24,32 +22,23 @@ internal class MovieService(private val httpClient: KtorClient) {
         .get("movie") {
             url {
                 appendPathSegments("$id")
-
-                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
             }
         }.body()
 
     suspend fun getMovieCredits(id: Int): MovieCreditsDTO = httpClient
-        .get("movie/$id/credits") {
-            url {
-                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
-            }
-        }.body()
+        .get("movie/$id/credits")
+        .body()
 
-    //https://api.themoviedb.org/3/movie/now_playing Now Playing
     suspend fun getNowPlayingMovies(page: Int): MoviePageDTO = httpClient
         .get("movie/now_playing") {
             url {
-                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
                 parameters.append(name = "page", value = "$page")
             }
         }.body()
 
-    //https://api.themoviedb.org/3/movie/upcoming Coming Soon
     suspend fun getUpcomingMovies(page: Int): MoviePageDTO = httpClient
         .get("movie/upcoming") {
             url {
-                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
                 parameters.append(name = "page", value = "$page")
             }
         }.body()

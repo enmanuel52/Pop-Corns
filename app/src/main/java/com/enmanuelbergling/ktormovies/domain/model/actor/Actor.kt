@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.domain.model.actor
 
 
-internal data class Actor(
+data class Actor(
     val adult: Boolean,
     val gender: Int,
     val id: Int,

@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.domain.model.actor
 
 
-internal data class ActorDetails(
+data class ActorDetails(
     val adult: Boolean,
     val alsoKnownAs: List<String>,
     val biography: String,

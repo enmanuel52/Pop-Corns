@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.di
 
+import com.enmanuelbergling.ktormovies.domain.usecase.GetActorDetailsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieCreditsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieDetailsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.GetNowPlayingMoviesUC
@@ -12,4 +13,5 @@ val ucModule = module {
     singleOf(::GetMovieCreditsUC)
     singleOf(::GetNowPlayingMoviesUC)
     singleOf(::GetUpcomingMoviesUC)
+    singleOf(::GetActorDetailsUC)
 }
