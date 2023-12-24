@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 
 import com.enmanuelbergling.ktormovies.BuildConfig
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieCreditsDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieDetailsDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.MoviePageDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieCreditsDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDetailsDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MoviePageDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.KtorClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

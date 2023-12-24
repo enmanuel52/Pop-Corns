@@ -2,7 +2,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.enmanuelbergling.ktormovies.domain.model.MovieDetails
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieCreditsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieDetailsUC

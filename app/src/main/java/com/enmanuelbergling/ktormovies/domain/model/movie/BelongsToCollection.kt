@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.domain.model
+package com.enmanuelbergling.ktormovies.domain.model.movie
 
 
 data class BelongsToCollection(

@@ -1,11 +1,12 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.dto
+package com.enmanuelbergling.ktormovies.data.source.remote.dto.actor
 
 
+import com.enmanuelbergling.ktormovies.domain.model.actor.ActorKnownFor
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CastDTO(
+internal data class ActorDTO(
     @SerialName("adult")
     val adult: Boolean,
     @SerialName("gender")
@@ -21,13 +22,7 @@ internal data class CastDTO(
     @SerialName("popularity")
     val popularity: Double,
     @SerialName("profile_path")
-    val profilePath: String?,
-    @SerialName("cast_id")
-    val castId: Int,
-    @SerialName("character")
-    val character: String,
-    @SerialName("credit_id")
-    val creditId: String,
-    @SerialName("order")
-    val order: Int
+    val profilePath: String,
+    @SerialName("known_for")
+    val knownFor: List<ActorKnownForDTO>
 )

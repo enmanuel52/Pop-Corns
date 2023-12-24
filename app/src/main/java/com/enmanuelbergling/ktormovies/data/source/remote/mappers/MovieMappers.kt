@@ -1,25 +1,25 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.mappers
 
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.BelongsToCollectionDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.CastDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.CrewDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.GenreDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieCreditsDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieDetailsDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.ProductionCompanyDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.ProductionCountryDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.SpokenLanguageDTO
-import com.enmanuelbergling.ktormovies.domain.model.BelongsToCollection
-import com.enmanuelbergling.ktormovies.domain.model.Cast
-import com.enmanuelbergling.ktormovies.domain.model.Crew
-import com.enmanuelbergling.ktormovies.domain.model.Genre
-import com.enmanuelbergling.ktormovies.domain.model.Movie
-import com.enmanuelbergling.ktormovies.domain.model.MovieCredits
-import com.enmanuelbergling.ktormovies.domain.model.MovieDetails
-import com.enmanuelbergling.ktormovies.domain.model.ProductionCompany
-import com.enmanuelbergling.ktormovies.domain.model.ProductionCountry
-import com.enmanuelbergling.ktormovies.domain.model.SpokenLanguage
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.BelongsToCollectionDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.CastDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.CrewDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.GenreDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieCreditsDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDetailsDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.ProductionCompanyDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.ProductionCountryDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.SpokenLanguageDTO
+import com.enmanuelbergling.ktormovies.domain.model.movie.BelongsToCollection
+import com.enmanuelbergling.ktormovies.domain.model.movie.Cast
+import com.enmanuelbergling.ktormovies.domain.model.movie.Crew
+import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
+import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
+import com.enmanuelbergling.ktormovies.domain.model.movie.ProductionCompany
+import com.enmanuelbergling.ktormovies.domain.model.movie.ProductionCountry
+import com.enmanuelbergling.ktormovies.domain.model.movie.SpokenLanguage
 
 internal fun BelongsToCollectionDTO.toModel() = BelongsToCollection(
     id = id,

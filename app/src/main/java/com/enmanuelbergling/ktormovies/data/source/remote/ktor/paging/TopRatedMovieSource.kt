@@ -2,7 +2,7 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.MovieDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
 
 internal class TopRatedMovieSource(private val service: MovieService) :

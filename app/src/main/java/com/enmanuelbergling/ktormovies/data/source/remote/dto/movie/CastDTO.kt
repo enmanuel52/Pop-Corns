@@ -1,11 +1,11 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.dto
+package com.enmanuelbergling.ktormovies.data.source.remote.dto.movie
 
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CrewDTO(
+internal data class CastDTO(
     @SerialName("adult")
     val adult: Boolean,
     @SerialName("gender")
@@ -22,10 +22,12 @@ internal data class CrewDTO(
     val popularity: Double,
     @SerialName("profile_path")
     val profilePath: String?,
+    @SerialName("cast_id")
+    val castId: Int,
+    @SerialName("character")
+    val character: String,
     @SerialName("credit_id")
     val creditId: String,
-    @SerialName("department")
-    val department: String,
-    @SerialName("job")
-    val job: String
+    @SerialName("order")
+    val order: Int
 )

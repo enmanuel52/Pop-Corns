@@ -1,7 +1,7 @@
-package com.enmanuelbergling.ktormovies.domain.model
+package com.enmanuelbergling.ktormovies.domain.model.actor
 
 
-data class Crew(
+internal data class Actor(
     val adult: Boolean,
     val gender: Int,
     val id: Int,
@@ -9,8 +9,6 @@ data class Crew(
     val name: String,
     val originalName: String,
     val popularity: Double,
-    val profilePath: String?,
-    val creditId: String,
-    val department: String,
-    val job: String
+    val profilePath: String,
+    val knownFor: List<ActorKnownFor>,
 )

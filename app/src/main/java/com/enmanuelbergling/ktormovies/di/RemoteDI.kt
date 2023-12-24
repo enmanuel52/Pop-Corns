@@ -6,7 +6,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.MovieR
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.ktorClient
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.GetTopRatedMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
-import com.enmanuelbergling.ktormovies.domain.model.Movie
+import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.dsl.singleOf

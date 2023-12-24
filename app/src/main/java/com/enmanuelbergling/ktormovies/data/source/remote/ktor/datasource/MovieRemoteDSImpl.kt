@@ -3,9 +3,9 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
-import com.enmanuelbergling.ktormovies.domain.model.Movie
-import com.enmanuelbergling.ktormovies.domain.model.MovieCredits
-import com.enmanuelbergling.ktormovies.domain.model.MovieDetails
+import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 
 internal class MovieRemoteDSImpl(private val service: MovieService) : MovieRemoteDS {

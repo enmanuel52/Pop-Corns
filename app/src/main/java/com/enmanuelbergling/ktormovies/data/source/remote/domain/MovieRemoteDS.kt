@@ -1,8 +1,8 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.domain
 
-import com.enmanuelbergling.ktormovies.domain.model.Movie
-import com.enmanuelbergling.ktormovies.domain.model.MovieCredits
-import com.enmanuelbergling.ktormovies.domain.model.MovieDetails
+import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 
 interface MovieRemoteDS : RemoteDataSource {

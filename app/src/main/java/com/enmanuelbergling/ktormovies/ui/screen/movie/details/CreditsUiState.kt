@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
-import com.enmanuelbergling.ktormovies.domain.model.MovieCredits
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
 
 sealed interface CreditsUiState {
     data object Loading : CreditsUiState

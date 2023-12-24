@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.dto
+package com.enmanuelbergling.ktormovies.data.source.remote.dto.movie
 
 
 import kotlinx.serialization.SerialName
