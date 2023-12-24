@@ -1,8 +1,9 @@
 package com.enmanuelbergling.ktormovies.domain.model.actor
 
 
-/**
- * @param mediaType 'tv' 'movie'*/
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 data class ActorKnownFor(
        val adult: Boolean,
        val backdropPath: String?,

@@ -4,14 +4,12 @@ package com.enmanuelbergling.ktormovies.data.source.remote.dto.actor
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * @param mediaType 'tv' 'movie'*/
 @Serializable
 internal data class ActorKnownForDTO(
     @SerialName("adult")
     val adult: Boolean,
     @SerialName("backdrop_path")
-    val backdropPath: String?,
+    val backdropPath: String,
     @SerialName("id")
     val id: Int,
     @SerialName("name")

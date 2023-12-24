@@ -1,7 +1,6 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.dto.actor
 
 
-import com.enmanuelbergling.ktormovies.domain.model.actor.ActorKnownFor
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,7 +21,5 @@ internal data class ActorDTO(
     @SerialName("popularity")
     val popularity: Double,
     @SerialName("profile_path")
-    val profilePath: String,
-    @SerialName("known_for")
-    val knownFor: List<ActorKnownForDTO>
+    val profilePath: String
 )

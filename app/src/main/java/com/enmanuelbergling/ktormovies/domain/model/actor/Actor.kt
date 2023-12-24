@@ -9,6 +9,5 @@ data class Actor(
     val name: String,
     val originalName: String,
     val popularity: Double,
-    val profilePath: String,
-    val knownFor: List<ActorKnownFor>,
+    val profilePath: String
 )

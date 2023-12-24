@@ -1,9 +1,11 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.ActorDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.ActorService
+import com.enmanuelbergling.ktormovies.domain.TAG
 
 internal class PopularActorsSource(private val service: ActorService) :
     PagingSource<Int, ActorDTO>() {
@@ -32,7 +34,9 @@ internal class PopularActorsSource(private val service: ActorService) :
                 nextKey = nextKey
             )
         } catch (exception: Exception) {
+            Log.d(TAG, "ActorsGrid: ${exception.message}")
             LoadResult.Error(exception)
+
         }
     }
 }

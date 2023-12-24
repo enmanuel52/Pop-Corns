@@ -87,7 +87,7 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit) {
                 selectedTabIndex = selectedGenreIndex,
                 modifier = Modifier.padding(vertical = MaterialTheme.dimen.verySmall),
 
-            ) {
+                ) {
                 genreFilters.forEachIndexed { index, genre ->
                     Tab(
                         selected = index == selectedGenreIndex,
@@ -130,7 +130,7 @@ fun MoviesGrid(
     nowPlaying: List<Movie>,
     upcoming: List<Movie>,
     modifier: Modifier = Modifier,
-    onDetails: (id: Int) -> Unit
+    onDetails: (id: Int) -> Unit,
 ) {
 
 
@@ -164,7 +164,7 @@ fun MoviesGrid(
 private fun LazyStaggeredGridScope.headersMovies(
     upcoming: List<Movie>,
     nowPlaying: List<Movie>,
-    onDetails: (id: Int) -> Unit
+    onDetails: (id: Int) -> Unit,
 ) {
     item(span = StaggeredGridItemSpan.FullLine) {
         var selectedHeader by remember {
@@ -191,7 +191,7 @@ private fun HeaderMovies(
     selectedHeader: HeaderMovie,
     upcoming: List<Movie>,
     nowPlaying: List<Movie>,
-    onDetails: (id: Int) -> Unit
+    onDetails: (id: Int) -> Unit,
 ) {
     val pagerState = rememberPagerState { 10 }
 
@@ -333,12 +333,15 @@ fun MovieItem(
 }
 
 @Composable
-fun MoviesShimmerGrid(modifier: Modifier = Modifier) {
+fun MoviesShimmerGrid(
+    modifier: Modifier = Modifier,
+    columns: GridCells = GridCells.Adaptive(150.dp)
+) {
     LazyVerticalGrid(
         modifier = modifier
             .fillMaxWidth()
             .shimmer(),
-        columns = GridCells.Adaptive(150.dp),
+        columns = columns,
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),

@@ -8,6 +8,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
+import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.ACTORS_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
@@ -19,7 +20,7 @@ fun rememberCtiAppState(
     navController: NavHostController = rememberNavController(),
     isOnline: Boolean = true,
     navigator: Navigator = rememberNavigator(),
-) = CornsTimeAppState(navController,isOnline, navigator)
+) = CornsTimeAppState(navController, isOnline, navigator)
 
 
 @Stable
@@ -35,7 +36,7 @@ class CornsTimeAppState(
     val currentRoute: String?
         @Composable get() = currentDestination?.route
 
-    val startDestination = MOVIES_GRAPH_ROUTE
+    val startDestination = ACTORS_GRAPH_ROUTE//MOVIES_GRAPH_ROUTE
 
     val isTopDetination: Boolean
         @Composable get() = currentRoute in TopDestination.values().map { it.route }
@@ -53,6 +54,7 @@ class CornsTimeAppState(
                     }
                 }
             )
+
             TopDestination.Series -> navController.navigateToSeriesGraph(
                 navOptions {
                     launchSingleTop = true
