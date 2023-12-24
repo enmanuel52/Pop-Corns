@@ -62,6 +62,7 @@ import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
 import com.enmanuelbergling.ktormovies.ui.components.DefaultErrorDialog
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
+import com.enmanuelbergling.ktormovies.ui.components.UiStateHandler
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 import com.valentinilk.shimmer.shimmer
@@ -92,7 +93,7 @@ fun MovieDetailsScreen(id: Int, onBack: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieDetailsScreen(
+private fun MovieDetailsScreen(
     details: MovieDetails,
     credits: CreditsUiState,
     onBack: () -> Unit,
@@ -395,26 +396,5 @@ private fun LazyListScope.detailsImage(
             contentScale = ContentScale.Crop,
             modifier = Modifier.animateContentSize(),
         )
-    }
-}
-
-@Composable
-private fun UiStateHandler(uiState: SimplerUi, onDismissDialog: () -> Unit) {
-    when (uiState) {
-        is SimplerUi.Error -> {
-            DefaultErrorDialog(
-                onDismissDialog,
-                uiState.message.ifBlank { "An error just happen, please check your connection and try again ;)" }
-            )
-        }
-
-        SimplerUi.Idle -> {}
-        SimplerUi.Loading -> {
-            Dialog(onDismissRequest = { }) {
-                CircularProgressIndicator()
-            }
-        }
-
-        SimplerUi.Success -> {}
     }
 }

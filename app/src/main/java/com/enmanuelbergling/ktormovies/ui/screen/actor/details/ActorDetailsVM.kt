@@ -12,14 +12,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ActorDetailsVM(
-    private val getActorDetailsUC: GetActorDetailsUC
-): ViewModel() {
+    actorId: Int,
+    private val getActorDetailsUC: GetActorDetailsUC,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
     val uiState = _uiState.asStateFlow()
 
     private val _detailsState = MutableStateFlow<ActorDetails?>(null)
     val detailsState get() = _detailsState.asStateFlow()
+
+    init {
+        getDetails(actorId)
+    }
 
     fun getDetails(id: Int) = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
