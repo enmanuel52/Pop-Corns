@@ -13,13 +13,19 @@ import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import org.koin.core.context.loadKoinModules
+import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
 
 val pagingModule = module {
-    single<GetPagingFlowUC<Movie>> { GetTopRatedMoviesUCImpl(get()) }
+    single<GetPagingFlowUC<Movie>> { GetTopRatedMoviesUCImpl(get()) } withOptions {
+        named<Movie>()
+    }
 
-    single<GetPagingFlowUC<Actor>> { GetPopularActorsSourceImpl(get()) }
+    single<GetPagingFlowUC<Actor>> { GetPopularActorsSourceImpl(get()) } withOptions {
+        named<Actor>()
+    }
 }
 
 val remoteModule = module {
