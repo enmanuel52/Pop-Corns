@@ -7,8 +7,10 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -29,15 +31,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -116,22 +122,30 @@ private fun ActorDetailsScreen(
             Modifier
                 .padding(paddingValues)
         ) {
+            val configuration = LocalConfiguration.current
+            val columnCount by remember(configuration) {
+                derivedStateOf { configuration.screenWidthDp / 120 }
+            }
+
             LazyVerticalGrid(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall),
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                 columns = GridCells.Adaptive(120.dp),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                contentPadding = PaddingValues(MaterialTheme.dimen.small)
             ) {
 
                 detailsHeader(
                     imageUrl = BASE_IMAGE_URL + details.profilePath,
                     name = details.name,
-                    popularity = details.popularity
+                    popularity = details.popularity,
+                    columnCount
                 )
 
-                about(details.biography)
+                about(details.biography, columnCount)
 
-                knownMovies(knownMovies, onMovie)
+                knownMovies(knownMovies, onMovie, columnCount)
             }
 
         }
@@ -141,8 +155,9 @@ private fun ActorDetailsScreen(
 private fun LazyGridScope.knownMovies(
     knownMovies: List<KnownMovie>,
     onMovie: (movieId: Int) -> Unit,
+    columnCount: Int,
 ) {
-    item {
+    item(span = { GridItemSpan(columnCount) }) {
         Text(
             text = "Known movies",
             style = MaterialTheme.typography.titleMedium,
@@ -158,8 +173,8 @@ private fun LazyGridScope.knownMovies(
     }
 }
 
-private fun LazyGridScope.about(biography: String) {
-    item {
+private fun LazyGridScope.about(biography: String, columnCount: Int) {
+    item(span = { GridItemSpan(columnCount) }) {
         Column(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall)
         ) {
@@ -183,6 +198,7 @@ private fun LazyGridScope.about(biography: String) {
                     ),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Light,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -190,16 +206,26 @@ private fun LazyGridScope.about(biography: String) {
 
 /**
  * @param popularity in percent max 100*/
-private fun LazyGridScope.detailsHeader(imageUrl: String, name: String, popularity: Double) {
-    item(span = { GridItemSpan(1) }) {
-        Row(Modifier.heightIn(max = 250.dp)) {
+private fun LazyGridScope.detailsHeader(
+    imageUrl: String,
+    name: String,
+    popularity: Double,
+    columnCount: Int,
+) {
+    item(span = { GridItemSpan(columnCount) }) {
+        Row(
+            Modifier
+                .heightIn(max = 250.dp)
+                .fillMaxWidth()
+        ) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "movie image",
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),
                 modifier = Modifier
-                    .padding(MaterialTheme.dimen.small)
+                    .padding(all = MaterialTheme.dimen.verySmall)
+                    .clip(MaterialTheme.shapes.medium)
             )
             Column(
                 modifier = Modifier
