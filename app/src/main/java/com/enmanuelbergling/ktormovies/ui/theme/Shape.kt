@@ -5,24 +5,14 @@ import androidx.compose.material3.Shapes
 
 val Shape = Shapes(
     medium = RoundedCornerShape(
-        topStartPercent = 16,
-        bottomEndPercent = 16,
-        topEndPercent = 0,
-        bottomStartPercent = 0,
+        percent = 16
     ),
 
     small = RoundedCornerShape(
-        topStartPercent = 12,
-        bottomEndPercent = 12,
-        topEndPercent = 0,
-        bottomStartPercent = 0,
+        percent = 12
     ),
 
     large = RoundedCornerShape(
-        topStartPercent = 20,
-        bottomEndPercent = 20,
-        topEndPercent = 0,
-        bottomStartPercent = 0,
-    ),
-
+        percent = 20
     )
+)
