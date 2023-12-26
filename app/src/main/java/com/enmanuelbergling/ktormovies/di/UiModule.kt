@@ -1,7 +1,6 @@
 package com.enmanuelbergling.ktormovies.di
 
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
@@ -13,7 +12,7 @@ import org.koin.dsl.module
 
 val vmModule = module {
     viewModelOf(::MovieDetailsVM)
-    viewModel { MoviesVM(get(qualifier = named<Movie>()), get(), get()) }
+    viewModelOf(::MoviesVM)
     viewModel { ActorsVM(get(qualifier = named<Actor>())) }
     viewModelOf(::ActorDetailsVM)
 }
