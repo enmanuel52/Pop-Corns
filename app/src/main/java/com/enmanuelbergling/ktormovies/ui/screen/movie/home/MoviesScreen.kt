@@ -30,7 +30,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -41,16 +40,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -58,10 +52,13 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.core.LocalTopAppScrollBehaviour
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMovieCard
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMoviePlaceholder
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
 import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
@@ -148,10 +145,13 @@ fun MoviesGrid(
 
         items(movies.itemCount) { index ->
             movies[index]?.let { movie ->
-                MovieItem(
-                    imageUrl = BASE_IMAGE_URL + movie.posterPath,
-                    onCLick = { onDetails(movie.id) }
-                )
+                MovieCard(
+                    movie.posterPath,
+                    movie.title,
+                    movie.voteAverage
+                ) {
+                    onDetails(movie.id)
+                }
             }
         }
     }
@@ -208,13 +208,27 @@ private fun HeaderMovies(
             HeaderMovie.Upcoming -> if (upcoming.isEmpty()) {
                 HeaderMoviePlaceholder(Modifier.shimmer())
             } else {
-                HeaderMovie(movie = upcoming[pageIndex], onDetails)
+                val movie = upcoming[pageIndex]
+                HeaderMovieCard(
+                    imageUrl = movie.backdropPath,
+                    title = movie.title,
+                    rating = movie.popularity.div(2)
+                ) {
+                    onDetails(movie.id)
+                }
             }
 
             HeaderMovie.NowPlaying -> if (nowPlaying.isEmpty()) {
                 HeaderMoviePlaceholder(Modifier.shimmer())
             } else {
-                HeaderMovie(movie = nowPlaying[pageIndex], onDetails)
+                val movie = upcoming[pageIndex]
+                HeaderMovieCard(
+                    imageUrl = movie.backdropPath,
+                    title = movie.title,
+                    rating = movie.popularity.div(2)
+                ) {
+                    onDetails(movie.id)
+                }
             }
         }
     }
@@ -245,56 +259,6 @@ fun HeaderFilter(filter: HeaderMovie, onFilter: (HeaderMovie) -> Unit) {
                 shape = MaterialTheme.shapes.small,
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun HeaderMoviePlaceholder(modifier: Modifier = Modifier) {
-    Column(modifier) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1.6f)
-                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
-        )
-
-        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-        Box(
-            modifier = Modifier
-                .align(CenterHorizontally)
-                .fillMaxWidth(.7f)
-                .height(16.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HeaderMovie(movie: Movie, onClick: (id: Int) -> Unit) {
-    OutlinedCard(onClick = { onClick(movie.id) }) {
-        AsyncImage(
-            model = BASE_IMAGE_URL + movie.backdropPath,
-            contentDescription = "header image",
-            placeholder = painterResource(
-                id = R.drawable.pop_corn_and_cinema_backdrop
-            ),
-            error = painterResource(
-                id = R.drawable.pop_corn_and_cinema_backdrop
-            ),
-            modifier = Modifier.clip(MaterialTheme.shapes.medium)
-        )
-
-        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-        Text(
-            text = movie.title,
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
     }
 }
 
@@ -335,7 +299,7 @@ fun MovieItem(
 @Composable
 fun MoviesShimmerGrid(
     modifier: Modifier = Modifier,
-    columns: GridCells = GridCells.Adaptive(150.dp)
+    columns: GridCells = GridCells.Adaptive(150.dp),
 ) {
     LazyVerticalGrid(
         modifier = modifier
@@ -348,7 +312,7 @@ fun MoviesShimmerGrid(
         userScrollEnabled = false
     ) {
         items(50) {
-            MovieShimmerItem()
+            MovieCardPlaceholder()
         }
     }
 }

@@ -147,11 +147,11 @@ dependencies {
 
     val precompose_version = "1.5.8"
 
-    implementation("moe.tlaster:precompose:$precompose_version"){
+    implementation("moe.tlaster:precompose:$precompose_version") {
         exclude(group = "androidx.activity", module = "activity-ktx")
     }
 
-     // For ViewModel intergration
+    // For ViewModel intergration
     implementation("moe.tlaster:precompose-viewmodel:$precompose_version") {
         exclude(group = "androidx.activity", module = "activity-ktx")
     }

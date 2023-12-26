@@ -9,7 +9,7 @@ val Shape = Shapes(
     ),
 
     small = RoundedCornerShape(
-        percent = 12
+        percent = 25
     ),
 
     large = RoundedCornerShape(
