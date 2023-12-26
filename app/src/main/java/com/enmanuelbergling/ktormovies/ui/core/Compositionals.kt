@@ -7,7 +7,3 @@ import androidx.compose.runtime.compositionLocalOf
 import com.enmanuelbergling.ktormovies.ui.theme.Dimen
 
 val LocalDimen: ProvidableCompositionLocal<Dimen> = compositionLocalOf { Dimen() }
-
-@OptIn(ExperimentalMaterial3Api::class)
-val LocalTopAppScrollBehaviour: ProvidableCompositionLocal<TopAppBarScrollBehavior?> =
-    compositionLocalOf { null }

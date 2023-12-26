@@ -22,7 +22,8 @@ fun CtiNavHost(
         moviesGraph(
             navController::popBackStack,
             navController::navigateToMoviesDetails,
-            navController::navigateToActorsDetails
+            navController::navigateToActorsDetails,
+            onMore = {}
         )
 
         seriesGraph()
@@ -45,7 +46,8 @@ fun PreCtiNavHost(
         moviesGraph(
             navigator::popBackStack,
             navigator::navigateToMoviesDetails,
-            navigator::navigateToActorsDetails
+            navigator::navigateToActorsDetails,
+            onMore = {}
         )
     }
 }

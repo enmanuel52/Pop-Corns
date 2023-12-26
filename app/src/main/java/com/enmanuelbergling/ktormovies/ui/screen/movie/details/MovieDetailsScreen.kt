@@ -36,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +50,7 @@ import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.components.UiStateHandler
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorItem
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
@@ -156,16 +156,18 @@ private fun LazyListScope.crew(credits: CreditsUiState) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
                     val crew = credits.data?.crew.orEmpty()
                     itemsIndexed(crew) { index, it ->
-                        ProfileItem(
-                            photo = BASE_IMAGE_URL + it.profilePath,
+                        ActorItem(
+                            imageUrl = it.profilePath.orEmpty(),
                             name = it.name,
-                            modifier = Modifier.padding(
-                                start = if (index == 0) MaterialTheme.dimen.small else 0.dp,
-                                end = if (index == crew
-                                        .count() - 1
-                                ) MaterialTheme.dimen.small else 0.dp,
-                            )
-                        )
+                            modifier = Modifier
+                                .padding(
+                                    start = if (index == 0) MaterialTheme.dimen.small else 0.dp,
+                                    end = if (index == crew
+                                            .count() - 1
+                                    ) MaterialTheme.dimen.small else 0.dp,
+                                )
+                                .widthIn(max = 120.dp)
+                        ) {}
                     }
                 }
             } else if (credits is CreditsUiState.Loading) {
@@ -192,8 +194,8 @@ private fun LazyListScope.casts(credits: CreditsUiState, onActor: (actorId: Int)
                     val casts = credits.data?.cast.orEmpty()
 
                     itemsIndexed(casts) { index, cast ->
-                        ProfileItem(
-                            photo = BASE_IMAGE_URL + cast.profilePath,
+                        ActorItem(
+                            imageUrl = cast.profilePath.orEmpty(),
                             name = cast.name,
                             modifier = Modifier
                                 .padding(
@@ -202,6 +204,7 @@ private fun LazyListScope.casts(credits: CreditsUiState, onActor: (actorId: Int)
                                             .count() - 1
                                     ) MaterialTheme.dimen.small else 0.dp,
                                 )
+                                .widthIn(max = 120.dp)
                         ) { onActor(cast.id) }
                     }
                 }
@@ -221,39 +224,6 @@ private fun ProfilesShimmer() {
         items(8) {
             ActorPlaceholder(Modifier.padding(start = if (it == 0) MaterialTheme.dimen.small else 0.dp))
         }
-    }
-}
-
-@Composable
-private fun ProfileItem(
-    photo: String?,
-    name: String,
-    modifier: Modifier = Modifier,
-    onCLick: () -> Unit = {},
-) {
-    Column(
-        modifier = modifier.widthIn(max = 130.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        AsyncImage(
-            model = photo,
-            contentDescription = "actor image",
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.medium)
-                .clickable { onCLick() },
-            placeholder = painterResource(id = R.drawable.mr_bean),
-            error = painterResource(id = R.drawable.mr_bean),
-        )
-
-        Spacer(modifier = Modifier.height(MaterialTheme.dimen.verySmall))
-
-        Text(
-            text = name,
-            style = MaterialTheme.typography.labelLarge,
-            minLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesScreen
 import moe.tlaster.precompose.navigation.Navigator
@@ -37,10 +38,11 @@ fun NavGraphBuilder.moviesGraph(
     onBack: () -> Unit,
     onMovie: (id: Int) -> Unit,
     onActor: (actorId: Int) -> Unit,
+    onMore: (MovieSection) -> Unit,
 ) {
     navigation(startDestination = MOVIES_SCREEN_ROUTE, route = MOVIES_GRAPH_ROUTE) {
         composable(MOVIES_SCREEN_ROUTE) {
-            MoviesScreen(onDetails = onMovie)
+            MoviesScreen(onDetails = onMovie, onMore)
         }
 
         composable(
@@ -50,17 +52,22 @@ fun NavGraphBuilder.moviesGraph(
                 }
             )) {
             val id = it.arguments!!.getInt(ID_ARG)
-            MovieDetailsScreen(id = id, onActor,onBack)
+            MovieDetailsScreen(id = id, onActor, onBack)
         }
     }
 }
 
-fun RouteBuilder.moviesGraph(onBack: () -> Unit, onMovie: (id: Int) -> Unit, onActor: (actorId: Int) -> Unit) {
+fun RouteBuilder.moviesGraph(
+    onBack: () -> Unit,
+    onMovie: (id: Int) -> Unit,
+    onActor: (actorId: Int) -> Unit,
+    onMore: (MovieSection) -> Unit,
+) {
     group(MOVIES_GRAPH_ROUTE, "/$MOVIES_SCREEN_ROUTE") {
         scene(
             "/$MOVIES_SCREEN_ROUTE", navTransition = NavTransition()
         ) {
-            MoviesScreen(onDetails = onMovie)
+            MoviesScreen(onDetails = onMovie, onMore)
         }
 
         scene("/$MOVIES_DETAILS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()) {

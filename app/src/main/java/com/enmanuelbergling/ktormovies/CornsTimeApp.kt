@@ -10,13 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.ViewStream
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
@@ -27,22 +23,16 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
-import com.enmanuelbergling.ktormovies.ui.core.LocalTopAppScrollBehaviour
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.util.TAG
 import kotlinx.coroutines.launch
@@ -51,10 +41,6 @@ import kotlinx.coroutines.launch
 fun CornsTimeApp(
     state: CornsTimeAppState = rememberCtiAppState(),
 ) {
-    var selectedTabIndex by remember {
-        mutableIntStateOf(0)
-    }
-
     val scope = rememberCoroutineScope()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -159,31 +145,4 @@ fun CornBottomNav(currentRoute: String?, onDestination: (TopDestination) -> Unit
         }
 
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun MainTopAppBar() {
-
-    val scrollBehaviour = LocalTopAppScrollBehaviour.current!!
-
-    TopAppBar(
-        title = { }, actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Rounded.Search, contentDescription = "search icon")
-            }
-        },
-        navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Rounded.ViewStream,
-                    contentDescription = "menu icon"
-                )
-            }
-        },
-        scrollBehavior = scrollBehaviour,
-        colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-        )
-    )
 }

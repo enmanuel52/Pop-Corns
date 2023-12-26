@@ -7,15 +7,15 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -49,9 +49,7 @@ import com.enmanuelbergling.ktormovies.domain.model.actor.KnownMovie
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.components.UiStateHandler
 import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MovieItem
-import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MovieShimmerItem
-import com.valentinilk.shimmer.shimmer
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -118,11 +116,11 @@ private fun ActorDetailsScreen(
             Modifier
                 .padding(paddingValues)
         ) {
-            LazyColumn(
+            LazyVerticalGrid(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
-                contentPadding = PaddingValues(horizontal = MaterialTheme.dimen.mediumSmall)
+                columns = GridCells.Adaptive(120.dp),
             ) {
 
                 detailsHeader(
@@ -140,7 +138,7 @@ private fun ActorDetailsScreen(
     }
 }
 
-private fun LazyListScope.knownMovies(
+private fun LazyGridScope.knownMovies(
     knownMovies: List<KnownMovie>,
     onMovie: (movieId: Int) -> Unit,
 ) {
@@ -151,51 +149,16 @@ private fun LazyListScope.knownMovies(
             fontWeight = FontWeight.SemiBold
         )
     }
-    itemsIndexed(knownMovies) { index, movie ->
-        if (index % 2 == 0) {
-            Row(
-                Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
-            ) {
-                MovieItem(
-                    imageUrl = BASE_IMAGE_URL + movie.posterPath,
-                    onCLick = { onMovie(movie.id) },
-                    modifier = Modifier.then(
-                        if (index + 1 in knownMovies.indices) {
-                            Modifier.weight(1f)
-                        } else Modifier.fillMaxWidth(.5f)
-                    )
-                )
-
-                knownMovies.getOrNull(index + 1)?.let { nextMovie ->
-                    MovieItem(
-                        imageUrl = BASE_IMAGE_URL + nextMovie.posterPath,
-                        onCLick = { onMovie(nextMovie.id) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-        }
-    }
-
-    if (knownMovies.isEmpty()) {
-        item {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .shimmer(),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
-            ) {
-                MovieShimmerItem(Modifier.weight(1f))
-
-                MovieShimmerItem(Modifier.weight(1f))
-            }
-        }
+    items(knownMovies) { movie ->
+        MovieCard(
+            title = movie.title,
+            imageUrl = movie.posterPath.orEmpty(),
+            rating = movie.voteAverage.div(2),
+        ) { onMovie(movie.id) }
     }
 }
 
-private fun LazyListScope.about(biography: String) {
+private fun LazyGridScope.about(biography: String) {
     item {
         Column(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall)
@@ -227,8 +190,8 @@ private fun LazyListScope.about(biography: String) {
 
 /**
  * @param popularity in percent max 100*/
-private fun LazyListScope.detailsHeader(imageUrl: String, name: String, popularity: Double) {
-    item {
+private fun LazyGridScope.detailsHeader(imageUrl: String, name: String, popularity: Double) {
+    item(span = { GridItemSpan(1) }) {
         Row(Modifier.heightIn(max = 250.dp)) {
             AsyncImage(
                 model = imageUrl,

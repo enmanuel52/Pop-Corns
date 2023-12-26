@@ -1,34 +1,22 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DirectionsRun
-import androidx.compose.material.icons.rounded.Upcoming
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
@@ -37,23 +25,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.AsyncImage
-import com.enmanuelbergling.ktormovies.R
+import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
-import com.enmanuelbergling.ktormovies.ui.core.LocalTopAppScrollBehaviour
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMoviePlaceholder
@@ -62,17 +43,14 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlace
 import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoviesScreen(onDetails: (id: Int) -> Unit) {
+fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
 
     val viewModel = koinViewModel<MoviesVM>()
-    val topRatedMovies = viewModel.topRatedMovies.collectAsLazyPagingItems()
 
+    val topRatedMovies by viewModel.topRatedState.collectAsStateWithLifecycle()
     val upcomingMovies by viewModel.upcomingState.collectAsStateWithLifecycle()
     val nowPlayingMovies by viewModel.nowPlayingState.collectAsStateWithLifecycle()
-
-    val scrollBehaviour = LocalTopAppScrollBehaviour.current!!
 
     var selectedGenreIndex by remember {
         mutableIntStateOf(0)
@@ -98,230 +76,147 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit) {
             }
 
             MoviesGrid(
-                movies = topRatedMovies,
-                nowPlaying = nowPlayingMovies,
                 upcoming = upcomingMovies,
+                topRated = topRatedMovies,
+                nowPlaying = nowPlayingMovies,
                 onDetails = onDetails,
-                modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection)
+                onMore = onMore
             )
-
-            if (topRatedMovies.itemCount != 0 && topRatedMovies.loadState.append == LoadState.Loading) {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = MaterialTheme.dimen.superSmall)
-                )
-            }
         }
     }
-}
-
-enum class HeaderMovie(val title: String, val icon: ImageVector) {
-    Upcoming("Upcoming", Icons.Rounded.Upcoming),
-    NowPlaying("Now Playing", Icons.Rounded.DirectionsRun);
 }
 
 @Composable
 fun MoviesGrid(
-    movies: LazyPagingItems<Movie>,
-    nowPlaying: List<Movie>,
     upcoming: List<Movie>,
+    topRated: List<Movie>,
+    nowPlaying: List<Movie>,
     modifier: Modifier = Modifier,
     onDetails: (id: Int) -> Unit,
+    onMore: (MovieSection) -> Unit,
 ) {
 
 
-    LazyVerticalStaggeredGrid(
+    LazyColumn(
         modifier = modifier.fillMaxWidth(),
-        columns = StaggeredGridCells.Adaptive(150.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-        verticalItemSpacing = MaterialTheme.dimen.small,
-        userScrollEnabled = movies.itemCount > 0
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
     ) {
-        headersMovies(upcoming, nowPlaying, onDetails)
+        headersMovies(upcoming, onDetails) { onMore(MovieSection.Upcoming) }
 
         forYouText()
 
-        items(movies.itemCount) { index ->
-            movies[index]?.let { movie ->
-                MovieCard(
-                    movie.posterPath,
-                    movie.title,
-                    movie.voteAverage.div(2)
-                ) {
-                    onDetails(movie.id)
+        moviesSection("Top Rated", topRated, onDetails) { onMore(MovieSection.TopRated) }
+
+        moviesSection("Now playing", nowPlaying, onDetails) { onMore(MovieSection.NowPlaying) }
+    }
+}
+
+
+fun LazyListScope.moviesSection(
+    title: String,
+    movies: List<Movie>,
+    onDetails: (id: Int) -> Unit,
+    onMore: () -> Unit,
+) {
+    item {
+        if (movies.isEmpty()) {
+            Row(Modifier.shimmer()) {
+                repeat(5) {
+                    MovieCardPlaceholder(modifier = Modifier.padding(start = MaterialTheme.dimen.small))
+                }
+            }
+        } else {
+            Column {
+
+                SectionHeader(title = title, onMore = onMore)
+
+                Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
+                    items(movies) { movie ->
+                        MovieCard(
+                            imageUrl = movie.posterPath,
+                            title = movie.title,
+                            rating = movie.voteAverage,
+                            modifier = Modifier
+                                .widthIn(max = 200.dp)
+                        ) {
+                            onDetails(movie.id)
+                        }
+                    }
                 }
             }
         }
     }
-
-    if (movies.itemCount == 0 && movies.loadState.refresh == LoadState.Loading) {
-        MoviesShimmerGrid()
-    }
 }
 
-private fun LazyStaggeredGridScope.headersMovies(
-    upcoming: List<Movie>,
-    nowPlaying: List<Movie>,
-    onDetails: (id: Int) -> Unit,
-) {
-    item(span = StaggeredGridItemSpan.FullLine) {
-        var selectedHeader by remember {
-            mutableStateOf(HeaderMovie.NowPlaying)
-        }
-
-        Column(
-            modifier = Modifier
-                .padding(horizontal = MaterialTheme.dimen.small)
-        ) {
-            HeaderFilter(selectedHeader) { selectedHeader = it }
-
-            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-            HeaderMovies(selectedHeader, upcoming, nowPlaying, onDetails)
-
-        }
-    }
-}
-
-@Composable
 @OptIn(ExperimentalFoundationApi::class)
-private fun HeaderMovies(
-    selectedHeader: HeaderMovie,
+private fun LazyListScope.headersMovies(
     upcoming: List<Movie>,
-    nowPlaying: List<Movie>,
     onDetails: (id: Int) -> Unit,
+    onMore: () -> Unit,
 ) {
-    val pagerState = rememberPagerState { 10 }
 
-    HorizontalPager(
-        state = pagerState,
-        userScrollEnabled = when (selectedHeader) {
-            HeaderMovie.Upcoming -> upcoming.isNotEmpty()
-            HeaderMovie.NowPlaying -> nowPlaying.isNotEmpty()
-        },
-        pageSpacing = MaterialTheme.dimen.verySmall
-    ) { pageIndex ->
+    item {
 
-        when (selectedHeader) {
-            HeaderMovie.Upcoming -> if (upcoming.isEmpty()) {
-                HeaderMoviePlaceholder(Modifier.shimmer())
-            } else {
-                val movie = upcoming[pageIndex]
-                HeaderMovieCard(
-                    imageUrl = movie.backdropPath,
-                    title = movie.title,
-                    rating = movie.voteAverage.div(2)
-                ) {
-                    onDetails(movie.id)
-                }
-            }
+        if (upcoming.isEmpty()) {
+            HeaderMoviePlaceholder(Modifier.shimmer())
+        } else {
+            val pagerState = rememberPagerState { upcoming.count() }
+            Column {
+                SectionHeader(title = "Upcoming", onMore = onMore)
 
-            HeaderMovie.NowPlaying -> if (nowPlaying.isEmpty()) {
-                HeaderMoviePlaceholder(Modifier.shimmer())
-            } else {
-                val movie = nowPlaying[pageIndex]
-                HeaderMovieCard(
-                    imageUrl = movie.backdropPath,
-                    title = movie.title,
-                    rating = movie.voteAverage.div(2)
-                ) {
-                    onDetails(movie.id)
+                Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+                HorizontalPager(state = pagerState) { page ->
+                    val movie = upcoming.getOrNull(page)
+                    movie?.let {
+                        HeaderMovieCard(
+                            movie.backdropPath, movie.title, movie.voteAverage.div(2)
+                        ) {
+                            onDetails(movie.id)
+                        }
+                    }
                 }
             }
         }
+
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeaderFilter(filter: HeaderMovie, onFilter: (HeaderMovie) -> Unit) {
+private fun SectionHeader(title: String, modifier: Modifier = Modifier, onMore: () -> Unit) {
     Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth()
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        HeaderMovie.values().forEach {
-            FilterChip(
-                selected = it == filter,
-                onClick = { onFilter(it) },
-                label = {
-                    Text(
-                        text = it.title,
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = it.icon,
-                        contentDescription = "header switch icon"
-                    )
-                },
-                shape = MaterialTheme.shapes.small,
-            )
-        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            text = "more",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.small)
+                .clickable { onMore() }
+        )
     }
 }
 
-private fun LazyStaggeredGridScope.forYouText() {
-    item(span = StaggeredGridItemSpan.FullLine) {
+private fun LazyListScope.forYouText() {
+    item {
         Text(
             text = "For you",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small)
         )
     }
 }
 
-val genreFilters = listOf("Action", "Thriller", "Comedy", "Drama", "Romantic", "Psycho")
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MovieItem(
-    imageUrl: String,
-    modifier: Modifier = Modifier,
-    onCLick: () -> Unit,
-) {
-    Card(
-        onCLick,
-        modifier.animateContentSize()
-    ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = "movie image",
-            error = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
-            placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster)
-        )
-    }
-}
-
-@Composable
-fun MoviesShimmerGrid(
-    modifier: Modifier = Modifier,
-    columns: GridCells = GridCells.Adaptive(150.dp),
-) {
-    LazyVerticalGrid(
-        modifier = modifier
-            .fillMaxWidth()
-            .shimmer(),
-        columns = columns,
-        contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-        userScrollEnabled = false
-    ) {
-        items(50) {
-            MovieCardPlaceholder()
-        }
-    }
-}
-
-@Composable
-fun MovieShimmerItem(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .aspectRatio(.7f)
-            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
-    )
-}
+val genreFilters = listOf("All", "Action", "Thriller", "Comedy", "Drama", "Romantic", "Psycho")
