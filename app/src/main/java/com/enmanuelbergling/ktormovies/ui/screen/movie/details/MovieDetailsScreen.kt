@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,13 +21,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIos
-import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -34,7 +28,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,8 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -88,7 +79,6 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MovieDetailsScreen(
     details: MovieDetails,
@@ -97,8 +87,6 @@ private fun MovieDetailsScreen(
     onBack: () -> Unit,
     onGetCredits: () -> Unit,
 ) {
-
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -119,38 +107,13 @@ private fun MovieDetailsScreen(
     }
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(text = "Details") },
-                navigationIcon = {
-                    IconButton(
-                        onClick = onBack,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBackIos,
-                            contentDescription = "back icon"
-                        )
-                    }
-                }, actions = {
-                    IconButton(
-                        onClick = { /*TODO*/ },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.FavoriteBorder,
-                            contentDescription = "favorite"
-                        )
-                    }
-                }, scrollBehavior = scrollBehavior
-            )
-        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
-
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
             modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
 
             detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
@@ -179,10 +142,11 @@ private fun LazyListScope.castAndCrew(credits: CreditsUiState, onActor: (actorId
 
 private fun LazyListScope.crew(credits: CreditsUiState) {
     item {
-        Column {
+        Column((Modifier.padding(all = MaterialTheme.dimen.small))) {
             Text(
                 text = "Crew",
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(start = MaterialTheme.dimen.small)
             )
 
@@ -213,10 +177,11 @@ private fun LazyListScope.crew(credits: CreditsUiState) {
 
 private fun LazyListScope.casts(credits: CreditsUiState, onActor: (actorId: Int) -> Unit) {
     item {
-        Column {
+        Column(Modifier.padding(all = MaterialTheme.dimen.small)) {
             Text(
                 text = "Cast",
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(start = MaterialTheme.dimen.small)
             )
 
@@ -254,7 +219,7 @@ private fun ProfilesShimmer() {
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
     ) {
         items(8) {
-            ProfilePlaceholder(Modifier.padding(start = if (it == 0) MaterialTheme.dimen.small else 0.dp))
+            ActorPlaceholder(Modifier.padding(start = if (it == 0) MaterialTheme.dimen.small else 0.dp))
         }
     }
 }
@@ -286,14 +251,14 @@ private fun ProfileItem(
         Text(
             text = name,
             style = MaterialTheme.typography.labelLarge,
-            maxLines = 2,
+            minLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
     }
 }
 
 @Composable
-fun ProfilePlaceholder(modifier: Modifier = Modifier) {
+fun ActorPlaceholder(modifier: Modifier = Modifier) {
     Column(
         modifier.width(130.dp),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall)
@@ -306,16 +271,10 @@ fun ProfilePlaceholder(modifier: Modifier = Modifier) {
 
         Box(
             modifier = Modifier
-                .fillMaxWidth(.6f)
+                .fillMaxWidth(.75f)
                 .height(12.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(.8f)
-                .height(12.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
+                .align(Alignment.CenterHorizontally)
         )
     }
 }
@@ -324,7 +283,7 @@ fun ProfilePlaceholder(modifier: Modifier = Modifier) {
 @Composable
 fun ProfilePlaceholderPrev() {
     CornTimeTheme {
-        ProfilePlaceholder()
+        ActorPlaceholder()
     }
 }
 
@@ -334,18 +293,25 @@ private fun LazyListScope.overview(overview: String) {
             mutableStateOf(false)
         }
 
-        Text(
-            text = overview,
-            modifier = Modifier
-                .padding(all = MaterialTheme.dimen.small)
-                .clickable { expanded = !expanded }
-                .animateContentSize(
-                    spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)
-                ),
-            style = MaterialTheme.typography.bodyMedium,
-            maxLines = if (expanded) Int.MAX_VALUE else 3,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Column(Modifier.padding(all = MaterialTheme.dimen.small)) {
+            Text(
+                text = "Overview",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Text(
+                text = overview,
+                modifier = Modifier
+                    .clickable { expanded = !expanded }
+                    .animateContentSize(
+                        spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)
+                    ),
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = if (expanded) Int.MAX_VALUE else 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 
@@ -368,9 +334,10 @@ private fun LazyListScope.information(
                     //getting year
                     text = "$title ($year)",
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    fontWeight = FontWeight.SemiBold
                 )
 
                 //it comes 10 for server

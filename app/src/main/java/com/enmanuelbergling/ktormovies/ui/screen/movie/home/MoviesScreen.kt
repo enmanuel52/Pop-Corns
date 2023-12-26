@@ -148,7 +148,7 @@ fun MoviesGrid(
                 MovieCard(
                     movie.posterPath,
                     movie.title,
-                    movie.voteAverage
+                    movie.voteAverage.div(2)
                 ) {
                     onDetails(movie.id)
                 }
@@ -212,7 +212,7 @@ private fun HeaderMovies(
                 HeaderMovieCard(
                     imageUrl = movie.backdropPath,
                     title = movie.title,
-                    rating = movie.popularity.div(2)
+                    rating = movie.voteAverage.div(2)
                 ) {
                     onDetails(movie.id)
                 }
@@ -221,11 +221,11 @@ private fun HeaderMovies(
             HeaderMovie.NowPlaying -> if (nowPlaying.isEmpty()) {
                 HeaderMoviePlaceholder(Modifier.shimmer())
             } else {
-                val movie = upcoming[pageIndex]
+                val movie = nowPlaying[pageIndex]
                 HeaderMovieCard(
                     imageUrl = movie.backdropPath,
                     title = movie.title,
-                    rating = movie.popularity.div(2)
+                    rating = movie.voteAverage.div(2)
                 ) {
                     onDetails(movie.id)
                 }
