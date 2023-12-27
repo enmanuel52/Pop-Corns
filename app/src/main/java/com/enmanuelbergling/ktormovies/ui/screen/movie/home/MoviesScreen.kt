@@ -99,7 +99,7 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
 }
 
 @Composable
-fun HandleUiState(
+private fun HandleUiState(
     uiState: SimplerUi,
     snackState: SnackbarHostState,
     onRetry: () -> Unit,

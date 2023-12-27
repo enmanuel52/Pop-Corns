@@ -34,7 +34,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.model.TopBarSearch
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorItem
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorsGridPlaceholder
 import org.koin.androidx.compose.koinViewModel
 
@@ -119,7 +119,7 @@ fun ActorsGrid(
     ) {
         items(actors.itemCount) { index ->
             actors[index]?.let { actor ->
-                ActorItem(
+                ActorCard(
                     imageUrl = actor.profilePath,
                     name = actor.originalName,
                     onCLick = { onDetails(actor.id) }

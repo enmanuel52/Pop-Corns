@@ -3,7 +3,6 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.HomeMoviesChainHandler
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.MoviesUiData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,16 +24,15 @@ class MoviesVM(
         loadUi()
     }
 
-    fun loadUi() {
-        viewModelScope.launch {
-            _uiState.update { SimplerUi.Loading }
-            runCatching {
-                homeMoviesHandler.invoke(_uiDataState)
-            }.onFailure { throwable ->
-                _uiState.update { SimplerUi.Error(throwable.message.orEmpty()) }
-            }.onSuccess {
-                _uiState.update { SimplerUi.Idle }
-            }
+    fun loadUi() = viewModelScope.launch {
+        _uiState.update { SimplerUi.Loading }
+        runCatching {
+            homeMoviesHandler.invoke(_uiDataState)
+        }.onFailure { throwable ->
+            _uiState.update { SimplerUi.Error(throwable.message.orEmpty()) }
+        }.onSuccess {
+            _uiState.update { SimplerUi.Idle }
         }
     }
+
 }

@@ -4,6 +4,7 @@ import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
+import com.enmanuelbergling.ktormovies.ui.screen.movie.details.di.movieDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.di.movieModule
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -12,7 +13,8 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val vmModule = module {
-    includes(movieModule)
+    includes(movieModule, movieDetailsModule)
+
     viewModelOf(::MovieDetailsVM)
     viewModelOf(::MoviesVM)
     viewModel { ActorsVM(get(qualifier = named<Actor>())) }

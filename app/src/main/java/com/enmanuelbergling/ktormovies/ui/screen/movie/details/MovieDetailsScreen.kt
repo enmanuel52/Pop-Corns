@@ -3,10 +3,8 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,13 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -33,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,71 +37,61 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
+import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
+import com.enmanuelbergling.ktormovies.ui.components.LoadingDialog
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
-import com.enmanuelbergling.ktormovies.ui.components.UiStateHandler
 import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorItem
-import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
-import com.valentinilk.shimmer.shimmer
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorsRowPlaceholder
+import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
+import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.PersonUiItem
+import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.toPersonUi
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> Unit) {
 
-    val viewModel = koinViewModel<MovieDetailsVM>()
+    val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val details by viewModel.detailsState.collectAsStateWithLifecycle()
+    val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
-    val creditsState by viewModel.creditsState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(key1 = Unit, block = { viewModel.getDetails(id) })
-
-    UiStateHandler(uiState = uiState, onDismissDialog = onBack)
-
-    details?.let {
-        MovieDetailsScreen(
-            details = it,
-            credits = creditsState,
-            onActor = onActor,
-            onBack = onBack
-        ) { viewModel.getMovieCredits(id) }
-    }
+    MovieDetailsScreen(
+        uiData = uiData,
+        uiState = uiState,
+        onActor = onActor,
+        onBack = onBack,
+        onRetry = viewModel::loadPage
+    )
 }
 
 @Composable
 private fun MovieDetailsScreen(
-    details: MovieDetails,
-    credits: CreditsUiState,
+    uiData: MovieDetailsUiData,
+    uiState: SimplerUi,
     onActor: (actorId: Int) -> Unit,
     onBack: () -> Unit,
-    onGetCredits: () -> Unit,
+    onRetry: () -> Unit,
 ) {
 
     val snackbarHostState = remember {
         SnackbarHostState()
     }
 
-    LaunchedEffect(key1 = credits) {
-        if (credits is CreditsUiState.Error) {
-            val result = snackbarHostState.showSnackbar(
-                message = credits.message,
-                actionLabel = "Retry",
-                duration = SnackbarDuration.Indefinite
-            )
-            when (result) {
-                SnackbarResult.Dismissed -> {}
-                SnackbarResult.ActionPerformed -> onGetCredits()
-            }
-        }
-    }
+    val (details, creditsState) = uiData
+
+    HandleUiState(
+        uiState = uiState,
+        snackState = snackbarHostState,
+        onRetry,
+        isDetailLoaded = details != null
+    )
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -116,72 +103,80 @@ private fun MovieDetailsScreen(
                 .padding(paddingValues)
         ) {
 
-            detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
+            details?.let {
+                detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
 
-            information(
-                details.title,
-                details.releaseDate.substring(0..3),
-                details.voteAverage.toFloat(),
-                details.formattedGenres,
-                details.duration
-            )
+                information(
+                    details.title,
+                    details.releaseDate.substring(0..3),
+                    details.voteAverage.toFloat(),
+                    details.formattedGenres,
+                    details.duration
+                )
 
-            overview(details.overview)
+                overview(details.overview)
 
-            castAndCrew(credits, onActor)
+                persons(
+                    title = "Cast",
+                    persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
+                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    onActor = onActor
+                )
+
+                persons(
+                    title = "Crew",
+                    persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
+                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    onActor = onActor
+                )
+            }
+
         }
     }
 
 }
 
-private fun LazyListScope.castAndCrew(credits: CreditsUiState, onActor: (actorId: Int) -> Unit) {
-    casts(credits, onActor)
+@Composable
+private fun HandleUiState(
+    uiState: SimplerUi,
+    snackState: SnackbarHostState,
+    onRetry: () -> Unit,
+    isDetailLoaded: Boolean,
+) {
+    rememberCoroutineScope()
 
-    crew(credits)
-}
-
-private fun LazyListScope.crew(credits: CreditsUiState) {
-    item {
-        Column((Modifier.padding(all = MaterialTheme.dimen.small))) {
-            Text(
-                text = "Crew",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(start = MaterialTheme.dimen.small)
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-            if (credits is CreditsUiState.Success) {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
-                    val crew = credits.data?.crew.orEmpty()
-                    itemsIndexed(crew) { index, it ->
-                        ActorItem(
-                            imageUrl = it.profilePath.orEmpty(),
-                            name = it.name,
-                            modifier = Modifier
-                                .padding(
-                                    start = if (index == 0) MaterialTheme.dimen.small else 0.dp,
-                                    end = if (index == crew
-                                            .count() - 1
-                                    ) MaterialTheme.dimen.small else 0.dp,
-                                )
-                                .widthIn(max = 120.dp)
-                        ) {}
-                    }
+    when (uiState) {
+        is SimplerUi.Error -> {
+            LaunchedEffect(key1 = Unit) {
+                val snackResult = snackState.showSnackbar(
+                    message = uiState.message, actionLabel = "Retry",
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Indefinite
+                )
+                when (snackResult) {
+                    SnackbarResult.Dismissed -> snackState.currentSnackbarData?.dismiss()
+                    SnackbarResult.ActionPerformed -> onRetry()
                 }
-            } else if (credits is CreditsUiState.Loading) {
-                ProfilesShimmer()
             }
         }
+
+        SimplerUi.Idle, SimplerUi.Success -> {}
+        SimplerUi.Loading -> if (!isDetailLoaded) {
+            LoadingDialog()
+        }
     }
 }
 
-private fun LazyListScope.casts(credits: CreditsUiState, onActor: (actorId: Int) -> Unit) {
+private fun LazyListScope.persons(
+    title: String,
+    persons: List<PersonUiItem>,
+    isLoading: Boolean = false,
+    onActor: (personId: Int) -> Unit,
+) {
     item {
         Column(Modifier.padding(all = MaterialTheme.dimen.small)) {
             Text(
-                text = "Cast",
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(start = MaterialTheme.dimen.small)
@@ -189,71 +184,22 @@ private fun LazyListScope.casts(credits: CreditsUiState, onActor: (actorId: Int)
 
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-            if (credits is CreditsUiState.Success) {
+            if (isLoading && persons.isEmpty()) {
+                ActorsRowPlaceholder()
+            } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
-                    val casts = credits.data?.cast.orEmpty()
-
-                    itemsIndexed(casts) { index, cast ->
-                        ActorItem(
-                            imageUrl = cast.profilePath.orEmpty(),
-                            name = cast.name,
-                            modifier = Modifier
-                                .padding(
-                                    start = if (index == 0) MaterialTheme.dimen.small else 0.dp,
-                                    end = if (index == casts
-                                            .count() - 1
-                                    ) MaterialTheme.dimen.small else 0.dp,
-                                )
-                                .widthIn(max = 120.dp)
-                        ) { onActor(cast.id) }
+                    items(persons) { person ->
+                        ActorCard(
+                            imageUrl = person.imageUrl,
+                            name = person.name,
+                            modifier = Modifier.width(110.dp)
+                        ) {
+                            onActor(person.id)
+                        }
                     }
                 }
-            } else if (credits is CreditsUiState.Loading) {
-                ProfilesShimmer()
             }
         }
-    }
-}
-
-@Composable
-private fun ProfilesShimmer() {
-    LazyRow(
-        modifier = Modifier.shimmer(),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
-    ) {
-        items(8) {
-            ActorPlaceholder(Modifier.padding(start = if (it == 0) MaterialTheme.dimen.small else 0.dp))
-        }
-    }
-}
-
-@Composable
-fun ActorPlaceholder(modifier: Modifier = Modifier) {
-    Column(
-        modifier.width(130.dp),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(130.dp, 160.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(.75f)
-                .height(12.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
-                .align(Alignment.CenterHorizontally)
-        )
-    }
-}
-
-@Preview
-@Composable
-fun ProfilePlaceholderPrev() {
-    CornTimeTheme {
-        ActorPlaceholder()
     }
 }
 
