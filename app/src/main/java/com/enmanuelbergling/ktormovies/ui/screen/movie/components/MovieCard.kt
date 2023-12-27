@@ -71,7 +71,6 @@ fun MovieCard(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
             maxLines = 2,
-            minLines = 2,
             overflow = TextOverflow.Ellipsis
         )
         RatingStars(value = rating.toFloat(), size = 16.dp, spaceBetween = 1.dp)

@@ -7,7 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsScreen
+import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsRoute
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsScreen
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder
@@ -50,7 +50,7 @@ fun NavGraphBuilder.actorsGraph(
                 }
             )) {
             val id = it.arguments!!.getInt(ID_ARG)
-            ActorDetailsScreen(id = id, onMovie, onBack)
+            ActorDetailsRoute(id = id, onMovie, onBack)
         }
     }
 }
@@ -68,7 +68,7 @@ fun RouteBuilder.actorsGraph(
 
         scene("/$ACTORS_DETAILS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()) {
             val id: Int = it.path(ID_ARG, 0)!!
-            ActorDetailsScreen(id = id, onMovie, onBack)
+            ActorDetailsRoute(id = id, onMovie, onBack)
         }
     }
 }

@@ -65,20 +65,6 @@ fun ActorPlaceHolder(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ActorsGridPlaceholder(
-    modifier: Modifier = Modifier,
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(100.dp),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-        modifier = modifier.shimmer()
-    ) {
-        items(50) { ActorPlaceHolder() }
-    }
-}
-
-@Composable
 fun ActorsRowPlaceholder(modifier: Modifier = Modifier) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),

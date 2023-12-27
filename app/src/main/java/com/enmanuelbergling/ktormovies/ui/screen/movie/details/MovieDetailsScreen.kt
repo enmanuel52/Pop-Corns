@@ -19,17 +19,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +39,7 @@ import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.ui.components.LoadingDialog
+import com.enmanuelbergling.ktormovies.ui.components.HandleDetailsUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
@@ -86,7 +82,7 @@ private fun MovieDetailsScreen(
 
     val (details, creditsState) = uiData
 
-    HandleUiState(
+    HandleDetailsUiState(
         uiState = uiState,
         snackState = snackbarHostState,
         onRetry,
@@ -134,37 +130,6 @@ private fun MovieDetailsScreen(
         }
     }
 
-}
-
-@Composable
-private fun HandleUiState(
-    uiState: SimplerUi,
-    snackState: SnackbarHostState,
-    onRetry: () -> Unit,
-    isDetailLoaded: Boolean,
-) {
-    rememberCoroutineScope()
-
-    when (uiState) {
-        is SimplerUi.Error -> {
-            LaunchedEffect(key1 = Unit) {
-                val snackResult = snackState.showSnackbar(
-                    message = uiState.message, actionLabel = "Retry",
-                    withDismissAction = true,
-                    duration = SnackbarDuration.Indefinite
-                )
-                when (snackResult) {
-                    SnackbarResult.Dismissed -> snackState.currentSnackbarData?.dismiss()
-                    SnackbarResult.ActionPerformed -> onRetry()
-                }
-            }
-        }
-
-        SimplerUi.Idle, SimplerUi.Success -> {}
-        SimplerUi.Loading -> if (!isDetailLoaded) {
-            LoadingDialog()
-        }
-    }
 }
 
 private fun LazyListScope.persons(

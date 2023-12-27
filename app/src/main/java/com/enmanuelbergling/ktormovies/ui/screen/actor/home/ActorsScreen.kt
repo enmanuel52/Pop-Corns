@@ -26,6 +26,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -33,9 +34,11 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.model.TopBarSearch
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorsGridPlaceholder
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorPlaceHolder
+import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +50,7 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
 
     val searchState by viewModel.searchState.collectAsStateWithLifecycle()
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         topBar = {
@@ -98,7 +101,9 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
         ActorsGrid(
             actors = actors,
             onDetails = onDetails,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .padding(paddingValues)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         )
     }
 }
@@ -110,7 +115,9 @@ fun ActorsGrid(
     onDetails: (id: Int) -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .shimmerIf { actors.itemCount > 0 },
         columns = StaggeredGridCells.Adaptive(110.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
@@ -126,9 +133,9 @@ fun ActorsGrid(
                 )
             }
         }
+        if (actors.itemCount == 0 && actors.loadState.refresh == LoadState.Loading) {
+            items(50) { ActorPlaceHolder() }
+        }
     }
 
-    if (actors.itemCount == 0 && actors.loadState.refresh == LoadState.Loading) {
-        ActorsGridPlaceholder()
-    }
 }
