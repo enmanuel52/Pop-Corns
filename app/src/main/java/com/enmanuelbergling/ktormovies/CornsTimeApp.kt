@@ -43,13 +43,20 @@ fun CornsTimeApp(
 ) {
     val scope = rememberCoroutineScope()
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalNavigationDrawer(drawerContent = {
         if (state.isTopDestination) {
-            DrawerContent(state::navigateToDrawerDestination, state.currentRoute)
+            DrawerContent(
+                onDrawerDestination = { drawerDestination ->
+                    scope.launch {
+                        drawerState.close()
+                        state.navigateToDrawerDestination(drawerDestination)
+                    }
+                }, currentRoute = state.currentRoute
+            )
         }
     }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
         Scaffold(
@@ -57,16 +64,11 @@ fun CornsTimeApp(
                 if (state.shouldShowMainBottomNav) {
                     CornBottomNav(
                         currentRoute = state.currentRoute,
-                        onDestination = {
-                            state.navigateToTopDestination(it)
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        }
+                        onDestination = state::navigateToTopDestination
                     )
                 }
             },
-            snackbarHost = { SnackbarHost(snackbarHostState) }
+            snackbarHost = { SnackbarHost(snackBarHostState) }
         ) { paddingValues ->
             Box(
                 Modifier.padding(paddingValues)
@@ -93,13 +95,13 @@ fun CornsTimeApp(
     LaunchedEffect(key1 = state.isOnline, block = {
         Log.d(TAG, "isOnline: ${state.isOnline}")
         if (!state.isOnline) {
-            snackbarHostState.showSnackbar(
+            snackBarHostState.showSnackbar(
                 "You're offline",
                 duration = SnackbarDuration.Indefinite,
                 withDismissAction = true
             )
         } else {
-            snackbarHostState.currentSnackbarData?.dismiss()
+            snackBarHostState.currentSnackbarData?.dismiss()
         }
     })
 }
@@ -110,7 +112,7 @@ fun DrawerContent(onDrawerDestination: (DrawerDestination) -> Unit, currentRoute
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(.4f)
+            .fillMaxWidth(.6f)
             .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large)
     ) {
         DrawerDestination.values().forEach { destination ->

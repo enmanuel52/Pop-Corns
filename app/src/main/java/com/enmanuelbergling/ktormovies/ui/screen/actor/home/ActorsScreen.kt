@@ -85,7 +85,7 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
                             }
                         )
                     } else {
-                        Text(text = "Actores")
+                        Text(text = "Actors")
                     }
                 }
             }, scrollBehavior = scrollBehavior, actions = {
@@ -117,7 +117,7 @@ fun ActorsGrid(
     LazyVerticalStaggeredGrid(
         modifier = modifier
             .fillMaxWidth()
-            .shimmerIf { actors.itemCount > 0 },
+            .shimmerIf { actors.itemCount <= 0 },
         columns = StaggeredGridCells.Adaptive(110.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),

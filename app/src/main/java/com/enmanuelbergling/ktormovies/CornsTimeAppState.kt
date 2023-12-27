@@ -51,7 +51,7 @@ class CornsTimeAppState(
                 navOptions {
                     launchSingleTop = true
                     popUpTo(MOVIES_GRAPH_ROUTE) {
-
+                        inclusive = true
                     }
                 }
             )
@@ -69,9 +69,13 @@ class CornsTimeAppState(
 
     fun navigateToDrawerDestination(destination: DrawerDestination) {
         when (destination) {
-            DrawerDestination.Home -> navController.popBackStack(
-                route = MOVIES_GRAPH_ROUTE,
-                inclusive = false
+            DrawerDestination.Home -> navController.navigateToMoviesGraph(
+                navOptions {
+                    launchSingleTop = true
+                    popUpTo(MOVIES_GRAPH_ROUTE){
+                        inclusive=true
+                    }
+                }
             )
 
             DrawerDestination.Actor -> navController.navigateToActorsGraph(
