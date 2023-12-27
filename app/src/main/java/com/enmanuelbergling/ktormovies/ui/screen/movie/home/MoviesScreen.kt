@@ -20,9 +20,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
+import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMovieCard
@@ -47,16 +53,21 @@ import org.koin.androidx.compose.koinViewModel
 fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
 
     val viewModel = koinViewModel<MoviesVM>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val topRatedMovies by viewModel.topRatedState.collectAsStateWithLifecycle()
-    val upcomingMovies by viewModel.upcomingState.collectAsStateWithLifecycle()
-    val nowPlayingMovies by viewModel.nowPlayingState.collectAsStateWithLifecycle()
+    val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
+    val (upcomingMovies, topRatedMovies, nowPlayingMovies) = uiData
 
     var selectedGenreIndex by remember {
         mutableIntStateOf(0)
     }
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
 
-    Scaffold { paddingValues ->
+    HandleUiState(uiState, snackState = snackBarHostState, onRetry = viewModel::loadUi)
+
+    Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             ScrollableTabRow(
                 selectedTabIndex = selectedGenreIndex,
@@ -80,9 +91,37 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
                 topRated = topRatedMovies,
                 nowPlaying = nowPlayingMovies,
                 onDetails = onDetails,
-                onMore = onMore
+                onMore = onMore,
+                isLoading = uiState == SimplerUi.Loading
             )
         }
+    }
+}
+
+@Composable
+fun HandleUiState(
+    uiState: SimplerUi,
+    snackState: SnackbarHostState,
+    onRetry: () -> Unit,
+) {
+    when (uiState) {
+        is SimplerUi.Error -> {
+            LaunchedEffect(key1 = Unit) {
+                val snackResult = snackState.showSnackbar(
+                    message = uiState.message, actionLabel = "Retry",
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Indefinite
+                )
+                when (snackResult) {
+                    SnackbarResult.Dismissed -> snackState.currentSnackbarData?.dismiss()
+                    SnackbarResult.ActionPerformed -> onRetry()
+                }
+            }
+        }
+
+        SimplerUi.Idle -> {}
+        SimplerUi.Loading -> {}
+        SimplerUi.Success -> {}
     }
 }
 
@@ -94,6 +133,7 @@ fun MoviesGrid(
     modifier: Modifier = Modifier,
     onDetails: (id: Int) -> Unit,
     onMore: (MovieSection) -> Unit,
+    isLoading: Boolean,
 ) {
 
 
@@ -102,13 +142,18 @@ fun MoviesGrid(
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
     ) {
-        headersMovies(upcoming, onDetails) { onMore(MovieSection.Upcoming) }
+        headersMovies(upcoming, onDetails, isLoading) { onMore(MovieSection.Upcoming) }
 
         forYouText()
 
-        moviesSection("Top Rated", topRated, onDetails) { onMore(MovieSection.TopRated) }
+        moviesSection("Top Rated", topRated, onDetails, isLoading) { onMore(MovieSection.TopRated) }
 
-        moviesSection("Now playing", nowPlaying, onDetails) { onMore(MovieSection.NowPlaying) }
+        moviesSection(
+            "Now playing",
+            nowPlaying,
+            onDetails,
+            isLoading
+        ) { onMore(MovieSection.NowPlaying) }
     }
 }
 
@@ -117,10 +162,11 @@ fun LazyListScope.moviesSection(
     title: String,
     movies: List<Movie>,
     onDetails: (id: Int) -> Unit,
+    isLoading: Boolean,
     onMore: () -> Unit,
 ) {
     item {
-        if (movies.isEmpty()) {
+        if (movies.isEmpty() && isLoading) {
             Row(Modifier.shimmer()) {
                 repeat(5) {
                     MovieCardPlaceholder(modifier = Modifier.padding(start = MaterialTheme.dimen.small))
@@ -129,7 +175,11 @@ fun LazyListScope.moviesSection(
         } else {
             Column {
 
-                SectionHeader(title = title, onMore = onMore)
+                SectionHeader(
+                    title = title,
+                    modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
+                    onMore = onMore
+                )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
@@ -155,17 +205,22 @@ fun LazyListScope.moviesSection(
 private fun LazyListScope.headersMovies(
     upcoming: List<Movie>,
     onDetails: (id: Int) -> Unit,
+    isLoading: Boolean,
     onMore: () -> Unit,
 ) {
 
     item {
 
-        if (upcoming.isEmpty()) {
+        if (upcoming.isEmpty() && isLoading) {
             HeaderMoviePlaceholder(Modifier.shimmer())
         } else {
             val pagerState = rememberPagerState { upcoming.count() }
             Column {
-                SectionHeader(title = "Upcoming", onMore = onMore)
+                SectionHeader(
+                    title = "Upcoming",
+                    modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
+                    onMore = onMore
+                )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
@@ -189,7 +244,7 @@ private fun LazyListScope.headersMovies(
 private fun SectionHeader(title: String, modifier: Modifier = Modifier, onMore: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

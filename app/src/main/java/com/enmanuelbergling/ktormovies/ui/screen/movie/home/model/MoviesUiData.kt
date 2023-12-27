@@ -1,0 +1,13 @@
+package com.enmanuelbergling.ktormovies.ui.screen.movie.home.model
+
+import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+
+data class MoviesUiData(
+    val upcoming: List<Movie> = emptyList(),
+    val topRated: List<Movie> = emptyList(),
+    val nowPlaying: List<Movie> = emptyList(),
+) {
+    val skipUpcoming get() = upcoming.isNotEmpty()
+    val skipTopRated get() = topRated.isNotEmpty()
+    val skipNowPlaying get() = nowPlaying.isNotEmpty()
+}
