@@ -54,10 +54,15 @@ fun CornsTimeApp(
     }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
         Scaffold(
             bottomBar = {
-                if (state.shouldShowMainTopAppBar) {
+                if (state.shouldShowMainBottomNav) {
                     CornBottomNav(
                         currentRoute = state.currentRoute,
-                        onDestination = state::navigateToTopDestination
+                        onDestination = {
+                            state.navigateToTopDestination(it)
+                            scope.launch {
+                                drawerState.close()
+                            }
+                        }
                     )
                 }
             },
@@ -90,9 +95,8 @@ fun CornsTimeApp(
         if (!state.isOnline) {
             snackbarHostState.showSnackbar(
                 "You're offline",
-                actionLabel = "Dismiss",
-                true,
-                duration = SnackbarDuration.Indefinite
+                duration = SnackbarDuration.Indefinite,
+                withDismissAction = true
             )
         } else {
             snackbarHostState.currentSnackbarData?.dismiss()

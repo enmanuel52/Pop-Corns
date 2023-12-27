@@ -66,11 +66,21 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
                                 )
                     }) { active ->
                     if (active) {
-                        TextField(value = searchState.text, onValueChange = { newText ->
-                            viewModel.onSearch(
-                                searchState.copy(text = newText)
-                            )
-                        })
+                        TextField(
+                            value = searchState.text,
+                            onValueChange = { newText ->
+                                viewModel.onSearch(
+                                    searchState.copy(text = newText)
+                                )
+                            }, leadingIcon = {
+                                IconButton(onClick = { viewModel.onSearch(TopBarSearch()) }) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.ArrowBackIos,
+                                        contentDescription = "back icon"
+                                    )
+                                }
+                            }
+                        )
                     } else {
                         Text(text = "Actores")
                     }
@@ -79,15 +89,6 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
                 if (!searchState.active) {
                     IconButton(onClick = { viewModel.onSearch(searchState.copy(active = true)) }) {
                         Icon(imageVector = Icons.Rounded.Search, contentDescription = "search icon")
-                    }
-                }
-            }, navigationIcon = {
-                if (searchState.active) {
-                    IconButton(onClick = { viewModel.onSearch(TopBarSearch()) }) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBackIos,
-                            contentDescription = "back icon"
-                        )
                     }
                 }
             })

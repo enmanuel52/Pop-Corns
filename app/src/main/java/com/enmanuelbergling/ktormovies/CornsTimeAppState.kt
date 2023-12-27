@@ -42,8 +42,8 @@ class CornsTimeAppState(
     val isTopDestination: Boolean
         @Composable get() = currentRoute in DrawerDestination.values().map { it.routes }.flatten()
 
-    val shouldShowMainTopAppBar: Boolean
-        @Composable get() = isTopDestination
+    val shouldShowMainBottomNav: Boolean
+        @Composable get() = currentRoute in TopDestination.values().map { it.route }
 
     fun navigateToTopDestination(destination: TopDestination) {
         when (destination) {
@@ -69,13 +69,9 @@ class CornsTimeAppState(
 
     fun navigateToDrawerDestination(destination: DrawerDestination) {
         when (destination) {
-            DrawerDestination.Home -> navController.navigateToMoviesGraph(
-                navOptions {
-                    launchSingleTop = true
-                    popUpTo(MOVIES_GRAPH_ROUTE) {
-
-                    }
-                }
+            DrawerDestination.Home -> navController.popBackStack(
+                route = MOVIES_GRAPH_ROUTE,
+                inclusive = false
             )
 
             DrawerDestination.Actor -> navController.navigateToActorsGraph(
