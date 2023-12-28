@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.dto.actor
 
 
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.model.PagingResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -9,9 +10,9 @@ internal data class ActorPageDTO(
     @SerialName("page")
     val page: Int,
     @SerialName("results")
-    val results: List<ActorDTO>,
+    override val results: List<ActorDTO>,
     @SerialName("total_pages")
-    val totalPages: Int,
+    override val totalPages: Int,
     @SerialName("total_results")
-    val totalResults: Int
-)
+    val totalResults: Int,
+) : PagingResponse<ActorDTO>
