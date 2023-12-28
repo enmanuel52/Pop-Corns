@@ -5,53 +5,57 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 
 
 @Composable
-fun UiStateHandler(uiState: SimplerUi, onDismissDialog: () -> Unit) {
-    when (uiState) {
-        is SimplerUi.Error -> {
-            DefaultErrorDialog(
-                onDismissDialog,
-                uiState.message.ifBlank { "An error just happen, please check your connection and try again ;)" }
-            )
+fun HandlerPagingUiState(items: LazyPagingItems<*>, snackState: SnackbarHostState) {
+    when (val uiState = items.loadState.refresh) {
+        is LoadState.Error -> {
+            SnackBarError(snackState, uiState.error.message.orEmpty(), items::retry)
         }
 
-        SimplerUi.Idle -> {}
-        SimplerUi.Loading -> {
-            LoadingDialog()
-        }
-
-        SimplerUi.Success -> {}
+        LoadState.Loading -> {}
+        is LoadState.NotLoading -> {}
     }
 }
 
 @Composable
-fun HandleDetailsUiState(
+fun HandleUiState(
     uiState: SimplerUi,
     snackState: SnackbarHostState,
     onRetry: () -> Unit,
-    isDetailLoaded: Boolean,
+    getFocus: Boolean = false,
 ) {
     when (uiState) {
         is SimplerUi.Error -> {
-            LaunchedEffect(key1 = Unit) {
-                val snackResult = snackState.showSnackbar(
-                    message = uiState.message, actionLabel = "Retry",
-                    withDismissAction = true,
-                    duration = SnackbarDuration.Indefinite
-                )
-                when (snackResult) {
-                    SnackbarResult.Dismissed -> snackState.currentSnackbarData?.dismiss()
-                    SnackbarResult.ActionPerformed -> onRetry()
-                }
-            }
+            SnackBarError(snackState, uiState.message, onRetry)
         }
 
         SimplerUi.Idle, SimplerUi.Success -> {}
-        SimplerUi.Loading -> if (!isDetailLoaded) {
+        SimplerUi.Loading -> if (getFocus) {
             LoadingDialog()
+        }
+    }
+}
+
+@Composable
+private fun SnackBarError(
+    snackState: SnackbarHostState,
+    errorMessage: String,
+    onRetry: () -> Unit,
+) {
+    LaunchedEffect(key1 = Unit) {
+        val snackResult = snackState.showSnackbar(
+            message = errorMessage, actionLabel = "Retry",
+            withDismissAction = true,
+            duration = SnackbarDuration.Indefinite
+        )
+        when (snackResult) {
+            SnackbarResult.Dismissed -> snackState.currentSnackbarData?.dismiss()
+            SnackbarResult.ActionPerformed -> onRetry()
         }
     }
 }

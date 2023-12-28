@@ -7,6 +7,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.actorsGraph
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
+import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesSection
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
 
 import moe.tlaster.precompose.navigation.NavHost as PreNavHost
@@ -23,7 +24,7 @@ fun CtiNavHost(
             navController::popBackStack,
             navController::navigateToMoviesDetails,
             navController::navigateToActorsDetails,
-            onMore = {}
+            onMore = navController::navigateToMoviesSection
         )
 
         seriesGraph()

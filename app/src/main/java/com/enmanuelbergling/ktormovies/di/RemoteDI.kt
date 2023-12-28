@@ -20,17 +20,16 @@ import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
-import org.koin.core.qualifier.named as namedEnum
 
 val pagingModule = module {
     single<GetPagingFlowUC<Movie>> { GetUpcomingMoviesUCImpl(get()) } withOptions {
-        namedEnum(MovieSection.Upcoming)
+        named(MovieSection.Upcoming.toString())
     }
     single<GetPagingFlowUC<Movie>> { GetTopRatedMoviesUCImpl(get()) } withOptions {
-        namedEnum(MovieSection.TopRated)
+        named(MovieSection.TopRated.toString())
     }
     single<GetPagingFlowUC<Movie>> { GetNowPlayingMoviesUCImpl(get()) } withOptions {
-        namedEnum(MovieSection.NowPlaying)
+        named(MovieSection.NowPlaying.toString())
     }
 
     single<GetPagingFlowUC<Actor>> { GetPopularActorsUCImpl(get()) } withOptions {

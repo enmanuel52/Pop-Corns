@@ -20,14 +20,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMoviePlaceholder
@@ -95,33 +93,6 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
                 isLoading = uiState == SimplerUi.Loading
             )
         }
-    }
-}
-
-@Composable
-private fun HandleUiState(
-    uiState: SimplerUi,
-    snackState: SnackbarHostState,
-    onRetry: () -> Unit,
-) {
-    when (uiState) {
-        is SimplerUi.Error -> {
-            LaunchedEffect(key1 = Unit) {
-                val snackResult = snackState.showSnackbar(
-                    message = uiState.message, actionLabel = "Retry",
-                    withDismissAction = true,
-                    duration = SnackbarDuration.Indefinite
-                )
-                when (snackResult) {
-                    SnackbarResult.Dismissed -> snackState.currentSnackbarData?.dismiss()
-                    SnackbarResult.ActionPerformed -> onRetry()
-                }
-            }
-        }
-
-        SimplerUi.Idle -> {}
-        SimplerUi.Loading -> {}
-        SimplerUi.Success -> {}
     }
 }
 

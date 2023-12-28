@@ -39,7 +39,7 @@ import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.ui.components.HandleDetailsUiState
+import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
@@ -82,11 +82,11 @@ private fun MovieDetailsScreen(
 
     val (details, creditsState) = uiData
 
-    HandleDetailsUiState(
+    HandleUiState(
         uiState = uiState,
         snackState = snackbarHostState,
         onRetry,
-        isDetailLoaded = details != null
+        getFocus = details != null
     )
 
     Scaffold(
