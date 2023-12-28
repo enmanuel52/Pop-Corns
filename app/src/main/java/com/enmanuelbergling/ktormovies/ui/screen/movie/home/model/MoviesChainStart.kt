@@ -3,7 +3,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.home.model
 import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class HomeMoviesChainHandler(
+class MoviesChainStart(
     private val upcomingMoviesHandler: UpcomingMoviesChainHandler,
 ) : ChainHandler<MutableStateFlow<MoviesUiData>> {
     override val nextChainHandler: ChainHandler<MutableStateFlow<MoviesUiData>>

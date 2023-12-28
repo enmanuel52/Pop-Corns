@@ -3,7 +3,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.HomeMoviesChainHandler
+import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.MoviesChainStart
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.MoviesUiData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MoviesVM(
-    private val homeMoviesHandler: HomeMoviesChainHandler,
+    private val homeMoviesHandler: MoviesChainStart,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)

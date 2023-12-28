@@ -5,7 +5,7 @@ import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
 /**
  * start a chain of call to get the details of a movie
  * */
-class DetailsChainHandler(private val firstHandler: MovieDetailsChainHandler) :
+class MovieDetailsChainStart(private val firstHandler: MovieDetailsChainHandler) :
     ChainHandler<MovieDetailsUiState> {
     override val nextChainHandler: ChainHandler<MovieDetailsUiState>
         get() = firstHandler

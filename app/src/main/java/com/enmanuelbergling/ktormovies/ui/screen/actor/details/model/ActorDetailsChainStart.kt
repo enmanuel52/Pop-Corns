@@ -5,10 +5,10 @@ import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
 /**
  * start a chain of call to get the details of a movie
  * */
-class DetailsChainHandler(
+class ActorDetailsChainStart(
     private val firstHandler: ActorDetailsChainHandler,
 ) : ChainHandler<ActorDetailsUiState> {
-    override val nextChainHandler: ChainHandler<ActorDetailsUiState>?
+    override val nextChainHandler: ChainHandler<ActorDetailsUiState>
         get() = firstHandler
 
     override suspend fun handle(request: ActorDetailsUiState) = Unit
