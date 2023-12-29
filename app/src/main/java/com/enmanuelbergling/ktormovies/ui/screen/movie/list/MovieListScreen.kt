@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
@@ -33,6 +32,7 @@ import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
 import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
+import com.enmanuelbergling.ktormovies.ui.core.items
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
@@ -125,16 +125,18 @@ private fun MovieListScreen(
             userScrollEnabled = !movies.isRefreshing,
             contentPadding = PaddingValues(MaterialTheme.dimen.small)
         ) {
-            items(movies.itemSnapshotList.items) { movie ->
-                MovieCard(
-                    imageUrl = movie.posterPath,
-                    title = movie.title,
-                    rating = movie.voteAverage,
-                    modifier = Modifier
-                        .widthIn(max = 200.dp)
-                        .listItemWindAnimation(isScrollingForward = listState.isScrollingForward())
-                ) {
-                    onMovie(movie.id)
+            items(movies) { movie ->
+                movie?.let {
+                    MovieCard(
+                        imageUrl = movie.posterPath,
+                        title = movie.title,
+                        rating = movie.voteAverage,
+                        modifier = Modifier
+                            .widthIn(max = 200.dp)
+                            .listItemWindAnimation(isScrollingForward = listState.isScrollingForward())
+                    ) {
+                        onMovie(movie.id)
+                    }
                 }
             }
             if (movies.isRefreshing) {
