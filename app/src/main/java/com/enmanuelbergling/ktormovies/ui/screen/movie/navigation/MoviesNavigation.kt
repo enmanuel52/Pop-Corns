@@ -11,6 +11,7 @@ import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.NowPlayingMoviesScreen
+import com.enmanuelbergling.ktormovies.ui.screen.movie.list.PopularMoviesScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.TopRatedMoviesScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.UpcomingMoviesScreen
 import moe.tlaster.precompose.navigation.Navigator
@@ -86,6 +87,11 @@ fun NavGraphBuilder.moviesGraph(
                     )
 
                     MovieSection.TopRated -> TopRatedMoviesScreen(
+                        onMovie = onMovie,
+                        onBack = onBack
+                    )
+
+                    MovieSection.Popular -> PopularMoviesScreen(
                         onMovie = onMovie,
                         onBack = onBack
                     )

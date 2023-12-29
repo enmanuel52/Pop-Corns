@@ -22,4 +22,8 @@ interface MovieRemoteDS : RemoteDataSource {
     /**
      * just first page*/
     suspend fun getTopRatedMovies(): ResultHandler<List<Movie>>
+
+    /**
+     * just first page*/
+    suspend fun getPopularMovies(): ResultHandler<List<Movie>>
 }

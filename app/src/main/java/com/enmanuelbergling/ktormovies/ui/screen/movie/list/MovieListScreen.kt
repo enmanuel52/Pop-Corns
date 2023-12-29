@@ -37,6 +37,7 @@ import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
+import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
 import org.koin.androidx.compose.koinViewModel
@@ -65,6 +66,19 @@ fun NowPlayingMoviesScreen(onMovie: (movieId: Int) -> Unit, onBack: () -> Unit) 
     val movies = viewModel.movies.collectAsLazyPagingItems()
     MovieListScreen(
         title = "Now Playing Movies",
+        onBack = onBack,
+        movies = movies,
+        onMovie = onMovie
+    )
+}
+
+@Composable
+fun PopularMoviesScreen(onMovie: (movieId: Int) -> Unit, onBack: () -> Unit) {
+    val viewModel = koinViewModel<PopularMoviesVM>()
+
+    val movies = viewModel.movies.collectAsLazyPagingItems()
+    MovieListScreen(
+        title = "Popular Movies",
         onBack = onBack,
         movies = movies,
         onMovie = onMovie

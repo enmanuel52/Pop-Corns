@@ -60,7 +60,7 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
-    val (upcomingMovies, topRatedMovies, nowPlayingMovies) = uiData
+    val (upcomingMovies, topRatedMovies, nowPlayingMovies, popularMovies) = uiData
 
     var selectedGenreIndex by remember {
         mutableIntStateOf(0)
@@ -94,6 +94,7 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
                 upcoming = upcomingMovies,
                 topRated = topRatedMovies,
                 nowPlaying = nowPlayingMovies,
+                popular = popularMovies,
                 onDetails = onDetails,
                 onMore = onMore,
                 isLoading = uiState == SimplerUi.Loading
@@ -107,6 +108,7 @@ fun MoviesGrid(
     upcoming: List<Movie>,
     topRated: List<Movie>,
     nowPlaying: List<Movie>,
+    popular: List<Movie>,
     modifier: Modifier = Modifier,
     onDetails: (id: Int) -> Unit,
     onMore: (MovieSection) -> Unit,
@@ -131,6 +133,13 @@ fun MoviesGrid(
             onDetails,
             isLoading
         ) { onMore(MovieSection.NowPlaying) }
+
+        moviesSection(
+            "Popular",
+            popular,
+            onDetails,
+            isLoading
+        ) { onMore(MovieSection.Popular) }
     }
 }
 

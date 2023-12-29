@@ -10,6 +10,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.details.di.movieDetailsMo
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.di.movieModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
+import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -27,4 +28,5 @@ val vmModule = module {
     viewModel { NowPlayingMoviesVM(get(qualifier = named(MovieSection.NowPlaying.toString()))) }
     viewModel { TopRatedMoviesVM(get(qualifier = named(MovieSection.TopRated.toString()))) }
     viewModel { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
+    viewModel { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
 }

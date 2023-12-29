@@ -28,4 +28,8 @@ internal class MovieRemoteDSImpl(private val service: MovieService) : MovieRemot
     override suspend fun getTopRatedMovies(): ResultHandler<List<Movie>> = safeKtorCall {
         service.getTopRatedMovies(1).results.map { it.toModel() }
     }
+
+    override suspend fun getPopularMovies(): ResultHandler<List<Movie>> = safeKtorCall {
+        service.getPopularMovies(1).results.map { it.toModel() }
+    }
 }

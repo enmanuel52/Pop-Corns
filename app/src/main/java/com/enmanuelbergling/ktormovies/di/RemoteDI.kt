@@ -7,10 +7,12 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.MovieR
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.ktorClient
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.NowPlayingMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.PopularActorsSource
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.PopularMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.TopRatedMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.UpcomingMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetNowPlayingMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetPopularActorsUCImpl
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetPopularMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetTopRatedMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetUpcomingMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.ActorService
@@ -29,6 +31,7 @@ val pagingSourceModule = module {
     singleOf(::UpcomingMovieSource)
     singleOf(::TopRatedMovieSource)
     singleOf(::NowPlayingMovieSource)
+    singleOf(::PopularMovieSource)
     singleOf(::PopularActorsSource)
 }
 
@@ -41,6 +44,9 @@ val pagingModule = module {
     }
     single<GetPagingFlowUC<Movie>> { GetNowPlayingMoviesUCImpl(get()) } withOptions {
         named(MovieSection.NowPlaying.toString())
+    }
+    single<GetPagingFlowUC<Movie>> { GetPopularMoviesUCImpl(get()) } withOptions {
+        named(MovieSection.Popular.toString())
     }
 
     single<GetPagingFlowUC<Actor>> { GetPopularActorsUCImpl(get()) } withOptions {
