@@ -36,7 +36,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.core.isScrollingUp
+import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.model.TopBarSearch
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
@@ -122,7 +122,7 @@ fun ActorsGrid(
         modifier = modifier
             .fillMaxWidth()
             .shimmerIf { actors.itemCount <= 0 }
-            .listItemWindAnimation(isScrollingUp = listState.isScrollingUp()),
+            .listItemWindAnimation(isScrollingForward = listState.isScrollingForward()),
         state = listState,
         columns = StaggeredGridCells.Adaptive(110.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),

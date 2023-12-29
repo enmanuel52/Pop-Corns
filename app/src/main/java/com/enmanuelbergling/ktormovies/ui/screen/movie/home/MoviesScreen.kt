@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -41,7 +43,9 @@ import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
+import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMoviePlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
@@ -156,7 +160,11 @@ fun LazyListScope.moviesSection(
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
+                val listState = rememberLazyListState()
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                    state = listState
+                ) {
                     items(movies) { movie ->
                         MovieCard(
                             imageUrl = movie.posterPath,
@@ -164,6 +172,10 @@ fun LazyListScope.moviesSection(
                             rating = movie.voteAverage,
                             modifier = Modifier
                                 .widthIn(max = 200.dp)
+                                .listItemWindAnimation(
+                                    listState.isScrollingForward(),
+                                    Orientation.Horizontal
+                                )
                         ) {
                             onDetails(movie.id)
                         }

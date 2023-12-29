@@ -3,6 +3,7 @@ package com.enmanuelbergling.ktormovies.ui.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -11,24 +12,27 @@ import androidx.compose.ui.graphics.graphicsLayer
 
 
 fun Modifier.listItemWindAnimation(
-    isScrollingUp: Boolean,
+    isScrollingForward: Boolean,
+    orientation: Orientation = Orientation.Vertical,
 ): Modifier = composed {
     val cameraAnimatable = remember { Animatable(initialValue = 7.0f) }
     val scaleAnimatable = remember { Animatable(initialValue = 0.7f) }
-    val rotateXAnimatable = remember { Animatable(initialValue = if (isScrollingUp) 60f else -60f) }
+    val rotateAnimatable = remember(isScrollingForward) {
+        Animatable(initialValue = if (isScrollingForward) 60f else -60f)
+    }
 
-    // Observe changes to scrollDirection and update rotateXAnimatable accordingly
-    LaunchedEffect(isScrollingUp) {
+    // Observe changes to scrollDirection and update rotateAnimatable accordingly
+    LaunchedEffect(isScrollingForward) {
         // Animate from 0 to either 60 or -60
-        rotateXAnimatable.animateTo(
-            if (isScrollingUp) 60f else -60f,
+        rotateAnimatable.animateTo(
+            if (isScrollingForward) 60f else -60f,
             animationSpec = tween(
                 durationMillis = 100,
                 easing = CubicBezierEasing(0f, 0.5f, 0.5f, 1f)
             )
         )
         // Animate from either 60 or -60 to 0
-        rotateXAnimatable.animateTo(
+        rotateAnimatable.animateTo(
             targetValue = 0f,
             animationSpec = tween(
                 durationMillis = 500,
@@ -61,7 +65,15 @@ fun Modifier.listItemWindAnimation(
     this then graphicsLayer {
         scaleX = scaleAnimatable.value
         scaleY = scaleAnimatable.value
-        rotationX = rotateXAnimatable.value
         cameraDistance = cameraAnimatable.value
+        when (orientation) {
+            Orientation.Vertical -> {
+                rotationX = -rotateAnimatable.value
+            }
+
+            Orientation.Horizontal -> {
+                rotationY = rotateAnimatable.value
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.list
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -31,9 +32,10 @@ import com.enmanuelbergling.ktormovies.ui.components.HandlerPagingUiState
 import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
-import com.enmanuelbergling.ktormovies.ui.core.isScrollingUp
+import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
+import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
@@ -101,13 +103,13 @@ private fun MovieListScreen(
             modifier = Modifier
                 .padding(it)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .shimmerIf { movies.isRefreshing }
-                .listItemWindAnimation(isScrollingUp = listState.isScrollingUp()),
+                .shimmerIf { movies.isRefreshing },
             state = listState,
             columns = StaggeredGridCells.Adaptive(150.dp),
             verticalItemSpacing = MaterialTheme.dimen.small,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-            userScrollEnabled = movies.isRefreshing
+            userScrollEnabled = !movies.isRefreshing,
+            contentPadding = PaddingValues(MaterialTheme.dimen.small)
         ) {
             items(movies.itemSnapshotList.items) { movie ->
                 MovieCard(
@@ -116,8 +118,14 @@ private fun MovieListScreen(
                     rating = movie.voteAverage,
                     modifier = Modifier
                         .widthIn(max = 200.dp)
+                        .listItemWindAnimation(isScrollingForward = listState.isScrollingForward())
                 ) {
                     onMovie(movie.id)
+                }
+            }
+            if (movies.isRefreshing) {
+                items(50) {
+                    MovieCardPlaceholder()
                 }
             }
         }
