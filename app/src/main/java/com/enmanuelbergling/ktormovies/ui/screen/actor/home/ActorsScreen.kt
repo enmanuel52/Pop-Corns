@@ -7,6 +7,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -37,6 +38,7 @@ import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
+import com.enmanuelbergling.ktormovies.ui.core.items
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.model.TopBarSearch
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
@@ -105,6 +107,7 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
             onDetails = onDetails,
             modifier = Modifier
                 .padding(paddingValues)
+                .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         )
     }
@@ -121,8 +124,7 @@ fun ActorsGrid(
     LazyVerticalStaggeredGrid(
         modifier = modifier
             .fillMaxWidth()
-            .shimmerIf { actors.itemCount <= 0 }
-            .listItemWindAnimation(isScrollingForward = listState.isScrollingForward()),
+            .shimmerIf { actors.itemCount <= 0 },
         state = listState,
         columns = StaggeredGridCells.Adaptive(110.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
@@ -130,12 +132,16 @@ fun ActorsGrid(
         verticalItemSpacing = MaterialTheme.dimen.small,
         userScrollEnabled = actors.itemCount > 0
     ) {
-        items(actors.itemCount) { index ->
-            actors[index]?.let { actor ->
+        items(actors) { actor ->
+            actor?.let {
                 ActorCard(
                     imageUrl = actor.profilePath,
                     name = actor.originalName,
-                    onCLick = { onDetails(actor.id) }
+                    onCLick = { onDetails(actor.id) },
+                    modifier = Modifier
+                        .listItemWindAnimation(
+                            isScrollingForward = listState.isScrollingForward()
+                        )
                 )
             }
         }

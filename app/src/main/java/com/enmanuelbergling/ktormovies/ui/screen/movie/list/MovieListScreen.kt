@@ -2,6 +2,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -116,6 +117,7 @@ private fun MovieListScreen(
         LazyVerticalStaggeredGrid(
             modifier = Modifier
                 .padding(it)
+                .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .shimmerIf { movies.isRefreshing },
             state = listState,
