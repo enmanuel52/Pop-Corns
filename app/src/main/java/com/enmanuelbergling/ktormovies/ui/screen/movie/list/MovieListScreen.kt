@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -27,8 +28,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.HandlerPagingUiState
+import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
+import com.enmanuelbergling.ktormovies.ui.core.isScrollingUp
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
@@ -92,14 +95,19 @@ private fun MovieListScreen(
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) {
+        val listState = rememberLazyStaggeredGridState()
+
         LazyVerticalStaggeredGrid(
             modifier = Modifier
                 .padding(it)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .shimmerIf { movies.isRefreshing },
+                .shimmerIf { movies.isRefreshing }
+                .listItemWindAnimation(isScrollingUp = listState.isScrollingUp()),
+            state = listState,
             columns = StaggeredGridCells.Adaptive(150.dp),
             verticalItemSpacing = MaterialTheme.dimen.small,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+            userScrollEnabled = movies.isRefreshing
         ) {
             items(movies.itemSnapshotList.items) { movie ->
                 MovieCard(

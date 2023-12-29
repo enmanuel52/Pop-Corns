@@ -86,7 +86,7 @@ private fun MovieDetailsScreen(
         uiState = uiState,
         snackState = snackbarHostState,
         onRetry,
-        getFocus = details != null
+        getFocus = details == null
     )
 
     Scaffold(

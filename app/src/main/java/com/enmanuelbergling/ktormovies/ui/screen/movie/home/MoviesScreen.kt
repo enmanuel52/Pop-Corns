@@ -17,7 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowForwardIos
+import androidx.compose.material.icons.rounded.FastForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -226,7 +226,7 @@ private fun SectionHeader(title: String, modifier: Modifier = Modifier, onMore: 
             fontWeight = FontWeight.SemiBold
         )
         IconButton(onClick = onMore) {
-            Icon(imageVector = Icons.Rounded.ArrowForwardIos, contentDescription = "more icon")
+            Icon(imageVector = Icons.Rounded.FastForward, contentDescription = "more icon")
         }
     }
 }

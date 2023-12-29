@@ -100,7 +100,7 @@ private fun ActorDetailsRoute(
         uiState = uiState,
         snackState = snackbarHostState,
         onRetry,
-        getFocus = details != null
+        getFocus = details == null
     )
 
     Scaffold(

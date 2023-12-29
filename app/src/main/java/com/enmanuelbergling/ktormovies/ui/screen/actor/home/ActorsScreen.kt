@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Search
@@ -33,12 +34,13 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.core.isScrollingUp
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.model.TopBarSearch
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorPlaceHolder
-import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,10 +116,14 @@ fun ActorsGrid(
     modifier: Modifier = Modifier,
     onDetails: (id: Int) -> Unit,
 ) {
+    val listState = rememberLazyStaggeredGridState()
+
     LazyVerticalStaggeredGrid(
         modifier = modifier
             .fillMaxWidth()
-            .shimmerIf { actors.itemCount <= 0 },
+            .shimmerIf { actors.itemCount <= 0 }
+            .listItemWindAnimation(isScrollingUp = listState.isScrollingUp()),
+        state = listState,
         columns = StaggeredGridCells.Adaptive(110.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),

@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,7 +34,6 @@ import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
-import com.valentinilk.shimmer.shimmer
 
 /**
  * @param rating between 1 and 5 showed as yellow stars
@@ -204,19 +201,5 @@ private fun HeaderMovieInfoPlaceholder() {
         )
         Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
         RatingStars(value = 0f)
-    }
-}
-
-@Composable
-fun VerticalGridPlaceholder() {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(120.dp),
-        modifier = Modifier.shimmer(),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-    ) {
-        items(50) {
-            HeaderMoviePlaceholder()
-        }
     }
 }
