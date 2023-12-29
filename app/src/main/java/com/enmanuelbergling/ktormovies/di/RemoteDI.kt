@@ -5,6 +5,10 @@ import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.ActorRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.MovieRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.ktorClient
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.NowPlayingMovieSource
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.PopularActorsSource
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.TopRatedMovieSource
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.UpcomingMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetNowPlayingMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetPopularActorsUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetTopRatedMoviesUCImpl
@@ -20,6 +24,13 @@ import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
+
+val pagingSourceModule = module {
+    singleOf(::UpcomingMovieSource)
+    singleOf(::TopRatedMovieSource)
+    singleOf(::NowPlayingMovieSource)
+    singleOf(::PopularActorsSource)
+}
 
 val pagingModule = module {
     single<GetPagingFlowUC<Movie>> { GetUpcomingMoviesUCImpl(get()) } withOptions {
@@ -48,5 +59,5 @@ val remoteModule = module {
 
     single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
 
-    loadKoinModules(pagingModule)
+    loadKoinModules(listOf(pagingSourceModule, pagingModule))
 }
