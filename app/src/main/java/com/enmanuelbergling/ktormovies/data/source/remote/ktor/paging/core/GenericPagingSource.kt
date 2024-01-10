@@ -1,8 +1,10 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.model.PagingResponse
+import com.enmanuelbergling.ktormovies.domain.TAG
 
 open class GenericPagingSource<Dto : Any>(
     private val request: suspend (page: Int) -> PagingResponse<Dto>,
@@ -31,6 +33,7 @@ open class GenericPagingSource<Dto : Any>(
                 nextKey = nextKey
             )
         } catch (exception: Exception) {
+            Log.d(TAG, "load: ${exception.message}")
             LoadResult.Error(exception)
         }
     }

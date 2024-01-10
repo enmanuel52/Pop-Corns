@@ -222,7 +222,7 @@ private fun LazyListScope.headersMovies(
                     val movie = upcoming.getOrNull(page)
                     movie?.let {
                         HeaderMovieCard(
-                            movie.backdropPath, movie.title, movie.voteAverage.div(2)
+                            movie.backdropPath.orEmpty(), movie.title, movie.voteAverage.div(2)
                         ) {
                             onDetails(movie.id)
                         }
