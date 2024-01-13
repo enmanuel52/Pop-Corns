@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsGraph
@@ -20,14 +21,16 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 fun rememberCtiAppState(
     navController: NavHostController = rememberNavController(),
     isOnline: Boolean = true,
+    darkTheme: DarkTheme = DarkTheme.System,
     navigator: Navigator = rememberNavigator(),
-) = CornsTimeAppState(navController, isOnline, navigator)
+) = CornsTimeAppState(navController, isOnline, darkTheme, navigator)
 
 
 @Stable
 class CornsTimeAppState(
     val navController: NavHostController,
     val isOnline: Boolean = true,
+    val darkTheme: DarkTheme = DarkTheme.System,
     val navigator: Navigator,
 ) {
     private val currentDestination: NavDestination?
@@ -72,8 +75,8 @@ class CornsTimeAppState(
             DrawerDestination.Home -> navController.navigateToMoviesGraph(
                 navOptions {
                     launchSingleTop = true
-                    popUpTo(MOVIES_GRAPH_ROUTE){
-                        inclusive=true
+                    popUpTo(MOVIES_GRAPH_ROUTE) {
+                        inclusive = true
                     }
                 }
             )

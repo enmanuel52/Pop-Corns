@@ -1,5 +1,5 @@
 package com.enmanuelbergling.ktormovies.domain.model.settings
 
-enum class DarkTheme {
-    No, Yes, System
+enum class DarkTheme(val label: String) {
+    No("Light Theme"), Yes("Dark Theme"), System("System")
 }

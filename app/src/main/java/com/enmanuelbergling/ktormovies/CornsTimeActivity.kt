@@ -13,11 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 import com.enmanuelbergling.ktormovies.util.isOnline
 import moe.tlaster.precompose.PreComposeApp
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CornsTimeActivity : ComponentActivity() {
+
+    private val viewModel by viewModel<CornTimeVM>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,14 +30,23 @@ class CornsTimeActivity : ComponentActivity() {
 
         setContent {
             val isOnlineState by isOnline.collectAsStateWithLifecycle(initialValue = true)
+            val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
 
-            CornTimeTheme {
+            CornTimeTheme(darkTheme = darkTheme) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PreComposeApp { CornsTimeApp(rememberCtiAppState(isOnline = isOnlineState)) }
+                    PreComposeApp {
+                        CornsTimeApp(
+                            state = rememberCtiAppState(
+                                isOnline = isOnlineState,
+                                darkTheme = darkTheme
+                            ),
+                            onDarkTheme = viewModel::setDarkTheme
+                        )
+                    }
                 }
             }
         }

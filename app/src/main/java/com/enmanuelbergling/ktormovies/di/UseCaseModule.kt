@@ -8,6 +8,8 @@ import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetNowPlayingMoviesU
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetPopularMoviesUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetTopRatedMoviesUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetUpcomingMoviesUC
+import com.enmanuelbergling.ktormovies.domain.usecase.settings.GetDarkThemeUC
+import com.enmanuelbergling.ktormovies.domain.usecase.settings.SetDarkThemeUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -20,4 +22,6 @@ val ucModule = module {
     singleOf(::GetMoviesByActorUC)
     singleOf(::GetTopRatedMoviesUC)
     singleOf(::GetPopularMoviesUC)
+    singleOf(::SetDarkThemeUC)
+    singleOf(::GetDarkThemeUC)
 }

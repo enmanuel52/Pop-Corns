@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.di
 
+import com.enmanuelbergling.ktormovies.CornTimeVM
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
@@ -29,4 +30,5 @@ val vmModule = module {
     viewModel { TopRatedMoviesVM(get(qualifier = named(MovieSection.TopRated.toString()))) }
     viewModel { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
     viewModel { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
+    viewModelOf(::CornTimeVM)
 }
