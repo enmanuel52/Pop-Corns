@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -102,14 +103,18 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
         },
 
         ) { paddingValues ->
-        ActorsGrid(
-            actors = actors,
-            onDetails = onDetails,
+        Box(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-        )
+        ) {
+            ActorsGrid(
+                actors = actors,
+                onDetails = onDetails,
+                modifier = Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+            )
+        }
     }
 }
 

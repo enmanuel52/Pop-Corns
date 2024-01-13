@@ -24,10 +24,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -73,7 +71,7 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
 
     Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            ScrollableTabRow(
+            /*ScrollableTabRow(
                 selectedTabIndex = selectedGenreIndex,
                 modifier = Modifier.padding(vertical = MaterialTheme.dimen.verySmall),
 
@@ -88,7 +86,8 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
                             )
                         })
                 }
-            }
+            }*/
+            Spacer(modifier = Modifier.height(MaterialTheme.dimen.large))
 
             MoviesGrid(
                 upcoming = upcomingMovies,

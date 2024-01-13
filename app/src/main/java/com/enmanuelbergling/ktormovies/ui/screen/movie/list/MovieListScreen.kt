@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.list
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -114,36 +115,40 @@ private fun MovieListScreen(
     ) {
         val listState = rememberLazyStaggeredGridState()
 
-        LazyVerticalStaggeredGrid(
-            modifier = Modifier
+        Box(
+            Modifier
                 .padding(it)
                 .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .shimmerIf { movies.isRefreshing },
-            state = listState,
-            columns = StaggeredGridCells.Adaptive(150.dp),
-            verticalItemSpacing = MaterialTheme.dimen.small,
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-            userScrollEnabled = !movies.isRefreshing,
-            contentPadding = PaddingValues(MaterialTheme.dimen.small)
         ) {
-            items(movies) { movie ->
-                movie?.let {
-                    MovieCard(
-                        imageUrl = movie.posterPath,
-                        title = movie.title,
-                        rating = movie.voteAverage,
-                        modifier = Modifier
-                            .widthIn(max = 200.dp)
-                            .listItemWindAnimation(isScrollingForward = listState.isScrollingForward())
-                    ) {
-                        onMovie(movie.id)
+            LazyVerticalStaggeredGrid(
+                modifier = Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .shimmerIf { movies.isRefreshing },
+                state = listState,
+                columns = StaggeredGridCells.Adaptive(150.dp),
+                verticalItemSpacing = MaterialTheme.dimen.small,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                userScrollEnabled = !movies.isRefreshing,
+                contentPadding = PaddingValues(MaterialTheme.dimen.small)
+            ) {
+                items(movies) { movie ->
+                    movie?.let {
+                        MovieCard(
+                            imageUrl = movie.posterPath,
+                            title = movie.title,
+                            rating = movie.voteAverage,
+                            modifier = Modifier
+                                .widthIn(max = 200.dp)
+                                .listItemWindAnimation(isScrollingForward = listState.isScrollingForward())
+                        ) {
+                            onMovie(movie.id)
+                        }
                     }
                 }
-            }
-            if (movies.isRefreshing) {
-                items(50) {
-                    MovieCardPlaceholder()
+                if (movies.isRefreshing) {
+                    items(50) {
+                        MovieCardPlaceholder()
+                    }
                 }
             }
         }
