@@ -95,9 +95,9 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit) {
                 }
             }, scrollBehavior = scrollBehavior, actions = {
                 if (!searchState.active) {
-                    IconButton(onClick = { viewModel.onSearch(searchState.copy(active = true)) }) {
+                    /*IconButton(onClick = { viewModel.onSearch(searchState.copy(active = true)) }) {
                         Icon(imageVector = Icons.Rounded.Search, contentDescription = "search icon")
-                    }
+                    }*/
                 }
             })
         },
