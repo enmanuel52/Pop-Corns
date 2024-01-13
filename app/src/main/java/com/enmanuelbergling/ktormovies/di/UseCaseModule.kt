@@ -1,13 +1,13 @@
 package com.enmanuelbergling.ktormovies.di
 
-import com.enmanuelbergling.ktormovies.domain.usecase.GetActorDetailsUC
-import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieCreditsUC
-import com.enmanuelbergling.ktormovies.domain.usecase.GetMovieDetailsUC
-import com.enmanuelbergling.ktormovies.domain.usecase.GetMoviesByActorUC
-import com.enmanuelbergling.ktormovies.domain.usecase.GetNowPlayingMoviesUC
-import com.enmanuelbergling.ktormovies.domain.usecase.GetPopularMoviesUC
-import com.enmanuelbergling.ktormovies.domain.usecase.GetTopRatedMoviesUC
-import com.enmanuelbergling.ktormovies.domain.usecase.GetUpcomingMoviesUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetActorDetailsUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieCreditsUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieDetailsUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMoviesByActorUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetNowPlayingMoviesUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetPopularMoviesUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetTopRatedMoviesUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetUpcomingMoviesUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

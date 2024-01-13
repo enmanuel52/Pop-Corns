@@ -7,6 +7,7 @@ val appModule = module {
     loadKoinModules(
         listOf(
             remoteModule,
+            localModule,
             ucModule,
             vmModule,
         )

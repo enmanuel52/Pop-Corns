@@ -3,7 +3,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.actor.details.model
 import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
 import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.usecase.GetActorDetailsUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetActorDetailsUC
 import kotlinx.coroutines.flow.update
 
 class ActorDetailsChainHandler(
