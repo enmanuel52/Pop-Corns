@@ -87,7 +87,6 @@ fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
                         })
                 }
             }*/
-            Spacer(modifier = Modifier.height(MaterialTheme.dimen.large))
 
             MoviesGrid(
                 upcoming = upcomingMovies,

@@ -100,7 +100,7 @@ fun CornsTimeApp(
                             }
                         },
                         modifier = Modifier
-                            .align(Alignment.TopStart)
+                            .align(Alignment.CenterStart)
                             .padding(MaterialTheme.dimen.verySmall)
                     ) {
                         Icon(imageVector = Icons.Rounded.Menu, contentDescription = "drawer icon")
