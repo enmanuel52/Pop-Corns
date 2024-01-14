@@ -11,12 +11,12 @@ const val SERIES_GRAPH_ROUTE = "series_graph_route"
 const val SERIES_SCREEN_ROUTE = "series_screen_route"
 
 fun Navigator.navigateToSeriesGraph(navOptions: NavOptions) {
-    navigate("/$SERIES_GRAPH_ROUTE", navOptions)
+    navigate("/$SERIES_SCREEN_ROUTE", navOptions)
 }
 
 fun RouteBuilder.seriesGraph() {
-    group(SERIES_SCREEN_ROUTE, "/$SERIES_GRAPH_ROUTE") {
-        scene("/$SERIES_GRAPH_ROUTE", navTransition = NavTransition()) {
+    group(SERIES_GRAPH_ROUTE, "/$SERIES_SCREEN_ROUTE") {
+        scene("/$SERIES_SCREEN_ROUTE", navTransition = NavTransition()) {
             SeriesScreen()
         }
     }
