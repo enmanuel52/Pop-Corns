@@ -13,7 +13,7 @@ secretProperties.load(FileInputStream(secretFile))
 
 android {
     namespace = "com.enmanuelbergling.ktormovies"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         configurations.all {
@@ -26,7 +26,7 @@ android {
 
         applicationId = "com.enmanuelbergling.ktormovies"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -151,16 +151,10 @@ dependencies {
 
     val precompose_version = "1.5.8"
 
-    implementation("moe.tlaster:precompose:$precompose_version") {
-        exclude(group = "androidx.activity", module = "activity-ktx")
-    }
+    implementation("moe.tlaster:precompose:$precompose_version")
 
     // For ViewModel intergration
-    implementation("moe.tlaster:precompose-viewmodel:$precompose_version") {
-        exclude(group = "androidx.activity", module = "activity-ktx")
-    }
+    implementation("moe.tlaster:precompose-viewmodel:$precompose_version")
     // For Koin intergration
-    /*implementation("moe.tlaster:precompose-koin:$precompose_version"){
-        exclude(group = "androidx.activity", module = "activity-ktx")
-    }*/
+//    implementation("moe.tlaster:precompose-koin:$precompose_version")
 }

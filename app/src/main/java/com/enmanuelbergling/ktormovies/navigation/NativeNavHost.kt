@@ -1,36 +1,36 @@
 package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
-import com.enmanuelbergling.ktormovies.PreComposeAppState
+import androidx.navigation.compose.NavHost
+import com.enmanuelbergling.ktormovies.CornsTimeAppState
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.actorsGraph
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesSection
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
-import moe.tlaster.precompose.navigation.NavHost as PreNavHost
-
 
 @Composable
-fun PreCtiNavHost(
-    state: PreComposeAppState,
+fun CtiNavHost(
+    state: CornsTimeAppState,
 ) {
-    val navigator = state.navigator
-    PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
+    val navController = state.navController
+
+    NavHost(navController = navController, startDestination = state.startDestination) {
 
         moviesGraph(
-            navigator::popBackStack,
-            navigator::navigateToMoviesDetails,
-            navigator::navigateToActorsDetails,
-            navigator::navigateToMoviesSection
+            navController::popBackStack,
+            navController::navigateToMoviesDetails,
+            navController::navigateToActorsDetails,
+            onMore = navController::navigateToMoviesSection
         )
 
         seriesGraph()
 
         actorsGraph(
-            navigator::popBackStack,
-            navigator::navigateToActorsDetails,
-            navigator::navigateToMoviesDetails
+            navController::popBackStack,
+            navController::navigateToActorsDetails,
+            navController::navigateToMoviesDetails
         )
     }
 }
