@@ -6,5 +6,5 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieServ
 
 internal class UpcomingMovieSource(service: MovieService) :
     GenericPagingSource<MovieDTO>(
-        request = service::getTopRatedMovies
+        request = service::getUpcomingMovies
     )
