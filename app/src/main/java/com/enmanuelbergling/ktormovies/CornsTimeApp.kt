@@ -43,8 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
-import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
+import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.components.icon
 import com.enmanuelbergling.ktormovies.ui.core.dimen
@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CornsTimeApp(
-    state: CornsTimeAppState = rememberCtiAppState(),
+    state: PreComposeAppState = rememberPreCtiAppState(),
     onDarkTheme: (DarkTheme) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -71,9 +71,9 @@ fun CornsTimeApp(
                         state.navigateToDrawerDestination(drawerDestination)
                     }
                 },
-                currentRoute = state.currentRoute,
                 darkTheme = state.darkTheme,
-                onDarkTheme = onDarkTheme
+                onDarkTheme = onDarkTheme,
+                isSelected = { it.any { route -> state.matchRoute(route = route) } }
             )
         }
     }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
@@ -81,8 +81,8 @@ fun CornsTimeApp(
             bottomBar = {
                 if (state.shouldShowMainBottomNav) {
                     CornBottomNav(
-                        currentRoute = state.currentRoute,
-                        onDestination = state::navigateToTopDestination
+                        onDestination = state::navigateToTopDestination,
+                        isSelected = { route -> state.matchRoute(route) }
                     )
                 }
             },
@@ -91,7 +91,7 @@ fun CornsTimeApp(
             Box(
                 Modifier.padding(paddingValues)
             ) {
-                CtiNavHost(state)
+                PreCtiNavHost(state)
                 if (state.isTopDestination) {
                     FilledTonalIconButton(
                         onClick = {
@@ -127,9 +127,9 @@ fun CornsTimeApp(
 @Composable
 fun DrawerContent(
     onDrawerDestination: (DrawerDestination) -> Unit,
-    currentRoute: String?,
     darkTheme: DarkTheme,
     onDarkTheme: (DarkTheme) -> Unit,
+    isSelected: @Composable (List<String>) -> Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -144,11 +144,11 @@ fun DrawerContent(
         DrawerDestination.entries.forEach { destination ->
             NavigationDrawerItem(
                 label = { Text(text = destination.toString()) },
-                selected = currentRoute in destination.routes,
+                selected = isSelected(destination.routes),
                 onClick = { onDrawerDestination(destination) },
                 icon = {
                     Icon(
-                        imageVector = if (currentRoute in destination.routes) destination.icon else destination.unselectedIcon,
+                        imageVector = if (isSelected(destination.routes)) destination.icon else destination.unselectedIcon,
                         contentDescription = "nav icon"
                     )
                 })
@@ -204,17 +204,19 @@ private fun AnimatedDarkThemeIcon(darkTheme: DarkTheme) {
 }
 
 @Composable
-fun CornBottomNav(currentRoute: String?, onDestination: (TopDestination) -> Unit) {
+fun CornBottomNav(
+    onDestination: (TopDestination) -> Unit,
+    isSelected: @Composable (String) -> Boolean,
+) {
     NavigationBar {
         TopDestination.entries.forEach { cinemaContent ->
-            val selected = currentRoute == cinemaContent.route
 
             NavigationBarItem(
-                selected = selected,
+                selected = isSelected(cinemaContent.route),
                 onClick = { onDestination(cinemaContent) },
                 icon = {
                     Icon(
-                        imageVector = if (selected) cinemaContent.icon
+                        imageVector = if (isSelected(cinemaContent.route)) cinemaContent.icon
                         else cinemaContent.unselectedIcon,
                         contentDescription = "nav bar icon"
                     )

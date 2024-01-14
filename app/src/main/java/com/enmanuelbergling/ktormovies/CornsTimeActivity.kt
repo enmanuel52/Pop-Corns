@@ -40,7 +40,7 @@ class CornsTimeActivity : ComponentActivity() {
                 ) {
                     PreComposeApp {
                         CornsTimeApp(
-                            state = rememberCtiAppState(
+                            state = rememberPreCtiAppState(
                                 isOnline = isOnlineState,
                                 darkTheme = darkTheme
                             ),

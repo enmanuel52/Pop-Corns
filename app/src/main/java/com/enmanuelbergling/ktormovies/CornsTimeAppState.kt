@@ -21,17 +21,15 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 fun rememberCtiAppState(
     navController: NavHostController = rememberNavController(),
     isOnline: Boolean = true,
-    darkTheme: DarkTheme = DarkTheme.System,
-    navigator: Navigator = rememberNavigator(),
-) = CornsTimeAppState(navController, isOnline, darkTheme, navigator)
+    darkTheme: DarkTheme = DarkTheme.System
+) = CornsTimeAppState(navController, isOnline, darkTheme)
 
 
 @Stable
 class CornsTimeAppState(
     val navController: NavHostController,
     val isOnline: Boolean = true,
-    val darkTheme: DarkTheme = DarkTheme.System,
-    val navigator: Navigator,
+    val darkTheme: DarkTheme = DarkTheme.System
 ) {
     private val currentDestination: NavDestination?
         @Composable get() = navController
@@ -43,10 +41,10 @@ class CornsTimeAppState(
     val startDestination = MOVIES_GRAPH_ROUTE
 
     val isTopDestination: Boolean
-        @Composable get() = currentRoute in DrawerDestination.values().map { it.routes }.flatten()
+        @Composable get() = currentRoute in DrawerDestination.entries.map { it.routes }.flatten()
 
     val shouldShowMainBottomNav: Boolean
-        @Composable get() = currentRoute in TopDestination.values().map { it.route }
+        @Composable get() = currentRoute in TopDestination.entries.map { it.route }
 
     fun navigateToTopDestination(destination: TopDestination) {
         when (destination) {
