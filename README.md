@@ -10,6 +10,7 @@ Can you guess the best way to eat them? Of course watching a movie :).
 * **💉💉  Koin:** for dependency injection.
 * **🎨🎨  Precompose:** for navigation and ViewModel management.
 * **🎉🎉  Cool animations:** it can be missed 😅.
+* **🔗🔗  Chain of command(design pattern) applied to sort api calls in Home Screen.
 
 ## 📸ScreenShoot📸
 
@@ -30,3 +31,16 @@ Can you guess the best way to eat them? Of course watching a movie :).
 
 ## Videos
 
+Trying to simulate wind effect
+
+
+
+https://github.com/enmanuel52/Pop-Corns/assets/102194318/4a6ece9f-bf27-4e1c-ac7b-93cc0499c719
+
+
+
+
+https://github.com/enmanuel52/Pop-Corns/assets/102194318/c4115cd3-9ab4-4405-936c-8af42d02bfc5
+
+
+**🚧🚧 WORK IN PROGRESS 🚧🚧**
