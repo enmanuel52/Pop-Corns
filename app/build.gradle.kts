@@ -21,6 +21,7 @@ android {
                 force("androidx.emoji2:emoji2-views-helper:1.3.0")
                 force("androidx.emoji2:emoji2:1.3.0")
                 force("androidx.activity:activity-compose:1.7.2")
+                exclude("androidx.fragment", "fragment")
             }
         }
 
@@ -98,10 +99,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    //ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     //for collect
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
@@ -110,12 +107,9 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.material:material-icons-extended:1.5.2")
 
-    //Navigation
-    implementation("androidx.navigation:navigation-compose:2.5.1")
-
-    // Koin for Android
-    val koin_version = "3.4.6"
-    implementation("io.insert-koin:koin-androidx-compose:$koin_version")
+    // Koin Multiplatform
+    implementation("io.insert-koin:koin-compose:1.1.2")
+    implementation("io.insert-koin:koin-core:3.5.0")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
@@ -156,5 +150,5 @@ dependencies {
     // For ViewModel intergration
     implementation("moe.tlaster:precompose-viewmodel:$precompose_version")
     // For Koin intergration
-//    implementation("moe.tlaster:precompose-koin:$precompose_version")
+    implementation("moe.tlaster:precompose-koin:$precompose_version")
 }

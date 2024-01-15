@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.di
 
+import android.content.Context
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
@@ -7,9 +8,14 @@ val appModule = module {
     loadKoinModules(
         listOf(
             remoteModule,
-            localModule,
             ucModule,
             vmModule,
         )
+    )
+}
+
+fun androidModules(context: Context) = module {
+    loadKoinModules(
+        localModule(context)
     )
 }

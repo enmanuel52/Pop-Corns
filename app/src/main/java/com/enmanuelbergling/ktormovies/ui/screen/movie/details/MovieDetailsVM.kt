@@ -1,7 +1,5 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsChainHandler
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
@@ -9,6 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import moe.tlaster.precompose.viewmodel.ViewModel
+import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class MovieDetailsVM(
     private val detailsChainHandler: MovieDetailsChainHandler,

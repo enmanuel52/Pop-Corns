@@ -58,7 +58,7 @@ import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsUiData
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
-import org.koin.androidx.compose.koinViewModel
+import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
