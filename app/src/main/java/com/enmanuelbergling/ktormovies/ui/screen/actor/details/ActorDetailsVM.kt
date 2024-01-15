@@ -1,17 +1,17 @@
 package com.enmanuelbergling.ktormovies.ui.screen.actor.details
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsUiData
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsChainStart
+import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsUiData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import moe.tlaster.precompose.viewmodel.ViewModel
+import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class ActorDetailsVM(
-    actorId: Int,
+    actorId: Int = 0,
     private val actorDetailsChainStart: ActorDetailsChainStart,
 ) : ViewModel() {
 

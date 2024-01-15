@@ -42,7 +42,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlaying
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
-import org.koin.androidx.compose.koinViewModel
+import moe.tlaster.precompose.koin.koinViewModel
 
 
 @Composable

@@ -47,7 +47,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorsRowPlace
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.PersonUiItem
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.toPersonUi
-import org.koin.androidx.compose.koinViewModel
+import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable

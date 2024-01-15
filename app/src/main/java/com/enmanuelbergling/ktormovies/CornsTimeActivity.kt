@@ -17,11 +17,11 @@ import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 import com.enmanuelbergling.ktormovies.util.isOnline
 import moe.tlaster.precompose.PreComposeApp
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import moe.tlaster.precompose.koin.koinViewModel
+import moe.tlaster.precompose.stateholder.StateHolder
+import org.koin.compose.KoinContext
 
 class CornsTimeActivity : ComponentActivity() {
-
-    private val viewModel by viewModel<CornTimeVM>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,23 +29,27 @@ class CornsTimeActivity : ComponentActivity() {
         installSplashScreen()
 
         setContent {
-            val isOnlineState by isOnline.collectAsStateWithLifecycle(initialValue = true)
-            val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
+            PreComposeApp {
+                KoinContext {
+                    val viewModel = koinViewModel<CornTimeVM>()
 
-            CornTimeTheme(darkTheme = darkTheme) {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    PreComposeApp {
-                        CornsTimeApp(
-                            state = rememberPreCtiAppState(
-                                isOnline = isOnlineState,
-                                darkTheme = darkTheme
-                            ),
-                            onDarkTheme = viewModel::setDarkTheme
-                        )
+                    val isOnlineState by isOnline.collectAsStateWithLifecycle(initialValue = true)
+                    val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
+
+                    CornTimeTheme(darkTheme = darkTheme) {
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            CornsTimeApp(
+                                state = rememberPreCtiAppState(
+                                    isOnline = isOnlineState,
+                                    darkTheme = darkTheme
+                                ),
+                                onDarkTheme = viewModel::setDarkTheme
+                            )
+                        }
                     }
                 }
             }

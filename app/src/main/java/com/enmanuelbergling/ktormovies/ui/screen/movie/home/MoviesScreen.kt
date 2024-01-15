@@ -49,7 +49,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMoviePla
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
 import com.valentinilk.shimmer.shimmer
-import org.koin.androidx.compose.koinViewModel
+import moe.tlaster.precompose.koin.koinViewModel
 
 @Composable
 fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {

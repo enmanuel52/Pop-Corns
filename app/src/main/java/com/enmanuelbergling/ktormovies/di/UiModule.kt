@@ -14,21 +14,20 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlaying
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val vmModule = module {
     includes(movieModule, movieDetailsModule, actorDetailsModule)
 
-    viewModelOf(::MovieDetailsVM)
-    viewModelOf(::MoviesVM)
-    viewModel { ActorsVM(get(qualifier = named<Actor>())) }
-    viewModelOf(::ActorDetailsVM)
-    viewModel { NowPlayingMoviesVM(get(qualifier = named(MovieSection.NowPlaying.toString()))) }
-    viewModel { TopRatedMoviesVM(get(qualifier = named(MovieSection.TopRated.toString()))) }
-    viewModel { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
-    viewModel { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
-    viewModelOf(::CornTimeVM)
+    factoryOf(::MovieDetailsVM)
+    factoryOf(::MoviesVM)
+    factory { ActorsVM(get(qualifier = named<Actor>())) }
+    factoryOf(::ActorDetailsVM)
+    factory { NowPlayingMoviesVM(get(qualifier = named(MovieSection.NowPlaying.toString()))) }
+    factory { TopRatedMoviesVM(get(qualifier = named(MovieSection.TopRated.toString()))) }
+    factory { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
+    factory { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
+    factoryOf(::CornTimeVM)
 }

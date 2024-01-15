@@ -60,7 +60,7 @@ fun RouteBuilder.moviesGraph(
         ) {
             val stringSection: String = it.path(MOVIE_SECTION_ARG)!!
 
-            val sectionResult = runCatching { MovieSection.valueOf(stringSection!!) }
+            val sectionResult = runCatching { MovieSection.valueOf(stringSection) }
             sectionResult.onSuccess { result ->
                 when (result) {
                     MovieSection.Upcoming -> UpcomingMoviesScreen(onMovie = onMovie, onBack)

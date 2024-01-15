@@ -17,6 +17,7 @@ import kotlinx.serialization.json.Json
 
 typealias KtorClient = HttpClient
 
+@OptIn(ExperimentalSerializationApi::class)
 val ktorClient = HttpClient(CIO) {
     defaultRequest {
         url(BASE_URL)
