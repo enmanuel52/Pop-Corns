@@ -15,5 +15,7 @@ val appModule = module {
 }
 
 fun androidModules(context: Context) = module {
-    localModule(context)
+    loadKoinModules(
+        localModule(context)
+    )
 }
