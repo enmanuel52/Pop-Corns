@@ -41,6 +41,12 @@ android {
             name = "API_KEY",
             value = "\"${secretProperties.getProperty("API_KEY")}\""
         )
+
+        buildConfigField(
+            type = "String",
+            name = "ACCOUNT_ID",
+            value = "\"${secretProperties.getProperty("ACCOUNT_ID")}\""
+        )
     }
 
     buildFeatures {

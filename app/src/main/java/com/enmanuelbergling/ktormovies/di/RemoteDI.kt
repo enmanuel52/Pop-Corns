@@ -16,6 +16,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.Ge
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetTopRatedMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetUpcomingMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.ActorService
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.AuthService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
@@ -64,6 +65,8 @@ val remoteModule = module {
     singleOf(::ActorService)
 
     single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
+
+    singleOf(::AuthService)
 
     loadKoinModules(listOf(pagingSourceModule, pagingModule))
 }
