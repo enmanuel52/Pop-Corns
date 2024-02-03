@@ -13,6 +13,7 @@ import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetTopRatedMoviesUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetUpcomingMoviesUC
 import com.enmanuelbergling.ktormovies.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.ktormovies.domain.usecase.settings.SetDarkThemeUC
+import com.enmanuelbergling.ktormovies.domain.usecase.user.GetUserDetailsUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -28,7 +29,11 @@ val ucModule = module {
     singleOf(::SetDarkThemeUC)
     singleOf(::GetDarkThemeUC)
 
+    //Auth
     singleOf(::CreateRequestTokenUC)
     singleOf(::CreateSessionFromLoginUC)
     singleOf(::CreateSessionIdUC)
+
+    //User
+    singleOf(::GetUserDetailsUC)
 }

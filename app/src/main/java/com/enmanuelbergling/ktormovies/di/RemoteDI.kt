@@ -3,9 +3,11 @@ package com.enmanuelbergling.ktormovies.di
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.ActorRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.AuthRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
+import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.ActorRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.AuthRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.MovieRemoteDSImpl
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.UserRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.ktorClient
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.NowPlayingMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.PopularActorsSource
@@ -20,6 +22,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.Ge
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.ActorService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.AuthService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
@@ -71,6 +74,10 @@ val remoteModule = module {
     singleOf(::AuthService)
 
     single<AuthRemoteDS> { AuthRemoteDSImpl(get()) }
+
+    singleOf(::UserService)
+
+    single<UserRemoteDS> { UserRemoteDSImpl(get()) }
 
     loadKoinModules(listOf(pagingSourceModule, pagingModule))
 }
