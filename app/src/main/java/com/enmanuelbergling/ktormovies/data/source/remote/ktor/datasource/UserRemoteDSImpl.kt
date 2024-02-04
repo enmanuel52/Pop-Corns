@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource
 
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.DeleteMovieFromListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.asBody
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
@@ -20,4 +21,16 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
         sessionId: String,
     ): ResultHandler<WatchResponse> =
         safeKtorCall { service.createWatchList(listPost.asBody(), sessionId).toModel() }
+
+    override suspend fun deleteMovieFromList(
+        movieId: Int,
+        listId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse> = safeKtorCall {
+        service.deleteMovieFromList(
+            deleteMovieBody = DeleteMovieFromListBody(movieId),
+            listId = listId,
+            sessionId = sessionId
+        ).toModel()
+    }
 }

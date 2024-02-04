@@ -18,6 +18,7 @@ import com.enmanuelbergling.ktormovies.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.GetUserDetailsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.UserLogoutUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watch.CreateListUC
+import com.enmanuelbergling.ktormovies.domain.usecase.user.watch.DeleteMovieFromListUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -45,6 +46,7 @@ val ucModule = module {
 
     //List
     singleOf(::CreateListUC)
+    singleOf(::DeleteMovieFromListUC)
 
     //Validation
     singleOf(::BasicFormValidationUC)

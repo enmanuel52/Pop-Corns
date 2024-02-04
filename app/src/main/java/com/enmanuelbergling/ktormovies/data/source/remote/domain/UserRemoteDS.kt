@@ -12,4 +12,10 @@ interface UserRemoteDS : RemoteDataSource {
         listPost: CreateListPost,
         sessionId: String,
     ): ResultHandler<WatchResponse>
+
+    suspend fun deleteMovieFromList(
+        movieId: Int,
+        listId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse>
 }
