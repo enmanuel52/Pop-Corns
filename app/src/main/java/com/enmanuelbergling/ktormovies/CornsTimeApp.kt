@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,6 +67,7 @@ fun CornsTimeApp(
     userDetails: UserDetails,
     onLogout: () -> Unit,
     onDarkTheme: (DarkTheme) -> Unit,
+    onLogin: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -86,7 +88,8 @@ fun CornsTimeApp(
                 onDarkTheme = onDarkTheme,
                 isSelected = { it.any { route -> state.matchRoute(route = route) } },
                 userDetails = userDetails,
-                onLogout = onLogout
+                onLogout = onLogout,
+                onLogin = onLogin
             )
         }
     }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
@@ -145,6 +148,7 @@ fun DrawerContent(
     isSelected: @Composable (List<String>) -> Boolean,
     userDetails: UserDetails,
     onLogout: () -> Unit,
+    onLogin: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -156,12 +160,15 @@ fun DrawerContent(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.dimen.verySmall)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.dimen.verySmall)
         ) {
             UserDetailsUi(
                 userDetails = userDetails,
                 onLogout = onLogout,
-                Modifier.padding(MaterialTheme.dimen.small)
+                onLogin = onLogin,
+                modifier = Modifier.padding(MaterialTheme.dimen.small)
             )
 
             DarkThemeDropDown(
@@ -184,7 +191,12 @@ fun DrawerContent(
 }
 
 @Composable
-fun UserDetailsUi(userDetails: UserDetails, onLogout: () -> Unit, modifier: Modifier = Modifier) {
+fun UserDetailsUi(
+    userDetails: UserDetails,
+    onLogout: () -> Unit,
+    onLogin: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var isCloseSessionDropDownOpen by remember {
         mutableStateOf(false)
     }
@@ -204,17 +216,26 @@ fun UserDetailsUi(userDetails: UserDetails, onLogout: () -> Unit, modifier: Modi
                 }
                 .padding(MaterialTheme.dimen.small)
         ) {
-            Text(text = userDetails.username)
+            Text(text = userDetails.username.ifBlank { "Nosey" })
 
             Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
 
             Icon(imageVector = Icons.Rounded.ArrowDropDown, contentDescription = "drop down icon")
 
+            val isLoggedIn by remember {
+                derivedStateOf {
+                    userDetails.username.isNotBlank()
+                }
+            }
+
             DropdownMenu(
                 expanded = isCloseSessionDropDownOpen,
                 onDismissRequest = { isCloseSessionDropDownOpen = false }
             ) {
-                DropdownMenuItem(text = { Text(text = "Close session") }, onClick = onLogout)
+                DropdownMenuItem(
+                    text = { Text(text = if (isLoggedIn) "Logout" else "Login") },
+                    onClick = if (isLoggedIn) onLogout else onLogin
+                )
             }
         }
     }

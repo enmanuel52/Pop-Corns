@@ -51,7 +51,7 @@ fun LoginRoute(onLoginSucceed: () -> Unit) {
 
     LoginScreen(
         formState = formState,
-        onLoginEvent ={onLoginSucceed()} //viewModel::onLoginFormEvent
+        onLoginEvent =viewModel::onLoginFormEvent
     )
 }
 

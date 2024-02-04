@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
+import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.navigateToLoginScreen
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 import com.enmanuelbergling.ktormovies.util.isOnline
 import moe.tlaster.precompose.PreComposeApp
@@ -53,10 +54,8 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                                 state = appState,
                                 onDarkTheme = viewModel::setDarkTheme,
                                 userDetails = userDetails,
-                                onLogout = {
-                                    viewModel.logout()
-                                    appState.navigateAfterLogout()
-                                }
+                                onLogout = viewModel::logout,
+                                onLogin = appState.navigator::navigateToLoginScreen
                             )
                         }
                     }
