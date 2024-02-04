@@ -11,6 +11,7 @@ interface RemoteDataSource {
         Log.d(TAG, "safeKtorCall: $result")
         ResultHandler.Success(result)
     } catch (exception: Exception) {
+        Log.d(TAG, "safeKtorCall: ${exception.message}")
         ResultHandler.Error(exception)
     }
 }

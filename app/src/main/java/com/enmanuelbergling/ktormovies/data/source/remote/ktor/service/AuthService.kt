@@ -8,6 +8,9 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.KtorClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.util.InternalAPI
 
 @OptIn(InternalAPI::class)
@@ -24,13 +27,15 @@ internal class AuthService(private val httpClient: KtorClient) {
      * the request token won't change*/
     suspend fun createSessionFromLogin(sessionBody: CreateSessionBody): RequestTokenDTO = httpClient
         .post("authentication/token/validate_with_login") {
-            body = sessionBody
+            contentType(ContentType.Application.Json)
+            setBody(sessionBody)
         }
         .body()
 
     suspend fun createSessionId(requestTokenBody: RequestTokenBody): SessionDTO = httpClient
         .post("authentication/session/new") {
-            body = requestTokenBody
+            contentType(ContentType.Application.Json)
+            setBody(requestTokenBody)
         }
         .body()
 }
