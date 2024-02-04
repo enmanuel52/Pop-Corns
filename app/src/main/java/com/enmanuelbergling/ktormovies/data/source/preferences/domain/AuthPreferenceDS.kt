@@ -4,4 +4,6 @@ interface AuthPreferenceDS {
     fun saveSessionId(sessionId: String)
 
     fun getSessionId(): String
+
+    fun clear()
 }

@@ -5,6 +5,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
+
+    id("com.google.protobuf") version "0.9.1"
 }
 
 val secretFile = rootProject.file("secret.properties")
@@ -122,6 +124,7 @@ dependencies {
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore:1.0.0")
+    implementation("com.google.protobuf:protobuf-javalite:3.24.4")
 
     //ktor client
     val ktor_version = "2.3.5"
@@ -157,4 +160,23 @@ dependencies {
     implementation("moe.tlaster:precompose-viewmodel:$precompose_version")
     // For Koin intergration
     implementation("moe.tlaster:precompose-koin:$precompose_version")
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.14.0"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }

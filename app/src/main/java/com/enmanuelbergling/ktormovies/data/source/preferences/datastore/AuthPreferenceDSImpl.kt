@@ -25,4 +25,8 @@ class AuthPreferenceDSImpl(private val context: Context) : AuthPreferenceDS {
     override fun getSessionId(): String = runBlocking {
         context.dataStore.data.firstOrNull()?.let { it[Keys.SESSION_ID] } ?: ""
     }
+
+    override fun clear() {
+        saveSessionId("")
+    }
 }
