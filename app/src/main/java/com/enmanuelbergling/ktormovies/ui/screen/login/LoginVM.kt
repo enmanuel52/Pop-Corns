@@ -58,14 +58,14 @@ class LoginVM(
 
     private fun login() = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
-        runCatching {
-            _loginChainState.update { loginFormState.value.toLoginChain() }
+        _loginChainState.update { loginFormState.value.toLoginChain() }
 
+        runCatching {
             loginChainHandler(
                 _loginChainState
             )
         }.onFailure {
-            _uiState.update { SimplerUi.Error(it.toString()) }
+            _uiState.update { SimplerUi.Error("An error just happen") }
         }.onSuccess {
             _uiState.update { SimplerUi.Success }
         }

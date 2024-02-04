@@ -7,11 +7,11 @@ import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
 import moe.tlaster.precompose.navigation.RouteBuilder
 
-const val LOGIN_ROUTE = "login_route"
+const val LOGIN_ROUTE = "/login_route"
 
 fun Navigator.navigateToLoginScreen() {
     navigate(
-        "/$LOGIN_ROUTE", options = NavOptions(
+        LOGIN_ROUTE, options = NavOptions(
             popUpTo = PopUpTo(
                 route = "/${TopDestination.Movie.route}",
                 inclusive = true
@@ -22,7 +22,7 @@ fun Navigator.navigateToLoginScreen() {
 
 fun RouteBuilder.loginScreen(onLoginSucceed: () -> Unit) {
     scene(
-        "/$LOGIN_ROUTE"
+        LOGIN_ROUTE
     ) {
         LoginRoute(onLoginSucceed)
     }

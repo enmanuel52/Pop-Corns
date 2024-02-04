@@ -106,7 +106,10 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.large),
-            modifier = Modifier.padding(MaterialTheme.dimen.medium),
+            modifier = Modifier.padding(
+                horizontal = MaterialTheme.dimen.medium,
+                vertical = MaterialTheme.dimen.large
+            ),
         ) {
 
             CtiTextField(

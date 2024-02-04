@@ -37,18 +37,26 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                     val isOnlineState by isOnline.collectAsStateWithLifecycle(initialValue = true)
                     val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
 
+                    val userDetails by viewModel.userDetails.collectAsStateWithLifecycle()
+
                     CornTimeTheme(darkTheme = darkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
+                            val appState = rememberPreCtiAppState(
+                                isOnline = isOnlineState,
+                                darkTheme = darkTheme
+                            )
                             CornsTimeApp(
-                                state = rememberPreCtiAppState(
-                                    isOnline = isOnlineState,
-                                    darkTheme = darkTheme
-                                ),
-                                onDarkTheme = viewModel::setDarkTheme
+                                state = appState,
+                                onDarkTheme = viewModel::setDarkTheme,
+                                userDetails = userDetails,
+                                onLogout = {
+                                    viewModel.logout()
+                                    appState.navigateAfterLogout()
+                                }
                             )
                         }
                     }

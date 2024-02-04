@@ -1,13 +1,13 @@
 package com.enmanuelbergling.ktormovies
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import com.enmanuelbergling.ktormovies.domain.TAG
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsGraph
+import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.LOGIN_ROUTE
+import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.navigateToLoginScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
@@ -41,7 +41,7 @@ class PreComposeAppState(
     @Composable
     fun matchRoute(route: String) = backStackEntry?.hasRoute("/$route") ?: false
 
-    val startDestination = MOVIES_GRAPH_ROUTE
+    val startDestination = LOGIN_ROUTE
 
     val isTopDestination: Boolean
         @Composable get() = DrawerDestination.entries.map { it.routes }.flatten()
@@ -67,6 +67,10 @@ class PreComposeAppState(
                 )
             )
         }
+    }
+
+    fun navigateAfterLogout(){
+        navigator.navigateToLoginScreen()
     }
 
     fun navigateToDrawerDestination(destination: DrawerDestination) {
