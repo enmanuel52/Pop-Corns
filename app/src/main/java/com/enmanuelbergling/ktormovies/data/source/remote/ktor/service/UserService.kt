@@ -2,9 +2,15 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.UserDetailsDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CreateListBody
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchResponseDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.KtorClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
 class UserService(private val httpClient: KtorClient) {
 
@@ -13,6 +19,19 @@ class UserService(private val httpClient: KtorClient) {
             url {
                 parameters.append("session_id", sessionId)
             }
+        }
+        .body()
+
+    internal suspend fun createWatchList(
+        listBody: CreateListBody,
+        sessionId: String,
+    ): WatchResponseDTO = httpClient
+        .post("list") {
+            url {
+                parameters.append("session_id", sessionId)
+            }
+            contentType(ContentType.Application.Json)
+            setBody(listBody)
         }
         .body()
 }

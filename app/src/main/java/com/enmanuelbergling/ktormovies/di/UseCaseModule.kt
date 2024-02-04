@@ -17,6 +17,7 @@ import com.enmanuelbergling.ktormovies.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.GetUserDetailsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.UserLogoutUC
+import com.enmanuelbergling.ktormovies.domain.usecase.user.watch.CreateListUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -41,6 +42,9 @@ val ucModule = module {
     singleOf(::GetUserDetailsUC)
     singleOf(::GetSavedUserUC)
     singleOf(::UserLogoutUC)
+
+    //List
+    singleOf(::CreateListUC)
 
     //Validation
     singleOf(::BasicFormValidationUC)
