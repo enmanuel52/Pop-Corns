@@ -156,11 +156,12 @@ fun DrawerContent(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.dimen.verySmall)
         ) {
             UserDetailsUi(
                 userDetails = userDetails,
-                onLogout = onLogout
+                onLogout = onLogout,
+                Modifier.padding(MaterialTheme.dimen.small)
             )
 
             DarkThemeDropDown(
@@ -183,15 +184,14 @@ fun DrawerContent(
 }
 
 @Composable
-fun UserDetailsUi(userDetails: UserDetails, onLogout: () -> Unit) {
+fun UserDetailsUi(userDetails: UserDetails, onLogout: () -> Unit, modifier: Modifier = Modifier) {
     var isCloseSessionDropDownOpen by remember {
         mutableStateOf(false)
     }
 
-    Column {
+    Column(modifier) {
         UserImage(
             userDetails.avatarPath,
-            modifier = Modifier.padding(MaterialTheme.dimen.mediumSmall)
         )
 
         Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))

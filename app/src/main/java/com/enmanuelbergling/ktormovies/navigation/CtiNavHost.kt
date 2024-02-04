@@ -42,7 +42,7 @@ fun PreCtiNavHost(
             navigator.navigateToMoviesGraph(
                 NavOptions(
                     popUpTo = PopUpTo(
-                        "/$LOGIN_ROUTE",
+                        LOGIN_ROUTE,
                         inclusive = true
                     )
                 )

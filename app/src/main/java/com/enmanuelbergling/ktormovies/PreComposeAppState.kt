@@ -69,8 +69,14 @@ class PreComposeAppState(
         }
     }
 
-    fun navigateAfterLogout(){
-        navigator.navigateToLoginScreen()
+    /**
+     * clear back stack before going to login
+     * */
+    fun navigateAfterLogout() {
+        val navOptions = NavOptions(
+            popUpTo = PopUpTo.First(inclusive = true)
+        )
+        navigator.navigateToLoginScreen(navOptions)
     }
 
     fun navigateToDrawerDestination(destination: DrawerDestination) {
