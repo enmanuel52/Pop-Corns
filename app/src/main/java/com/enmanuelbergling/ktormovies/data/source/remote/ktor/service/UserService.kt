@@ -4,6 +4,7 @@ import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.UserDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CreateListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MediaOnListBody
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MovieListPageDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchResponseDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.KtorClient
 import io.ktor.client.call.body
@@ -72,6 +73,17 @@ class UserService(private val httpClient: KtorClient) {
         .delete("list/$listId") {
             url {
                 parameters.append("session_id", sessionId)
+            }
+        }
+        .body()
+
+    internal suspend fun getListDetails(
+        listId: Int,
+        page: Int
+    ): MovieListPageDTO = httpClient
+        .get("list/$listId"){
+            url {
+                parameters.append(name = "page", value = "$page")
             }
         }
         .body()

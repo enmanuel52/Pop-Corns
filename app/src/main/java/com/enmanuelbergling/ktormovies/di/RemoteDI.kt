@@ -14,6 +14,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.Pop
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.PopularMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.TopRatedMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.UpcomingMovieSource
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetMovieListUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetNowPlayingMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetPopularActorsUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetPopularMoviesUCImpl
@@ -25,6 +26,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieServ
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import org.koin.core.context.loadKoinModules
@@ -58,6 +60,9 @@ val pagingModule = module {
     single<GetPagingFlowUC<Actor>> { GetPopularActorsUCImpl(get()) } withOptions {
         named<Actor>()
     }
+
+    //get movie list, when Int represents listId
+    single<GetFilteredPagingFlowUC<Movie, Int>> { GetMovieListUCImpl(get()) }
 }
 
 val remoteModule = module {
