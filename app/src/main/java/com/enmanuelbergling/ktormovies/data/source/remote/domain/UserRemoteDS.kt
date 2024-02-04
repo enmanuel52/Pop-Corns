@@ -18,4 +18,10 @@ interface UserRemoteDS : RemoteDataSource {
         listId: Int,
         sessionId: String,
     ): ResultHandler<WatchResponse>
+
+    suspend fun addMovieToList(
+        movieId: Int,
+        listId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse>
 }

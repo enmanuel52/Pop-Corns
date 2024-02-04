@@ -3,7 +3,7 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.UserDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CreateListBody
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.DeleteMovieFromListBody
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchResponseDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.KtorClient
 import io.ktor.client.call.body
@@ -38,16 +38,30 @@ class UserService(private val httpClient: KtorClient) {
         .body()
 
     internal suspend fun deleteMovieFromList(
-        deleteMovieBody: DeleteMovieFromListBody,
+        mediaBody: MediaOnListBody,
         listId: Int,
         sessionId: String,
     ): WatchResponseDTO = httpClient
-        .delete("list/$listId/remove_item"){
+        .delete("list/$listId/remove_item") {
             url {
                 parameters.append("session_id", sessionId)
             }
             contentType(ContentType.Application.Json)
-            setBody(deleteMovieBody)
+            setBody(mediaBody)
+        }
+        .body()
+
+    internal suspend fun addMovieToList(
+        mediaBody: MediaOnListBody,
+        listId: Int,
+        sessionId: String,
+    ): WatchResponseDTO = httpClient
+        .post("list/$listId/add_item") {
+            url {
+                parameters.append("session_id", sessionId)
+            }
+            contentType(ContentType.Application.Json)
+            setBody(mediaBody)
         }
         .body()
 }
