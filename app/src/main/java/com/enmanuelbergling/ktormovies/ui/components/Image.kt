@@ -34,14 +34,17 @@ fun rememberVectorPainter(image: ImageVector, color: Color): VectorPainter =
     )
 
 @Composable
-fun UserImage(avatarPath: String) {
+fun UserImage(avatarPath: String, modifier: Modifier =Modifier) {
     AsyncImage(
         model = "$BASE_IMAGE_URL$avatarPath",
         contentDescription = "user image",
         placeholder = painterResource(
             id = R.drawable.mr_bean
         ),
-        modifier = Modifier
+        error = painterResource(
+            id = R.drawable.mr_bean
+        ),
+        modifier = modifier
             .size(MaterialTheme.dimen.almostGiant)
             .clip(CircleShape),
         contentScale = ContentScale.Crop

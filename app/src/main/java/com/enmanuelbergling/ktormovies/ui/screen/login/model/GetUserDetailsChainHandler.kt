@@ -3,17 +3,17 @@ package com.enmanuelbergling.ktormovies.ui.screen.login.model
 import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
 import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.usecase.auth.CreateSessionIdUC
+import com.enmanuelbergling.ktormovies.domain.usecase.user.GetUserDetailsUC
 
-class CreateSessionIdChainHandler(
-    private val createSessionIdUC: CreateSessionIdUC,
-    private val nextHandler: GetUserDetailsChainHandler,
-) : ChainHandler<LoginChainState> {
+class GetUserDetailsChainHandler(
+    private val getUserDetailsUC: GetUserDetailsUC
+): ChainHandler<LoginChainState> {
+
     override val nextChainHandler: ChainHandler<LoginChainState>?
-        get() = nextHandler
+        get() = null
 
     override suspend fun handle(request: LoginChainState) =
-        when (val result = createSessionIdUC(request.value.requestToken)) {
+        when (val result = getUserDetailsUC()) {
             is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
             is ResultHandler.Success -> Unit
         }

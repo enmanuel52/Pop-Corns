@@ -189,7 +189,10 @@ fun UserDetailsUi(userDetails: UserDetails, onLogout: () -> Unit) {
     }
 
     Column {
-        UserImage(userDetails.avatarPath)
+        UserImage(
+            userDetails.avatarPath,
+            modifier = Modifier.padding(MaterialTheme.dimen.mediumSmall)
+        )
 
         Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
