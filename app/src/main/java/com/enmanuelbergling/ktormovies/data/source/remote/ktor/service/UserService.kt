@@ -42,7 +42,7 @@ class UserService(private val httpClient: KtorClient) {
         listId: Int,
         sessionId: String,
     ): WatchResponseDTO = httpClient
-        .delete("list/$listId/remove_item") {
+        .post("list/$listId/remove_item") {
             url {
                 parameters.append("session_id", sessionId)
             }
@@ -62,6 +62,17 @@ class UserService(private val httpClient: KtorClient) {
             }
             contentType(ContentType.Application.Json)
             setBody(mediaBody)
+        }
+        .body()
+
+    internal suspend fun deleteList(
+        listId: Int,
+        sessionId: String,
+    ): WatchResponseDTO = httpClient
+        .delete("list/$listId") {
+            url {
+                parameters.append("session_id", sessionId)
+            }
         }
         .body()
 }

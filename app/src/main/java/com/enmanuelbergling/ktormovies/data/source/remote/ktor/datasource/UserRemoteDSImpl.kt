@@ -45,4 +45,15 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
             sessionId = sessionId
         ).toModel()
     }
+
+    override suspend fun deleteList(
+        listId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse> = safeKtorCall {
+        service.deleteList(
+            listId = listId,
+            sessionId = sessionId
+        )
+            .toModel()
+    }
 }

@@ -24,4 +24,9 @@ interface UserRemoteDS : RemoteDataSource {
         listId: Int,
         sessionId: String,
     ): ResultHandler<WatchResponse>
+
+    suspend fun deleteList(
+        listId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse>
 }
