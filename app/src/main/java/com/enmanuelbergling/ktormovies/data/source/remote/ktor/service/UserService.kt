@@ -2,6 +2,7 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.UserDetailsDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.AccountListsPageDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CreateListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MovieListPageDTO
@@ -84,6 +85,19 @@ class UserService(private val httpClient: KtorClient) {
         .get("list/$listId"){
             url {
                 parameters.append(name = "page", value = "$page")
+            }
+        }
+        .body()
+
+    internal suspend fun getAccountLists(
+        accountId: String,
+        sessionId: String,
+        page: Int
+    ): AccountListsPageDTO = httpClient
+        .get("account/$accountId/lists"){
+            url {
+                parameters.append(name = "page", value = "$page")
+                parameters.append("session_id", sessionId)
             }
         }
         .body()
