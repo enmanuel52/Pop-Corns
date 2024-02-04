@@ -42,6 +42,23 @@ fun HandleUiState(
 }
 
 @Composable
+fun HandleUiState(
+    uiState: SimplerUi,
+    onIdle: () -> Unit,
+    onSuccess: () -> Unit,
+) {
+    when (uiState) {
+        is SimplerUi.Error -> {
+            DefaultErrorDialog(onDismissDialog = onIdle, message = uiState.message)
+        }
+
+        SimplerUi.Idle -> {}
+        SimplerUi.Success -> onSuccess()
+        SimplerUi.Loading -> LoadingDialog()
+    }
+}
+
+@Composable
 private fun SnackBarError(
     snackState: SnackbarHostState,
     errorMessage: String,

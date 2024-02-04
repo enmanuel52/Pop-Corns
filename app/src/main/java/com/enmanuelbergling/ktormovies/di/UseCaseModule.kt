@@ -3,6 +3,7 @@ package com.enmanuelbergling.ktormovies.di
 import com.enmanuelbergling.ktormovies.domain.usecase.auth.CreateRequestTokenUC
 import com.enmanuelbergling.ktormovies.domain.usecase.auth.CreateSessionFromLoginUC
 import com.enmanuelbergling.ktormovies.domain.usecase.auth.CreateSessionIdUC
+import com.enmanuelbergling.ktormovies.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetActorDetailsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieCreditsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieDetailsUC
@@ -41,4 +42,6 @@ val ucModule = module {
     singleOf(::GetSavedUserUC)
     singleOf(::UserLogoutUC)
 
+    //Validation
+    singleOf(::BasicFormValidationUC)
 }

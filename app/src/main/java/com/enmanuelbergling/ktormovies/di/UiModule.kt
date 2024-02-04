@@ -6,6 +6,7 @@ import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.di.actorDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM
+import com.enmanuelbergling.ktormovies.ui.screen.login.LoginVM
 import com.enmanuelbergling.ktormovies.ui.screen.login.di.loginModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.di.movieDetailsModule
@@ -31,4 +32,5 @@ val vmModule = module {
     factory { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
     factory { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
     factoryOf(::CornTimeVM)
+    factoryOf(::LoginVM)
 }
