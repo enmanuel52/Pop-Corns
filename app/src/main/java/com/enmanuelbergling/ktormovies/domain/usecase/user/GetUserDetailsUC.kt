@@ -4,6 +4,7 @@ import com.enmanuelbergling.ktormovies.data.source.preferences.domain.AuthPrefer
 import com.enmanuelbergling.ktormovies.data.source.preferences.domain.UserPreferenceDS
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import kotlinx.coroutines.flow.firstOrNull
 
 class GetUserDetailsUC(
     private val remoteDS: UserRemoteDS,
@@ -11,12 +12,12 @@ class GetUserDetailsUC(
     private val userPreferenceDS: UserPreferenceDS,
 ) {
     suspend operator fun invoke() = run {
-            val sessionId = preferenceDS.getSessionId()
+        val sessionId = preferenceDS.getSessionId().firstOrNull() ?: return@run
 
-            remoteDS.getAccount(sessionId).also { result ->
-                if (result is ResultHandler.Success) {
-                    result.data?.let { details -> userPreferenceDS.updateUser(details) }
-                }
+        remoteDS.getAccount(sessionId).also { result ->
+            if (result is ResultHandler.Success) {
+                result.data?.let { details -> userPreferenceDS.updateUser(details) }
             }
         }
+    }
 }
