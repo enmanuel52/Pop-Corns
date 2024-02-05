@@ -66,8 +66,7 @@ fun CornsTimeApp(
     state: PreComposeAppState = rememberPreCtiAppState(),
     userDetails: UserDetails,
     onLogout: () -> Unit,
-    onDarkTheme: (DarkTheme) -> Unit,
-    onLogin: () -> Unit,
+    onDarkTheme: (DarkTheme) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -89,7 +88,7 @@ fun CornsTimeApp(
                 isSelected = { it.any { route -> state.matchRoute(route = route) } },
                 userDetails = userDetails,
                 onLogout = onLogout,
-                onLogin = onLogin
+                onLogin = state::navigateToLogin
             )
         }
     }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {

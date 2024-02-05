@@ -2,10 +2,13 @@ package com.enmanuelbergling.ktormovies
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsGraph
+import com.enmanuelbergling.ktormovies.ui.screen.list.navigation.navigateToListGraph
+import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.navigateToLoginScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
@@ -21,7 +24,7 @@ fun rememberPreCtiAppState(
     isOnline: Boolean = true,
     darkTheme: DarkTheme = DarkTheme.System,
     navigator: Navigator = rememberNavigator(),
-) = PreComposeAppState(isOnline, darkTheme, navigator)
+) = remember(navigator) { PreComposeAppState(isOnline, darkTheme, navigator) }
 
 
 @Stable
@@ -81,6 +84,22 @@ class PreComposeAppState(
                     launchSingleTop = true
                 )
             )
+
+            DrawerDestination.Lists -> navigator.navigateToListGraph(
+                NavOptions(
+                    launchSingleTop = true
+                )
+            )
         }
     }
+
+    fun navigateToLogin() = navigator.navigateToLoginScreen(
+        NavOptions(
+            launchSingleTop = true
+//            popUpTo = PopUpTo(
+//                MOVIES_GRAPH_ROUTE,
+//                true
+//            )
+        )
+    )
 }

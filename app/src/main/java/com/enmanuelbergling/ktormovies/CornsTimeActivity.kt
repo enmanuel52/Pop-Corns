@@ -54,8 +54,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                                 state = appState,
                                 onDarkTheme = viewModel::setDarkTheme,
                                 userDetails = userDetails,
-                                onLogout = viewModel::logout,
-                                onLogin = appState.navigator::navigateToLoginScreen
+                                onLogout = viewModel::logout
                             )
                         }
                     }

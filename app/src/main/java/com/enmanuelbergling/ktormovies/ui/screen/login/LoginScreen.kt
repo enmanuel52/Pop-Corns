@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Person3
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,7 +54,7 @@ fun LoginRoute(onLoginSucceed: () -> Unit) {
 
     LoginScreen(
         formState = formState,
-        onLoginEvent =viewModel::onLoginFormEvent
+        onLoginEvent = viewModel::onLoginFormEvent
     )
 }
 
@@ -65,14 +68,14 @@ fun LoginScreen(
         Image(
             painter = painterResource(id = R.drawable.pop_corn_background),
             contentDescription = "background login image",
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
 
         LoginFormUi(
             formState,
             onLoginEvent,
-            Modifier.align(Alignment.Center)
+            Modifier.align(Alignment.Center).padding(horizontal = MaterialTheme.dimen.lessLarge)
         )
 
         SignIn(
@@ -102,7 +105,7 @@ private fun SignIn(modifier: Modifier = Modifier) {
 
 @Composable
 fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifier: Modifier) {
-    ElevatedCard(modifier = modifier) {
+    ElevatedCard(modifier = modifier, shape = MaterialTheme.shapes.medium) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.large),
@@ -145,7 +148,10 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
 
             Button(
                 onClick = { onLoginEvent(LoginEvent.Submit) },
-                enabled = !errorFound
+                enabled = !errorFound,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(ButtonDefaults.MinHeight.times(1.3f))
             ) {
                 Text(text = "Log In")
             }
