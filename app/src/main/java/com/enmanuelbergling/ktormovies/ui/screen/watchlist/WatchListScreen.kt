@@ -1,7 +1,9 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -88,11 +90,15 @@ private fun WatchListScreen(
                 .fillMaxSize()
                 .shimmerIf { lists.isRefreshing },
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small, Alignment.Top),
-
-            ) {
+            contentPadding = PaddingValues(MaterialTheme.dimen.small)
+        ) {
             items(lists) { list ->
                 list?.let {
-                    WatchListCard(name = list.name, description = list.description) {
+                    WatchListCard(
+                        name = list.name,
+                        description = list.description,
+                        Modifier.fillMaxWidth()
+                    ) {
 
                     }
                 }
