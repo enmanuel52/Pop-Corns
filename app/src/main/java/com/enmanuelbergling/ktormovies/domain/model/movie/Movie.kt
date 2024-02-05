@@ -16,4 +16,7 @@ data class Movie(
     val video: Boolean,
     val voteAverage: Double,
     val voteCount: Int
-)
+){
+    val releaseYear: String
+        get() = releaseDate.substring(0..3)
+}

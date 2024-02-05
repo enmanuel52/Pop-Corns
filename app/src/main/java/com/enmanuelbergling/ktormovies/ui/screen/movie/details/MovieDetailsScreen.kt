@@ -104,7 +104,7 @@ private fun MovieDetailsScreen(
 
                 information(
                     details.title,
-                    details.releaseDate.substring(0..3),
+                    details.releaseYear,
                     details.voteAverage.toFloat(),
                     details.formattedGenres,
                     details.duration

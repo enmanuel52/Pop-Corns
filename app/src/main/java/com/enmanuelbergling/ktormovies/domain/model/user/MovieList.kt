@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.domain.model.user
 
 
-internal data class MovieList(
+ data class MovieList(
     val description: String,
     val favoriteCount: Int,
     val id: Int,

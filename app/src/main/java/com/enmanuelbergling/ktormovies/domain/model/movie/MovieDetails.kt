@@ -28,15 +28,13 @@ data class MovieDetails(
     val voteAverage: Double,
     val voteCount: Int
 ) {
+    val releaseYear: String
+        get() = releaseDate.substring(0..3)
+
     val formattedGenres: String
         get() = buildString {
             if (genres.isEmpty()) append("Unavailable")
-            else {
-                genres.forEachIndexed { index, genre ->
-                    if (index == 0) append(" - " + genre.name)
-                    else append("/${genre.name}")
-                }
-            }
+            else genres.joinToString("/") { it.name }
         }
 
     val duration: String

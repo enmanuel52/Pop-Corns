@@ -70,7 +70,7 @@ fun MovieCard(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        RatingStars(value = rating.toFloat(), size = 16.dp, spaceBetween = 1.dp)
+        RatingStars(value = rating.div(2).toFloat(), size = 16.dp, spaceBetween = 1.dp)
     }
 }
 
@@ -159,7 +159,7 @@ private fun HeaderMovieInfo(
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
-        RatingStars(value = rating.toFloat(), spaceBetween = 1.dp)
+        RatingStars(value = rating.div(2).toFloat(), spaceBetween = 1.dp)
     }
 }
 
