@@ -88,7 +88,12 @@ fun CornsTimeApp(
                 isSelected = { it.any { route -> state.matchRoute(route = route) } },
                 userDetails = userDetails,
                 onLogout = onLogout,
-                onLogin = state::navigateToLogin
+                onLogin =  {
+                    scope.launch {
+                        drawerState.close()
+                        state.navigateToLogin()
+                    }
+                }
             )
         }
     }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
