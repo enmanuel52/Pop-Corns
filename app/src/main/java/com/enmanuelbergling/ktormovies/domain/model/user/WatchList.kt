@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.domain.model.user
 
 
- data class MovieList(
+ data class WatchList(
     val description: String,
     val favoriteCount: Int,
     val id: Int,

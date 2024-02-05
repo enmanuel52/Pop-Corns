@@ -3,10 +3,10 @@ package com.enmanuelbergling.ktormovies.di
 import com.enmanuelbergling.ktormovies.CornTimeVM
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.di.actorDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.WatchListVM
 import com.enmanuelbergling.ktormovies.ui.screen.login.LoginVM
 import com.enmanuelbergling.ktormovies.ui.screen.login.di.loginModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
@@ -17,6 +17,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlaying
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.WatchListVM
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -34,5 +35,5 @@ val vmModule = module {
     factory { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
     factoryOf(::CornTimeVM)
     factoryOf(::LoginVM)
-    factoryOf(::WatchListVM)
+    factory { WatchListVM(get(named<WatchList>()), get(), get(), get(), get()) }
 }

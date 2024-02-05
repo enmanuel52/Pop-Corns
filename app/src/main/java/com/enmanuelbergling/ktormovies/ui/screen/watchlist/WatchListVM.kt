@@ -7,17 +7,20 @@ import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.user.AccountListsFilter
-import com.enmanuelbergling.ktormovies.domain.model.user.MovieList
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.ktormovies.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.CreateListUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.DeleteListUC
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListEvent
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListForm
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,7 +28,7 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class WatchListVM(
-    getPaginatedLists: GetFilteredPagingFlowUC<MovieList, AccountListsFilter>,
+    getPaginatedLists: GetFilteredPagingFlowUC<WatchList, AccountListsFilter>,
     getSessionId: GetSavedSessionIdUC,
     private val createListUC: CreateListUC,
     private val deleteListUC: DeleteListUC,
@@ -38,15 +41,19 @@ class WatchListVM(
         ""
     )
 
-    val lists: Flow<PagingData<MovieList>> =
-        getPaginatedLists(
-            AccountListsFilter(
-                accountId = BuildConfig.ACCOUNT_ID,
-                sessionId = sessionId.value
-            )
-        ).cachedIn(
-            viewModelScope
-        )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val lists: Flow<PagingData<WatchList>> =
+        sessionId.filter { it.isNotBlank() }
+            .flatMapLatest {
+                getPaginatedLists(
+                    AccountListsFilter(
+                        accountId = BuildConfig.ACCOUNT_ID,
+                        sessionId = sessionId.value
+                    )
+                ).cachedIn(
+                    viewModelScope
+                )
+            }
 
     private val _createListFormState = MutableStateFlow(CreateListForm())
     val createListFormState get() = _createListFormState.asStateFlow()
@@ -88,7 +95,9 @@ class WatchListVM(
             listPost = createListFormState.value.toPost(), sessionId = sessionId.value
         )) {
             is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
-            is ResultHandler.Success -> _uiState.update { SimplerUi.Success }
+            is ResultHandler.Success -> _uiState.update { SimplerUi.Success }.also {
+                _createListFormState.update { CreateListForm() }
+            }
         }
     }
 

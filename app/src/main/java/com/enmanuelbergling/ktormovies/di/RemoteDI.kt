@@ -31,7 +31,7 @@ import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.model.user.AccountListsFilter
-import com.enmanuelbergling.ktormovies.domain.model.user.MovieList
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
@@ -65,9 +65,13 @@ val pagingModule = module {
     }
 
     //get movie list, when Int represents listId
-    single<GetFilteredPagingFlowUC<Movie, Int>> { GetMovieListUCImpl(get()) }
+    single<GetFilteredPagingFlowUC<Movie, Int>> { GetMovieListUCImpl(get()) } withOptions {
+        named<Int>()
+    }
     //get account lists
-    single<GetFilteredPagingFlowUC<MovieList, AccountListsFilter>> { GetAccountListsUCImpl(get()) }
+    single<GetFilteredPagingFlowUC<WatchList, AccountListsFilter>> { GetAccountListsUCImpl(get()) } withOptions {
+        named<WatchList>()
+    }
 }
 
 val remoteModule = module {

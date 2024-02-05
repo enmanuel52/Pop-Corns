@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class MovieListDTO(
+internal data class WatchListDTO(
     @SerialName("description")
     val description: String,
     @SerialName("favorite_count")

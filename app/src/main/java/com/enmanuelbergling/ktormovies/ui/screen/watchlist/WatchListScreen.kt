@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -20,12 +21,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.enmanuelbergling.ktormovies.domain.model.user.MovieList
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.CtiContentDialog
 import com.enmanuelbergling.ktormovies.ui.components.CtiTextField
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
@@ -58,7 +60,7 @@ fun WatchListRoute(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun WatchListScreen(
-    lists: LazyPagingItems<MovieList>,
+    lists: LazyPagingItems<WatchList>,
     createListForm: CreateListForm,
     onCreateFormEvent: (CreateListEvent) -> Unit,
     onDeleteList: (listId: Int) -> Unit,
@@ -85,7 +87,7 @@ private fun WatchListScreen(
                 .padding(it)
                 .fillMaxSize()
                 .shimmerIf { lists.isRefreshing },
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small, Alignment.Top),
 
             ) {
             items(lists) { list ->
@@ -108,7 +110,9 @@ private fun WatchListScreen(
         LaunchedEffect(key1 = Unit) {
             val listError = lists.loadState.refresh as? LoadState.Error
             snackbarHostState.showSnackbar(
-                listError?.error?.message ?: "Not session found, login and try again"
+                listError?.error?.message ?: "Not session found, login and try again",
+                withDismissAction = true,
+                duration = SnackbarDuration.Indefinite
             )
         }
     }
