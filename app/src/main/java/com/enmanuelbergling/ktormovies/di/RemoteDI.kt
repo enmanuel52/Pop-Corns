@@ -1,26 +1,37 @@
 package com.enmanuelbergling.ktormovies.di
 
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.ActorRemoteDS
+import com.enmanuelbergling.ktormovies.data.source.remote.domain.AuthRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
+import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.ActorRemoteDSImpl
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.AuthRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.MovieRemoteDSImpl
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.UserRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.ktorClient
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.NowPlayingMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.PopularActorsSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.PopularMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.TopRatedMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.UpcomingMovieSource
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetAccountListsUCImpl
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetMovieListUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetNowPlayingMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetPopularActorsUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetPopularMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetTopRatedMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase.GetUpcomingMoviesUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.ActorService
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.AuthService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
+import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.domain.model.user.AccountListsFilter
+import com.enmanuelbergling.ktormovies.domain.model.user.MovieList
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
@@ -52,6 +63,11 @@ val pagingModule = module {
     single<GetPagingFlowUC<Actor>> { GetPopularActorsUCImpl(get()) } withOptions {
         named<Actor>()
     }
+
+    //get movie list, when Int represents listId
+    single<GetFilteredPagingFlowUC<Movie, Int>> { GetMovieListUCImpl(get()) }
+    //get account lists
+    single<GetFilteredPagingFlowUC<MovieList, AccountListsFilter>> { GetAccountListsUCImpl(get()) }
 }
 
 val remoteModule = module {
@@ -64,6 +80,14 @@ val remoteModule = module {
     singleOf(::ActorService)
 
     single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
+
+    singleOf(::AuthService)
+
+    single<AuthRemoteDS> { AuthRemoteDSImpl(get()) }
+
+    singleOf(::UserService)
+
+    single<UserRemoteDS> { UserRemoteDSImpl(get()) }
 
     loadKoinModules(listOf(pagingSourceModule, pagingModule))
 }

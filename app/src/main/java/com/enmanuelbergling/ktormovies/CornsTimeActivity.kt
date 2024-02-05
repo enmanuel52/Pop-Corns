@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
+import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.navigateToLoginScreen
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 import com.enmanuelbergling.ktormovies.util.isOnline
 import moe.tlaster.precompose.PreComposeApp
@@ -37,18 +38,23 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                     val isOnlineState by isOnline.collectAsStateWithLifecycle(initialValue = true)
                     val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
 
+                    val userDetails by viewModel.userDetails.collectAsStateWithLifecycle()
+
                     CornTimeTheme(darkTheme = darkTheme) {
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
+                            val appState = rememberPreCtiAppState(
+                                isOnline = isOnlineState,
+                                darkTheme = darkTheme
+                            )
                             CornsTimeApp(
-                                state = rememberPreCtiAppState(
-                                    isOnline = isOnlineState,
-                                    darkTheme = darkTheme
-                                ),
-                                onDarkTheme = viewModel::setDarkTheme
+                                state = appState,
+                                onDarkTheme = viewModel::setDarkTheme,
+                                userDetails = userDetails,
+                                onLogout = viewModel::logout
                             )
                         }
                     }

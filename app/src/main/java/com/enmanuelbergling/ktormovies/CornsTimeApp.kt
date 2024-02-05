@@ -8,13 +8,19 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
@@ -35,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +49,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
+import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
+import com.enmanuelbergling.ktormovies.ui.components.UserImage
 import com.enmanuelbergling.ktormovies.ui.components.icon
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.util.TAG
@@ -54,7 +64,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun CornsTimeApp(
     state: PreComposeAppState = rememberPreCtiAppState(),
-    onDarkTheme: (DarkTheme) -> Unit,
+    userDetails: UserDetails,
+    onLogout: () -> Unit,
+    onDarkTheme: (DarkTheme) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -73,7 +85,15 @@ fun CornsTimeApp(
                 },
                 darkTheme = state.darkTheme,
                 onDarkTheme = onDarkTheme,
-                isSelected = { it.any { route -> state.matchRoute(route = route) } }
+                isSelected = { it.any { route -> state.matchRoute(route = route) } },
+                userDetails = userDetails,
+                onLogout = onLogout,
+                onLogin =  {
+                    scope.launch {
+                        drawerState.close()
+                        state.navigateToLogin()
+                    }
+                }
             )
         }
     }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
@@ -130,6 +150,9 @@ fun DrawerContent(
     darkTheme: DarkTheme,
     onDarkTheme: (DarkTheme) -> Unit,
     isSelected: @Composable (List<String>) -> Boolean,
+    userDetails: UserDetails,
+    onLogout: () -> Unit,
+    onLogin: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -138,9 +161,24 @@ fun DrawerContent(
             .fillMaxWidth(.6f)
             .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large)
     ) {
-        DarkThemeDropDown(
-            darkTheme, onDarkTheme, modifier = Modifier.align(Alignment.End)
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.dimen.verySmall)
+        ) {
+            UserDetailsUi(
+                userDetails = userDetails,
+                onLogout = onLogout,
+                onLogin = onLogin,
+                modifier = Modifier.padding(MaterialTheme.dimen.small)
+            )
+
+            DarkThemeDropDown(
+                darkTheme, onDarkTheme,
+            )
+        }
         DrawerDestination.entries.forEach { destination ->
             NavigationDrawerItem(
                 label = { Text(text = destination.toString()) },
@@ -152,6 +190,57 @@ fun DrawerContent(
                         contentDescription = "nav icon"
                     )
                 })
+        }
+    }
+}
+
+@Composable
+fun UserDetailsUi(
+    userDetails: UserDetails,
+    onLogout: () -> Unit,
+    onLogin: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var isCloseSessionDropDownOpen by remember {
+        mutableStateOf(false)
+    }
+
+    Column(modifier) {
+        UserImage(
+            userDetails.avatarPath,
+        )
+
+        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+        Row(
+            Modifier
+                .clip(MaterialTheme.shapes.small)
+                .clickable {
+                    isCloseSessionDropDownOpen = true
+                }
+                .padding(MaterialTheme.dimen.small)
+        ) {
+            Text(text = userDetails.username.ifBlank { "Nosey" })
+
+            Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
+
+            Icon(imageVector = Icons.Rounded.ArrowDropDown, contentDescription = "drop down icon")
+
+            val isLoggedIn by remember {
+                derivedStateOf {
+                    userDetails.username.isNotBlank()
+                }
+            }
+
+            DropdownMenu(
+                expanded = isCloseSessionDropDownOpen,
+                onDismissRequest = { isCloseSessionDropDownOpen = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(text = if (isLoggedIn) "Logout" else "Login") },
+                    onClick = if (isLoggedIn) onLogout else onLogin
+                )
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.di.actorDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM
+import com.enmanuelbergling.ktormovies.ui.screen.login.LoginVM
+import com.enmanuelbergling.ktormovies.ui.screen.login.di.loginModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.di.movieDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesVM
@@ -19,7 +21,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val vmModule = module {
-    includes(movieModule, movieDetailsModule, actorDetailsModule)
+    includes(movieModule, movieDetailsModule, actorDetailsModule, loginModule)
 
     factoryOf(::MovieDetailsVM)
     factoryOf(::MoviesVM)
@@ -30,4 +32,5 @@ val vmModule = module {
     factory { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
     factory { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
     factoryOf(::CornTimeVM)
+    factoryOf(::LoginVM)
 }
