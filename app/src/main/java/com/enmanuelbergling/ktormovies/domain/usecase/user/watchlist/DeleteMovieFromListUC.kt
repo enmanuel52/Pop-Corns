@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.domain.usecase.user.watch
+package com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist
 
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
 

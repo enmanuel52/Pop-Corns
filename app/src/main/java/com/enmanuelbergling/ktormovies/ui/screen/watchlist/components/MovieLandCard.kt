@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.list.components
+package com.enmanuelbergling.ktormovies.ui.screen.watchlist.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement

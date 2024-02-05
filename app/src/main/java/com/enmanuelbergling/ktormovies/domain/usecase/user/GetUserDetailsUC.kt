@@ -4,6 +4,7 @@ import com.enmanuelbergling.ktormovies.data.source.preferences.domain.AuthPrefer
 import com.enmanuelbergling.ktormovies.data.source.preferences.domain.UserPreferenceDS
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
 import kotlinx.coroutines.flow.firstOrNull
 
 class GetUserDetailsUC(
@@ -11,8 +12,9 @@ class GetUserDetailsUC(
     private val preferenceDS: AuthPreferenceDS,
     private val userPreferenceDS: UserPreferenceDS,
 ) {
-    suspend operator fun invoke() = run {
-        val sessionId = preferenceDS.getSessionId().firstOrNull() ?: return@run
+    suspend operator fun invoke(): ResultHandler<UserDetails> = run {
+        val sessionId = preferenceDS.getSessionId().firstOrNull()
+            ?: return ResultHandler.Error(Exception("Not session found, login and try again"))
 
         remoteDS.getAccount(sessionId).also { result ->
             if (result is ResultHandler.Success) {

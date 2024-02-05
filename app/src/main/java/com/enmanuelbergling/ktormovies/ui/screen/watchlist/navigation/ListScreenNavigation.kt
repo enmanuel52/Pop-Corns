@@ -1,6 +1,6 @@
-package com.enmanuelbergling.ktormovies.ui.screen.list.navigation
+package com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation
 
-import com.enmanuelbergling.ktormovies.ui.screen.list.ListScreen
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.WatchListRoute
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder
@@ -17,7 +17,7 @@ fun RouteBuilder.listGraph(
 ) {
     group(route = LIST_GRAPH_ROUTE, initialRoute = "/$LIST_SCREEN_ROUTE") {
         scene("/$LIST_SCREEN_ROUTE") {
-            ListScreen()
+            WatchListRoute()
         }
     }
 }
