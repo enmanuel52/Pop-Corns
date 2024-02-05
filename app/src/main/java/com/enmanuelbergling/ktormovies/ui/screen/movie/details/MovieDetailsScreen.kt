@@ -3,9 +3,13 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,15 +21,27 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,10 +51,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
@@ -47,6 +68,8 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorsRowPlace
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.PersonUiItem
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.toPersonUi
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.WatchListCard
+import kotlinx.coroutines.launch
 import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -55,42 +78,63 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
 
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val watchList = viewModel.watchlists.collectAsLazyPagingItems()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
     MovieDetailsScreen(
         uiData = uiData,
         uiState = uiState,
+        watchList = watchList,
+        onAddToMovieList = viewModel::addMovieToList,
         onActor = onActor,
         onBack = onBack,
         onRetry = viewModel::loadPage
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
+    watchList: LazyPagingItems<WatchList>,
+    onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
     onActor: (actorId: Int) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
 ) {
 
-    val snackbarHostState = remember {
-        SnackbarHostState()
-    }
-
     val (details, creditsState) = uiData
+
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = SheetState(false, SheetValue.PartiallyExpanded)
+    )
 
     HandleUiState(
         uiState = uiState,
-        snackState = snackbarHostState,
+        snackState = scaffoldState.snackbarHostState,
         onRetry,
         getFocus = details == null
     )
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+    val scope = rememberCoroutineScope()
+
+    BottomSheetScaffold(
+        snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) },
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            SheetContent(
+                watchList = watchList,
+                details = details,
+                onAddToMovieList = onAddToMovieList,
+                onDismiss = {
+                    scope.launch {
+                        scaffoldState.bottomSheetState.partialExpand()
+                    }
+                }
+            )
+        },
     ) { paddingValues ->
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
@@ -109,6 +153,13 @@ private fun MovieDetailsScreen(
                     details.formattedGenres,
                     details.duration
                 )
+
+                addToListButton {
+                    scope.launch {
+                        scaffoldState.bottomSheetState.expand()
+                    }
+                }
+
 
                 overview(details.overview)
 
@@ -130,6 +181,72 @@ private fun MovieDetailsScreen(
         }
     }
 
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+private fun SheetContent(
+    watchList: LazyPagingItems<WatchList>,
+    details: MovieDetails?,
+    onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    LazyColumn(contentPadding = PaddingValues(MaterialTheme.dimen.small)) {
+        stickyHeader {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            BottomSheetDefaults.Elevation
+                        )
+                    )
+                    .padding(vertical = MaterialTheme.dimen.small),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Watch lists: ",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+
+        items(watchList) { list ->
+            list?.let {
+                WatchListCard(
+                    name = list.name,
+                    description = list.description,
+                    modifier = Modifier.fillMaxWidth()
+                            then if (details?.belongsTo(list.id) == true) Modifier.border(
+                        width = MaterialTheme.dimen.superSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CardDefaults.elevatedShape
+                    ) else Modifier
+                ) {
+                    if (details?.belongsTo(list.id) == true) {
+
+                    } else {
+                        onAddToMovieList(details?.id ?: 0, list.id)
+                    }
+
+                    onDismiss()
+                }
+            }
+        }
+    }
+}
+
+private fun LazyListScope.addToListButton(
+    onClick: () -> Unit,
+) {
+    item {
+        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(onClick = onClick) {
+                Text(text = "Add to watch list")
+            }
+        }
+    }
 }
 
 private fun LazyListScope.persons(

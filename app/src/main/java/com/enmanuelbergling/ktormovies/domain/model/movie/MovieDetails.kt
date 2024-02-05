@@ -28,6 +28,10 @@ data class MovieDetails(
     val voteAverage: Double,
     val voteCount: Int
 ) {
+    fun belongsTo(listId: Int): Boolean {
+        return belongsToCollection?.id == listId
+    }
+
     val releaseYear: String
         get() = releaseDate.substring(0..3)
 
