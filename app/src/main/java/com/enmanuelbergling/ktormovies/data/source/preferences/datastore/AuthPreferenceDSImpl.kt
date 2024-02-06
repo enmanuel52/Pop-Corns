@@ -5,7 +5,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.enmanuelbergling.ktormovies.data.source.preferences.domain.AuthPreferenceDS
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 class AuthPreferenceDSImpl(private val context: Context) : AuthPreferenceDS {
@@ -22,9 +23,8 @@ class AuthPreferenceDSImpl(private val context: Context) : AuthPreferenceDS {
         }
     }
 
-    override fun getSessionId(): String = runBlocking {
-        context.dataStore.data.firstOrNull()?.let { it[Keys.SESSION_ID] } ?: ""
-    }
+    override fun getSessionId(): Flow<String> =
+        context.dataStore.data.map { it[Keys.SESSION_ID].orEmpty() }
 
     override fun clear() {
         saveSessionId("")

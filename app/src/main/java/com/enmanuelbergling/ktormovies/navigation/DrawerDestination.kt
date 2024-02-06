@@ -9,7 +9,7 @@ import androidx.compose.material.icons.rounded.Person2
 import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.ACTORS_SCREEN_ROUTE
-import com.enmanuelbergling.ktormovies.ui.screen.list.navigation.LIST_SCREEN_ROUTE
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.LIST_SCREEN_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_SCREEN_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.SERIES_SCREEN_ROUTE
 

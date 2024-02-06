@@ -10,9 +10,9 @@ internal data class AccountListsPageDTO(
     @SerialName("page")
     val page: Int,
     @SerialName("results")
-    override val results: List<MovieListDTO>,
+    override val results: List<WatchListDTO>,
     @SerialName("total_pages")
     override val totalPages: Int,
     @SerialName("total_results")
     val totalResults: Int,
-) : PagingResponse<MovieListDTO>
+) : PagingResponse<WatchListDTO>

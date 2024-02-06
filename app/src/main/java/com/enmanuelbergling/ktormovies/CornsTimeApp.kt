@@ -226,7 +226,7 @@ fun UserDetailsUi(
 
             Icon(imageVector = Icons.Rounded.ArrowDropDown, contentDescription = "drop down icon")
 
-            val isLoggedIn by remember {
+            val isLoggedIn by remember(userDetails) {
                 derivedStateOf {
                     userDetails.username.isNotBlank()
                 }

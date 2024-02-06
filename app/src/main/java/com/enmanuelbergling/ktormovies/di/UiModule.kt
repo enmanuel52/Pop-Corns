@@ -3,6 +3,8 @@ package com.enmanuelbergling.ktormovies.di
 import com.enmanuelbergling.ktormovies.CornTimeVM
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchListDetails
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.di.actorDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM
@@ -16,6 +18,8 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlaying
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.details.WatchListDetailsVM
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.home.WatchListVM
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -23,7 +27,7 @@ import org.koin.dsl.module
 val vmModule = module {
     includes(movieModule, movieDetailsModule, actorDetailsModule, loginModule)
 
-    factoryOf(::MovieDetailsVM)
+    factory { MovieDetailsVM(get(), get(named<WatchList>()), get(), get(), get()) }
     factoryOf(::MoviesVM)
     factory { ActorsVM(get(qualifier = named<Actor>())) }
     factoryOf(::ActorDetailsVM)
@@ -33,4 +37,6 @@ val vmModule = module {
     factory { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
     factoryOf(::CornTimeVM)
     factoryOf(::LoginVM)
+    factory { WatchListVM(get(named<WatchList>()), get(), get(), get(), get()) }
+    factory { WatchListDetailsVM(get(named<WatchListDetails>()), get(), get(), get()) }
 }

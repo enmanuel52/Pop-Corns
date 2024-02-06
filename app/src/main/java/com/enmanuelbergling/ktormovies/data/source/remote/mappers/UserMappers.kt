@@ -2,10 +2,10 @@ package com.enmanuelbergling.ktormovies.data.source.remote.mappers
 
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.UserDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CreateListBody
-import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MovieListDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchListDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchResponseDTO
 import com.enmanuelbergling.ktormovies.domain.model.user.CreateListPost
-import com.enmanuelbergling.ktormovies.domain.model.user.MovieList
+import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchResponse
 
@@ -17,7 +17,7 @@ internal fun CreateListPost.asBody() = CreateListBody(name, description, languag
 
 internal fun WatchResponseDTO.toModel() = WatchResponse(statusMessage)
 
-internal fun MovieListDTO.toModel() = MovieList(
+internal fun WatchListDTO.toModel() = WatchList(
     description = description,
     favoriteCount = favoriteCount,
     id = id,

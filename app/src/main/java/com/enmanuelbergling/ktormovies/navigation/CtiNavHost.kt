@@ -4,16 +4,13 @@ import androidx.compose.runtime.Composable
 import com.enmanuelbergling.ktormovies.PreComposeAppState
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.actorsGraph
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsDetails
-import com.enmanuelbergling.ktormovies.ui.screen.list.navigation.listGraph
-import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.LOGIN_ROUTE
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.listGraph
 import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.loginScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesSection
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.PopUpTo
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.navigateToListDetailsScreen
 import moe.tlaster.precompose.navigation.NavHost as PreNavHost
 
 
@@ -41,6 +38,10 @@ fun PreCtiNavHost(
 
         loginScreen(navigator::popBackStack)
 
-        listGraph()
+        listGraph(
+            navigator::navigateToListDetailsScreen,
+            navigator::navigateToMoviesDetails,
+            navigator::popBackStack
+        )
     }
 }
