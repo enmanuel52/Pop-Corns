@@ -1,10 +1,15 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -17,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,17 +56,60 @@ fun MovieLandCard(
                 error = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 contentScale = ContentScale.FillHeight,
-                modifier = Modifier.animateContentSize()
+                modifier = Modifier
+                    .animateContentSize()
+                    .clip(MaterialTheme.shapes.medium)
             )
 
             Spacer(modifier = Modifier.width(MaterialTheme.dimen.mediumSmall))
 
             MovieLandInformation(
                 title = movie.title,
-                year = movie.releaseDate,
+                year = movie.releaseYear,
                 voteAverage = movie.voteAverage,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             )
+        }
+
+    }
+}
+
+@Preview
+@Composable
+fun MovieLandCardPlaceholder(
+    modifier: Modifier = Modifier,
+) {
+    ElevatedCard(
+        modifier = Modifier
+            .heightIn(max = 120.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(.6f)
+                    .background(
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.shapes.medium
+                    )
+            )
+
+            Spacer(modifier = Modifier.width(MaterialTheme.dimen.mediumSmall))
+
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
+                Box(
+                    modifier = Modifier
+                        .height(MaterialTheme.dimen.large)
+                        .fillMaxWidth(.75f)
+                        .background(
+                            MaterialTheme.colorScheme.surfaceVariant,
+                            shape = MaterialTheme.shapes.small
+                        )
+                )
+
+                RatingStars(value = 0f, spaceBetween = 3.dp, size = 24.dp)
+            }
         }
 
     }

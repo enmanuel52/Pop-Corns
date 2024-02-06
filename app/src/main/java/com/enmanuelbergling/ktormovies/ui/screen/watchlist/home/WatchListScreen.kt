@@ -1,6 +1,7 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist
+package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -45,9 +45,7 @@ import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 
 @Composable
-fun WatchListRoute(
-
-) {
+fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit) {
     val viewModel = koinViewModel<WatchListVM>()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,7 +54,13 @@ fun WatchListRoute(
 
     HandleUiState(uiState = uiState, onIdle = viewModel::onIdle, onSuccess = lists::refresh)
 
-    WatchListScreen(lists, createListForm, viewModel::onCreateForm, viewModel::deleteList)
+    WatchListScreen(
+        lists,
+        createListForm,
+        viewModel::onCreateForm,
+        viewModel::deleteList,
+        onDetails
+    )
 }
 
 @Composable
@@ -66,6 +70,7 @@ private fun WatchListScreen(
     createListForm: CreateListForm,
     onCreateFormEvent: (CreateListEvent) -> Unit,
     onDeleteList: (listId: Int) -> Unit,
+    onDetails: (listId: Int, listName: String) -> Unit,
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -82,31 +87,37 @@ private fun WatchListScreen(
     }, snackbarHost = {
         SnackbarHost(snackbarHostState)
     }) {
-        PullToRefreshContainer(
-            refreshing = false,
-            onRefresh = lists::refresh,
+        Box(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .shimmerIf { lists.isRefreshing },
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small, Alignment.Top),
-            contentPadding = PaddingValues(MaterialTheme.dimen.small)
         ) {
-            items(lists) { list ->
-                list?.let {
-                    WatchListCard(
-                        name = list.name,
-                        description = list.description,
-                        Modifier.fillMaxWidth()
-                    ) {
-
+            PullToRefreshContainer(
+                refreshing = false,
+                onRefresh = lists::refresh,
+                modifier = Modifier
+                    .shimmerIf { lists.isRefreshing },
+                verticalArrangement = Arrangement.spacedBy(
+                    MaterialTheme.dimen.small,
+                ),
+                contentPadding = PaddingValues(MaterialTheme.dimen.small)
+            ) {
+                if (lists.isRefreshing) {
+                    items(12) {
+                        WatchListCardPlaceholder()
                     }
-                }
-            }
-
-            if (lists.isRefreshing) {
-                items(12) {
-                    WatchListCardPlaceholder()
+                } else {
+                    items(lists) { list ->
+                        list?.let {
+                            WatchListCard(
+                                name = list.name,
+                                description = list.description,
+                                Modifier.fillMaxWidth()
+                            ) {
+                                onDetails(list.id, list.name)
+                            }
+                        }
+                    }
                 }
             }
         }

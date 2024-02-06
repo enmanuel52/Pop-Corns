@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist
+package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
 
 import androidx.paging.PagingData
 import androidx.paging.cachedIn

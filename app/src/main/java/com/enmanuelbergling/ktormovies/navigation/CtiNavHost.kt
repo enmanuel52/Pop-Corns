@@ -10,6 +10,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesSection
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.navigateToListDetailsScreen
 import moe.tlaster.precompose.navigation.NavHost as PreNavHost
 
 
@@ -37,6 +38,10 @@ fun PreCtiNavHost(
 
         loginScreen(navigator::popBackStack)
 
-        listGraph()
+        listGraph(
+            navigator::navigateToListDetailsScreen,
+            navigator::navigateToMoviesDetails,
+            navigator::popBackStack
+        )
     }
 }

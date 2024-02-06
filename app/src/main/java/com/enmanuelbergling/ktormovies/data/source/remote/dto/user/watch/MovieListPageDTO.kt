@@ -25,7 +25,7 @@ internal data class MovieListPageDTO(
     @SerialName("name")
     val name: String,
     @SerialName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
 ) : PagingResponse<MovieDTO> {
     override val totalPages: Int
         get() = itemCount
