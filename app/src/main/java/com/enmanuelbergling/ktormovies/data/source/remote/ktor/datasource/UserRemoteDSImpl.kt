@@ -56,4 +56,9 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
         )
             .toModel()
     }
+
+    override suspend fun checkItemStatus(listId: Int, movieId: Int): ResultHandler<Boolean> =
+        safeKtorCall {
+            service.checkItemStatus(listId, movieId).itemPresent
+        }
 }

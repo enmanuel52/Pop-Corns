@@ -19,6 +19,7 @@ import com.enmanuelbergling.ktormovies.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.GetUserDetailsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.UserLogoutUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.AddMovieToListUC
+import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.CreateListUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.DeleteListUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.DeleteMovieFromListUC
@@ -53,6 +54,7 @@ val ucModule = module {
     singleOf(::DeleteMovieFromListUC)
     singleOf(::AddMovieToListUC)
     singleOf(::DeleteListUC)
+    singleOf(::CheckItemStatusUC)
 
     //Validation
     singleOf(::BasicFormValidationUC)

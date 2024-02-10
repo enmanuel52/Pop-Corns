@@ -27,7 +27,7 @@ import org.koin.dsl.module
 val vmModule = module {
     includes(movieModule, movieDetailsModule, actorDetailsModule, loginModule)
 
-    factory { MovieDetailsVM(get(), get(named<WatchList>()), get(), get(), get()) }
+    factory { MovieDetailsVM(get(), get(named<WatchList>()), get(), get(), get(), get()) }
     factoryOf(::MoviesVM)
     factory { ActorsVM(get(qualifier = named<Actor>())) }
     factoryOf(::ActorDetailsVM)

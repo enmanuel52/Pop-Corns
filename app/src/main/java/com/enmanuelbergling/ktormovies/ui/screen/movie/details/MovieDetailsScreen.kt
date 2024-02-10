@@ -21,14 +21,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
@@ -38,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +60,8 @@ import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.core.isEmpty
+import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorsRowPlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
@@ -79,6 +78,7 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val watchList = viewModel.watchlists.collectAsLazyPagingItems()
+    val withinListsState by viewModel.withinListsState.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
@@ -86,21 +86,25 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
         uiData = uiData,
         uiState = uiState,
         watchList = watchList,
+        withinListsState = withinListsState,
         onAddToMovieList = viewModel::addMovieToList,
         onActor = onActor,
+        onCheckList = viewModel::checkMovieOnLists,
         onBack = onBack,
         onRetry = viewModel::loadPage
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
     watchList: LazyPagingItems<WatchList>,
+    withinListsState: List<WatchList>,
     onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
     onActor: (actorId: Int) -> Unit,
+    onCheckList: (List<WatchList>) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
 ) {
@@ -126,7 +130,9 @@ private fun MovieDetailsScreen(
         sheetContent = {
             SheetContent(
                 watchList = watchList,
+                withinListsState = withinListsState,
                 details = details,
+                onCheckList = onCheckList,
                 onAddToMovieList = onAddToMovieList,
                 onDismiss = {
                     scope.launch {
@@ -154,9 +160,11 @@ private fun MovieDetailsScreen(
                     details.duration
                 )
 
-                addToListButton {
-                    scope.launch {
-                        scaffoldState.bottomSheetState.expand()
+                if (!watchList.isEmpty) {
+                    addToListButton {
+                        scope.launch {
+                            scaffoldState.bottomSheetState.expand()
+                        }
                     }
                 }
 
@@ -187,10 +195,18 @@ private fun MovieDetailsScreen(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 private fun SheetContent(
     watchList: LazyPagingItems<WatchList>,
+    withinListsState: List<WatchList>,
     details: MovieDetails?,
+    onCheckList: (List<WatchList>) -> Unit,
     onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    LaunchedEffect(key1 = watchList) {
+        if (!watchList.isRefreshing && !watchList.isEmpty) {
+            onCheckList(watchList.itemSnapshotList.items)
+        }
+    }
+
     LazyColumn(contentPadding = PaddingValues(MaterialTheme.dimen.small)) {
         stickyHeader {
             Column(
@@ -218,13 +234,13 @@ private fun SheetContent(
                     name = list.name,
                     description = list.description,
                     modifier = Modifier.fillMaxWidth()
-                            then if (details?.belongsTo(list.id) == true) Modifier.border(
+                            then if (list in withinListsState) Modifier.border(
                         width = MaterialTheme.dimen.superSmall,
                         color = MaterialTheme.colorScheme.primary,
                         shape = CardDefaults.elevatedShape
                     ) else Modifier
                 ) {
-                    if (details?.belongsTo(list.id) == true) {
+                    if (list in withinListsState) {
 
                     } else {
                         onAddToMovieList(details?.id ?: 0, list.id)
