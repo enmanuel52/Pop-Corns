@@ -5,9 +5,10 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,16 +17,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
@@ -43,6 +49,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +69,7 @@ import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.core.isAppending
 import com.enmanuelbergling.ktormovies.ui.core.isEmpty
 import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
@@ -86,10 +95,18 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
 
-    val scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+    val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = SheetState(false, SheetValue.PartiallyExpanded)
     )
+
     val scope = rememberCoroutineScope()
+
+
+    LaunchedEffect(watchList.isEmpty) {
+        if (!watchList.isEmpty && !watchList.isAppending && !watchList.isRefreshing) {
+            viewModel.checkMovieOnLists(watchList.itemSnapshotList.items)
+        }
+    }
 
     MovieDetailsScreen(
         uiData = uiData,
@@ -104,7 +121,6 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
             watchList = watchList,
             withinListsState = withinListsState,
             details = uiData.details,
-            onCheckList = viewModel::checkMovieOnLists,
             onAddToMovieList = viewModel::addMovieToList,
             onDismiss = {
                 scope.launch {
@@ -146,50 +162,75 @@ private fun MovieDetailsScreen(
             watchListsSheet()
         },
     ) { paddingValues ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+        Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(paddingValues)
+                .fillMaxWidth()
         ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
 
-            details?.let {
-                detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
+                details?.let {
+                    detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
 
-                information(
-                    details.title,
-                    details.releaseYear,
-                    details.voteAverage.toFloat(),
-                    details.formattedGenres,
-                    details.duration
-                )
+                    information(
+                        details.title,
+                        details.releaseYear,
+                        details.voteAverage.toFloat(),
+                        details.formattedGenres,
+                        details.duration
+                    )
 
-                if (hasWatchList) {
-                    addToListButton {
-                        scope.launch {
-                            scaffoldState.bottomSheetState.expand()
+                    if (hasWatchList) {
+                        addToListButton {
+                            scope.launch {
+                                scaffoldState.bottomSheetState.expand()
+                            }
                         }
                     }
+
+
+                    overview(details.overview)
+
+                    persons(
+                        title = "Cast",
+                        persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
+                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                        onActor = onActor
+                    )
+
+                    persons(
+                        title = "Crew",
+                        persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
+                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                        onActor = onActor
+                    )
                 }
 
-
-                overview(details.overview)
-
-                persons(
-                    title = "Cast",
-                    persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
-                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                    onActor = onActor
-                )
-
-                persons(
-                    title = "Crew",
-                    persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
-                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                    onActor = onActor
-                )
             }
 
+            BoxWithConstraints(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(maxWidth)
+                        .blur(MaterialTheme.dimen.veryLarge, BlurredEdgeTreatment(CircleShape))
+                )
+
+                IconButton(
+                    onClick = onBack,
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBackIosNew,
+                        contentDescription = "back icon"
+                    )
+                }
+            }
         }
     }
 
@@ -201,16 +242,9 @@ private fun SheetContent(
     watchList: LazyPagingItems<WatchList>,
     withinListsState: List<WatchList>,
     details: MovieDetails?,
-    onCheckList: (List<WatchList>) -> Unit,
     onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    LaunchedEffect(key1 = watchList) {
-        if (!watchList.isRefreshing && !watchList.isEmpty) {
-            onCheckList(watchList.itemSnapshotList.items)
-        }
-    }
-
     LazyColumn(contentPadding = PaddingValues(MaterialTheme.dimen.small)) {
         stickyHeader {
             Column(
@@ -237,12 +271,10 @@ private fun SheetContent(
                 WatchListCard(
                     name = list.name,
                     description = list.description,
-                    modifier = Modifier.fillMaxWidth()
-                            then if (list in withinListsState) Modifier.border(
-                        width = MaterialTheme.dimen.superSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CardDefaults.elevatedShape
-                    ) else Modifier
+                    modifier = Modifier.fillMaxWidth(),
+                    containerColor = if (list in withinListsState)
+                        MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.surface
                 ) {
                     if (list in withinListsState) {
 
@@ -385,7 +417,9 @@ private fun LazyListScope.detailsImage(
                 id = R.drawable.pop_corn_and_cinema_backdrop
             ),
             contentScale = ContentScale.Crop,
-            modifier = Modifier.animateContentSize(),
+            modifier = Modifier
+                .animateContentSize()
+                .fillMaxWidth(),
         )
     }
 }

@@ -107,12 +107,12 @@ class MovieDetailsVM(
                 }
 
                 is ResultHandler.Success -> {
-                    _uiState.update { SimplerUi.Success }
                     _withinListsState.update {
                         (it + list).distinct()
                     }
                 }
             }
         }
+        _uiState.update { SimplerUi.Success }
     }
 }
