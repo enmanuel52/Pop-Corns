@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -72,27 +73,46 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> Unit) {
 
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val watchList = viewModel.watchlists.collectAsLazyPagingItems()
     val withinListsState by viewModel.withinListsState.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
+
+    val scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = SheetState(false, SheetValue.PartiallyExpanded)
+    )
+    val scope = rememberCoroutineScope()
+
     MovieDetailsScreen(
         uiData = uiData,
         uiState = uiState,
-        watchList = watchList,
-        withinListsState = withinListsState,
-        onAddToMovieList = viewModel::addMovieToList,
+        hasWatchList = !watchList.isEmpty,
+        scaffoldState = scaffoldState,
         onActor = onActor,
-        onCheckList = viewModel::checkMovieOnLists,
         onBack = onBack,
         onRetry = viewModel::loadPage
-    )
+    ) {
+        SheetContent(
+            watchList = watchList,
+            withinListsState = withinListsState,
+            details = uiData.details,
+            onCheckList = viewModel::checkMovieOnLists,
+            onAddToMovieList = viewModel::addMovieToList,
+            onDismiss = {
+                scope.launch {
+                    scaffoldState.bottomSheetState.partialExpand()
+                }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,20 +120,15 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
 private fun MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
-    watchList: LazyPagingItems<WatchList>,
-    withinListsState: List<WatchList>,
-    onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
+    hasWatchList: Boolean,
+    scaffoldState: BottomSheetScaffoldState,
     onActor: (actorId: Int) -> Unit,
-    onCheckList: (List<WatchList>) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
+    watchListsSheet: @Composable () -> Unit,
 ) {
 
     val (details, creditsState) = uiData
-
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = SheetState(false, SheetValue.PartiallyExpanded)
-    )
 
     HandleUiState(
         uiState = uiState,
@@ -128,18 +143,7 @@ private fun MovieDetailsScreen(
         snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) },
         scaffoldState = scaffoldState,
         sheetContent = {
-            SheetContent(
-                watchList = watchList,
-                withinListsState = withinListsState,
-                details = details,
-                onCheckList = onCheckList,
-                onAddToMovieList = onAddToMovieList,
-                onDismiss = {
-                    scope.launch {
-                        scaffoldState.bottomSheetState.partialExpand()
-                    }
-                }
-            )
+            watchListsSheet()
         },
     ) { paddingValues ->
         LazyColumn(
@@ -160,7 +164,7 @@ private fun MovieDetailsScreen(
                     details.duration
                 )
 
-                if (!watchList.isEmpty) {
+                if (hasWatchList) {
                     addToListButton {
                         scope.launch {
                             scaffoldState.bottomSheetState.expand()
