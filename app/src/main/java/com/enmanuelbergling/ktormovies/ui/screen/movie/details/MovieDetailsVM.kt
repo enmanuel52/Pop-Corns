@@ -84,16 +84,21 @@ class MovieDetailsVM(
         }
     }
 
-    fun addMovieToList(movieId: Int, listId: Int) = viewModelScope.launch {
+    fun addMovieToList(movieId: Int, list: WatchList) = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
         when (val result = addMovieToListUC(
             movieId = movieId,
-            listId = listId,
+            listId = list.id,
             sessionId = sessionId.value
         )
         ) {
             is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
-            is ResultHandler.Success -> _uiState.update { SimplerUi.Success }
+            is ResultHandler.Success -> {
+                _uiState.update { SimplerUi.Success }
+                _withinListsState.update {
+                    (it + list).distinct()
+                }
+            }
         }
     }
 
@@ -107,8 +112,11 @@ class MovieDetailsVM(
                 }
 
                 is ResultHandler.Success -> {
-                    _withinListsState.update {
-                        (it + list).distinct()
+                    val withinList = result.data == true
+                    if (withinList) {
+                        _withinListsState.update {
+                            (it + list).distinct()
+                        }
                     }
                 }
             }

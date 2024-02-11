@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -28,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -94,14 +94,6 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
-
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = SheetState(false, SheetValue.PartiallyExpanded)
-    )
-
-    val scope = rememberCoroutineScope()
-
-
     LaunchedEffect(watchList.isEmpty) {
         if (!watchList.isEmpty && !watchList.isAppending && !watchList.isRefreshing) {
             viewModel.checkMovieOnLists(watchList.itemSnapshotList.items)
@@ -112,7 +104,6 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
         uiData = uiData,
         uiState = uiState,
         hasWatchList = !watchList.isEmpty,
-        scaffoldState = scaffoldState,
         onActor = onActor,
         onBack = onBack,
         onRetry = viewModel::loadPage
@@ -121,12 +112,7 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
             watchList = watchList,
             withinListsState = withinListsState,
             details = uiData.details,
-            onAddToMovieList = viewModel::addMovieToList,
-            onDismiss = {
-                scope.launch {
-                    scaffoldState.bottomSheetState.partialExpand()
-                }
-            }
+            onAddToMovieList = viewModel::addMovieToList
         )
     }
 }
@@ -137,7 +123,6 @@ private fun MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
     hasWatchList: Boolean,
-    scaffoldState: BottomSheetScaffoldState,
     onActor: (actorId: Int) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
@@ -146,14 +131,18 @@ private fun MovieDetailsScreen(
 
     val (details, creditsState) = uiData
 
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = SheetState(false, SheetValue.PartiallyExpanded)
+    )
+
+    val scope = rememberCoroutineScope()
+
     HandleUiState(
         uiState = uiState,
         snackState = scaffoldState.snackbarHostState,
         onRetry,
         getFocus = details == null
     )
-
-    val scope = rememberCoroutineScope()
 
     BottomSheetScaffold(
         snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) },
@@ -242,8 +231,7 @@ private fun SheetContent(
     watchList: LazyPagingItems<WatchList>,
     withinListsState: List<WatchList>,
     details: MovieDetails?,
-    onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
-    onDismiss: () -> Unit,
+    onAddToMovieList: (movieId: Int, WatchList) -> Unit,
 ) {
     LazyColumn(contentPadding = PaddingValues(MaterialTheme.dimen.small)) {
         stickyHeader {
@@ -268,21 +256,22 @@ private fun SheetContent(
 
         items(watchList) { list ->
             list?.let {
+                val listContainerColor by animateColorAsState(
+                    targetValue = if (list in withinListsState)
+                        MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.surface,
+                    label = "list background animation",
+                )
+
                 WatchListCard(
                     name = list.name,
                     description = list.description,
                     modifier = Modifier.fillMaxWidth(),
-                    containerColor = if (list in withinListsState)
-                        MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.surface
+                    containerColor = listContainerColor
                 ) {
-                    if (list in withinListsState) {
-
-                    } else {
-                        onAddToMovieList(details?.id ?: 0, list.id)
+                    if (list !in withinListsState) {
+                        onAddToMovieList(details?.id ?: 0, list)
                     }
-
-                    onDismiss()
                 }
             }
         }
