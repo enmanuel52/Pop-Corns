@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PlaylistPlay
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,9 +33,10 @@ fun WatchListCard(
     name: String,
     description: String,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
     onClick: () -> Unit,
 ) {
-    ElevatedCard(onClick = onClick, modifier = modifier) {
+    ElevatedCard(onClick = onClick, modifier = modifier, colors = CardDefaults.elevatedCardColors(containerColor)) {
         Row(
             Modifier.padding(MaterialTheme.dimen.small),
             verticalAlignment = Alignment.CenterVertically

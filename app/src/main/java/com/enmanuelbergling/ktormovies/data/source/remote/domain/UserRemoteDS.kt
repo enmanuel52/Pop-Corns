@@ -29,4 +29,9 @@ interface UserRemoteDS : RemoteDataSource {
         listId: Int,
         sessionId: String,
     ): ResultHandler<WatchResponse>
+
+    suspend fun checkItemStatus(
+        listId: Int,
+        movieId: Int,
+    ): ResultHandler<Boolean>
 }

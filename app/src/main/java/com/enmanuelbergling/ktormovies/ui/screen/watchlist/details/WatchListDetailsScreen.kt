@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.details
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,31 +9,42 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
+import com.enmanuelbergling.ktormovies.ui.components.NewerDragListItem
 import com.enmanuelbergling.ktormovies.ui.components.PullToRefreshContainer
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.MovieLandCard
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.MovieLandCardPlaceholder
-import kotlinx.coroutines.Job
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -61,13 +73,15 @@ fun WatchListDetailsRoute(
     )
 }
 
+private const val NO_MOVIE = -1
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WatchListDetailsScreen(
     listName: String,
     movies: LazyPagingItems<Movie>,
     uiState: SimplerUi,
-    onDeleteMovie: (Int) -> Job,
+    onDeleteMovie: (Int) -> Unit,
     onMovieDetails: (movieId: Int) -> Unit,
     onBack: () -> Unit,
     onIdle: () -> Unit,
@@ -75,6 +89,19 @@ fun WatchListDetailsScreen(
     HandleUiState(uiState = uiState, onIdle = onIdle, movies::refresh)
 
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    var pickedMovie by rememberSaveable {
+        mutableIntStateOf(NO_MOVIE)
+    }
+
+    if (pickedMovie != NO_MOVIE) {
+        DeleteMovieConfirmationDialog(
+            onDismiss = { pickedMovie = NO_MOVIE },
+            onDeleteMovie = {
+                onDeleteMovie(pickedMovie)
+                pickedMovie = NO_MOVIE
+            })
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -93,7 +120,6 @@ fun WatchListDetailsScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .shimmerIf { movies.isRefreshing }
         ) {
             PullToRefreshContainer(
                 refreshing = false, onRefresh = { movies.refresh() },
@@ -102,8 +128,8 @@ fun WatchListDetailsScreen(
                 ),
                 contentPadding = PaddingValues(MaterialTheme.dimen.small),
                 modifier = Modifier
-                    .nestedScroll(scrollBehaviour.nestedScrollConnection)
-                    .fillMaxSize()
+                    .shimmerIf { movies.isRefreshing },
+                scrollBehavior = scrollBehaviour
             ) {
                 if (movies.isRefreshing) {
                     items(12) {
@@ -112,8 +138,41 @@ fun WatchListDetailsScreen(
                 } else {
                     items(movies) { movie ->
                         movie?.let {
-                            MovieLandCard(movie = movie, modifier = Modifier.fillMaxWidth()) {
-                                onMovieDetails(movie.id)
+                            val bottomWith by remember {
+                                mutableStateOf((-80).dp)
+                            }
+
+                            NewerDragListItem(
+                                bottomContentWidth = with(LocalDensity.current) { bottomWith.toPx() },
+                                bottomContent = {
+                                    Box(Modifier.align(Alignment.CenterEnd)) {
+
+                                        IconButton(
+                                            onClick = { pickedMovie = it.id },
+                                            modifier = Modifier
+                                                .padding(horizontal = MaterialTheme.dimen.small)
+
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Delete,
+                                                contentDescription = "delete icon"
+                                            )
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.background(
+                                    MaterialTheme.colorScheme.surfaceVariant,
+                                    CardDefaults.elevatedShape
+                                ),
+                            ) {
+
+                                MovieLandCard(
+                                    movie = movie,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    onMovieDetails(movie.id)
+                                }
                             }
                         }
                     }
@@ -121,4 +180,27 @@ fun WatchListDetailsScreen(
             }
         }
     }
+}
+
+@Composable
+private fun DeleteMovieConfirmationDialog(onDismiss: () -> Unit, onDeleteMovie: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Confirmation") },
+        text = {
+            Text(
+                text = "Are you sure of this?"
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDeleteMovie) {
+                Text(text = "Delete", color = MaterialTheme.colorScheme.error)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        }
+    )
 }

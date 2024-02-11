@@ -1,13 +1,15 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,16 +18,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +49,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +69,9 @@ import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.core.isAppending
+import com.enmanuelbergling.ktormovies.ui.core.isEmpty
+import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorsRowPlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
@@ -73,36 +82,51 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> Unit) {
 
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val watchList = viewModel.watchlists.collectAsLazyPagingItems()
+    val withinListsState by viewModel.withinListsState.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(watchList.isEmpty) {
+        if (!watchList.isEmpty && !watchList.isAppending && !watchList.isRefreshing) {
+            viewModel.checkMovieOnLists(watchList.itemSnapshotList.items)
+        }
+    }
 
     MovieDetailsScreen(
         uiData = uiData,
         uiState = uiState,
-        watchList = watchList,
-        onAddToMovieList = viewModel::addMovieToList,
+        hasWatchList = !watchList.isEmpty,
         onActor = onActor,
         onBack = onBack,
         onRetry = viewModel::loadPage
-    )
+    ) {
+        SheetContent(
+            watchList = watchList,
+            withinListsState = withinListsState,
+            details = uiData.details,
+            onAddToMovieList = viewModel::addMovieToList
+        )
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
-    watchList: LazyPagingItems<WatchList>,
-    onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
+    hasWatchList: Boolean,
     onActor: (actorId: Int) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
+    watchListsSheet: @Composable () -> Unit,
 ) {
 
     val (details, creditsState) = uiData
@@ -111,6 +135,8 @@ private fun MovieDetailsScreen(
         bottomSheetState = SheetState(false, SheetValue.PartiallyExpanded)
     )
 
+    val scope = rememberCoroutineScope()
+
     HandleUiState(
         uiState = uiState,
         snackState = scaffoldState.snackbarHostState,
@@ -118,66 +144,82 @@ private fun MovieDetailsScreen(
         getFocus = details == null
     )
 
-    val scope = rememberCoroutineScope()
-
     BottomSheetScaffold(
         snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) },
         scaffoldState = scaffoldState,
         sheetContent = {
-            SheetContent(
-                watchList = watchList,
-                details = details,
-                onAddToMovieList = onAddToMovieList,
-                onDismiss = {
-                    scope.launch {
-                        scaffoldState.bottomSheetState.partialExpand()
-                    }
-                }
-            )
+            watchListsSheet()
         },
     ) { paddingValues ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+        Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(paddingValues)
+                .fillMaxWidth()
         ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
 
-            details?.let {
-                detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
+                details?.let {
+                    detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
 
-                information(
-                    details.title,
-                    details.releaseYear,
-                    details.voteAverage.toFloat(),
-                    details.formattedGenres,
-                    details.duration
-                )
+                    information(
+                        details.title,
+                        details.releaseYear,
+                        details.voteAverage.toFloat(),
+                        details.formattedGenres,
+                        details.duration
+                    )
 
-                addToListButton {
-                    scope.launch {
-                        scaffoldState.bottomSheetState.expand()
+                    if (hasWatchList) {
+                        addToListButton {
+                            scope.launch {
+                                scaffoldState.bottomSheetState.expand()
+                            }
+                        }
                     }
+
+
+                    overview(details.overview)
+
+                    persons(
+                        title = "Cast",
+                        persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
+                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                        onActor = onActor
+                    )
+
+                    persons(
+                        title = "Crew",
+                        persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
+                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                        onActor = onActor
+                    )
                 }
 
-
-                overview(details.overview)
-
-                persons(
-                    title = "Cast",
-                    persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
-                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                    onActor = onActor
-                )
-
-                persons(
-                    title = "Crew",
-                    persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
-                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                    onActor = onActor
-                )
             }
 
+            BoxWithConstraints(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(maxWidth)
+                        .blur(MaterialTheme.dimen.veryLarge, BlurredEdgeTreatment(CircleShape))
+                )
+
+                IconButton(
+                    onClick = onBack,
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBackIosNew,
+                        contentDescription = "back icon"
+                    )
+                }
+            }
         }
     }
 
@@ -187,9 +229,9 @@ private fun MovieDetailsScreen(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 private fun SheetContent(
     watchList: LazyPagingItems<WatchList>,
+    withinListsState: List<WatchList>,
     details: MovieDetails?,
-    onAddToMovieList: (movieId: Int, listId: Int) -> Unit,
-    onDismiss: () -> Unit,
+    onAddToMovieList: (movieId: Int, WatchList) -> Unit,
 ) {
     LazyColumn(contentPadding = PaddingValues(MaterialTheme.dimen.small)) {
         stickyHeader {
@@ -214,23 +256,22 @@ private fun SheetContent(
 
         items(watchList) { list ->
             list?.let {
+                val listContainerColor by animateColorAsState(
+                    targetValue = if (list in withinListsState)
+                        MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.surface,
+                    label = "list background animation",
+                )
+
                 WatchListCard(
                     name = list.name,
                     description = list.description,
-                    modifier = Modifier.fillMaxWidth()
-                            then if (details?.belongsTo(list.id) == true) Modifier.border(
-                        width = MaterialTheme.dimen.superSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CardDefaults.elevatedShape
-                    ) else Modifier
+                    modifier = Modifier.fillMaxWidth(),
+                    containerColor = listContainerColor
                 ) {
-                    if (details?.belongsTo(list.id) == true) {
-
-                    } else {
-                        onAddToMovieList(details?.id ?: 0, list.id)
+                    if (list !in withinListsState) {
+                        onAddToMovieList(details?.id ?: 0, list)
                     }
-
-                    onDismiss()
                 }
             }
         }
@@ -365,7 +406,9 @@ private fun LazyListScope.detailsImage(
                 id = R.drawable.pop_corn_and_cinema_backdrop
             ),
             contentScale = ContentScale.Crop,
-            modifier = Modifier.animateContentSize(),
+            modifier = Modifier
+                .animateContentSize()
+                .fillMaxWidth(),
         )
     }
 }

@@ -3,6 +3,7 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.UserDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.AccountListsPageDTO
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CheckItemListDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CreateListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MovieListPageDTO
@@ -10,11 +11,18 @@ import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchRe
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.KtorClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
+import io.ktor.http.parameters
+import java.io.File
 
 class UserService(private val httpClient: KtorClient) {
 
@@ -80,9 +88,9 @@ class UserService(private val httpClient: KtorClient) {
 
     internal suspend fun getListDetails(
         listId: Int,
-        page: Int
+        page: Int,
     ): MovieListPageDTO = httpClient
-        .get("list/$listId"){
+        .get("list/$listId") {
             url {
                 parameters.append(name = "page", value = "$page")
             }
@@ -92,12 +100,23 @@ class UserService(private val httpClient: KtorClient) {
     internal suspend fun getAccountLists(
         accountId: String,
         sessionId: String,
-        page: Int
+        page: Int,
     ): AccountListsPageDTO = httpClient
-        .get("account/$accountId/lists"){
+        .get("account/$accountId/lists") {
             url {
                 parameters.append(name = "page", value = "$page")
                 parameters.append("session_id", sessionId)
+            }
+        }
+        .body()
+
+    internal suspend fun checkItemStatus(
+        listId: Int,
+        movieId: Int,
+    ): CheckItemListDTO = httpClient
+        .get("list/$listId/item_status") {
+            url {
+                parameters.append(name = "movie_id", value = "$movieId")
             }
         }
         .body()

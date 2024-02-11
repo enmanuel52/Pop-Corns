@@ -27,7 +27,13 @@ val Material3.dimen: Dimen
 fun Modifier.shimmerIf(condition: () -> Boolean) = if (condition()) this then shimmer() else this
 
 val LazyPagingItems<*>.isRefreshing: Boolean
-    get() = loadState.refresh == LoadState.Loading && itemCount == 0
+    get() = loadState.refresh == LoadState.Loading
+
+val LazyPagingItems<*>.isAppending: Boolean
+    get() = loadState.append == LoadState.Loading
+
+val LazyPagingItems<*>.isEmpty: Boolean
+    get() =  itemCount == 0
 
 @Composable
 fun LazyStaggeredGridState.isScrollingForward(): Boolean = run {
