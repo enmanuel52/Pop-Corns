@@ -1,10 +1,12 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource
 
+import android.util.Log
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.asBody
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
+import com.enmanuelbergling.ktormovies.domain.TAG
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 import com.enmanuelbergling.ktormovies.domain.model.user.CreateListPost
 import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
@@ -31,7 +33,12 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
             mediaBody = MediaOnListBody(movieId),
             listId = listId,
             sessionId = sessionId
-        ).toModel()
+        ).toModel().also {
+            Log.d(
+                TAG, "deleteMovieFromList: movie $movieId, list: $listId, session: $sessionId" +
+                        " response $it"
+            )
+        }
     }
 
     override suspend fun addMovieToList(
