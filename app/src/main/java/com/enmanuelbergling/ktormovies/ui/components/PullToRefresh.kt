@@ -11,8 +11,12 @@ import androidx.compose.material3.pullrefresh.PullRefreshIndicator
 import androidx.compose.material3.pullrefresh.pullRefresh
 import androidx.compose.material3.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -32,6 +36,16 @@ fun PullToRefreshContainer(
             onRefresh = onRefresh,
         )
 
+    val refreshIndicatorScale by remember {
+        derivedStateOf {
+            pullRefreshState.progress.let {
+                if (it > 2f) 1.6f
+                else it - .4f
+//                if (it > 1f) 1f else it
+            }
+        }
+    }
+
     Box(
         modifier = modifier.pullRefresh(pullRefreshState)
     ) {
@@ -47,9 +61,13 @@ fun PullToRefreshContainer(
         PullRefreshIndicator(
             refreshing = refreshing,
             state = pullRefreshState,
-            scale = true,
+            scale = false,
             modifier = Modifier
                 .align(Alignment.TopCenter)
+                .graphicsLayer {
+                    scaleX = refreshIndicatorScale
+                    scaleY = refreshIndicatorScale
+                }
         )
     }
 }
