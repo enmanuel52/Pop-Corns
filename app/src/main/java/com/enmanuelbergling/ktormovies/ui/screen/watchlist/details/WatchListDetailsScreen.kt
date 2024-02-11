@@ -30,7 +30,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -121,7 +120,6 @@ fun WatchListDetailsScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .shimmerIf { movies.isRefreshing }
         ) {
             PullToRefreshContainer(
                 refreshing = false, onRefresh = { movies.refresh() },
@@ -130,8 +128,8 @@ fun WatchListDetailsScreen(
                 ),
                 contentPadding = PaddingValues(MaterialTheme.dimen.small),
                 modifier = Modifier
-                    .nestedScroll(scrollBehaviour.nestedScrollConnection)
-                    .fillMaxSize()
+                    .shimmerIf { movies.isRefreshing },
+                scrollBehavior = scrollBehaviour
             ) {
                 if (movies.isRefreshing) {
                     items(12) {

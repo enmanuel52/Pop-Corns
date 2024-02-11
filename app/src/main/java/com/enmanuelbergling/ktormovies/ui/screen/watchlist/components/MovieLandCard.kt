@@ -80,7 +80,7 @@ fun MovieLandCardPlaceholder(
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
-        modifier = Modifier
+        modifier = modifier
             .heightIn(max = 120.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
