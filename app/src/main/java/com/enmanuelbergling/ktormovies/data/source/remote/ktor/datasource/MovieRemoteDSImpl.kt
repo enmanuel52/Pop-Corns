@@ -4,6 +4,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
@@ -31,5 +32,9 @@ internal class MovieRemoteDSImpl(private val service: MovieService) : MovieRemot
 
     override suspend fun getPopularMovies(): ResultHandler<List<Movie>> = safeKtorCall {
         service.getPopularMovies(1).results.map { it.toModel() }
+    }
+
+    override suspend fun getMovieGenres(): ResultHandler<List<Genre>> = safeKtorCall {
+        service.getMovieGenres().genres.map { it.toModel() }
     }
 }
