@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor
 
 import com.enmanuelbergling.ktormovies.BuildConfig
+import com.enmanuelbergling.ktormovies.data.source.remote.BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
