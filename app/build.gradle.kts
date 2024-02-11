@@ -7,6 +7,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 
     id("com.google.protobuf") version "0.9.1"
+
+    id("com.google.devtools.ksp")
+    id("de.jensklingenberg.ktorfit") version "1.12.0"
 }
 
 val secretFile = rootProject.file("secret.properties")
@@ -76,7 +79,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.0"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -163,6 +166,12 @@ dependencies {
     implementation("moe.tlaster:precompose-viewmodel:$precompose_version")
     // For Koin intergration
     implementation("moe.tlaster:precompose-koin:$precompose_version")
+
+    //Ktorfit
+    val ktorfitVersion = "1.12.0"
+
+    implementation("de.jensklingenberg.ktorfit:ktorfit-lib-light:$ktorfitVersion")
+    ksp("de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
 }
 
 protobuf {
