@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +46,7 @@ import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 
 @Composable
-fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit) {
+fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: () -> Unit) {
     val viewModel = koinViewModel<WatchListVM>()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -59,7 +60,8 @@ fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit) {
         createListForm,
         viewModel::onCreateForm,
         viewModel::deleteList,
-        onDetails
+        onDetails,
+        onBack
     )
 }
 
@@ -71,19 +73,29 @@ private fun WatchListScreen(
     onCreateFormEvent: (CreateListEvent) -> Unit,
     onDeleteList: (listId: Int) -> Unit,
     onDetails: (listId: Int, listName: String) -> Unit,
+    onBack: () -> Unit,
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
     }
 
     Scaffold(Modifier.fillMaxSize(), topBar = {
-        CenterAlignedTopAppBar(title = { Text(text = "Watch Lists") }, actions = {
-            if (!lists.isRefreshing) {
-                IconButton(onClick = { onCreateFormEvent(CreateListEvent.OpenForm) }) {
-                    Icon(imageVector = Icons.Rounded.Add, contentDescription = "add icon")
+        CenterAlignedTopAppBar(title = { Text(text = "Watch Lists") },
+            navigationIcon = {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBackIos,
+                        contentDescription = "back icon"
+                    )
                 }
-            }
-        })
+            },
+            actions = {
+                if (!lists.isRefreshing) {
+                    IconButton(onClick = { onCreateFormEvent(CreateListEvent.OpenForm) }) {
+                        Icon(imageVector = Icons.Rounded.Add, contentDescription = "add icon")
+                    }
+                }
+            })
     }, snackbarHost = {
         SnackbarHost(snackbarHostState)
     }) {

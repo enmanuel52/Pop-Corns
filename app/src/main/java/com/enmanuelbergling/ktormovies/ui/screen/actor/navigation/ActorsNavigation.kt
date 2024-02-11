@@ -31,7 +31,7 @@ fun RouteBuilder.actorsGraph(
         scene(
             "/$ACTORS_SCREEN_ROUTE", navTransition = NavTransition()
         ) {
-            ActorsScreen(onDetails = onActor)
+            ActorsScreen(onDetails = onActor, onBack = onBack)
         }
 
         scene("/$ACTORS_DETAILS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()) {

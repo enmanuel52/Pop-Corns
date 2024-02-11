@@ -10,10 +10,9 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.source.SearchM
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
 import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
-typealias QueryString = String
 
 internal class GetSearchMovieUCImpl(private val searchService: SearchService) :
     GetFilteredPagingFlowUC<Movie, QueryString> {

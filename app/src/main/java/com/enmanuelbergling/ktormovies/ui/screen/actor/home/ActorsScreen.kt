@@ -1,10 +1,5 @@
 package com.enmanuelbergling.ktormovies.ui.screen.actor.home
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,14 +18,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -40,65 +32,31 @@ import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
 import com.enmanuelbergling.ktormovies.ui.core.items
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
-import com.enmanuelbergling.ktormovies.ui.screen.actor.home.model.TopBarSearch
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorPlaceHolder
 import moe.tlaster.precompose.koin.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ActorsScreen(onDetails: (id: Int) -> Unit) {
+fun ActorsScreen(onDetails: (id: Int) -> Unit, onBack: () -> Unit) {
     val viewModel = koinViewModel<ActorsVM>()
 
     val actors = viewModel.actors.collectAsLazyPagingItems()
-
-    val searchState by viewModel.searchState.collectAsStateWithLifecycle()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = {
-                AnimatedContent(
-                    targetState = searchState.active,
-                    label = "top bar animation",
-                    transitionSpec = {
-                        slideIntoContainer(
-                            AnimatedContentTransitionScope.SlideDirection.Start,
-                            spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMedium)
-                        ) togetherWith
-                                slideOutOfContainer(
-                                    AnimatedContentTransitionScope.SlideDirection.Start,
-                                    spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMedium)
-                                )
-                    }) { active ->
-                    if (active) {
-                        TextField(
-                            value = searchState.text,
-                            onValueChange = { newText ->
-                                viewModel.onSearch(
-                                    searchState.copy(text = newText)
-                                )
-                            }, leadingIcon = {
-                                IconButton(onClick = { viewModel.onSearch(TopBarSearch()) }) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.ArrowBackIos,
-                                        contentDescription = "back icon"
-                                    )
-                                }
-                            }
-                        )
-                    } else {
-                        Text(text = "Actors")
-                    }
+                Text(text = "Actors")
+            }, navigationIcon = {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBackIos,
+                        contentDescription = "back icon"
+                    )
                 }
-            }, scrollBehavior = scrollBehavior, actions = {
-                if (!searchState.active) {
-                    /*IconButton(onClick = { viewModel.onSearch(searchState.copy(active = true)) }) {
-                        Icon(imageVector = Icons.Rounded.Search, contentDescription = "search icon")
-                    }*/
-                }
-            })
+            }, scrollBehavior = scrollBehavior)
         },
 
         ) { paddingValues ->

@@ -3,6 +3,7 @@ package com.enmanuelbergling.ktormovies.di
 import com.enmanuelbergling.ktormovies.CornTimeVM
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchListDetails
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
@@ -18,6 +19,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlaying
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
+import com.enmanuelbergling.ktormovies.ui.screen.movie.search.MovieSearchVM
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.details.WatchListDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.home.WatchListVM
 import org.koin.core.module.dsl.factoryOf
@@ -39,4 +41,5 @@ val vmModule = module {
     factoryOf(::LoginVM)
     factory { WatchListVM(get(named<WatchList>()), get(), get(), get(), get()) }
     factory { WatchListDetailsVM(get(named<WatchListDetails>()), get(), get(), get()) }
+    factory { MovieSearchVM(get(named<QueryString>())) }
 }

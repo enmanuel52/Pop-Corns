@@ -7,11 +7,11 @@ import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsGraph
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.navigateToListGraph
 import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.navigateToLoginScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
+import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.navigateToListGraph
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.BackStackEntry
 import moe.tlaster.precompose.navigation.NavOptions
@@ -45,12 +45,11 @@ class PreComposeAppState(
     val startDestination = MOVIES_GRAPH_ROUTE
 
     val isTopDestination: Boolean
-        @Composable get() = DrawerDestination.entries.map { it.routes }.flatten()
+        @Composable get() = TopDestination.entries.map { it.route }
             .any { route -> matchRoute(route) }
 
     val shouldShowMainBottomNav: Boolean
-        @Composable get() = TopDestination.entries.map { it.route }
-            .any { route -> matchRoute(route) }
+        @Composable get() = isTopDestination
 
     fun navigateToTopDestination(destination: TopDestination) {
         when (destination) {
