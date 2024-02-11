@@ -9,7 +9,7 @@ internal interface SearchService {
     @GET("search/movie")
     suspend fun searchMovie(
         @Query("query") query: String,
-        @Query("language") language: String = "en-US",
         @Query("page") page: Int,
+        @Query("language") language: String = "en-US",
     ): MoviePageDTO
 }
