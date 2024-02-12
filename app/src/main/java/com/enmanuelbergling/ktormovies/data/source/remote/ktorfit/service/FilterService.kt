@@ -10,7 +10,7 @@ internal interface FilterService {
      * @param genres when more than one split it by comas
      * */
     @GET("discover/movie")
-    fun getMoviesByGenre(
+    suspend fun getMoviesByGenre(
         @Query("with_genres") genres: String,
         @Query("sort_by") sortBy: String,
         @Query("page") page: Int,

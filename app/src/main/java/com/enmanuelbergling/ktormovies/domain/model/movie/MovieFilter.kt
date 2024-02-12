@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.domain.model.movie
 
 data class MovieFilter(
-    val genres: List<Genre>,
+    val genres: List<Genre> = listOf(),
     val sortBy: SortCriteria = SortCriteria.Popularity,
 )
 

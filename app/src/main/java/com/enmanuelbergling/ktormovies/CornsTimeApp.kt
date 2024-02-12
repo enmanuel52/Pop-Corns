@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -64,6 +65,7 @@ import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.components.UserImage
 import com.enmanuelbergling.ktormovies.ui.components.icon
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.navigateToMovieFilter
 import com.enmanuelbergling.ktormovies.ui.screen.movie.search.navigateToMovieSearch
 import com.enmanuelbergling.ktormovies.util.TAG
 import kotlinx.coroutines.launch
@@ -126,7 +128,8 @@ fun CornsTimeApp(
                                 drawerState.open()
                             }
                         },
-                        onSearch = state.navigator::navigateToMovieSearch
+                        onSearch = state.navigator::navigateToMovieSearch,
+                        onFilter = state.navigator::navigateToMovieFilter,
                     )
                 }
             }
@@ -161,6 +164,7 @@ private fun AppTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onOpenDrawer: () -> Unit,
     onSearch: () -> Unit,
+    onFilter: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
@@ -176,6 +180,13 @@ private fun AppTopBar(
             }
         },
         actions = {
+            IconButton(onClick = onFilter) {
+                Icon(
+                    imageVector = Icons.Rounded.FilterList,
+                    contentDescription = "filter icon"
+                )
+            }
+
             IconButton(onClick = onSearch) {
                 Icon(
                     imageVector = Icons.Rounded.Search,

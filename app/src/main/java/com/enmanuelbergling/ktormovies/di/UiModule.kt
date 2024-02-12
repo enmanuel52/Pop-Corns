@@ -3,6 +3,7 @@ package com.enmanuelbergling.ktormovies.di
 import com.enmanuelbergling.ktormovies.CornTimeVM
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
 import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchListDetails
@@ -13,6 +14,7 @@ import com.enmanuelbergling.ktormovies.ui.screen.login.LoginVM
 import com.enmanuelbergling.ktormovies.ui.screen.login.di.loginModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.di.movieDetailsModule
+import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.MoviesFilterVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.di.movieModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
@@ -42,4 +44,5 @@ val vmModule = module {
     factory { WatchListVM(get(named<WatchList>()), get(), get(), get(), get()) }
     factory { WatchListDetailsVM(get(named<WatchListDetails>()), get(), get(), get()) }
     factory { MovieSearchVM(get(named<QueryString>())) }
+    factory { MoviesFilterVM(get(named<MovieFilter>()), get()) }
 }

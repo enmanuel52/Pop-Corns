@@ -12,8 +12,6 @@ import io.ktor.client.call.body
 internal class SearchMovieSource(service: SearchService, query: QueryString) :
     GenericPagingSource<MovieDTO>(
         request = { page ->
-            service.searchMovie(query.query, page).also {
-                Log.d(TAG, "search movie source: ${it.results.map { it.title }}")
-            }
+            service.searchMovie(query.query, page)
         }
     )

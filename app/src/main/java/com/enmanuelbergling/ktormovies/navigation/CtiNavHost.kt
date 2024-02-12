@@ -5,6 +5,7 @@ import com.enmanuelbergling.ktormovies.PreComposeAppState
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.actorsGraph
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.loginScreen
+import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.moviesFilter
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesSection
@@ -46,5 +47,7 @@ fun PreCtiNavHost(
         )
 
         movieSearch(navigator::navigateToMoviesDetails, navigator::popBackStack)
+
+        moviesFilter(navigator::navigateToMoviesDetails, navigator::popBackStack)
     }
 }
