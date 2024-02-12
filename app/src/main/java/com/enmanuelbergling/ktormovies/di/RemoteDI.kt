@@ -28,7 +28,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserServi
 import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.KtorfitClient
 import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.service.FilterService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.service.SearchService
-import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.usecase.GetMovieByGenresUCImpl
+import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.usecase.GetMoviesByFilterUCImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.usecase.GetSearchMovieUCImpl
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
@@ -36,6 +36,7 @@ import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
 import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
 import com.enmanuelbergling.ktormovies.domain.model.user.AccountListsFilter
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
@@ -81,8 +82,8 @@ val pagingModule = module {
         named<WatchList>()
     }
 
-    single<GetFilteredPagingFlowUC<Movie, List<Genre>>> { GetMovieByGenresUCImpl(get()) } withOptions {
-        named<Genre>()
+    single<GetFilteredPagingFlowUC<Movie, MovieFilter>> { GetMoviesByFilterUCImpl(get()) } withOptions {
+        named<MovieFilter>()
     }
 
     single<GetFilteredPagingFlowUC<Movie, QueryString>> { GetSearchMovieUCImpl(get()) } withOptions {

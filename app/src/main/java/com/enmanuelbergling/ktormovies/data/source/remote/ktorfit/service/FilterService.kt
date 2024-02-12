@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.service
 
+import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MoviePageDTO
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Query
@@ -11,7 +12,9 @@ internal interface FilterService {
     @GET("discover/movie")
     fun getMoviesByGenre(
         @Query("with_genres") genres: String,
+        @Query("sort_by") sortBy: String,
         @Query("page") page: Int,
         @Query("language") language: String = "en-US",
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
     ): MoviePageDTO
 }
