@@ -15,8 +15,11 @@ data class Movie(
     val title: String,
     val video: Boolean,
     val voteAverage: Double,
-    val voteCount: Int
-){
+    val voteCount: Int,
+) {
     val releaseYear: String
-        get() = releaseDate.substring(0..3)
+        get() = releaseDate.let {
+            if (it.length > 3) it.substring(0..3)
+            else it
+        }
 }
