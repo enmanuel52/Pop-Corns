@@ -21,11 +21,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +41,8 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,6 +55,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
@@ -58,21 +65,26 @@ import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.components.UserImage
 import com.enmanuelbergling.ktormovies.ui.components.icon
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.navigateToMovieFilter
+import com.enmanuelbergling.ktormovies.ui.screen.movie.search.navigateToMovieSearch
 import com.enmanuelbergling.ktormovies.util.TAG
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CornsTimeApp(
     state: PreComposeAppState = rememberPreCtiAppState(),
     userDetails: UserDetails,
     onLogout: () -> Unit,
-    onDarkTheme: (DarkTheme) -> Unit
+    onDarkTheme: (DarkTheme) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
     val snackBarHostState = remember { SnackbarHostState() }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     ModalNavigationDrawer(drawerContent = {
         if (state.isTopDestination) {
@@ -88,7 +100,7 @@ fun CornsTimeApp(
                 isSelected = { it.any { route -> state.matchRoute(route = route) } },
                 userDetails = userDetails,
                 onLogout = onLogout,
-                onLogin =  {
+                onLogin = {
                     scope.launch {
                         drawerState.close()
                         state.navigateToLogin()
@@ -106,26 +118,28 @@ fun CornsTimeApp(
                     )
                 }
             },
-            snackbarHost = { SnackbarHost(snackBarHostState) }
-        ) { paddingValues ->
-            Box(
-                Modifier.padding(paddingValues)
-            ) {
-                PreCtiNavHost(state)
+            snackbarHost = { SnackbarHost(snackBarHostState) },
+            topBar = {
                 if (state.isTopDestination) {
-                    FilledTonalIconButton(
-                        onClick = {
+                    AppTopBar(
+                        scrollBehavior = scrollBehavior,
+                        onOpenDrawer = {
                             scope.launch {
                                 drawerState.open()
                             }
                         },
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(MaterialTheme.dimen.verySmall)
-                    ) {
-                        Icon(imageVector = Icons.Rounded.Menu, contentDescription = "drawer icon")
-                    }
+                        onSearch = state.navigator::navigateToMovieSearch,
+                        onFilter = state.navigator::navigateToMovieFilter,
+                    )
                 }
+            }
+        ) { paddingValues ->
+            Box(
+                Modifier
+                    .padding(paddingValues)
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+            ) {
+                PreCtiNavHost(state)
             }
         }
     }
@@ -142,6 +156,46 @@ fun CornsTimeApp(
             snackBarHostState.currentSnackbarData?.dismiss()
         }
     })
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun AppTopBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    onOpenDrawer: () -> Unit,
+    onSearch: () -> Unit,
+    onFilter: () -> Unit,
+) {
+    CenterAlignedTopAppBar(
+        title = { Text(text = stringResource(id = R.string.app_name)) },
+        navigationIcon = {
+
+            IconButton(
+                onClick = onOpenDrawer
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Menu,
+                    contentDescription = "drawer icon"
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onFilter) {
+                Icon(
+                    imageVector = Icons.Rounded.FilterList,
+                    contentDescription = "filter icon"
+                )
+            }
+
+            IconButton(onClick = onSearch) {
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = "search icon"
+                )
+            }
+        },
+        scrollBehavior = scrollBehavior
+    )
 }
 
 @Composable

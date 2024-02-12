@@ -3,6 +3,8 @@ package com.enmanuelbergling.ktormovies.di
 import com.enmanuelbergling.ktormovies.CornTimeVM
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
+import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchListDetails
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
@@ -12,12 +14,14 @@ import com.enmanuelbergling.ktormovies.ui.screen.login.LoginVM
 import com.enmanuelbergling.ktormovies.ui.screen.login.di.loginModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.di.movieDetailsModule
+import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.MoviesFilterVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.di.movieModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.UpcomingMoviesVM
+import com.enmanuelbergling.ktormovies.ui.screen.movie.search.MovieSearchVM
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.details.WatchListDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.home.WatchListVM
 import org.koin.core.module.dsl.factoryOf
@@ -39,4 +43,6 @@ val vmModule = module {
     factoryOf(::LoginVM)
     factory { WatchListVM(get(named<WatchList>()), get(), get(), get(), get()) }
     factory { WatchListDetailsVM(get(named<WatchListDetails>()), get(), get(), get()) }
+    factory { MovieSearchVM(get(named<QueryString>())) }
+    factory { MoviesFilterVM(get(named<MovieFilter>()), get()) }
 }

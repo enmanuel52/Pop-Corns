@@ -1,9 +1,10 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.domain
 
+import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 
 interface MovieRemoteDS : RemoteDataSource {
 
@@ -26,4 +27,6 @@ interface MovieRemoteDS : RemoteDataSource {
     /**
      * just first page*/
     suspend fun getPopularMovies(): ResultHandler<List<Movie>>
+
+    suspend fun getMovieGenres(): ResultHandler<List<Genre>>
 }

@@ -52,7 +52,10 @@ import com.valentinilk.shimmer.shimmer
 import moe.tlaster.precompose.koin.koinViewModel
 
 @Composable
-fun MoviesScreen(onDetails: (id: Int) -> Unit, onMore: (MovieSection) -> Unit) {
+fun MoviesScreen(
+    onDetails: (id: Int) -> Unit,
+    onMore: (MovieSection) -> Unit,
+) {
 
     val viewModel = koinViewModel<MoviesVM>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

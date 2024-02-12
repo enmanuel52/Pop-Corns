@@ -8,6 +8,7 @@ import com.enmanuelbergling.ktormovies.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetActorDetailsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieCreditsUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieDetailsUC
+import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieGenresUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMoviesByActorUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetNowPlayingMoviesUC
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetPopularMoviesUC
@@ -37,6 +38,7 @@ val ucModule = module {
     singleOf(::GetPopularMoviesUC)
     singleOf(::SetDarkThemeUC)
     singleOf(::GetDarkThemeUC)
+    singleOf(::GetMovieGenresUC)
 
     //Auth
     singleOf(::CreateRequestTokenUC)

@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.service
 
+import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.GenreListDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieCreditsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MoviePageDTO
@@ -49,4 +50,8 @@ internal class MovieService(private val httpClient: KtorClient) {
                 parameters.append(name = "page", value = "$page")
             }
         }.body()
+
+    suspend fun getMovieGenres(): GenreListDTO = httpClient
+        .get("genre/movie/list") {}
+        .body()
 }

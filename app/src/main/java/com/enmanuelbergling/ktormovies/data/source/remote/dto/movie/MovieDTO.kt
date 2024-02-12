@@ -23,7 +23,7 @@ internal data class MovieDTO(
     @SerialName("popularity")
     val popularity: Double,
     @SerialName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @SerialName("release_date")
     val releaseDate: String,
     @SerialName("title")

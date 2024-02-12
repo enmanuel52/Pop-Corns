@@ -25,11 +25,19 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.ActorServ
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.AuthService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
+import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.KtorfitClient
+import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.service.FilterService
+import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.service.SearchService
+import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.usecase.GetMoviesByFilterUCImpl
+import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.usecase.GetSearchMovieUCImpl
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
+import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
 import com.enmanuelbergling.ktormovies.domain.model.user.AccountListsFilter
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchListDetails
@@ -73,10 +81,21 @@ val pagingModule = module {
     single<GetFilteredPagingFlowUC<WatchList, AccountListsFilter>> { GetAccountListsUCImpl(get()) } withOptions {
         named<WatchList>()
     }
+
+    single<GetFilteredPagingFlowUC<Movie, MovieFilter>> { GetMoviesByFilterUCImpl(get()) } withOptions {
+        named<MovieFilter>()
+    }
+
+    single<GetFilteredPagingFlowUC<Movie, QueryString>> { GetSearchMovieUCImpl(get()) } withOptions {
+        named<QueryString>()
+    }
 }
 
 val remoteModule = module {
     single { ktorClient }
+
+    single { KtorfitClient.create<FilterService>() }
+    single { KtorfitClient.create<SearchService>() }
 
     singleOf(::MovieService)
 

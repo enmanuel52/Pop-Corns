@@ -33,7 +33,7 @@ fun RouteBuilder.listGraph(
 ) {
     group(route = LIST_GRAPH_ROUTE, initialRoute = "/$LIST_SCREEN_ROUTE") {
         scene("/$LIST_SCREEN_ROUTE") {
-            WatchListRoute(onDetails)
+            WatchListRoute(onDetails = onDetails, onBack = onBack)
         }
 
         scene("/$LIST_DETAILS_SCREEN_ROUTE/{$LIST_ID_ARG}/{$LIST_NAME_ARG}") {
