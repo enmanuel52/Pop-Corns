@@ -22,7 +22,9 @@
 
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
--keep class androidx.datastore.*.** {*;}
--keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
-    <fields> ;
+# Keep DataStore fields
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite* {
+   <fields>;
 }
+
+#-keep class com.enmanuelbergling.ktormovies.proto.** { *; }
