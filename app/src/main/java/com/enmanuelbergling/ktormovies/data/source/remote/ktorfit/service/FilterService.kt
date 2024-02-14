@@ -2,6 +2,7 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.service
 
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MoviePageDTO
+import com.enmanuelbergling.ktormovies.util.getCurrentLanguage
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Query
 
@@ -14,7 +15,7 @@ internal interface FilterService {
         @Query("with_genres") genres: String,
         @Query("sort_by") sortBy: String,
         @Query("page") page: Int,
-        @Query("language") language: String = "en-US",
+        @Query("language") language: String = getCurrentLanguage(),
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
     ): MoviePageDTO
 }
