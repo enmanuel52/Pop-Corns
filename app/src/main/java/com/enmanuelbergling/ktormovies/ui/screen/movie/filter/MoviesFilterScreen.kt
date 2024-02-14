@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.filter
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +18,13 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,7 +32,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.paging.compose.LazyPagingItems
@@ -40,6 +45,8 @@ import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
 import com.enmanuelbergling.ktormovies.domain.model.movie.SortCriteria
 import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.ktormovies.ui.core.isAppending
+import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
 import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.model.MovieFilterEvent
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.MovieLandCard
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
@@ -95,69 +102,92 @@ private fun MoviesFilterScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             Modifier
                 .padding(paddingValues)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-            contentPadding = PaddingValues(MaterialTheme.dimen.verySmall)
         ) {
-            item {
-                Column {
+            if (movies.isRefreshing) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = MaterialTheme.dimen.verySmall),
+                    strokeCap = StrokeCap.Round
+                )
+            }
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
+            ) {
+                item {
                     Column {
-                        Text(
-                            text = "Order By:",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Column {
+                            Text(
+                                text = "Order By:",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
 
-                        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+                            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                        LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
-                            items(SortCriteria.entries) {
-                                FilterChip(
-                                    selected = it == filter.sortBy,
-                                    onClick = { onFilter(MovieFilterEvent.PickOrderCriteria(it)) },
-                                    label = { Text(text = "$it") })
+                            LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
+                                items(SortCriteria.entries) {
+                                    FilterChip(
+                                        selected = it == filter.sortBy,
+                                        onClick = { onFilter(MovieFilterEvent.PickOrderCriteria(it)) },
+                                        label = { Text(text = "$it") })
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            item {
-                Column {
+                item {
                     Column {
-                        Text(
-                            text = "Genres:",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Column {
+                            Text(
+                                text = "Genres:",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
 
-                        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+                            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                        LazyHorizontalStaggeredGrid(
-                            rows = StaggeredGridCells.Fixed(2),
-                            horizontalItemSpacing = MaterialTheme.dimen.small,
-                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-                            modifier = Modifier.heightIn(max = FilterChipDefaults.Height.times(3))
-                        ) {
-                            items(availableGenres) {
-                                FilterChip(
-                                    selected = it in filter.genres,
-                                    onClick = { onFilter(MovieFilterEvent.PickGenre(it)) },
-                                    label = { Text(text = it.name) })
+                            LazyHorizontalStaggeredGrid(
+                                rows = StaggeredGridCells.Fixed(2),
+                                horizontalItemSpacing = MaterialTheme.dimen.small,
+                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                                modifier = Modifier.heightIn(max = FilterChipDefaults.Height.times(3))
+                            ) {
+                                items(availableGenres) {
+                                    FilterChip(
+                                        selected = it in filter.genres,
+                                        onClick = { onFilter(MovieFilterEvent.PickGenre(it)) },
+                                        label = { Text(text = it.name) })
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            items(movies, key = { it.id }) {
-                it?.let { movie ->
-                    MovieLandCard(movie = movie, Modifier.fillMaxWidth()) {
-                        onMovie(movie.id)
+                items(movies) {
+                    it?.let { movie ->
+                        MovieLandCard(movie = movie, Modifier.fillMaxWidth()) {
+                            onMovie(movie.id)
+                        }
+                    }
+                }
+
+                item {
+                    if (movies.isAppending) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .padding(MaterialTheme.dimen.small)
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
                 }
             }
