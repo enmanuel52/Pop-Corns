@@ -4,11 +4,13 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 
 
 fun Modifier.listItemWindAnimation(
@@ -76,4 +78,10 @@ fun Modifier.listItemWindAnimation(
             }
         }
     }
+}
+
+@Composable
+fun getGridColumnsCount(adaptiveWidth: Int): Int {
+    val configuration = LocalConfiguration.current
+    return remember { configuration.screenWidthDp.div(adaptiveWidth) }
 }

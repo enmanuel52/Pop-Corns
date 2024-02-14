@@ -7,17 +7,17 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -54,10 +54,10 @@ import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsUiData
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
+import com.valentinilk.shimmer.shimmer
 import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -133,25 +133,31 @@ private fun ActorDetailsRoute(
             Modifier
                 .padding(paddingValues)
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall),
+
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Adaptive(120.dp),
+                verticalItemSpacing = MaterialTheme.dimen.small,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
-                contentPadding = PaddingValues(MaterialTheme.dimen.small)
+                contentPadding = PaddingValues(MaterialTheme.dimen.verySmall)
             ) {
 
                 details?.let {
                     detailsHeader(
                         imageUrl = BASE_IMAGE_URL + details.profilePath,
                         name = details.name,
-                        popularity = details.popularity,
+                        popularity = details.popularity
                     )
 
                     if (details.biography.isNotBlank()) {
-                        about(details.biography)
+                        about(biography = details.biography)
                     }
 
-                    knownMovies(knownMovies, onMovie)
+                    knownMovies(
+                        knownMovies = knownMovies,
+                        onMovie = onMovie
+                    )
                 }
             }
 
@@ -159,48 +165,39 @@ private fun ActorDetailsRoute(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
-private fun LazyListScope.knownMovies(
+private fun LazyStaggeredGridScope.knownMovies(
     knownMovies: List<KnownMovie>,
     onMovie: (movieId: Int) -> Unit,
 ) {
-    item {
+    item(span = StaggeredGridItemSpan.FullLine) {
         Text(
             text = "Known movies",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold
         )
     }
-    item {
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(
-                MaterialTheme.dimen.small,
-                Alignment.Start
-            ),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-            modifier = Modifier
-                .fillMaxWidth()
-                .shimmerIf { knownMovies.isEmpty() }
-        ) {
-            knownMovies.forEach { movie ->
-                MovieCard(
-                    title = movie.title,
-                    imageUrl = movie.posterPath.orEmpty(),
-                    rating = movie.voteAverage.div(2),
-                    modifier = Modifier.width(120.dp)
-                ) { onMovie(movie.id) }
-            }
-            if (knownMovies.isEmpty()) {
-                repeat(5) {
-                    MovieCardPlaceholder(modifier = Modifier.width(120.dp))
-                }
-            }
+
+    items(knownMovies) { movie ->
+        MovieCard(
+            title = movie.title,
+            imageUrl = movie.posterPath.orEmpty(),
+            rating = movie.voteAverage.div(2)
+        ) { onMovie(movie.id) }
+    }
+    if (knownMovies.isEmpty()) {
+        items(5) {
+            MovieCardPlaceholder(
+                modifier = Modifier
+                    .shimmer()
+            )
         }
     }
 }
 
-private fun LazyListScope.about(biography: String) {
-    item {
+private fun LazyStaggeredGridScope.about(
+    biography: String,
+) {
+    item(span = StaggeredGridItemSpan.FullLine) {
         Column(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall)
         ) {
@@ -231,13 +228,14 @@ private fun LazyListScope.about(biography: String) {
 }
 
 /**
- * @param popularity in percent max 100*/
-private fun LazyListScope.detailsHeader(
+ * @param popularity in percent max 100
+ * */
+private fun LazyStaggeredGridScope.detailsHeader(
     imageUrl: String,
     name: String,
     popularity: Double,
 ) {
-    item {
+    item(span = StaggeredGridItemSpan.FullLine) {
         Row(
             Modifier
                 .heightIn(max = 250.dp)
