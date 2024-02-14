@@ -111,7 +111,7 @@ fun CornTimeTheme(
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
-                darkTheme == DarkTheme.No || (darkTheme == DarkTheme.System && systemInDarkTheme)//it isn't on dark theme
+                darkTheme == DarkTheme.No || (darkTheme == DarkTheme.System && !systemInDarkTheme)//it isn't on dark theme
         }
     }
 
