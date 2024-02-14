@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.VerticalAlignTop
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,19 +20,26 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.enmanuelbergling.ktormovies.ui.components.FromDirection
+import com.enmanuelbergling.ktormovies.ui.components.ShowUpFrom
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isAppending
 import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.MovieLandCard
+import kotlinx.coroutines.launch
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 
@@ -87,27 +96,61 @@ fun MovieSearchScreen(
                 strokeCap = StrokeCap.Round
             )
         }
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-            contentPadding = PaddingValues(MaterialTheme.dimen.verySmall)
-        ) {
-            items(movies) {
-                it?.let { movie ->
-                    MovieLandCard(movie = movie, Modifier.fillMaxWidth()) {
-                        onMovieDetails(movie.id)
+
+        val lazyListState = rememberLazyListState()
+
+        val start by remember {
+            derivedStateOf {
+                lazyListState.firstVisibleItemIndex == 0
+            }
+        }
+
+        val scope = rememberCoroutineScope()
+
+        Box {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
+                state = lazyListState
+            ) {
+                items(movies) {
+                    it?.let { movie ->
+                        MovieLandCard(movie = movie, Modifier.fillMaxWidth()) {
+                            onMovieDetails(movie.id)
+                        }
+                    }
+                }
+
+                item {
+                    if (movies.isAppending) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .padding(MaterialTheme.dimen.small)
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
                 }
             }
 
-            item {
-                if (movies.isAppending) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .padding(MaterialTheme.dimen.small)
-                                .align(Alignment.Center)
-                        )
-                    }
+            ShowUpFrom(
+                !start,
+                FromDirection.Bottom,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            ) {
+                SmallFloatingActionButton(
+                    onClick = {
+                        scope.launch {
+                            lazyListState.animateScrollToItem(0)
+                        }
+                    },
+                    modifier = Modifier.padding(bottom = MaterialTheme.dimen.small)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.VerticalAlignTop,
+                        contentDescription = "to start icon"
+                    )
                 }
             }
         }
