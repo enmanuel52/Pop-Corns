@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Person3
@@ -30,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -75,19 +75,25 @@ fun LoginScreen(
         LoginFormUi(
             formState,
             onLoginEvent,
-            Modifier.align(Alignment.Center).padding(horizontal = MaterialTheme.dimen.lessLarge)
+            Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = MaterialTheme.dimen.lessLarge)
         )
+
+        val uriHandler = LocalUriHandler.current
 
         SignIn(
             Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = MaterialTheme.dimen.medium)
-        )
+        ) {
+            uriHandler.openUri("https://www.themoviedb.org/signup")
+        }
     }
 }
 
 @Composable
-private fun SignIn(modifier: Modifier = Modifier) {
+private fun SignIn(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -97,7 +103,7 @@ private fun SignIn(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-        TextButton(onClick = { /*TODO("Head for page")*/ }) {
+        TextButton(onClick = onSignIn) {
             Text(text = "Sign In")
         }
     }
