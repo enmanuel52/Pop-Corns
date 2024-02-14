@@ -24,7 +24,6 @@ import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -41,6 +40,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
@@ -169,7 +169,7 @@ private fun AppTopBar(
     onSearch: () -> Unit,
     onFilter: () -> Unit,
 ) {
-    CenterAlignedTopAppBar(
+    TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         navigationIcon = {
 
@@ -281,7 +281,10 @@ fun UserDetailsUi(
 
             Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
 
-            Icon(imageVector = Icons.Rounded.ArrowDropDown, contentDescription = stringResource(R.string.drop_down_icon))
+            Icon(
+                imageVector = Icons.Rounded.ArrowDropDown,
+                contentDescription = stringResource(R.string.drop_down_icon)
+            )
 
             val isLoggedIn by remember(userDetails) {
                 derivedStateOf {
@@ -294,10 +297,13 @@ fun UserDetailsUi(
                 onDismissRequest = { isCloseSessionDropDownOpen = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(text = if (isLoggedIn) stringResource(R.string.logout) else stringResource(
-                        R.string.login
-                    )
-                    ) },
+                    text = {
+                        Text(
+                            text = if (isLoggedIn) stringResource(R.string.logout) else stringResource(
+                                R.string.login
+                            )
+                        )
+                    },
                     onClick = if (isLoggedIn) onLogout else onLogin
                 )
             }
@@ -342,12 +348,15 @@ private fun DarkThemeDropDown(
 
 @Composable
 private fun AnimatedDarkThemeIcon(darkTheme: DarkTheme) {
-    AnimatedContent(darkTheme, label = stringResource(R.string.dark_theme_animation), transitionSpec = {
-        slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Up,
-            animationSpec = spring(Spring.DampingRatioHighBouncy, Spring.StiffnessLow)
-        ) togetherWith (fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End))
-    }) { theme ->
+    AnimatedContent(
+        darkTheme,
+        label = stringResource(R.string.dark_theme_animation),
+        transitionSpec = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Up,
+                animationSpec = spring(Spring.DampingRatioHighBouncy, Spring.StiffnessLow)
+            ) togetherWith (fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End))
+        }) { theme ->
         Icon(theme.icon, theme.label)
     }
 }
