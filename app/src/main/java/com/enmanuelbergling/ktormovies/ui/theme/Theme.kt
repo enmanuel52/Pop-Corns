@@ -93,9 +93,11 @@ fun CornTimeTheme(
     val colorScheme = when {
         dynamicColor && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) -> {
             val context = LocalContext.current
-            if (darkTheme == DarkTheme.Yes) dynamicDarkColorScheme(context) else dynamicLightColorScheme(
+            if (darkTheme == DarkTheme.Yes) dynamicDarkColorScheme(context)
+            else if (darkTheme == DarkTheme.System && isSystemInDarkTheme()) dynamicDarkColorScheme(
                 context
             )
+            else dynamicLightColorScheme(context)
         }
 
         darkTheme == DarkTheme.No -> lightColorScheme
