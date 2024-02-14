@@ -1,5 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowBackIos
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,16 +28,26 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.enmanuelbergling.ktormovies.domain.TAG
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.CtiContentDialog
 import com.enmanuelbergling.ktormovies.ui.components.CtiTextField
+import com.enmanuelbergling.ktormovies.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
+import com.enmanuelbergling.ktormovies.ui.components.NewerDragListItem
 import com.enmanuelbergling.ktormovies.ui.components.PullToRefreshContainer
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
@@ -45,6 +59,9 @@ import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListForm
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 
+
+private const val NO_LIST = -1
+
 @Composable
 fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: () -> Unit) {
     val viewModel = koinViewModel<WatchListVM>()
@@ -53,7 +70,13 @@ fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: (
     val lists = viewModel.lists.collectAsLazyPagingItems()
     val createListForm by viewModel.createListFormState.collectAsStateWithLifecycle()
 
-    HandleUiState(uiState = uiState, onIdle = viewModel::onIdle, onSuccess = lists::refresh)
+    HandleUiState(
+        uiState = uiState,
+        onIdle = viewModel::onIdle
+    ) {
+        lists.refresh()
+        viewModel.onIdle()
+    }
 
     WatchListScreen(
         lists,
@@ -77,6 +100,21 @@ private fun WatchListScreen(
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
+    }
+
+    var pickedList by rememberSaveable {
+        mutableIntStateOf(NO_LIST)
+    }
+
+    if (pickedList != NO_LIST) {
+        DeleteMovieConfirmationDialog(
+            onDismiss = { pickedList = NO_LIST },
+            onDelete = {
+                val tempListId = pickedList
+                pickedList = NO_LIST
+                Log.d(TAG, "WatchListScreen: delete $tempListId")
+                onDeleteList(tempListId)
+            })
     }
 
     Scaffold(Modifier.fillMaxSize(), topBar = {
@@ -121,12 +159,40 @@ private fun WatchListScreen(
                 } else {
                     items(lists) { list ->
                         list?.let {
-                            WatchListCard(
-                                name = list.name,
-                                description = list.description,
-                                Modifier.fillMaxWidth()
+                            val bottomWith by remember {
+                                mutableStateOf((-80).dp)
+                            }
+
+                            NewerDragListItem(
+                                bottomContentWidth = with(LocalDensity.current) { bottomWith.toPx() },
+                                bottomContent = {
+                                    Box(Modifier.align(Alignment.CenterEnd)) {
+
+                                        IconButton(
+                                            onClick = { pickedList = it.id },
+                                            modifier = Modifier
+                                                .padding(horizontal = MaterialTheme.dimen.small)
+
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Delete,
+                                                contentDescription = "delete icon"
+                                            )
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.background(
+                                    MaterialTheme.colorScheme.surfaceVariant,
+                                    CardDefaults.elevatedShape
+                                ),
                             ) {
-                                onDetails(list.id, list.name)
+                                WatchListCard(
+                                    name = list.name,
+                                    description = list.description,
+                                    Modifier.fillMaxWidth()
+                                ) {
+                                    onDetails(list.id, list.name)
+                                }
                             }
                         }
                     }

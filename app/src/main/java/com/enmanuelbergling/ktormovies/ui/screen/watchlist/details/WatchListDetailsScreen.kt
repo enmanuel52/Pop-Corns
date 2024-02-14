@@ -37,6 +37,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.NewerDragListItem
 import com.enmanuelbergling.ktormovies.ui.components.PullToRefreshContainer
@@ -97,7 +98,7 @@ fun WatchListDetailsScreen(
     if (pickedMovie != NO_MOVIE) {
         DeleteMovieConfirmationDialog(
             onDismiss = { pickedMovie = NO_MOVIE },
-            onDeleteMovie = {
+            onDelete = {
                 onDeleteMovie(pickedMovie)
                 pickedMovie = NO_MOVIE
             })
@@ -180,27 +181,4 @@ fun WatchListDetailsScreen(
             }
         }
     }
-}
-
-@Composable
-private fun DeleteMovieConfirmationDialog(onDismiss: () -> Unit, onDeleteMovie: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Confirmation") },
-        text = {
-            Text(
-                text = "Are you sure of this?"
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = onDeleteMovie) {
-                Text(text = "Delete", color = MaterialTheme.colorScheme.error)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = "Cancel")
-            }
-        }
-    )
 }

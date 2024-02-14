@@ -145,3 +145,26 @@ fun CtiContentDialog(
         }
     }
 }
+
+@Composable
+fun DeleteMovieConfirmationDialog(onDismiss: () -> Unit, onDelete: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Confirmation") },
+        text = {
+            Text(
+                text = "Are you sure of this?"
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDelete) {
+                Text(text = "Delete", color = MaterialTheme.colorScheme.error)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        }
+    )
+}
