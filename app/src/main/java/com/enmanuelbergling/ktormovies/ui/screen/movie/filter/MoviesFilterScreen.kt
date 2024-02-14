@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.VerticalAlignTop
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,6 +52,7 @@ import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
 import com.enmanuelbergling.ktormovies.domain.model.movie.SortCriteria
 import com.enmanuelbergling.ktormovies.ui.components.FromDirection
+import com.enmanuelbergling.ktormovies.ui.components.LinearLoading
 import com.enmanuelbergling.ktormovies.ui.components.ShowUpFrom
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.core.isAppending
@@ -118,12 +120,7 @@ private fun MoviesFilterScreen(
                 .fillMaxSize(),
         ) {
             if (movies.isRefreshing) {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = MaterialTheme.dimen.verySmall),
-                    strokeCap = StrokeCap.Round
-                )
+                LinearLoading()
             }
 
             val lazyListState = rememberLazyListState()
@@ -164,7 +161,16 @@ private fun MoviesFilterScreen(
                                                     )
                                                 )
                                             },
-                                            label = { Text(text = "$it") })
+                                            label = { Text(text = "$it") },
+                                            leadingIcon = {
+                                                if (it == filter.sortBy) {
+                                                    Icon(
+                                                        imageVector = Icons.Rounded.Check,
+                                                        contentDescription = "filter checked icon"
+                                                    )
+                                                }
+                                            }
+                                        )
                                     }
                                 }
                             }
@@ -172,7 +178,10 @@ private fun MoviesFilterScreen(
                     }
 
                     item {
-                        Column {
+                        ShowUpFrom(
+                            visible = availableGenres.isNotEmpty(),
+                            fromDirection = FromDirection.Top
+                        ) {
                             Column {
                                 Text(
                                     text = "Genres:",
@@ -188,15 +197,24 @@ private fun MoviesFilterScreen(
                                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
                                     modifier = Modifier.heightIn(
                                         max = FilterChipDefaults.Height.times(
-                                            3
-                                        )
+                                            2
+                                        ).plus(MaterialTheme.dimen.small)
                                     )
                                 ) {
                                     items(availableGenres) {
                                         FilterChip(
                                             selected = it in filter.genres,
                                             onClick = { onFilter(MovieFilterEvent.PickGenre(it)) },
-                                            label = { Text(text = it.name) })
+                                            label = { Text(text = it.name) },
+                                            leadingIcon = {
+                                                if (it in filter.genres) {
+                                                    Icon(
+                                                        imageVector = Icons.Rounded.Check,
+                                                        contentDescription = "filter checked icon"
+                                                    )
+                                                }
+                                            }
+                                        )
                                     }
                                 }
                             }
@@ -213,13 +231,7 @@ private fun MoviesFilterScreen(
 
                     item {
                         if (movies.isAppending) {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .padding(MaterialTheme.dimen.small)
-                                        .align(Alignment.Center)
-                                )
-                            }
+                            LinearLoading()
                         }
                     }
                 }
