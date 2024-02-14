@@ -32,9 +32,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.model.MovieSection
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
@@ -94,7 +97,7 @@ fun MoviesGrid(
     onMore: (MovieSection) -> Unit,
     isLoading: Boolean,
 ) {
-
+    val context = LocalContext.current
 
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
@@ -105,20 +108,25 @@ fun MoviesGrid(
 
         forYouText()
 
-        moviesSection("Top Rated", topRated, onDetails, isLoading) { onMore(MovieSection.TopRated) }
+        moviesSection(
+            title = context.getString(R.string.top_rated),
+            movies = topRated,
+            onDetails = onDetails,
+            isLoading = isLoading
+        ) { onMore(MovieSection.TopRated) }
 
         moviesSection(
-            "Now playing",
-            nowPlaying,
-            onDetails,
-            isLoading
+            title = context.getString(R.string.now_playing),
+            movies = nowPlaying,
+            onDetails = onDetails,
+            isLoading = isLoading
         ) { onMore(MovieSection.NowPlaying) }
 
         moviesSection(
-            "Popular",
-            popular,
-            onDetails,
-            isLoading
+            title = context.getString(R.string.popular),
+            movies = popular,
+            onDetails = onDetails,
+            isLoading = isLoading
         ) { onMore(MovieSection.Popular) }
     }
 }
@@ -195,7 +203,7 @@ private fun LazyListScope.headersMovies(
             val pagerState = rememberPagerState { upcoming.count() }
             Column {
                 SectionHeader(
-                    title = "Upcoming",
+                    title = stringResource(R.string.upcoming),
                     modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
                     onMore = onMore
                 )
@@ -231,7 +239,7 @@ private fun SectionHeader(title: String, modifier: Modifier = Modifier, onMore: 
             fontWeight = FontWeight.SemiBold
         )
         IconButton(onClick = onMore) {
-            Icon(imageVector = Icons.Rounded.FastForward, contentDescription = "more icon")
+            Icon(imageVector = Icons.Rounded.FastForward, contentDescription = stringResource(R.string.more_icon))
         }
     }
 }
@@ -239,12 +247,10 @@ private fun SectionHeader(title: String, modifier: Modifier = Modifier, onMore: 
 private fun LazyListScope.forYouText() {
     item {
         Text(
-            text = "For you",
+            text = stringResource(R.string.for_you),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small)
         )
     }
 }
-
-val genreFilters = listOf("All", "Action", "Thriller", "Comedy", "Drama", "Romantic", "Psycho")

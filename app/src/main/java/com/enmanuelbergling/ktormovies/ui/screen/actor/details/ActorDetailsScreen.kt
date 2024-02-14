@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
-import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -106,26 +106,18 @@ private fun ActorDetailsRoute(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Details") },
+                title = { Text(text = stringResource(R.string.details)) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack,
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBackIos,
-                            contentDescription = "back icon"
+                            contentDescription = stringResource(R.string.back_icon)
                         )
                     }
-                }, actions = {
-                    IconButton(
-                        onClick = { /*TODO*/ },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.FavoriteBorder,
-                            contentDescription = "favorite"
-                        )
-                    }
-                }, scrollBehavior = scrollBehavior
+                },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { paddingValues ->
@@ -202,7 +194,7 @@ private fun LazyStaggeredGridScope.about(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.mediumSmall)
         ) {
             Text(
-                text = "About",
+                text = stringResource(R.string.about),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -243,7 +235,7 @@ private fun LazyStaggeredGridScope.detailsHeader(
         ) {
             AsyncImage(
                 model = imageUrl,
-                contentDescription = "movie image",
+                contentDescription = stringResource(R.string.movie_image),
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),
                 modifier = Modifier

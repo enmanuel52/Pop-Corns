@@ -31,10 +31,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.DeleteMovieConfirmationDialog
@@ -111,7 +113,7 @@ fun WatchListDetailsScreen(
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.Rounded.ArrowBackIosNew,
-                        contentDescription = "back icon"
+                        contentDescription = stringResource(id = R.string.back_icon)
                     )
                 }
             }, scrollBehavior = scrollBehaviour)
@@ -156,7 +158,7 @@ fun WatchListDetailsScreen(
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Delete,
-                                                contentDescription = "delete icon"
+                                                contentDescription = stringResource(R.string.delete_icon)
                                             )
                                         }
                                     }

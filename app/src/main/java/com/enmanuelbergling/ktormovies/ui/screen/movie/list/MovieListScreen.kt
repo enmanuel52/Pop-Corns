@@ -25,9 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.HandlerPagingUiState
 import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
@@ -107,7 +109,9 @@ private fun MovieListScreen(
         topBar = {
             CenterAlignedTopAppBar(title = { Text(text = title) }, navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(imageVector = Icons.Rounded.ArrowBackIos, contentDescription = "back icon")
+                    Icon(imageVector = Icons.Rounded.ArrowBackIos, contentDescription = stringResource(
+                        id = R.string.back_icon
+                    ))
                 }
             }, scrollBehavior = scrollBehavior)
         },

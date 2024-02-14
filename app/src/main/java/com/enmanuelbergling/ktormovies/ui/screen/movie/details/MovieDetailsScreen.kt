@@ -52,7 +52,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -136,6 +138,7 @@ private fun MovieDetailsScreen(
     )
 
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     HandleUiState(
         uiState = uiState,
@@ -185,14 +188,14 @@ private fun MovieDetailsScreen(
                     overview(details.overview)
 
                     persons(
-                        title = "Cast",
+                        title = context.getString(R.string.cast),
                         persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
                         isLoading = uiState == SimplerUi.Loading && creditsState == null,
                         onActor = onActor
                     )
 
                     persons(
-                        title = "Crew",
+                        title = context.getString(R.string.crew),
                         persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
                         isLoading = uiState == SimplerUi.Loading && creditsState == null,
                         onActor = onActor
@@ -216,7 +219,7 @@ private fun MovieDetailsScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.ArrowBackIosNew,
-                        contentDescription = "back icon"
+                        contentDescription = stringResource(id = R.string.back_icon)
                     )
                 }
             }
@@ -247,7 +250,7 @@ private fun SheetContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Watch lists: ",
+                    text = stringResource(R.string.watch_lists),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -260,7 +263,7 @@ private fun SheetContent(
                     targetValue = if (list in withinListsState)
                         MaterialTheme.colorScheme.secondary
                     else MaterialTheme.colorScheme.surface,
-                    label = "list background animation",
+                    label = stringResource(R.string.list_background_animation),
                 )
 
                 WatchListCard(
@@ -284,7 +287,7 @@ private fun LazyListScope.addToListButton(
     item {
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(onClick = onClick) {
-                Text(text = "Add to watch list")
+                Text(text = stringResource(R.string.add_to_watch_list))
             }
         }
     }
@@ -398,7 +401,7 @@ private fun LazyListScope.detailsImage(
     item {
         AsyncImage(
             model = backdropUrl,
-            contentDescription = "poster image",
+            contentDescription = stringResource(R.string.poster_image),
             placeholder = painterResource(
                 id = R.drawable.pop_corn_and_cinema_backdrop
             ),

@@ -56,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
@@ -144,11 +145,13 @@ fun CornsTimeApp(
         }
     }
 
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = state.isOnline, block = {
         Log.d(TAG, "isOnline: ${state.isOnline}")
         if (!state.isOnline) {
             snackBarHostState.showSnackbar(
-                "You're offline",
+                context.getString(R.string.offline_message),
                 duration = SnackbarDuration.Indefinite,
                 withDismissAction = true
             )
@@ -175,7 +178,7 @@ private fun AppTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Menu,
-                    contentDescription = "drawer icon"
+                    contentDescription = stringResource(R.string.drawer_icon)
                 )
             }
         },
@@ -183,14 +186,14 @@ private fun AppTopBar(
             IconButton(onClick = onFilter) {
                 Icon(
                     imageVector = Icons.Rounded.FilterList,
-                    contentDescription = "filter icon"
+                    contentDescription = stringResource(R.string.filter_icon)
                 )
             }
 
             IconButton(onClick = onSearch) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
-                    contentDescription = "search icon"
+                    contentDescription = stringResource(R.string.search_icon)
                 )
             }
         },
@@ -235,7 +238,7 @@ fun DrawerContent(
         }
         DrawerDestination.entries.forEach { destination ->
             NavigationDrawerItem(
-                label = { Text(text = destination.toString()) },
+                label = { Text(text = stringResource(destination.label)) },
                 selected = isSelected(destination.routes),
                 onClick = { onDrawerDestination(destination) },
                 icon = {
@@ -274,11 +277,11 @@ fun UserDetailsUi(
                 }
                 .padding(MaterialTheme.dimen.small)
         ) {
-            Text(text = userDetails.username.ifBlank { "Nosey" })
+            Text(text = userDetails.username.ifBlank { stringResource(R.string.nosey) })
 
             Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
 
-            Icon(imageVector = Icons.Rounded.ArrowDropDown, contentDescription = "drop down icon")
+            Icon(imageVector = Icons.Rounded.ArrowDropDown, contentDescription = stringResource(R.string.drop_down_icon))
 
             val isLoggedIn by remember(userDetails) {
                 derivedStateOf {
@@ -291,7 +294,10 @@ fun UserDetailsUi(
                 onDismissRequest = { isCloseSessionDropDownOpen = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(text = if (isLoggedIn) "Logout" else "Login") },
+                    text = { Text(text = if (isLoggedIn) stringResource(R.string.logout) else stringResource(
+                        R.string.login
+                    )
+                    ) },
                     onClick = if (isLoggedIn) onLogout else onLogin
                 )
             }
@@ -336,7 +342,7 @@ private fun DarkThemeDropDown(
 
 @Composable
 private fun AnimatedDarkThemeIcon(darkTheme: DarkTheme) {
-    AnimatedContent(darkTheme, label = "dark theme animation", transitionSpec = {
+    AnimatedContent(darkTheme, label = stringResource(R.string.dark_theme_animation), transitionSpec = {
         slideIntoContainer(
             AnimatedContentTransitionScope.SlideDirection.Up,
             animationSpec = spring(Spring.DampingRatioHighBouncy, Spring.StiffnessLow)
@@ -361,10 +367,10 @@ fun CornBottomNav(
                     Icon(
                         imageVector = if (isSelected(cinemaContent.route)) cinemaContent.icon
                         else cinemaContent.unselectedIcon,
-                        contentDescription = "nav bar icon"
+                        contentDescription = stringResource(R.string.nav_bar_icon)
                     )
                 },
-                label = { Text(text = cinemaContent.name) }
+                label = { Text(text = stringResource(cinemaContent.label)) }
             )
         }
 

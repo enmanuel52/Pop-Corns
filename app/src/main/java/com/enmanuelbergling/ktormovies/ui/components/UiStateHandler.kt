@@ -5,8 +5,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 
 
@@ -64,9 +66,10 @@ private fun SnackBarError(
     errorMessage: String,
     onRetry: () -> Unit,
 ) {
+    val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         val snackResult = snackState.showSnackbar(
-            message = errorMessage, actionLabel = "Retry",
+            message = errorMessage, actionLabel = context.getString(R.string.retry),
             withDismissAction = true,
             duration = SnackbarDuration.Indefinite
         )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Clear
@@ -30,8 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.ui.components.FromDirection
 import com.enmanuelbergling.ktormovies.ui.components.LinearLoading
 import com.enmanuelbergling.ktormovies.ui.components.ShowUpFrom
@@ -69,7 +72,7 @@ fun MovieSearchScreen(
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.Rounded.ArrowBackIos,
-                    contentDescription = "back icon"
+                    contentDescription = stringResource(id = R.string.back_icon)
                 )
             }
         },
@@ -78,7 +81,7 @@ fun MovieSearchScreen(
                 IconButton(onClick = { viewModel.onQueryChange("") }) {
                     Icon(
                         imageVector = Icons.Rounded.Clear,
-                        contentDescription = "clear string icon"
+                        contentDescription = stringResource(R.string.clear_string_icon)
                     )
                 }
             }
@@ -134,11 +137,12 @@ fun MovieSearchScreen(
                             lazyListState.animateScrollToItem(0)
                         }
                     },
-                    modifier = Modifier.padding(bottom = MaterialTheme.dimen.small)
+                    modifier = Modifier.padding(bottom = MaterialTheme.dimen.small),
+                    shape = CircleShape
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.VerticalAlignTop,
-                        contentDescription = "to start icon"
+                        contentDescription = stringResource(id = R.string.to_start_icon)
                     )
                 }
             }

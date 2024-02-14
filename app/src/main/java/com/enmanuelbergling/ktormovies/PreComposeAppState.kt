@@ -53,7 +53,7 @@ class PreComposeAppState(
 
     fun navigateToTopDestination(destination: TopDestination) {
         when (destination) {
-            TopDestination.Movie -> navigator.navigateToMoviesGraph(
+            TopDestination.Movies -> navigator.navigateToMoviesGraph(
                 NavOptions(
                     launchSingleTop = true,
                     popUpTo = PopUpTo(MOVIES_GRAPH_ROUTE, true)
@@ -78,7 +78,7 @@ class PreComposeAppState(
                 )
             )
 
-            DrawerDestination.Actor -> navigator.navigateToActorsGraph(
+            DrawerDestination.Actors -> navigator.navigateToActorsGraph(
                 NavOptions(
                     launchSingleTop = true
                 )

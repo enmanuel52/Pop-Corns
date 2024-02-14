@@ -22,10 +22,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen
@@ -48,12 +50,12 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit, onBack: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = {
-                Text(text = "Actors")
+                Text(text = stringResource(R.string.actors))
             }, navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.Rounded.ArrowBackIos,
-                        contentDescription = "back icon"
+                        contentDescription = stringResource(id = R.string.back_icon)
                     )
                 }
             }, scrollBehavior = scrollBehavior)

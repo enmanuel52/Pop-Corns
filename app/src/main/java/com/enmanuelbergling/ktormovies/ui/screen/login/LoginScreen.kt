@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.enmanuelbergling.ktormovies.R
@@ -67,7 +68,7 @@ fun LoginScreen(
     Box(modifier = modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.pop_corn_background),
-            contentDescription = "background login image",
+            contentDescription = stringResource(R.string.background_login_image),
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -104,7 +105,7 @@ private fun SignIn(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
         Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
         TextButton(onClick = onSignIn) {
-            Text(text = "Sign In")
+            Text(text = stringResource(R.string.sign_in))
         }
     }
 }
@@ -124,7 +125,7 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
             CtiTextField(
                 text = formState.username,
                 onTextChange = { onLoginEvent(LoginEvent.Username(it)) },
-                hint = "Username*",
+                hint = stringResource(R.string.username),
                 errorText = formState.usernameError,
                 leadingIcon = Icons.Rounded.Person3,
             )
@@ -132,14 +133,14 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
             CtiTextField(
                 text = formState.password,
                 onTextChange = { onLoginEvent(LoginEvent.Password(it)) },
-                hint = "Password*",
+                hint = stringResource(R.string.password),
                 errorText = formState.passwordError,
                 leadingIcon = Icons.Rounded.Key,
                 trailingIcon = {
                     IconButton(onClick = { onLoginEvent(LoginEvent.PasswordVisibility) }) {
                         Icon(
                             imageVector = if (formState.isPasswordVisible) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
-                            contentDescription = "password visibility icon"
+                            contentDescription = stringResource(R.string.password_visibility_icon)
                         )
                     }
                 },
@@ -159,7 +160,7 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
                     .fillMaxWidth()
                     .height(ButtonDefaults.MinHeight.times(1.3f))
             ) {
-                Text(text = "Log In")
+                Text(text = stringResource(R.string.log_in))
             }
         }
     }

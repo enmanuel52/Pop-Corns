@@ -17,17 +17,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.VerticalAlignTop
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
@@ -41,12 +40,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
 import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
@@ -100,12 +100,12 @@ private fun MoviesFilterScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = "Advanced Movie Filter") },
+                title = { Text(text = stringResource(R.string.advanced_movie_filter)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBackIosNew,
-                            contentDescription = "back icon"
+                            contentDescription = stringResource(id = R.string.back_icon)
                         )
                     }
                 },
@@ -143,7 +143,7 @@ private fun MoviesFilterScreen(
                         Column {
                             Column {
                                 Text(
-                                    text = "Order By:",
+                                    text = stringResource(R.string.order_by),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -161,12 +161,12 @@ private fun MoviesFilterScreen(
                                                     )
                                                 )
                                             },
-                                            label = { Text(text = "$it") },
+                                            label = { Text(text = stringResource(id = it.label)) },
                                             leadingIcon = {
                                                 if (it == filter.sortBy) {
                                                     Icon(
                                                         imageVector = Icons.Rounded.Check,
-                                                        contentDescription = "filter checked icon"
+                                                        contentDescription = stringResource(R.string.filter_checked_icon)
                                                     )
                                                 }
                                             }
@@ -184,7 +184,7 @@ private fun MoviesFilterScreen(
                         ) {
                             Column {
                                 Text(
-                                    text = "Genres:",
+                                    text = stringResource(R.string.genres),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -210,7 +210,7 @@ private fun MoviesFilterScreen(
                                                 if (it in filter.genres) {
                                                     Icon(
                                                         imageVector = Icons.Rounded.Check,
-                                                        contentDescription = "filter checked icon"
+                                                        contentDescription = stringResource(id = R.string.filter_checked_icon)
                                                     )
                                                 }
                                             }
@@ -247,11 +247,12 @@ private fun MoviesFilterScreen(
                                 lazyListState.animateScrollToItem(0)
                             }
                         },
-                        modifier = Modifier.padding(bottom = MaterialTheme.dimen.small)
+                        modifier = Modifier.padding(bottom = MaterialTheme.dimen.small),
+                        shape = CircleShape
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.VerticalAlignTop,
-                            contentDescription = "to start icon"
+                            contentDescription = stringResource(R.string.to_start_icon)
                         )
                     }
                 }

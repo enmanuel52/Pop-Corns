@@ -26,10 +26,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 
 
@@ -42,7 +44,7 @@ fun DefaultErrorDialog(
         onDismissRequest = onDismissDialog,
         confirmButton = {
             TextButton(onClick = onDismissDialog) {
-                Text(text = "Aceptar")
+                Text(text = stringResource(R.string.accept))
             }
         },
         text = {
@@ -52,7 +54,7 @@ fun DefaultErrorDialog(
         icon = {
             Icon(
                 imageVector = Icons.Rounded.Error,
-                contentDescription = "error icon"
+                contentDescription = stringResource(id = R.string.delete_icon)
             )
         }
     )
@@ -150,20 +152,20 @@ fun CtiContentDialog(
 fun DeleteMovieConfirmationDialog(onDismiss: () -> Unit, onDelete: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Confirmation") },
+        title = { Text(text = stringResource(R.string.confirmation)) },
         text = {
             Text(
-                text = "Are you sure of this?"
+                text = stringResource(R.string.are_you_sure_of_this)
             )
         },
         confirmButton = {
             TextButton(onClick = onDelete) {
-                Text(text = "Delete", color = MaterialTheme.colorScheme.error)
+                Text(text = stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel))
             }
         }
     )

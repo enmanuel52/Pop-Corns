@@ -1,6 +1,5 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,13 +34,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.enmanuelbergling.ktormovies.domain.TAG
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.CtiContentDialog
 import com.enmanuelbergling.ktormovies.ui.components.CtiTextField
@@ -112,25 +113,27 @@ private fun WatchListScreen(
             onDelete = {
                 val tempListId = pickedList
                 pickedList = NO_LIST
-                Log.d(TAG, "WatchListScreen: delete $tempListId")
                 onDeleteList(tempListId)
             })
     }
 
     Scaffold(Modifier.fillMaxSize(), topBar = {
-        CenterAlignedTopAppBar(title = { Text(text = "Watch Lists") },
+        CenterAlignedTopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.Rounded.ArrowBackIos,
-                        contentDescription = "back icon"
+                        contentDescription = stringResource(id = R.string.back_icon)
                     )
                 }
             },
             actions = {
                 if (!lists.isRefreshing) {
                     IconButton(onClick = { onCreateFormEvent(CreateListEvent.OpenForm) }) {
-                        Icon(imageVector = Icons.Rounded.Add, contentDescription = "add icon")
+                        Icon(
+                            imageVector = Icons.Rounded.Add,
+                            contentDescription = stringResource(R.string.add_icon)
+                        )
                     }
                 }
             })
@@ -176,7 +179,7 @@ private fun WatchListScreen(
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Delete,
-                                                contentDescription = "delete icon"
+                                                contentDescription = stringResource(id = R.string.delete_icon)
                                             )
                                         }
                                     }
@@ -202,10 +205,11 @@ private fun WatchListScreen(
     }
 
     if (lists.loadState.refresh is LoadState.Error) {
+        val context = LocalContext.current
         LaunchedEffect(key1 = Unit) {
             val listError = lists.loadState.refresh as? LoadState.Error
             snackbarHostState.showSnackbar(
-                listError?.error?.message ?: "Not session found, login and try again",
+                listError?.error?.message ?: context.getString(R.string.not_session_found_message),
                 withDismissAction = true,
                 duration = SnackbarDuration.Indefinite
             )
