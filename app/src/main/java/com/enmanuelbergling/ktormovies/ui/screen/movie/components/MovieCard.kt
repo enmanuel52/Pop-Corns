@@ -62,7 +62,9 @@ fun MovieCard(
                 model = BASE_IMAGE_URL + imageUrl,
                 contentDescription = "movie image",
                 error = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
-                placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster)
+                placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
+                modifier = Modifier.aspectRatio(.65f),
+                contentScale = ContentScale.Crop
             )
         }
         Text(
@@ -131,7 +133,7 @@ fun HeaderMovieCard(
                 error = painterResource(
                     id = R.drawable.pop_corn_and_cinema_backdrop
                 ),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().aspectRatio(1.78f),
                 contentScale = ContentScale.FillWidth
             )
         }

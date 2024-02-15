@@ -228,6 +228,7 @@ fun DrawerContent(
                 )
             )
     ) {
+        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,

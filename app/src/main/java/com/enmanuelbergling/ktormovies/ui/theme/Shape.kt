@@ -5,12 +5,12 @@ import androidx.compose.material3.Shapes
 
 val Shape = Shapes(
     small = RoundedCornerShape(
-        percent = 50
+        percent = 6
     ),
     medium = RoundedCornerShape(
-        percent = 5
+        percent = 4
     ),
     large = RoundedCornerShape(
-        percent = 5
+        percent = 2
     )
 )

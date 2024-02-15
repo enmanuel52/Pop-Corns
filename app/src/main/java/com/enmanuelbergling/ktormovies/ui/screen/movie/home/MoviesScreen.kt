@@ -163,7 +163,7 @@ fun LazyListScope.moviesSection(
 
                 val listState = rememberLazyListState()
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall),
                     state = listState
                 ) {
                     items(movies) { movie ->
@@ -210,7 +210,7 @@ private fun LazyListScope.headersMovies(
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                HorizontalPager(state = pagerState) { page ->
+                HorizontalPager(state = pagerState, pageSpacing = MaterialTheme.dimen.verySmall) { page ->
                     val movie = upcoming.getOrNull(page)
                     movie?.let {
                         HeaderMovieCard(
