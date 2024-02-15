@@ -4,15 +4,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
 
 val Shape = Shapes(
-    medium = RoundedCornerShape(
-        percent = 16
-    ),
-
     small = RoundedCornerShape(
         percent = 50
     ),
-
+    medium = RoundedCornerShape(
+        percent = 5
+    ),
     large = RoundedCornerShape(
-        percent = 10
+        percent = 5
     )
 )
