@@ -18,16 +18,16 @@ fun Modifier.listItemWindAnimation(
     orientation: Orientation = Orientation.Vertical,
 ): Modifier = composed {
     val cameraAnimatable = remember { Animatable(initialValue = 7.0f) }
-    val scaleAnimatable = remember { Animatable(initialValue = 0.7f) }
+    val scaleAnimatable = remember { Animatable(initialValue = 0.8f) }
     val rotateAnimatable = remember(isScrollingForward) {
-        Animatable(initialValue = if (isScrollingForward) 60f else -60f)
+        Animatable(initialValue = if (isScrollingForward) 15f else -15f)
     }
 
     // Observe changes to scrollDirection and update rotateAnimatable accordingly
     LaunchedEffect(isScrollingForward) {
         // Animate from 0 to either 60 or -60
         rotateAnimatable.animateTo(
-            if (isScrollingForward) 60f else -60f,
+            if (isScrollingForward) 15f else -15f,
             animationSpec = tween(
                 durationMillis = 100,
                 easing = CubicBezierEasing(0f, 0.5f, 0.5f, 1f)
