@@ -31,7 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
+import com.enmanuelbergling.ktormovies.domain.BASE_BACKDROP_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
+import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
@@ -59,7 +61,7 @@ fun MovieCard(
                 )
         ) {
             AsyncImage(
-                model = BASE_IMAGE_URL + imageUrl,
+                model = BASE_POSTER_IMAGE_URL + imageUrl,
                 contentDescription = "movie image",
                 error = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
@@ -125,7 +127,7 @@ fun HeaderMovieCard(
     Column(modifier) {
         ElevatedCard(onClick = onClick) {
             AsyncImage(
-                model = BASE_IMAGE_URL + imageUrl,
+                model = BASE_BACKDROP_IMAGE_URL + imageUrl,
                 contentDescription = "header image",
                 placeholder = painterResource(
                     id = R.drawable.pop_corn_and_cinema_backdrop

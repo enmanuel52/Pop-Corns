@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
+import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.valentinilk.shimmer.shimmer
 
@@ -87,7 +88,7 @@ fun ActorCard(
             Modifier.animateContentSize()
         ) {
             AsyncImage(
-                model = BASE_IMAGE_URL + imageUrl,
+                model = BASE_POSTER_IMAGE_URL + imageUrl,
                 contentDescription = "movie image",
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),

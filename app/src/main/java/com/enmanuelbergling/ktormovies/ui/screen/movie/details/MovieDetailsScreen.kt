@@ -64,6 +64,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
+import com.enmanuelbergling.ktormovies.domain.BASE_BACKDROP_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
@@ -166,7 +167,7 @@ private fun MovieDetailsScreen(
             ) {
 
                 details?.let {
-                    detailsImage(backdropUrl = BASE_IMAGE_URL + details.backdropPath)
+                    detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
 
                     information(
                         details.title,

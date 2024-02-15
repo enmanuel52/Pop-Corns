@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
+import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.TAG
 import com.enmanuelbergling.ktormovies.domain.model.actor.KnownMovie
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
@@ -137,7 +138,7 @@ private fun ActorDetailsRoute(
 
                 details?.let {
                     detailsHeader(
-                        imageUrl = BASE_IMAGE_URL + details.profilePath,
+                        imageUrl = BASE_POSTER_IMAGE_URL + details.profilePath,
                         name = details.name,
                         popularity = details.popularity
                     )
