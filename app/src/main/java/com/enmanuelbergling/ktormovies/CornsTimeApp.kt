@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.FilterList
@@ -87,29 +88,33 @@ fun CornsTimeApp(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    ModalNavigationDrawer(drawerContent = {
-        if (state.isTopDestination) {
-            DrawerContent(
-                onDrawerDestination = { drawerDestination ->
-                    scope.launch {
-                        drawerState.close()
-                        state.navigateToDrawerDestination(drawerDestination)
+    ModalNavigationDrawer(
+        drawerContent = {
+            if (state.isTopDestination) {
+                DrawerContent(
+                    onDrawerDestination = { drawerDestination ->
+                        scope.launch {
+                            drawerState.close()
+                            state.navigateToDrawerDestination(drawerDestination)
+                        }
+                    },
+                    darkTheme = state.darkTheme,
+                    onDarkTheme = onDarkTheme,
+                    isSelected = { it.any { route -> state.matchRoute(route = route) } },
+                    userDetails = userDetails,
+                    onLogout = onLogout,
+                    onLogin = {
+                        scope.launch {
+                            drawerState.close()
+                            state.navigateToLogin()
+                        }
                     }
-                },
-                darkTheme = state.darkTheme,
-                onDarkTheme = onDarkTheme,
-                isSelected = { it.any { route -> state.matchRoute(route = route) } },
-                userDetails = userDetails,
-                onLogout = onLogout,
-                onLogin = {
-                    scope.launch {
-                        drawerState.close()
-                        state.navigateToLogin()
-                    }
-                }
-            )
-        }
-    }, gesturesEnabled = state.isTopDestination, drawerState = drawerState) {
+                )
+            }
+        },
+        gesturesEnabled = state.isTopDestination,
+        drawerState = drawerState
+    ) {
         Scaffold(
             bottomBar = {
                 if (state.shouldShowMainBottomNav) {
@@ -212,11 +217,16 @@ fun DrawerContent(
     onLogin: () -> Unit,
 ) {
     Column(
-        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(.6f)
-            .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large)
+            .fillMaxWidth(.7f)
+            .background(
+                MaterialTheme.colorScheme.surface,
+                RoundedCornerShape(
+                    topEnd = MaterialTheme.dimen.medium,
+                    bottomEnd = MaterialTheme.dimen.medium
+                )
+            )
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
