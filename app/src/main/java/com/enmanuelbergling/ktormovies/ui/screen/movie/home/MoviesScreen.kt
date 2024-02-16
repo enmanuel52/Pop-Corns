@@ -101,7 +101,7 @@ fun MoviesGrid(
 
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
+        contentPadding = PaddingValues(MaterialTheme.dimen.small),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
     ) {
         headersMovies(upcoming, onDetails, isLoading) { onMore(MovieSection.Upcoming) }
@@ -163,7 +163,7 @@ fun LazyListScope.moviesSection(
 
                 val listState = rememberLazyListState()
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
                     state = listState
                 ) {
                     items(movies) { movie ->

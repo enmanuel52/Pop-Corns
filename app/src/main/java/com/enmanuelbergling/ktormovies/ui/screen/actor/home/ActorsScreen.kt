@@ -92,7 +92,7 @@ fun ActorsGrid(
         state = listState,
         columns = StaggeredGridCells.Adaptive(110.dp),
         contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
         verticalItemSpacing = MaterialTheme.dimen.small,
         userScrollEnabled = actors.itemCount > 0
     ) {

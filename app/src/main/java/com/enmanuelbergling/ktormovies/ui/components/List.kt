@@ -12,22 +12,25 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 
-
+/**
+ * @param rotation in degrees
+ * */
 fun Modifier.listItemWindAnimation(
     isScrollingForward: Boolean,
     orientation: Orientation = Orientation.Vertical,
+    rotation: Float = 15f,
 ): Modifier = composed {
     val cameraAnimatable = remember { Animatable(initialValue = 7.0f) }
     val scaleAnimatable = remember { Animatable(initialValue = 0.8f) }
     val rotateAnimatable = remember(isScrollingForward) {
-        Animatable(initialValue = if (isScrollingForward) 15f else -15f)
+        Animatable(initialValue = if (isScrollingForward) rotation else -rotation)
     }
 
     // Observe changes to scrollDirection and update rotateAnimatable accordingly
     LaunchedEffect(isScrollingForward) {
         // Animate from 0 to either 60 or -60
         rotateAnimatable.animateTo(
-            if (isScrollingForward) 15f else -15f,
+            if (isScrollingForward) rotation else -rotation,
             animationSpec = tween(
                 durationMillis = 100,
                 easing = CubicBezierEasing(0f, 0.5f, 0.5f, 1f)
