@@ -257,7 +257,9 @@ fun DrawerContent(
                         imageVector = if (isSelected(destination.routes)) destination.icon else destination.unselectedIcon,
                         contentDescription = "nav icon"
                     )
-                })
+                },
+                shape = MaterialTheme.shapes.small
+            )
         }
     }
 }

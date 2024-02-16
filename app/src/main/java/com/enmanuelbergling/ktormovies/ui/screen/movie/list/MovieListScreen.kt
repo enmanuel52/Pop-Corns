@@ -141,9 +141,10 @@ private fun MovieListScreen(
                             imageUrl = movie.posterPath,
                             title = movie.title,
                             rating = movie.voteAverage,
+                            titleLines = 2,
                             modifier = Modifier
                                 .widthIn(max = 200.dp)
-                                .listItemWindAnimation(isScrollingForward = listState.isScrollingForward())
+                                .listItemWindAnimation(isScrollingForward = listState.isScrollingForward(), rotation = 10f)
                         ) {
                             onMovie(movie.id)
                         }

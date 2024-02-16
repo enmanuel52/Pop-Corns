@@ -48,6 +48,7 @@ fun MovieCard(
     title: String,
     rating: Double,
     modifier: Modifier = Modifier,
+    titleLines: Int = 1,
     onClick: () -> Unit,
 ) {
     Column(
@@ -72,7 +73,7 @@ fun MovieCard(
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            maxLines = 2,
+            maxLines = titleLines,
             overflow = TextOverflow.Ellipsis
         )
         RatingStars(value = rating.div(2).toFloat(), size = 16.dp, spaceBetween = 1.dp)
