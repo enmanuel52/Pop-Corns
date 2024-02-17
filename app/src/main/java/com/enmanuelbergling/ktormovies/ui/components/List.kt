@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import kotlin.math.roundToInt
 
 /**
  * @param rotation in degrees
@@ -19,6 +20,7 @@ fun Modifier.listItemWindAnimation(
     isScrollingForward: Boolean,
     orientation: Orientation = Orientation.Vertical,
     rotation: Float = 15f,
+    durationMillis: Int = 400,
 ): Modifier = composed {
     val cameraAnimatable = remember { Animatable(initialValue = 7.0f) }
     val scaleAnimatable = remember { Animatable(initialValue = 0.8f) }
@@ -40,7 +42,7 @@ fun Modifier.listItemWindAnimation(
         rotateAnimatable.animateTo(
             targetValue = 0f,
             animationSpec = tween(
-                durationMillis = 500,
+                durationMillis = durationMillis,
                 easing = CubicBezierEasing(0f, 0.5f, 0.5f, 1f)
             )
         )
@@ -51,7 +53,7 @@ fun Modifier.listItemWindAnimation(
         cameraAnimatable.animateTo(
             8.0f,
             animationSpec = tween(
-                durationMillis = 500,
+                durationMillis = durationMillis.times(1.4f).roundToInt(),
                 easing = CubicBezierEasing(0f, 0.5f, 0.5f, 1f)
             )
         )
@@ -61,7 +63,7 @@ fun Modifier.listItemWindAnimation(
         scaleAnimatable.animateTo(
             1f,
             animationSpec = tween(
-                durationMillis = 700,
+                durationMillis = durationMillis.times(1.4f).roundToInt(),
                 easing = CubicBezierEasing(0f, 0.5f, 0.5f, 1f)
             )
         )

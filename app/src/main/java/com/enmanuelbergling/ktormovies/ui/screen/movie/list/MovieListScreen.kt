@@ -138,7 +138,7 @@ private fun MovieListScreen(
                 userScrollEnabled = !movies.isRefreshing,
                 contentPadding = PaddingValues(MaterialTheme.dimen.small)
             ) {
-                items(movies) { movie ->
+                items(movies, key = { movie -> movie.id}) { movie ->
                     movie?.let {
                         MovieCard(
                             imageUrl = movie.posterPath,
@@ -149,7 +149,8 @@ private fun MovieListScreen(
                                 .widthIn(max = 200.dp)
                                 .listItemWindAnimation(
                                     isScrollingForward = listState.isScrollingForward(),
-                                    rotation = 8f
+                                    rotation = 4f,
+                                    durationMillis = 200
                                 )
                         ) {
                             onMovie(movie.id)
