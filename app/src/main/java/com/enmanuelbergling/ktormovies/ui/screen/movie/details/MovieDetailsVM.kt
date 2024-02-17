@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.domain.TAG
 import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.model.user.AccountListsFilter
@@ -78,7 +79,7 @@ class MovieDetailsVM(
         runCatching {
             detailsChainHandler.invoke(_uiDataState)
         }.onFailure { throwable ->
-            _uiState.update { SimplerUi.Error(throwable.message.orEmpty()) }
+            _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
         }.onSuccess {
             _uiState.update { SimplerUi.Idle }
         }
@@ -92,7 +93,7 @@ class MovieDetailsVM(
             sessionId = sessionId.value
         )
         ) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
+            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> {
                 _uiState.update { SimplerUi.Success }
                 _withinListsState.update {
@@ -107,7 +108,7 @@ class MovieDetailsVM(
         lists.forEach { list ->
             when (val result = checkItemStatusUC(listId = list.id, movieId = movieId)) {
                 is ResultHandler.Error -> {
-                    _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
+                    _uiState.update { SimplerUi.Error(result.exception.messageResource) }
                     return@forEach
                 }
 

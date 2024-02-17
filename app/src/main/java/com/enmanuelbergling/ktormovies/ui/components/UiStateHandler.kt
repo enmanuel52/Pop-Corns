@@ -6,6 +6,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.enmanuelbergling.ktormovies.R
@@ -33,7 +34,7 @@ fun HandleUiState(
 ) {
     when (uiState) {
         is SimplerUi.Error -> {
-            SnackBarError(snackState, uiState.message, onRetry)
+            SnackBarError(snackState, stringResource(uiState.messageRes), onRetry)
         }
 
         SimplerUi.Idle, SimplerUi.Success -> {}
@@ -51,7 +52,10 @@ fun HandleUiState(
 ) {
     when (uiState) {
         is SimplerUi.Error -> {
-            DefaultErrorDialog(onDismissDialog = onIdle, message = uiState.message)
+            DefaultErrorDialog(
+                onDismissDialog = onIdle,
+                message = stringResource(uiState.messageRes)
+            )
         }
 
         SimplerUi.Idle -> {}

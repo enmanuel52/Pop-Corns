@@ -94,7 +94,7 @@ class WatchListVM(
         when (val result = createListUC(
             listPost = createListFormState.value.toPost(), sessionId = sessionId.value
         )) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
+            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> _uiState.update { SimplerUi.Success }.also {
                 _createListFormState.update { CreateListForm() }
             }
@@ -104,7 +104,7 @@ class WatchListVM(
     fun deleteList(listId: Int) = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
         when (val result = deleteListUC(listId, sessionId.value)) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
+            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> _uiState.update { SimplerUi.Success }
         }
     }
