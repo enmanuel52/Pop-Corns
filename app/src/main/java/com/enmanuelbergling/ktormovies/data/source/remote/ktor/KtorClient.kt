@@ -52,7 +52,7 @@ val ktorClient = HttpClient(CIO) {
             }*/
 
             when (statusCode) {
-                in 200..300 -> {}
+                in 200 until 300 -> {}
                 401 -> throw NetworkException.AuthorizationException
                 else -> throw NetworkException.DefaultException
             }
