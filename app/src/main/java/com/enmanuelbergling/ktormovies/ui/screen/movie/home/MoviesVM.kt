@@ -1,5 +1,8 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home
 
+import android.util.Log
+import com.enmanuelbergling.ktormovies.domain.TAG
+import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.MoviesChainStart
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.MoviesUiData
@@ -28,8 +31,8 @@ class MoviesVM(
         _uiState.update { SimplerUi.Loading }
         runCatching {
             homeMoviesHandler.invoke(_uiDataState)
-        }.onFailure { throwable ->
-            _uiState.update { SimplerUi.Error(throwable.message.orEmpty()) }
+        }.onFailure { _ ->
+            _uiState.update { SimplerUi.Error(NetworkException.ReadTimeOutException.messageResource) }
         }.onSuccess {
             _uiState.update { SimplerUi.Idle }
         }

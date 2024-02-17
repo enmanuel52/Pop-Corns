@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.actor.details
 
+import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsChainStart
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsUiData
@@ -30,7 +31,7 @@ class ActorDetailsVM(
         runCatching {
             actorDetailsChainStart.invoke(_uiDataState)
         }.onFailure { throwable ->
-            _uiState.update { SimplerUi.Error(throwable.message.orEmpty()) }
+            _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
         }.onSuccess {
             _uiState.update { SimplerUi.Idle }
         }

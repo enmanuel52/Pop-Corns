@@ -317,7 +317,10 @@ fun UserDetailsUi(
                             )
                         )
                     },
-                    onClick = if (isLoggedIn) onLogout else onLogin
+                    onClick = {
+                        isCloseSessionDropDownOpen = false
+                        if (isLoggedIn) onLogout() else onLogin()
+                    }
                 )
             }
         }

@@ -15,8 +15,7 @@ internal class AuthRemoteDSImpl(private val service: AuthService) : AuthRemoteDS
 
         val result = service.createRequestToken()
 
-        if (result.success) result.token
-        else throw NetworkException("The request failed")
+        result.token
     }
 
     override suspend fun createSessionFromLogin(sessionPost: CreateSessionPost): ResultHandler<RequestToken> =
@@ -24,8 +23,7 @@ internal class AuthRemoteDSImpl(private val service: AuthService) : AuthRemoteDS
 
             val result = service.createSessionFromLogin(sessionPost.asBody())
 
-            if (result.success) result.token
-            else throw NetworkException("The request failed")
+            result.token
         }
 
     override suspend fun createSessionId(token: RequestToken): ResultHandler<SessionId> =
@@ -33,7 +31,6 @@ internal class AuthRemoteDSImpl(private val service: AuthService) : AuthRemoteDS
 
             val result = service.createSessionId(RequestTokenBody(token))
 
-            if (result.success) result.sessionId
-            else throw NetworkException("The request failed")
+            result.sessionId
         }
 }

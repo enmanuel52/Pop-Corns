@@ -36,7 +36,7 @@ class WatchListDetailsVM(
             listId = listId,
             sessionId = sessionId
         )) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
+            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> {
                 _uiState.update { SimplerUi.Success }
             }

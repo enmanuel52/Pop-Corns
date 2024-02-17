@@ -2,24 +2,18 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktorfit
 
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.BASE_URL
+import com.enmanuelbergling.ktormovies.util.getCurrentLanguage
 import de.jensklingenberg.ktorfit.Ktorfit
-import de.jensklingenberg.ktorfit.converter.Converter
-import de.jensklingenberg.ktorfit.internal.TypeData
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.plugins.plugin
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-private val httpClient = HttpClient(CIO) {
-    defaultRequest {
-        url {
-            parameters.append(name = "api_key", value = BuildConfig.API_KEY)
-        }
-    }
+private val httpClient = HttpClient {
 
     install(HttpTimeout) {
         requestTimeoutMillis = 10000L
@@ -34,6 +28,18 @@ private val httpClient = HttpClient(CIO) {
                 explicitNulls = false
             }
         )
+    }
+
+}.apply {
+    //The HttpSend plugin doesn't require installation
+    plugin(HttpSend).intercept { request ->
+        val newRequest = request.apply {
+            url {
+                parameters.append(name = "api_key", value = BuildConfig.API_KEY)
+                parameters.append(name = "language", value = getCurrentLanguage())
+            }
+        }
+        execute(newRequest)
     }
 }
 

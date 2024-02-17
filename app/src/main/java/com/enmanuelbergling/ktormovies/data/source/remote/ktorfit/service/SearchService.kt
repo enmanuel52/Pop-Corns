@@ -13,7 +13,5 @@ internal interface SearchService {
     suspend fun searchMovie(
         @Query("query") query: String,
         @Query("page") page: Int,
-        @Query("language") language: String = getCurrentLanguage(),
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
     ): MoviePageDTO
 }

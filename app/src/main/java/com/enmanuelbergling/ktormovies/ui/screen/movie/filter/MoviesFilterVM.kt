@@ -65,7 +65,7 @@ class MoviesFilterVM(
     private fun getAvailableGenres() = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
         when (val result = getMovieGenresUC()) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.message.orEmpty()) }
+            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> {
                 _genresState.update { result.data.orEmpty() }
                 _uiState.update { SimplerUi.Success }

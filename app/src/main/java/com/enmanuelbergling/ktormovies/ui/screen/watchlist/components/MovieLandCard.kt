@@ -56,9 +56,8 @@ fun MovieLandCard(
                 contentDescription = "movie image",
                 error = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
-                contentScale = ContentScale.FillHeight,
-                modifier = Modifier
-                    .animateContentSize()
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.aspectRatio(.65f)
                     .clip(MaterialTheme.shapes.medium)
             )
 

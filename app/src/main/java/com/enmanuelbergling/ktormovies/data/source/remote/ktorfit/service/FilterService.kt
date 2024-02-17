@@ -15,7 +15,5 @@ internal interface FilterService {
         @Query("with_genres") genres: String,
         @Query("sort_by") sortBy: String,
         @Query("page") page: Int,
-        @Query("language") language: String = getCurrentLanguage(),
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
     ): MoviePageDTO
 }

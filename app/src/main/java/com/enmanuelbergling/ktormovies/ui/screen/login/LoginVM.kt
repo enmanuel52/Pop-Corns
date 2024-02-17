@@ -1,5 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.login
 
+import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
 import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginChain
@@ -65,7 +66,7 @@ class LoginVM(
                 _loginChainState
             )
         }.onFailure {
-            _uiState.update { SimplerUi.Error("An error just happen") }
+            _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
         }.onSuccess {
             _uiState.update { SimplerUi.Success }
         }

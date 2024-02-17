@@ -2,6 +2,7 @@ package com.enmanuelbergling.ktormovies.data.source.remote.domain
 
 import android.util.Log
 import com.enmanuelbergling.ktormovies.domain.TAG
+import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
 import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
 
 interface RemoteDataSource {
@@ -10,8 +11,9 @@ interface RemoteDataSource {
         val result = request()
         Log.d(TAG, "safeKtorCall: $result")
         ResultHandler.Success(result)
-    } catch (exception: Exception) {
-        Log.d(TAG, "safeKtorCall: ${exception.message}")
+    } catch (exception: NetworkException) {
         ResultHandler.Error(exception)
+    } catch (exception: Exception) {
+        ResultHandler.Error(NetworkException.DefaultException)
     }
 }
