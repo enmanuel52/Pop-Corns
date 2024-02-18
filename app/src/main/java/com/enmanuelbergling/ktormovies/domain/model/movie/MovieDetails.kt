@@ -26,16 +26,14 @@ data class MovieDetails(
     val title: String,
     val video: Boolean,
     val voteAverage: Double,
-    val voteCount: Int
+    val voteCount: Int,
 ) {
     val releaseYear: String
         get() = releaseDate.substring(0..3)
 
     val formattedGenres: String
-        get() = buildString {
-            if (genres.isEmpty()) append("Unavailable")
-            else genres.joinToString("/") { it.name }
-        }
+        get() = if (genres.isEmpty()) "Unavailable"
+        else genres.joinToString("/") { it.name }
 
     val duration: String
         get() = buildString {
