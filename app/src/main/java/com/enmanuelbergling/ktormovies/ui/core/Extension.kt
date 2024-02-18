@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.core
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -33,10 +34,29 @@ val LazyPagingItems<*>.isAppending: Boolean
     get() = loadState.append == LoadState.Loading
 
 val LazyPagingItems<*>.isEmpty: Boolean
-    get() =  itemCount == 0
+    get() = itemCount == 0
 
 @Composable
 fun LazyStaggeredGridState.isScrollingForward(): Boolean = run {
+    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+
+    remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex >= firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }
+        }.also {
+            previousIndex = firstVisibleItemIndex
+            previousScrollOffset = firstVisibleItemScrollOffset
+        }
+    }.value
+}
+
+@Composable
+fun LazyGridState.isScrollingForward(): Boolean = run {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
 

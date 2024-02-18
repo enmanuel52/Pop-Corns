@@ -102,10 +102,6 @@ fun ActorsGrid(
                     imageUrl = actor.profilePath,
                     name = actor.originalName,
                     onCLick = { onDetails(actor.id) },
-                    modifier = Modifier
-                        .listItemWindAnimation(
-                            isScrollingForward = listState.isScrollingForward()
-                        )
                 )
             }
         }

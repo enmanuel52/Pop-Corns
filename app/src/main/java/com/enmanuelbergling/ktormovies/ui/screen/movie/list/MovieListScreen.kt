@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -109,42 +109,49 @@ private fun MovieListScreen(
         topBar = {
             CenterAlignedTopAppBar(title = { Text(text = title) }, navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(imageVector = Icons.Rounded.ArrowBackIos, contentDescription = stringResource(
-                        id = R.string.back_icon
-                    ))
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBackIos,
+                        contentDescription = stringResource(
+                            id = R.string.back_icon
+                        )
+                    )
                 }
             }, scrollBehavior = scrollBehavior)
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) {
-        val listState = rememberLazyStaggeredGridState()
+        val listState = rememberLazyGridState()
 
         Box(
             Modifier
                 .padding(it)
                 .fillMaxSize()
         ) {
-            LazyVerticalStaggeredGrid(
+            LazyVerticalGrid(
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .shimmerIf { movies.isRefreshing },
                 state = listState,
-                columns = StaggeredGridCells.Adaptive(150.dp),
-                verticalItemSpacing = MaterialTheme.dimen.small,
+                columns = GridCells.Adaptive(150.dp),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
                 userScrollEnabled = !movies.isRefreshing,
                 contentPadding = PaddingValues(MaterialTheme.dimen.small)
             ) {
-                items(movies) { movie ->
+                items(movies, key = { movie -> movie.id}) { movie ->
                     movie?.let {
                         MovieCard(
                             imageUrl = movie.posterPath,
                             title = movie.title,
                             rating = movie.voteAverage,
-                            titleLines = 2,
+                            titleLines = 1,
                             modifier = Modifier
                                 .widthIn(max = 200.dp)
-                                .listItemWindAnimation(isScrollingForward = listState.isScrollingForward(), rotation = 10f)
+                                .listItemWindAnimation(
+                                    isScrollingForward = listState.isScrollingForward(),
+                                    rotation = 4f,
+                                    durationMillis = 200
+                                )
                         ) {
                             onMovie(movie.id)
                         }
