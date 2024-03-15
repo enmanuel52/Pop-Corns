@@ -13,6 +13,8 @@ plugins {
     id("com.github.ben-manes.versions") version "0.50.0" apply false
     id("nl.littlerobots.version-catalog-update") version "0.8.3" apply false
     id("com.google.devtools.ksp") version "1.9.10-1.0.13" apply false
+    id("org.jetbrains.kotlin.jvm") version "1.9.10" apply false
+    id("com.android.library") version "8.2.1" apply false
 }
 
 fun isNonStable(version: String): Boolean {

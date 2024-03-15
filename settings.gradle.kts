@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -17,4 +18,17 @@ dependencyResolutionManagement {
 
 rootProject.name = "Ktor Movies"
 include(":app")
- 
+include(":core:domain")
+include(":core:model")
+include(":core:datastore")
+include(":core:network")
+include(":core:ui")
+include(":core:designsystem")
+include(":core:database")
+include(":core:common:android-util")
+include(":core:common:util")
+include(":feature:actor")
+include(":feature:auth")
+include(":feature:movies")
+include(":feature:series")
+include(":feature:watchlists")
