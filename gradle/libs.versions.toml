@@ -31,6 +31,7 @@ protobuf = "0.9.1"
 ktorfit = "1.12.0"
 version-catalog-update = "0.8.3"
 kotlin = "1.19.10"
+pagingCommonKtx = "3.2.1"
 
 [libraries]
 androidx-activity-activity-compose = "androidx.activity:activity-compose:1.7.2"
@@ -78,6 +79,7 @@ moe-tlaster-precompose = { module = "moe.tlaster:precompose", version.ref = "moe
 moe-tlaster-precompose-koin = { module = "moe.tlaster:precompose-koin", version.ref = "moe-tlaster" }
 moe-tlaster-precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "moe-tlaster" }
 org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "pagingCommonKtx" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }

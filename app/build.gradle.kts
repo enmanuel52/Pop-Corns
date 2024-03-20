@@ -94,6 +94,8 @@ dependencies {
     implementation(project(":core:common:util"))
     implementation(project(":core:domain"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:network"))
+    implementation(project(":core:network-android"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
