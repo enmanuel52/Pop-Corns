@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.di
+package com.enmanuelbergling.ktormovies.data.source.remote.di
 
 import com.enmanuelbergling.core.domain.datasource.remote.ActorRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.AuthRemoteDS

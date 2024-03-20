@@ -2,6 +2,7 @@ package com.enmanuelbergling.ktormovies.di
 
 import android.content.Context
 import com.enmanuelbergling.core.datastore.di.preferencesModule
+import com.enmanuelbergling.ktormovies.data.source.remote.di.remoteModule
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 

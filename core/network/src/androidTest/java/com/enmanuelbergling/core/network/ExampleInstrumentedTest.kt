@@ -1,4 +1,4 @@
-package com.enmanuelbergling.core.network_android
+package com.enmanuelbergling.core.network
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.enmanuelbergling.core.network_android.test", appContext.packageName)
+        assertEquals("com.enmanuelbergling.core.network.test", appContext.packageName)
     }
 }

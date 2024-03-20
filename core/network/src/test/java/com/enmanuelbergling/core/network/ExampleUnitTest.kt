@@ -1,4 +1,4 @@
-package com.enmanuelbergling.core.network_android
+package com.enmanuelbergling.core.network
 
 import org.junit.Test
 
