@@ -72,38 +72,15 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:datastore"))
     implementation(project(":core:network"))
+    implementation(project(":core:ui"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.activity.compose)
-
-    val composeBom = platform(libs.androidx.compose.bom)
-    api(composeBom)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-
-    implementation(libs.androidx.compose.foundation)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.espresso.core)
-    androidTestImplementation(composeBom)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    //for collect
-    implementation(libs.androidx.lifecycle.lifecycle.runtime.compose)
-
-
-    //Images--Icons
-    implementation(libs.io.coil.kt.coil.compose)
-    implementation(libs.androidx.compose.material.icons.extended)
-
-    // Koin Multiplatform
-    implementation(libs.io.insert.koin.koin.compose)
     implementation(libs.koin.core)
 
     implementation(libs.androidx.core.splashscreen)
@@ -112,12 +89,7 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
 
-    //Shimmer
-    implementation(libs.com.valentinilk.shimmer.compose.shimmer)
-
-    //Rating Bar
-    implementation(libs.com.github.a914.gowtham.compose.ratingbar)
-
+    //Navigation
     implementation(libs.moe.tlaster.precompose)
 
     // For ViewModel intergration

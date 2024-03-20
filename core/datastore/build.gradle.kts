@@ -8,7 +8,7 @@ android {
 
 dependencies {
 
-    api(project(":core:domain"))
+    implementation(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.org.jetbrains.kotlinx.coroutines)

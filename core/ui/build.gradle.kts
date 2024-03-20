@@ -1,43 +1,47 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.corntime.android.library)
+    alias(libs.plugins.corntime.android.compose)
 }
 
 android {
     namespace = "com.enmanuelbergling.core.ui"
-    compileSdk = 34
-
-    defaultConfig {
-        minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
+    implementation(project(":core:model"))
+    implementation(project(":core:common:util"))
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    api(libs.androidx.activity.activity.compose)
+
+    val composeBom = platform(libs.androidx.compose.bom)
+    api(composeBom)
+    api(libs.androidx.compose.ui)
+    api(libs.androidx.compose.ui.graphics)
+    api(libs.androidx.compose.ui.tooling.preview)
+    api(libs.androidx.compose.material3)
+
+    api(libs.androidx.compose.foundation)
+
+    androidTestApi(composeBom)
+    androidTestApi(libs.androidx.compose.ui.test.junit4)
+    debugApi(libs.androidx.compose.ui.tooling)
+    debugApi(libs.androidx.compose.ui.test.manifest)
+
+    //for collect
+    api(libs.androidx.lifecycle.lifecycle.runtime.compose)
+    
+    //Images--Icons
+    api(libs.io.coil.kt.coil.compose)
+    api(libs.androidx.compose.material.icons.extended)
+
+    // Koin Multiplatform
+    api(libs.io.insert.koin.koin.compose)
+
+    //Shimmer
+    api(libs.com.valentinilk.shimmer.compose.shimmer)
+
+    //Rating Bar
+    api(libs.com.github.a914.gowtham.compose.ratingbar)
+
+    implementation(libs.androidx.paging.paging.compose)
 }
