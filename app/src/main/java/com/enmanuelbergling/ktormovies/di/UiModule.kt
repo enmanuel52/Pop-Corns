@@ -1,12 +1,12 @@
 package com.enmanuelbergling.ktormovies.di
 
 import com.enmanuelbergling.ktormovies.CornTimeVM
-import com.enmanuelbergling.ktormovies.domain.model.MovieSection
-import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
-import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchListDetails
+import com.enmanuelbergling.core.model.MovieSection
+import com.enmanuelbergling.core.model.actor.Actor
+import com.enmanuelbergling.core.model.movie.MovieFilter
+import com.enmanuelbergling.core.model.movie.QueryString
+import com.enmanuelbergling.core.model.user.WatchList
+import com.enmanuelbergling.core.model.user.WatchListDetails
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.actor.details.di.actorDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM

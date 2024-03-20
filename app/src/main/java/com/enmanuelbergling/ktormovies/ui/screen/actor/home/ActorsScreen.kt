@@ -28,10 +28,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
-import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
+import com.enmanuelbergling.core.model.actor.Actor
 import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
 import com.enmanuelbergling.ktormovies.ui.core.items
 import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard

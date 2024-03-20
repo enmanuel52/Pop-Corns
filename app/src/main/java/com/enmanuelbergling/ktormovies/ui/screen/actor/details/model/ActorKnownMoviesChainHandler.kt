@@ -2,7 +2,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.actor.details.model
 
 import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
 import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMoviesByActorUC
 import kotlinx.coroutines.flow.update
 

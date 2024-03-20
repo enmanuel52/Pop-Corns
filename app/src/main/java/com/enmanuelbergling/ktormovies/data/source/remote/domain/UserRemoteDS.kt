@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.domain
 
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.model.user.CreateListPost
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchResponse
+import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.user.CreateListPost
+import com.enmanuelbergling.core.model.user.UserDetails
+import com.enmanuelbergling.core.model.user.WatchResponse
 
 interface UserRemoteDS : RemoteDataSource {
     suspend fun getAccount(sessionId: String): ResultHandler<UserDetails>

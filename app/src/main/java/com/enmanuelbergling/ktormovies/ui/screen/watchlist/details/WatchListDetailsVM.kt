@@ -1,12 +1,13 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.details
 
 import androidx.paging.cachedIn
-import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
+import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.ktormovies.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.DeleteMovieFromListUC
+import com.enmanuelbergling.ktormovies.ui.components.messageResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull

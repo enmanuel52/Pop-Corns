@@ -6,9 +6,8 @@ import com.enmanuelbergling.ktormovies.data.source.remote.domain.SessionId
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.auth.RequestTokenBody
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.AuthService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.asBody
-import com.enmanuelbergling.ktormovies.domain.model.auth.CreateSessionPost
-import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import com.enmanuelbergling.core.model.auth.CreateSessionPost
+import com.enmanuelbergling.core.model.core.ResultHandler
 
 internal class AuthRemoteDSImpl(private val service: AuthService) : AuthRemoteDS {
     override suspend fun createRequestToken(): ResultHandler<RequestToken> = safeKtorCall {

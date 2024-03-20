@@ -1,6 +1,5 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.components
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,9 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme

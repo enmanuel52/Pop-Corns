@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.data.source.preferences.mappers
 
 import com.enmanuelbergling.ktormovies.UserPref
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
+import com.enmanuelbergling.core.model.user.UserDetails
 
 internal fun UserPref.toModel() = UserDetails(
     id = id, username = username, avatarPath = avatarPath, name = name

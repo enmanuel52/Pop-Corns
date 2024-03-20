@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details.model
 
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
+import com.enmanuelbergling.core.model.movie.MovieCredits
+import com.enmanuelbergling.core.model.movie.MovieDetails
 
 data class MovieDetailsUiData(
     val details: MovieDetails? = null,

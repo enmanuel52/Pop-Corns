@@ -65,10 +65,9 @@ import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_BACKDROP_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
+import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.model.movie.MovieDetails
+import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen

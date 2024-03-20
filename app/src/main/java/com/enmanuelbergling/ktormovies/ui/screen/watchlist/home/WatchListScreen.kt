@@ -43,7 +43,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
+import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.ktormovies.ui.components.CtiContentDialog
 import com.enmanuelbergling.ktormovies.ui.components.CtiTextField
 import com.enmanuelbergling.ktormovies.ui.components.DeleteMovieConfirmationDialog

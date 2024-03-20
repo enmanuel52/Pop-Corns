@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.domain.usecase.auth
 
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.AuthRemoteDS
-import com.enmanuelbergling.ktormovies.domain.model.auth.CreateSessionPost
+import com.enmanuelbergling.core.model.auth.CreateSessionPost
 
 class CreateSessionFromLoginUC(private val remoteDS: AuthRemoteDS) {
 

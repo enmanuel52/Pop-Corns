@@ -47,10 +47,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
-import com.enmanuelbergling.ktormovies.domain.model.movie.SortCriteria
+import com.enmanuelbergling.core.model.movie.Genre
+import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.MovieFilter
+import com.enmanuelbergling.core.model.movie.SortCriteria
 import com.enmanuelbergling.ktormovies.ui.components.FromDirection
 import com.enmanuelbergling.ktormovies.ui.components.LinearLoading
 import com.enmanuelbergling.ktormovies.ui.components.ShowUpFrom
@@ -161,7 +161,7 @@ private fun MoviesFilterScreen(
                                                     )
                                                 )
                                             },
-                                            label = { Text(text = stringResource(id = it.label)) },
+                                            label = { Text(text = stringResource(id = it.labelResource)) },
                                             leadingIcon = {
                                                 if (it == filter.sortBy) {
                                                     Icon(
@@ -260,3 +260,19 @@ private fun MoviesFilterScreen(
         }
     }
 }
+
+val SortCriteria.stringValue: String
+    get() = when (this) {
+        SortCriteria.Popularity -> "popularity.desc"
+        SortCriteria.VoteAverage -> "vote_average.desc"
+        SortCriteria.VoteCount -> "vote_count.desc"
+        SortCriteria.Revenue -> "revenue.desc"
+    }
+
+val SortCriteria.labelResource: Int
+    get() = when (this) {
+        SortCriteria.Popularity -> R.string.popularity
+        SortCriteria.VoteAverage -> R.string.vote_average
+        SortCriteria.VoteCount -> R.string.vote_count
+        SortCriteria.Revenue -> R.string.revenue
+    }

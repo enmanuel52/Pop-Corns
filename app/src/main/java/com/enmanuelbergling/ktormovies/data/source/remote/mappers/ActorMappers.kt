@@ -3,9 +3,9 @@ package com.enmanuelbergling.ktormovies.data.source.remote.mappers
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.ActorDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.ActorDetailsDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.actor.KnownMovieDTO
-import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
-import com.enmanuelbergling.ktormovies.domain.model.actor.ActorDetails
-import com.enmanuelbergling.ktormovies.domain.model.actor.KnownMovie
+import com.enmanuelbergling.core.model.actor.Actor
+import com.enmanuelbergling.core.model.actor.ActorDetails
+import com.enmanuelbergling.core.model.actor.KnownMovie
 
 internal fun ActorDetailsDTO.toModel() = ActorDetails(
     adult = adult,

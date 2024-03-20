@@ -4,10 +4,10 @@ import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.UserDetailsDT
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.CreateListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchListDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchResponseDTO
-import com.enmanuelbergling.ktormovies.domain.model.user.CreateListPost
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchResponse
+import com.enmanuelbergling.core.model.user.CreateListPost
+import com.enmanuelbergling.core.model.user.WatchList
+import com.enmanuelbergling.core.model.user.UserDetails
+import com.enmanuelbergling.core.model.user.WatchResponse
 
 internal fun UserDetailsDTO.toModel() = UserDetails(
     id = id, username = username, avatarPath = avatar.tmdb.avatarPath.orEmpty(), name = name

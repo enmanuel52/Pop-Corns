@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.filter.model
 
-import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
-import com.enmanuelbergling.ktormovies.domain.model.movie.SortCriteria
+import com.enmanuelbergling.core.model.movie.Genre
+import com.enmanuelbergling.core.model.movie.SortCriteria
 
 sealed interface MovieFilterEvent {
     /**

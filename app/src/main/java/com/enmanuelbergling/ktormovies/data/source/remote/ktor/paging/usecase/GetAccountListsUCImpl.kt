@@ -8,13 +8,14 @@ import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchLi
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.AccountListsSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
-import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
-import com.enmanuelbergling.ktormovies.domain.model.user.AccountListsFilter
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchList
+import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
+import com.enmanuelbergling.core.model.user.AccountListsFilter
+import com.enmanuelbergling.core.model.user.WatchList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-internal class GetAccountListsUCImpl(private val userService: UserService ): GetFilteredPagingFlowUC<WatchList, AccountListsFilter> {
+internal class GetAccountListsUCImpl(private val userService: UserService ):
+    GetFilteredPagingFlowUC<WatchList, AccountListsFilter> {
     override fun invoke(filter: AccountListsFilter): Flow<PagingData<WatchList>> = Pager(
         config = PagingConfig(pageSize = 20, enablePlaceholders = false),
         pagingSourceFactory = { AccountListsSource(userService, filter) }

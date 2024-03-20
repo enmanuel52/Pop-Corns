@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.enmanuelbergling.ktormovies.data.source.preferences.domain.PreferencesDS
-import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
+import com.enmanuelbergling.core.model.settings.DarkTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking

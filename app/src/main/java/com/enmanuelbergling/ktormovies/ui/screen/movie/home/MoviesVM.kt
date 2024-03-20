@@ -1,9 +1,8 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home
 
-import android.util.Log
-import com.enmanuelbergling.ktormovies.domain.TAG
-import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
+import com.enmanuelbergling.core.model.core.NetworkException
+import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.ktormovies.ui.components.messageResource
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.MoviesChainStart
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.model.MoviesUiData
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -3,11 +3,11 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.MovieService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieCredits
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieDetails
+import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.movie.Genre
+import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.MovieCredits
+import com.enmanuelbergling.core.model.movie.MovieDetails
 
 internal class MovieRemoteDSImpl(private val service: MovieService) : MovieRemoteDS {
     override suspend fun getMovieDetails(id: Int): ResultHandler<MovieDetails> = safeKtorCall {

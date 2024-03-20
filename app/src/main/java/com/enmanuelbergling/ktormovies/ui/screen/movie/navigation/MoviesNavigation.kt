@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.navigation
 
-import com.enmanuelbergling.ktormovies.domain.model.MovieSection
+import com.enmanuelbergling.core.model.MovieSection
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.home.MoviesScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.NowPlayingMoviesScreen

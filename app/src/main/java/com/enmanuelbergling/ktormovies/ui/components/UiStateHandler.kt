@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
+import com.enmanuelbergling.core.model.core.SimplerUi
 
 
 @Composable

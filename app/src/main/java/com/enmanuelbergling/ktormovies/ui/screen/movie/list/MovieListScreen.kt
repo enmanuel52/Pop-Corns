@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.HandlerPagingUiState
 import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen

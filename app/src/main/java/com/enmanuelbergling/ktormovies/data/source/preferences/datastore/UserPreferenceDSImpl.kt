@@ -7,7 +7,7 @@ import com.enmanuelbergling.ktormovies.UserPref
 import com.enmanuelbergling.ktormovies.data.source.preferences.domain.UserPreferenceDS
 import com.enmanuelbergling.ktormovies.data.source.preferences.mappers.toModel
 import com.enmanuelbergling.ktormovies.data.source.preferences.mappers.toPreference
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
+import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -3,9 +3,9 @@ package com.enmanuelbergling.ktormovies.domain.usecase.user
 import com.enmanuelbergling.ktormovies.data.source.preferences.domain.AuthPreferenceDS
 import com.enmanuelbergling.ktormovies.data.source.preferences.domain.UserPreferenceDS
 import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
-import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
+import com.enmanuelbergling.core.model.core.NetworkException
+import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.firstOrNull
 
 class GetUserDetailsUC(

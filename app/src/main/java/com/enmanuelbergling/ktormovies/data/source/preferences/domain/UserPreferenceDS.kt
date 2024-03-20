@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.data.source.preferences.domain
 
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
+import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferenceDS {

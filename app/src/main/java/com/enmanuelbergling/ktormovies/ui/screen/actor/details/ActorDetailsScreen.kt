@@ -47,11 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.TAG
-import com.enmanuelbergling.ktormovies.domain.model.actor.KnownMovie
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
+import com.enmanuelbergling.core.model.actor.KnownMovie
+import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.RatingStars
 import com.enmanuelbergling.ktormovies.ui.core.dimen

@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.login.model
 
-import com.enmanuelbergling.ktormovies.domain.model.auth.CreateSessionPost
+import com.enmanuelbergling.core.model.auth.CreateSessionPost
 import kotlinx.coroutines.flow.MutableStateFlow
 
 typealias LoginChainState = MutableStateFlow<LoginChain>

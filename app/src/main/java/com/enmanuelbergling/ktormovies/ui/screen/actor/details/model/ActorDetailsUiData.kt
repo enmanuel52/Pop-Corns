@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.actor.details.model
 
-import com.enmanuelbergling.ktormovies.domain.model.actor.ActorDetails
-import com.enmanuelbergling.ktormovies.domain.model.actor.KnownMovie
+import com.enmanuelbergling.core.model.actor.ActorDetails
+import com.enmanuelbergling.core.model.actor.KnownMovie
 
 data class ActorDetailsUiData(
     val details: ActorDetails? = null,

@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies
 
-import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
+import com.enmanuelbergling.core.model.settings.DarkTheme
+import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.ktormovies.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.ktormovies.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.GetSavedUserUC

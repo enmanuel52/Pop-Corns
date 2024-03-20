@@ -38,9 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.model.MovieSection
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.core.model.MovieSection
+import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
 import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
 import com.enmanuelbergling.ktormovies.ui.core.dimen

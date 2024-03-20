@@ -1,13 +1,14 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.filter
 
 import androidx.paging.cachedIn
-import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.model.core.SimplerUi
-import com.enmanuelbergling.ktormovies.domain.model.movie.Genre
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
-import com.enmanuelbergling.ktormovies.domain.model.movie.MovieFilter
+import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
+import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.model.movie.Genre
+import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.MovieFilter
 import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieGenresUC
+import com.enmanuelbergling.ktormovies.ui.components.messageResource
 import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.model.MovieFilterEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

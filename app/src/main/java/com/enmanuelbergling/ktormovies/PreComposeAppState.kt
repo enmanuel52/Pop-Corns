@@ -3,7 +3,7 @@ package com.enmanuelbergling.ktormovies
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
+import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsGraph

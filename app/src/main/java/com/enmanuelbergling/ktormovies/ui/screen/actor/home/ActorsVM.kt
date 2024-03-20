@@ -1,8 +1,8 @@
 package com.enmanuelbergling.ktormovies.ui.screen.actor.home
 
 import androidx.paging.cachedIn
-import com.enmanuelbergling.ktormovies.domain.model.actor.Actor
-import com.enmanuelbergling.ktormovies.domain.model.core.GetPagingFlowUC
+import com.enmanuelbergling.core.model.actor.Actor
+import com.enmanuelbergling.ktormovies.util.android.GetPagingFlowUC
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 

@@ -2,9 +2,9 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.search
 
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.enmanuelbergling.ktormovies.domain.model.core.GetFilteredPagingFlowUC
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
-import com.enmanuelbergling.ktormovies.domain.model.movie.QueryString
+import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
+import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.QueryString
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

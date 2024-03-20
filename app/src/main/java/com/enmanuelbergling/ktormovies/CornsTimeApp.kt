@@ -59,8 +59,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.enmanuelbergling.ktormovies.domain.model.settings.DarkTheme
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
+import com.enmanuelbergling.core.model.settings.DarkTheme
+import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination

@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.domain.usecase.form
 
-import com.enmanuelbergling.ktormovies.domain.model.core.FormValidation
+import com.enmanuelbergling.core.model.core.FormValidation
 
  class BasicFormValidationUC {
     operator fun invoke(text: String) =

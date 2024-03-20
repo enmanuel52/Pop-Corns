@@ -2,8 +2,8 @@ package com.enmanuelbergling.ktormovies.data.source.remote.domain
 
 import android.util.Log
 import com.enmanuelbergling.ktormovies.domain.TAG
-import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
+import com.enmanuelbergling.core.model.core.NetworkException
+import com.enmanuelbergling.core.model.core.ResultHandler
 
 interface RemoteDataSource {
 

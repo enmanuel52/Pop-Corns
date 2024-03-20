@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.model
 
-import com.enmanuelbergling.ktormovies.domain.model.user.CreateListPost
+import com.enmanuelbergling.core.model.user.CreateListPost
 
 data class CreateListForm(
     val name: String = "",

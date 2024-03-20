@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details.model
 
-import com.enmanuelbergling.ktormovies.domain.model.movie.Cast
-import com.enmanuelbergling.ktormovies.domain.model.movie.Crew
+import com.enmanuelbergling.core.model.movie.Cast
+import com.enmanuelbergling.core.model.movie.Crew
 
 data class PersonUiItem(
     val id: Int,

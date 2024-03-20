@@ -7,10 +7,10 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserServi
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.asBody
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
 import com.enmanuelbergling.ktormovies.domain.TAG
-import com.enmanuelbergling.ktormovies.domain.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.model.user.CreateListPost
-import com.enmanuelbergling.ktormovies.domain.model.user.UserDetails
-import com.enmanuelbergling.ktormovies.domain.model.user.WatchResponse
+import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.user.CreateListPost
+import com.enmanuelbergling.core.model.user.UserDetails
+import com.enmanuelbergling.core.model.user.WatchResponse
 
 class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
 

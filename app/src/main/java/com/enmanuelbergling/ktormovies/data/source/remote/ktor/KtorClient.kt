@@ -4,7 +4,7 @@ import android.util.Log
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.BASE_URL
 import com.enmanuelbergling.ktormovies.domain.TAG
-import com.enmanuelbergling.ktormovies.domain.model.core.NetworkException
+import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.ktormovies.util.getCurrentLanguage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO

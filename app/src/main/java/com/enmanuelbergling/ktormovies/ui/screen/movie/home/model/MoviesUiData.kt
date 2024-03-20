@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home.model
 
-import com.enmanuelbergling.ktormovies.domain.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.Movie
 
 data class MoviesUiData(
     val upcoming: List<Movie> = emptyList(),
