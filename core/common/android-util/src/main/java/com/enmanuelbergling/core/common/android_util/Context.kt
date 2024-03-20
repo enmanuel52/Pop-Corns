@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.util
+package com.enmanuelbergling.core.common.android_util
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.util.Log
 import androidx.core.content.getSystemService
+import com.enmanuelbergling.core.common.util.TAG
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

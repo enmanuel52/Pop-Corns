@@ -8,7 +8,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDTO
 import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.service.SearchService
 import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.source.SearchMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
-import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.QueryString
 import kotlinx.coroutines.flow.Flow

@@ -2,13 +2,12 @@ package com.enmanuelbergling.ktormovies.data.source.remote.ktorfit
 
 import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.data.source.remote.BASE_URL
-import com.enmanuelbergling.ktormovies.util.getCurrentLanguage
+import com.enmanuelbergling.core.common.android_util.getCurrentLanguage
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.plugin
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json

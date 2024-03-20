@@ -16,7 +16,7 @@ import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.CheckItemSt
 import com.enmanuelbergling.ktormovies.ui.components.messageResource
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsChainHandler
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
-import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.GetFilteredPagingFlowUC
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

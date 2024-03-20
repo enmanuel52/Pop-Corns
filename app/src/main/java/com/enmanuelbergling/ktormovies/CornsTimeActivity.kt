@@ -15,7 +15,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
-import com.enmanuelbergling.ktormovies.util.isOnline
+import com.enmanuelbergling.core.common.android_util.isOnline
 import moe.tlaster.precompose.PreComposeApp
 import org.koin.compose.KoinContext
 import org.koin.core.component.KoinComponent

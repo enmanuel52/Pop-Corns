@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.GenericPagingSource
-import com.enmanuelbergling.ktormovies.util.android.GetPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.GetPagingFlowUC
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

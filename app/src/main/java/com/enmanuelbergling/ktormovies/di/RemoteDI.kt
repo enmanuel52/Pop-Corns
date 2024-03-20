@@ -32,8 +32,8 @@ import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.usecase.GetMov
 import com.enmanuelbergling.ktormovies.data.source.remote.ktorfit.usecase.GetSearchMovieUCImpl
 import com.enmanuelbergling.core.model.MovieSection
 import com.enmanuelbergling.core.model.actor.Actor
-import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
-import com.enmanuelbergling.ktormovies.util.android.GetPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.GetFilteredPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.GetPagingFlowUC
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.MovieFilter
 import com.enmanuelbergling.core.model.movie.QueryString

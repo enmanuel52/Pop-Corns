@@ -69,7 +69,7 @@ import com.enmanuelbergling.ktormovies.ui.components.icon
 import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.navigateToMovieFilter
 import com.enmanuelbergling.ktormovies.ui.screen.movie.search.navigateToMovieSearch
-import com.enmanuelbergling.ktormovies.util.TAG
+import com.enmanuelbergling.core.common.util.TAG
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

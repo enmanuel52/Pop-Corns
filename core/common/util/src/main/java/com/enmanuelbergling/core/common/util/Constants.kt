@@ -1,4 +1,3 @@
 package com.enmanuelbergling.core.common.util
 
-class MyClass {
-}
+const val TAG = "Corns Time Log"

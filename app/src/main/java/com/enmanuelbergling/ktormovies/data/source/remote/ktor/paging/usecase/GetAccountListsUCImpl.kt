@@ -8,7 +8,7 @@ import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.WatchLi
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.AccountListsSource
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
-import com.enmanuelbergling.ktormovies.util.android.GetFilteredPagingFlowUC
+import com.enmanuelbergling.ktormovies.domain.model.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
 import kotlinx.coroutines.flow.Flow
