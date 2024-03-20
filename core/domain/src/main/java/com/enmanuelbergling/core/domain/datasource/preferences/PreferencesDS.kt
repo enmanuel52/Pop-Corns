@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.preferences.domain
+package com.enmanuelbergling.core.domain.datasource.preferences
 
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import kotlinx.coroutines.flow.Flow

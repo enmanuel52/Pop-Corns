@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource
 
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.ActorRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.ActorRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.ActorService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
 import com.enmanuelbergling.core.model.actor.ActorDetails

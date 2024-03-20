@@ -1,8 +1,8 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource
 
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.AuthRemoteDS
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.RequestToken
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.SessionId
+import com.enmanuelbergling.core.domain.datasource.remote.AuthRemoteDS
+import com.enmanuelbergling.core.model.RequestToken
+import com.enmanuelbergling.core.model.SessionId
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.auth.RequestTokenBody
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.AuthService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.asBody

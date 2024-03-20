@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.domain.usecase.movie
 
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.ActorRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.ActorRemoteDS
 
 class GetMoviesByActorUC(
     private val remoteDS: ActorRemoteDS

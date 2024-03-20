@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.domain.usecase.auth
 
-import com.enmanuelbergling.ktormovies.data.source.preferences.domain.AuthPreferenceDS
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.AuthRemoteDS
+import com.enmanuelbergling.core.domain.datasource.preferences.AuthPreferenceDS
+import com.enmanuelbergling.core.domain.datasource.remote.AuthRemoteDS
 import com.enmanuelbergling.core.model.core.ResultHandler
 
 

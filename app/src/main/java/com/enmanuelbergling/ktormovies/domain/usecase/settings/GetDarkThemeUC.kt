@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.domain.usecase.settings
 
-import com.enmanuelbergling.ktormovies.data.source.preferences.domain.PreferencesDS
+import com.enmanuelbergling.core.domain.datasource.preferences.PreferencesDS
 
 class GetDarkThemeUC(private val localDS: PreferencesDS) {
     operator fun invoke() = localDS.getDarkTheme()

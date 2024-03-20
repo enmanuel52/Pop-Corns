@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.domain
+package com.enmanuelbergling.core.domain.datasource.remote
 
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.user.CreateListPost

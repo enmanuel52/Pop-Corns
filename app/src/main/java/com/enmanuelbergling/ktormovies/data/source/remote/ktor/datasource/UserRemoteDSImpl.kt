@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource
 
 import android.util.Log
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.service.UserService
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.asBody

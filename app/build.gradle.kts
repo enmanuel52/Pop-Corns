@@ -92,9 +92,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
     implementation(project(":core:common:android-util"))
     implementation(project(":core:common:util"))
+    implementation(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)

@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist
 
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 
 /**
  * check whether the movie is part or not from a list

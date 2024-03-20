@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.di
 
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.ActorRemoteDS
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.AuthRemoteDS
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.UserRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.ActorRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.AuthRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.ActorRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.AuthRemoteDSImpl
 import com.enmanuelbergling.ktormovies.data.source.remote.ktor.datasource.MovieRemoteDSImpl

@@ -1,9 +1,10 @@
 plugins {
-    id("java-library")
-    id("org.jetbrains.kotlin.jvm")
+    alias(libs.plugins.corntime.jvm.library)
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+dependencies {
+
+    api(project(":core:model"))
+
+    implementation(libs.org.jetbrains.kotlinx.coroutines)
 }

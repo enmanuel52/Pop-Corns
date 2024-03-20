@@ -13,6 +13,7 @@ io-coil-kt = "2.4.0"
 io-insert-koin = "1.1.2"
 io-ktor = "2.3.5"
 koin-core = "3.5.0"
+kotlinx-coroutines = "1.8.0"
 kotlinSerialization = "1.9.0"
 kotlinxSerializationJson = "1.6.0"
 material-icons-extended = "1.5.2"
@@ -69,7 +70,6 @@ io-ktor-ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.
 io-ktor-ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "io-ktor" }
 io-ktor-ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "io-ktor" }
 io-ktor-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "io-ktor" }
-
 junit = "junit:junit:4.13.2"
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
@@ -77,6 +77,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 moe-tlaster-precompose = { module = "moe.tlaster:precompose", version.ref = "moe-tlaster" }
 moe-tlaster-precompose-koin = { module = "moe.tlaster:precompose-koin", version.ref = "moe-tlaster" }
 moe-tlaster-precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "moe-tlaster" }
+org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }

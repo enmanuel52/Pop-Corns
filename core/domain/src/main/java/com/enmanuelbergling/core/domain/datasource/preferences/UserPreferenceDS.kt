@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.preferences.domain
+package com.enmanuelbergling.core.domain.datasource.preferences
 
 import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.Flow

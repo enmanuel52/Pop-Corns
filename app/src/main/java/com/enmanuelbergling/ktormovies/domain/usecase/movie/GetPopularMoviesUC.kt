@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.domain.usecase.movie
 
-import com.enmanuelbergling.ktormovies.data.source.remote.domain.MovieRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 
 class GetPopularMoviesUC(
     private val remoteDS: MovieRemoteDS
