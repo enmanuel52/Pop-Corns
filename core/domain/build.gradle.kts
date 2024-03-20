@@ -7,4 +7,7 @@ dependencies {
     api(project(":core:model"))
 
     implementation(libs.org.jetbrains.kotlinx.coroutines)
+
+    //Koin
+    implementation(libs.koin.core)
 }

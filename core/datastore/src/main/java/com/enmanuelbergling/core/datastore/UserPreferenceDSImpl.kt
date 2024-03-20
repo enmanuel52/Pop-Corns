@@ -1,12 +1,12 @@
-package com.enmanuelbergling.ktormovies.data.source.preferences.datastore
+package com.enmanuelbergling.core.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.enmanuelbergling.ktormovies.UserPref
 import com.enmanuelbergling.core.domain.datasource.preferences.UserPreferenceDS
-import com.enmanuelbergling.ktormovies.data.source.preferences.mappers.toModel
-import com.enmanuelbergling.ktormovies.data.source.preferences.mappers.toPreference
+import com.enmanuelbergling.core.datastore.mappers.toModel
+import com.enmanuelbergling.core.datastore.mappers.toPreference
 import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.preferences.datastore
+package com.enmanuelbergling.core.datastore
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer

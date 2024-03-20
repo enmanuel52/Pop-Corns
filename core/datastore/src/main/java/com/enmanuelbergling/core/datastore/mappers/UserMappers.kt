@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.preferences.mappers
+package com.enmanuelbergling.core.datastore.mappers
 
 import com.enmanuelbergling.ktormovies.UserPref
 import com.enmanuelbergling.core.model.user.UserDetails

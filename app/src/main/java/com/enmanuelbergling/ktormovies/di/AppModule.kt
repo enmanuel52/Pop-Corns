@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.di
 
 import android.content.Context
+import com.enmanuelbergling.core.datastore.di.preferencesModule
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
@@ -16,6 +17,6 @@ val appModule = module {
 
 fun androidModules(context: Context) = module {
     loadKoinModules(
-        localModule(context)
+        preferencesModule(context)
     )
 }

@@ -6,8 +6,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
 
-    alias(libs.plugins.com.google.protobuf)
-
     id("com.google.devtools.ksp")
     alias(libs.plugins.de.jensklingenberg.ktorfit)
 }
@@ -95,6 +93,7 @@ dependencies {
     implementation(project(":core:common:android-util"))
     implementation(project(":core:common:util"))
     implementation(project(":core:domain"))
+    implementation(project(":core:datastore"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
@@ -131,11 +130,6 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
 
-    //DataStore
-    implementation(libs.androidx.datastore.datastore.preferences)
-    implementation(libs.androidx.datastore)
-    implementation(libs.com.google.protobuf.javalite)
-
     //ktor client
     implementation(libs.io.ktor.ktor.client.core)
 
@@ -171,23 +165,4 @@ dependencies {
     //Ktorfit
     implementation(libs.de.jensklingenberg.ktorfit.ktorfit.lib.light)
     ksp(libs.de.jensklingenberg.ktorfit.ktorfit.ksp)
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.14.0"
-    }
-
-    // Generates the java Protobuf-lite code for the Protobufs in this project. See
-    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
-    // for more information.
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                create("java") {
-                    option("lite")
-                }
-            }
-        }
-    }
 }

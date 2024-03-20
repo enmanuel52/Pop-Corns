@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.preferences.datastore
+package com.enmanuelbergling.core.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
