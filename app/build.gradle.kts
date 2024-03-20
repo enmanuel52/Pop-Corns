@@ -6,10 +6,10 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
 
-    id("com.google.protobuf") version "0.9.1"
+    alias(libs.plugins.com.google.protobuf)
 
     id("com.google.devtools.ksp")
-    id("de.jensklingenberg.ktorfit") version "1.12.0"
+    alias(libs.plugins.de.jensklingenberg.ktorfit)
 }
 
 val secretFile = rootProject.file("secret.properties")
@@ -93,85 +93,81 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.activity.compose)
 
-    implementation(platform("androidx.compose:compose-bom:2023.10.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    val composeBom = platform(libs.androidx.compose.bom)
+    api(composeBom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
 
-    implementation("androidx.compose.foundation:foundation:1.6.1")
+    implementation(libs.androidx.compose.foundation)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.espresso.core)
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     //for collect
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation(libs.androidx.lifecycle.lifecycle.runtime.compose)
 
 
     //Images--Icons
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.compose.material:material-icons-extended:1.5.2")
+    implementation(libs.io.coil.kt.coil.compose)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Koin Multiplatform
-    implementation("io.insert-koin:koin-compose:1.1.2")
-    implementation("io.insert-koin:koin-core:3.5.0")
+    implementation(libs.io.insert.koin.koin.compose)
+    implementation(libs.koin.core)
 
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.androidx.core.splashscreen)
 
     //DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.datastore:datastore:1.0.0")
-    implementation("com.google.protobuf:protobuf-javalite:3.24.4")
+    implementation(libs.androidx.datastore.datastore.preferences)
+    implementation(libs.androidx.datastore)
+    implementation(libs.com.google.protobuf.javalite)
 
     //ktor client
-    val ktor_version = "2.3.5"
-    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation(libs.io.ktor.ktor.client.core)
 
     //Engines
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation(libs.io.ktor.ktor.client.cio)
 
     //Plugins
-    implementation("io.ktor:ktor-client-resources:$ktor_version")
-    implementation("io.ktor:ktor-client-websockets:$ktor_version")
-    implementation("io.ktor:ktor-client-logging:$ktor_version")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation(libs.io.ktor.ktor.client.resources)
+    implementation(libs.io.ktor.ktor.client.websockets)
+    implementation(libs.io.ktor.ktor.client.logging)
+    implementation(libs.io.ktor.ktor.client.content.negotiation)
+    implementation(libs.io.ktor.ktor.serialization.kotlinx.json)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation(libs.kotlinx.serialization.json)
 
     //paging
-    implementation("androidx.paging:paging-runtime:3.1.1")
-    implementation("androidx.paging:paging-compose:1.0.0-alpha16")
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.paging.compose)
 
     //Shimmer
-    implementation("com.valentinilk.shimmer:compose-shimmer:1.0.5")
+    implementation(libs.com.valentinilk.shimmer.compose.shimmer)
 
     //Rating Bar
-    implementation("com.github.a914-gowtham:compose-ratingbar:1.3.4")
+    implementation(libs.com.github.a914.gowtham.compose.ratingbar)
 
-    val precompose_version = "1.5.8"
-
-    implementation("moe.tlaster:precompose:$precompose_version")
+    implementation(libs.moe.tlaster.precompose)
 
     // For ViewModel intergration
-    implementation("moe.tlaster:precompose-viewmodel:$precompose_version")
+    implementation(libs.moe.tlaster.precompose.viewmodel)
     // For Koin intergration
-    implementation("moe.tlaster:precompose-koin:$precompose_version")
+    implementation(libs.moe.tlaster.precompose.koin)
 
     //Ktorfit
-    val ktorfitVersion = "1.12.0"
-
-    implementation("de.jensklingenberg.ktorfit:ktorfit-lib-light:$ktorfitVersion")
-    ksp("de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+    implementation(libs.de.jensklingenberg.ktorfit.ktorfit.lib.light)
+    ksp(libs.de.jensklingenberg.ktorfit.ktorfit.ksp)
 }
 
 protobuf {
