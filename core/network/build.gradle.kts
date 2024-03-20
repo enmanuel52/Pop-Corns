@@ -30,11 +30,17 @@ android {
             value = "\"${secretProperties.getProperty("ACCOUNT_ID")}\""
         )
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
 
     implementation(project(":core:domain"))
+    implementation(project(":core:common:android-util"))
+    implementation(project(":core:common:util"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.org.jetbrains.kotlinx.coroutines)

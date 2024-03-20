@@ -2,7 +2,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.search
 
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.enmanuelbergling.ktormovies.data.source.remote.paging.usecase.core.GetFilteredPagingFlowUC
+import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.QueryString
 import kotlinx.coroutines.ExperimentalCoroutinesApi

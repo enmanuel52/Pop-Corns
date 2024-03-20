@@ -1,18 +1,7 @@
-import java.io.FileInputStream
-import java.util.Properties
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
-
-    id("com.google.devtools.ksp")
-    alias(libs.plugins.de.jensklingenberg.ktorfit)
 }
-
-val secretFile = rootProject.file("secret.properties")
-val secretProperties = Properties()
-secretProperties.load(FileInputStream(secretFile))
 
 android {
     namespace = "com.enmanuelbergling.ktormovies"
@@ -38,18 +27,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        buildConfigField(
-            type = "String",
-            name = "API_KEY",
-            value = "\"${secretProperties.getProperty("API_KEY")}\""
-        )
-
-        buildConfigField(
-            type = "String",
-            name = "ACCOUNT_ID",
-            value = "\"${secretProperties.getProperty("ACCOUNT_ID")}\""
-        )
     }
 
     buildFeatures {
@@ -131,21 +108,6 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
 
-    //ktor client
-    implementation(libs.io.ktor.ktor.client.core)
-
-    //Engines
-    implementation(libs.io.ktor.ktor.client.cio)
-
-    //Plugins
-    implementation(libs.io.ktor.ktor.client.resources)
-    implementation(libs.io.ktor.ktor.client.websockets)
-    implementation(libs.io.ktor.ktor.client.logging)
-    implementation(libs.io.ktor.ktor.client.content.negotiation)
-    implementation(libs.io.ktor.ktor.serialization.kotlinx.json)
-
-    implementation(libs.kotlinx.serialization.json)
-
     //paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
@@ -162,8 +124,4 @@ dependencies {
     implementation(libs.moe.tlaster.precompose.viewmodel)
     // For Koin intergration
     implementation(libs.moe.tlaster.precompose.koin)
-
-    //Ktorfit
-    implementation(libs.de.jensklingenberg.ktorfit.ktorfit.lib.light)
-    ksp(libs.de.jensklingenberg.ktorfit.ktorfit.ksp)
 }

@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui.screen.watchlist.details
 
 import androidx.paging.cachedIn
-import com.enmanuelbergling.ktormovies.data.source.remote.paging.usecase.core.GetFilteredPagingFlowUC
+import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie

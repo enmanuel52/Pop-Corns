@@ -261,14 +261,6 @@ private fun MoviesFilterScreen(
     }
 }
 
-val SortCriteria.stringValue: String
-    get() = when (this) {
-        SortCriteria.Popularity -> "popularity.desc"
-        SortCriteria.VoteAverage -> "vote_average.desc"
-        SortCriteria.VoteCount -> "vote_count.desc"
-        SortCriteria.Revenue -> "revenue.desc"
-    }
-
 val SortCriteria.labelResource: Int
     get() = when (this) {
         SortCriteria.Popularity -> R.string.popularity
