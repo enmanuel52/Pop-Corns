@@ -1,8 +1,8 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.usecase
+package com.enmanuelbergling.ktormovies.data.source.remote.paging.usecase
 
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.model.GenericGetPagingUC
-import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.source.NowPlayingMovieSource
+import com.enmanuelbergling.ktormovies.data.source.remote.paging.usecase.core.GenericGetPagingUC
+import com.enmanuelbergling.ktormovies.data.source.remote.paging.source.NowPlayingMovieSource
 import com.enmanuelbergling.ktormovies.data.source.remote.mappers.toModel
 import com.enmanuelbergling.core.model.movie.Movie
 

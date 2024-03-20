@@ -1,9 +1,9 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core
+package com.enmanuelbergling.ktormovies.data.source.remote.paging.source.core
 
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.model.PagingResponse
+import com.enmanuelbergling.ktormovies.data.source.remote.paging.model.PagingResponse
 import com.enmanuelbergling.ktormovies.domain.TAG
 
 open class GenericPagingSource<Dto : Any>(

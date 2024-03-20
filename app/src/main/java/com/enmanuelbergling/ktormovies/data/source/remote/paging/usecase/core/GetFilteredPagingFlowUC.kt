@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.domain.model
+package com.enmanuelbergling.ktormovies.data.source.remote.paging.usecase.core
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow

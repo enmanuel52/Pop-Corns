@@ -2,7 +2,7 @@ package com.enmanuelbergling.ktormovies.data.source.remote.dto.user.watch
 
 
 import com.enmanuelbergling.ktormovies.data.source.remote.dto.movie.MovieDTO
-import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.model.PagingResponse
+import com.enmanuelbergling.ktormovies.data.source.remote.paging.model.PagingResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

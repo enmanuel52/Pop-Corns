@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.model
+package com.enmanuelbergling.ktormovies.data.source.remote.paging.model
 
 interface PagingResponse<Dto : Any> {
     val totalPages: Int

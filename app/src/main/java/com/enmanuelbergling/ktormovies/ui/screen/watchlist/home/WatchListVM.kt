@@ -3,7 +3,7 @@ package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.ktormovies.BuildConfig
-import com.enmanuelbergling.ktormovies.domain.model.GetFilteredPagingFlowUC
+import com.enmanuelbergling.ktormovies.data.source.remote.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.user.AccountListsFilter

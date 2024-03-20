@@ -1,11 +1,10 @@
-package com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.model
+package com.enmanuelbergling.ktormovies.data.source.remote.paging.usecase.core
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.enmanuelbergling.ktormovies.data.source.remote.ktor.paging.core.GenericPagingSource
-import com.enmanuelbergling.ktormovies.domain.model.GetPagingFlowUC
+import com.enmanuelbergling.ktormovies.data.source.remote.paging.source.core.GenericPagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
