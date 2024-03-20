@@ -22,25 +22,21 @@ tasks {
 
 gradlePlugin{
     plugins {
-        /*register("androidApplication") {
-            id = "buyme.android.application"
+        register("androidApplication") {
+            id = "corntime.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidLibrary") {
-            id = "buyme.android.library"
+            id = "corntime.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidCompose") {
-            id = "buyme.android.compose"
+            id = "corntime.android.compose"
             implementationClass = "AndroidComposeConventionPlugin"
         }
-        register("androidHilt") {
-            id = "buyme.android.hilt"
-            implementationClass = "AndroidHiltConventionPlugin"
-        }
         register("jvmLibrary") {
-            id = "buyme.jvm.library"
+            id = "corntime.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
-        }*/
+        }
     }
 }
