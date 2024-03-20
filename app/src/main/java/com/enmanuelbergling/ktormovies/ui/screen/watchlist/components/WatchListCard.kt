@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.enmanuelbergling.ktormovies.ui.core.dimen
+import com.enmanuelbergling.core.ui.core.dimen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +36,11 @@ fun WatchListCard(
     containerColor: Color = MaterialTheme.colorScheme.surface,
     onClick: () -> Unit,
 ) {
-    ElevatedCard(onClick = onClick, modifier = modifier, colors = CardDefaults.elevatedCardColors(containerColor)) {
+    ElevatedCard(
+        onClick = onClick,
+        modifier = modifier,
+        colors = CardDefaults.elevatedCardColors(containerColor)
+    ) {
         Row(
             Modifier.padding(MaterialTheme.dimen.small),
             verticalAlignment = Alignment.CenterVertically

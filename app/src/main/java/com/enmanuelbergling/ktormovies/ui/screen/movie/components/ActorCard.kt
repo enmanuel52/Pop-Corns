@@ -28,10 +28,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
-import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.valentinilk.shimmer.shimmer
 
 @Preview

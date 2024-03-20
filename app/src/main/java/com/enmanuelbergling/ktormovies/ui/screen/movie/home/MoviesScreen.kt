@@ -37,14 +37,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.core.model.MovieSection
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
-import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
-import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
-import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
+import com.enmanuelbergling.core.ui.components.HandleUiState
+import com.enmanuelbergling.core.ui.components.listItemWindAnimation
+import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.core.isScrollingForward
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMoviePlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
@@ -210,7 +210,10 @@ private fun LazyListScope.headersMovies(
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                HorizontalPager(state = pagerState, pageSpacing = MaterialTheme.dimen.verySmall) { page ->
+                HorizontalPager(
+                    state = pagerState,
+                    pageSpacing = MaterialTheme.dimen.verySmall
+                ) { page ->
                     val movie = upcoming.getOrNull(page)
                     movie?.let {
                         HeaderMovieCard(
@@ -239,7 +242,10 @@ private fun SectionHeader(title: String, modifier: Modifier = Modifier, onMore: 
             fontWeight = FontWeight.SemiBold
         )
         IconButton(onClick = onMore) {
-            Icon(imageVector = Icons.Rounded.FastForward, contentDescription = stringResource(R.string.more_icon))
+            Icon(
+                imageVector = Icons.Rounded.FastForward,
+                contentDescription = stringResource(R.string.more_icon)
+            )
         }
     }
 }

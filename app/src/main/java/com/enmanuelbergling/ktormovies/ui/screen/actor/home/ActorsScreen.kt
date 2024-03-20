@@ -27,11 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.core.model.actor.Actor
-import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.core.items
-import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
+import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.core.items
+import com.enmanuelbergling.core.ui.core.shimmerIf
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorPlaceHolder
 import moe.tlaster.precompose.koin.koinViewModel

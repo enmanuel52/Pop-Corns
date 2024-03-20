@@ -59,17 +59,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.model.user.UserDetails
+import com.enmanuelbergling.core.ui.components.UserImage
+import com.enmanuelbergling.core.ui.components.icon
+import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
-import com.enmanuelbergling.ktormovies.ui.components.UserImage
-import com.enmanuelbergling.ktormovies.ui.components.icon
-import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.navigateToMovieFilter
 import com.enmanuelbergling.ktormovies.ui.screen.movie.search.navigateToMovieSearch
-import com.enmanuelbergling.core.common.util.TAG
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

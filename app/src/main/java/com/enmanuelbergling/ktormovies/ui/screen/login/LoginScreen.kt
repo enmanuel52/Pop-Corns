@@ -34,10 +34,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.enmanuelbergling.core.ui.components.CtiTextField
+import com.enmanuelbergling.core.ui.components.HandleUiState
+import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.components.CtiTextField
-import com.enmanuelbergling.ktormovies.ui.components.HandleUiState
-import com.enmanuelbergling.ktormovies.ui.core.dimen
 import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginEvent
 import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginForm
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle

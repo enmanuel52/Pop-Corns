@@ -1,7 +1,14 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
+
+val secretFile = rootProject.file("secret.properties")
+val secretProperties = Properties()
+secretProperties.load(FileInputStream(secretFile))
 
 android {
     namespace = "com.enmanuelbergling.ktormovies"
@@ -27,6 +34,18 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            type = "String",
+            name = "API_KEY",
+            value = "\"${secretProperties.getProperty("API_KEY")}\""
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "ACCOUNT_ID",
+            value = "\"${secretProperties.getProperty("ACCOUNT_ID")}\""
+        )
     }
 
     buildFeatures {

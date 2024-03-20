@@ -29,12 +29,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.ui.components.RatingStars
+import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
-import com.enmanuelbergling.core.model.movie.Movie
-import com.enmanuelbergling.ktormovies.ui.components.RatingStars
-import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +55,8 @@ fun MovieLandCard(
                 error = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.aspectRatio(.65f)
+                modifier = Modifier
+                    .aspectRatio(.65f)
                     .clip(MaterialTheme.shapes.medium)
             )
 

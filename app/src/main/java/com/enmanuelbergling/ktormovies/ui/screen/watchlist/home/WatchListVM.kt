@@ -2,17 +2,17 @@ package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
 
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.enmanuelbergling.ktormovies.BuildConfig
-import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
+import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
+import com.enmanuelbergling.core.ui.components.messageResource
+import com.enmanuelbergling.ktormovies.BuildConfig
 import com.enmanuelbergling.ktormovies.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.ktormovies.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.CreateListUC
 import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.DeleteListUC
-import com.enmanuelbergling.ktormovies.ui.components.messageResource
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListEvent
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListForm
 import kotlinx.coroutines.ExperimentalCoroutinesApi

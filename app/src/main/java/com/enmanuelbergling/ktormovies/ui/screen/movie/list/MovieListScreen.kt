@@ -29,15 +29,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.core.model.movie.Movie
-import com.enmanuelbergling.ktormovies.ui.components.HandlerPagingUiState
-import com.enmanuelbergling.ktormovies.ui.components.listItemWindAnimation
-import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.core.isRefreshing
-import com.enmanuelbergling.ktormovies.ui.core.isScrollingForward
-import com.enmanuelbergling.ktormovies.ui.core.items
-import com.enmanuelbergling.ktormovies.ui.core.shimmerIf
+import com.enmanuelbergling.core.ui.components.HandlerPagingUiState
+import com.enmanuelbergling.core.ui.components.listItemWindAnimation
+import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.core.isRefreshing
+import com.enmanuelbergling.core.ui.core.isScrollingForward
+import com.enmanuelbergling.core.ui.core.items
+import com.enmanuelbergling.core.ui.core.shimmerIf
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
 import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
@@ -138,7 +138,7 @@ private fun MovieListScreen(
                 userScrollEnabled = !movies.isRefreshing,
                 contentPadding = PaddingValues(MaterialTheme.dimen.small)
             ) {
-                items(movies, key = { movie -> movie.id}) { movie ->
+                items(movies, key = { movie -> movie.id }) { movie ->
                     movie?.let {
                         MovieCard(
                             imageUrl = movie.posterPath,

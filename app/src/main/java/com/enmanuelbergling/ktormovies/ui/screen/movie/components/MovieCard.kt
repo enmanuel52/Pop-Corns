@@ -30,13 +30,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.enmanuelbergling.core.ui.components.RatingStars
+import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.domain.BASE_BACKDROP_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.BASE_IMAGE_URL
 import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
-import com.enmanuelbergling.ktormovies.ui.components.RatingStars
-import com.enmanuelbergling.ktormovies.ui.core.dimen
-import com.enmanuelbergling.ktormovies.ui.theme.CornTimeTheme
 
 /**
  * @param rating between 1 and 5 showed as yellow stars
@@ -136,7 +135,9 @@ fun HeaderMovieCard(
                 error = painterResource(
                     id = R.drawable.pop_corn_and_cinema_backdrop
                 ),
-                modifier = Modifier.fillMaxWidth().aspectRatio(1.78f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.78f),
                 contentScale = ContentScale.FillWidth
             )
         }
