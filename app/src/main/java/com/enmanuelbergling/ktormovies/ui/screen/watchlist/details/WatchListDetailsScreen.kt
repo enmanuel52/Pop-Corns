@@ -136,7 +136,8 @@ fun WatchListDetailsScreen(
                         MovieLandCardPlaceholder(Modifier.fillMaxWidth())
                     }
                 } else {
-                    items(movies) { movie ->
+                    items(movies.itemCount) { index ->
+                        val movie = movies[index]
                         movie?.let {
                             val bottomWith by remember {
                                 mutableStateOf((-80).dp)

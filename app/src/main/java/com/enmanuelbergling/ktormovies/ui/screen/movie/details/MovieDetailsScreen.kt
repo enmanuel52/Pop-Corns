@@ -256,7 +256,8 @@ private fun SheetContent(
             }
         }
 
-        items(watchList) { list ->
+        items(watchList.itemCount) {
+            val list = watchList[it]
             list?.let {
                 val listContainerColor by animateColorAsState(
                     targetValue = if (list in withinListsState)

@@ -108,8 +108,8 @@ fun MovieSearchScreen(
                 contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
                 state = lazyListState
             ) {
-                items(movies) {
-                    it?.let { movie ->
+                items(movies.itemCount) {
+                    movies[it]?.let { movie ->
                         MovieLandCard(movie = movie, Modifier.fillMaxWidth()) {
                             onMovieDetails(movie.id)
                         }

@@ -159,7 +159,8 @@ private fun WatchListScreen(
                         WatchListCardPlaceholder()
                     }
                 } else {
-                    items(lists) { list ->
+                    items(lists.itemCount) {
+                        val list = lists[it]
                         list?.let {
                             val bottomWith by remember {
                                 mutableStateOf((-80).dp)

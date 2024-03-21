@@ -220,8 +220,8 @@ private fun MoviesFilterScreen(
                         }
                     }
 
-                    items(movies) {
-                        it?.let { movie ->
+                    items(movies.itemCount) {
+                        movies[it]?.let { movie ->
                             MovieLandCard(movie = movie, Modifier.fillMaxWidth()) {
                                 onMovie(movie.id)
                             }
