@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.ui.screen.login.model
 
-import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.CannotHandleException
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.usecase.auth.CreateSessionFromLoginUC
+import com.enmanuelbergling.core.domain.usecase.auth.CreateSessionFromLoginUC
 
 class CreateSessionFromLoginChainHandler(
     private val nextHandler: CreateSessionIdChainHandler,

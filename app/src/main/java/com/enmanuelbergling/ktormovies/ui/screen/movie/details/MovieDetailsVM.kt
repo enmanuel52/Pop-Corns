@@ -3,6 +3,10 @@ package com.enmanuelbergling.ktormovies.ui.screen.movie.details
 import android.util.Log
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.enmanuelbergling.core.common.util.TAG
+import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -11,10 +15,6 @@ import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.ktormovies.BuildConfig
-import com.enmanuelbergling.ktormovies.domain.TAG
-import com.enmanuelbergling.ktormovies.domain.usecase.auth.GetSavedSessionIdUC
-import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.AddMovieToListUC
-import com.enmanuelbergling.ktormovies.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsChainHandler
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.model.MovieDetailsUiData
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.actor.details.model
 
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.ChainHandler
 
 /**
  * start a chain of call to get the details of a movie

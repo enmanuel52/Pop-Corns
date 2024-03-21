@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.login.model
 
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.ChainHandler
 
 class LoginChainHandler(
     private val firstHandler: CreateRequestTokenChainHandler,

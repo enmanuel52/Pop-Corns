@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.ui.screen.login.model
 
-import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.CannotHandleException
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.usecase.user.GetUserDetailsUC
+import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
 
 class GetUserDetailsChainHandler(
     private val getUserDetailsUC: GetUserDetailsUC

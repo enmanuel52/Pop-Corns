@@ -8,7 +8,7 @@ import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.MovieFilter
 import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieGenresUC
+import com.enmanuelbergling.core.domain.usecase.movie.GetMovieGenresUC
 import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.model.MovieFilterEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

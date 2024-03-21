@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.details.model
 
-import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.CannotHandleException
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetMovieCreditsUC
+import com.enmanuelbergling.core.domain.usecase.movie.GetMovieCreditsUC
 import kotlinx.coroutines.flow.update
 
 class CreditsChainHandler(private val getMovieCreditsUC: GetMovieCreditsUC) :

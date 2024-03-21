@@ -1,11 +1,11 @@
 package com.enmanuelbergling.ktormovies
 
+import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
+import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
+import com.enmanuelbergling.core.domain.usecase.user.UserLogoutUC
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.model.user.UserDetails
-import com.enmanuelbergling.ktormovies.domain.usecase.settings.GetDarkThemeUC
-import com.enmanuelbergling.ktormovies.domain.usecase.settings.SetDarkThemeUC
-import com.enmanuelbergling.ktormovies.domain.usecase.user.GetSavedUserUC
-import com.enmanuelbergling.ktormovies.domain.usecase.user.UserLogoutUC
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

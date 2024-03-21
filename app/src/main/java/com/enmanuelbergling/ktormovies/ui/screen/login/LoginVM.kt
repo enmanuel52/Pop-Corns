@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.ui.screen.login
 
+import com.enmanuelbergling.core.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.ktormovies.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginChain
 import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginChainHandler
 import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginEvent

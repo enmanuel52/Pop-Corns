@@ -1,9 +1,9 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home.model
 
-import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.CannotHandleException
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.usecase.movie.GetTopRatedMoviesUC
+import com.enmanuelbergling.core.domain.usecase.movie.GetTopRatedMoviesUC
 import kotlinx.coroutines.flow.update
 
 class TopRatedMoviesChainHandler(

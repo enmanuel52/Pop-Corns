@@ -1,14 +1,14 @@
 package com.enmanuelbergling.ktormovies.ui.screen.login.model
 
-import com.enmanuelbergling.ktormovies.domain.design.CannotHandleException
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.CannotHandleException
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.model.core.ResultHandler
-import com.enmanuelbergling.ktormovies.domain.usecase.auth.CreateRequestTokenUC
+import com.enmanuelbergling.core.domain.usecase.auth.CreateRequestTokenUC
 import kotlinx.coroutines.flow.update
 
 class CreateRequestTokenChainHandler(
     private val nextHandler: CreateSessionFromLoginChainHandler,
-    private val createRequestTokenUC: CreateRequestTokenUC,
+    private val createRequestTokenUC: com.enmanuelbergling.core.domain.usecase.auth.CreateRequestTokenUC,
 ) : ChainHandler<LoginChainState> {
     override val nextChainHandler: ChainHandler<LoginChainState>
         get() = nextHandler

@@ -43,7 +43,6 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.components.NewerDragListItem
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.MovieLandCard
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.MovieLandCardPlaceholder
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle

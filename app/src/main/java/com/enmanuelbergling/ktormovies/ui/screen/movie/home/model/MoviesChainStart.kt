@@ -1,6 +1,6 @@
 package com.enmanuelbergling.ktormovies.ui.screen.movie.home.model
 
-import com.enmanuelbergling.ktormovies.domain.design.ChainHandler
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MoviesChainStart(
