@@ -52,8 +52,8 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.WatchListCard
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.components.WatchListCardPlaceholder
+import com.enmanuelbergling.core.ui.components.common.WatchListCard
+import com.enmanuelbergling.core.ui.components.common.WatchListCardPlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListEvent
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListForm
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle

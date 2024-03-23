@@ -48,7 +48,6 @@ class WatchListVM(
             .flatMapLatest {
                 getPaginatedLists(
                     AccountListsFilter(
-                        accountId = BuildConfig.ACCOUNT_ID,
                         sessionId = sessionId.value
                     )
                 ).cachedIn(

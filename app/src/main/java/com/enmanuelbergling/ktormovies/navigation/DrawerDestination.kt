@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.feature.actor.navigation.ACTORS_SCREEN_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.LIST_SCREEN_ROUTE
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_SCREEN_ROUTE
+import com.enmanuelbergling.feature.movies.navigation.MOVIES_SCREEN_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.SERIES_SCREEN_ROUTE
 
 enum class DrawerDestination(

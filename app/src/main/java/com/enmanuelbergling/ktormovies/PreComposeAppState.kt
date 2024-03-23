@@ -8,8 +8,8 @@ import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
 import com.enmanuelbergling.feature.auth.navigation.navigateToLoginScreen
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph
+import com.enmanuelbergling.feature.movies.navigation.MOVIES_GRAPH_ROUTE
+import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.navigateToSeriesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.navigateToListGraph
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle

@@ -22,9 +22,9 @@ dependencies {
 
     //Navigation
     implementation(libs.moe.tlaster.precompose)
-    // For ViewModel intergration
+    // For ViewModel integration
     implementation(libs.moe.tlaster.precompose.viewmodel)
-    // For Koin intergration
+    // For Koin integration
     implementation(libs.moe.tlaster.precompose.koin)
 
     implementation(libs.koin.core)

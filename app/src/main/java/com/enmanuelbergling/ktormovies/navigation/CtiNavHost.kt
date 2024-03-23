@@ -5,11 +5,11 @@ import com.enmanuelbergling.ktormovies.PreComposeAppState
 import com.enmanuelbergling.feature.actor.navigation.actorsGraph
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.feature.auth.navigation.loginScreen
-import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.moviesFilter
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesDetails
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesSection
-import com.enmanuelbergling.ktormovies.ui.screen.movie.search.movieSearch
+import com.enmanuelbergling.feature.movies.filter.moviesFilter
+import com.enmanuelbergling.feature.movies.navigation.moviesGraph
+import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
+import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
+import com.enmanuelbergling.feature.movies.search.movieSearch
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.listGraph
 import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.navigateToListDetailsScreen
