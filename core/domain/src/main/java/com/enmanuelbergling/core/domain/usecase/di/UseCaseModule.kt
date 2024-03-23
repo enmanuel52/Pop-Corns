@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.di
+package com.enmanuelbergling.core.domain.usecase.di
 
 import com.enmanuelbergling.core.domain.usecase.auth.CreateRequestTokenUC
 import com.enmanuelbergling.core.domain.usecase.auth.CreateSessionFromLoginUC
