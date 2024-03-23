@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.login.model
+package com.enmanuelbergling.feature.auth.model
 
 data class LoginForm(
     val username: String = "",

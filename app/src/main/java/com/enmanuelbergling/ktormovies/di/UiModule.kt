@@ -10,8 +10,8 @@ import com.enmanuelbergling.core.model.user.WatchListDetails
 import com.enmanuelbergling.feature.actor.details.ActorDetailsVM
 import com.enmanuelbergling.feature.actor.details.di.actorDetailsModule
 import com.enmanuelbergling.feature.actor.home.ActorsVM
-import com.enmanuelbergling.ktormovies.ui.screen.login.LoginVM
-import com.enmanuelbergling.ktormovies.ui.screen.login.di.loginModule
+import com.enmanuelbergling.feature.auth.LoginVM
+import com.enmanuelbergling.feature.auth.di.loginModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.di.movieDetailsModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.MoviesFilterVM
@@ -29,7 +29,9 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val vmModule = module {
-    includes(movieModule, movieDetailsModule, actorDetailsModule, loginModule)
+    includes(movieModule, movieDetailsModule, actorDetailsModule,
+        com.enmanuelbergling.feature.auth.di.loginModule
+    )
 
     factory { MovieDetailsVM(get(), get(named<WatchList>()), get(), get(), get(), get()) }
     factoryOf(::MoviesVM)

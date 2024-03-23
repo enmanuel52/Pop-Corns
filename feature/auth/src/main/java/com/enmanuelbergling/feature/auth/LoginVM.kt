@@ -1,13 +1,13 @@
-package com.enmanuelbergling.ktormovies.ui.screen.login
+package com.enmanuelbergling.feature.auth
 
 import com.enmanuelbergling.core.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginChain
-import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginChainHandler
-import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginEvent
-import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginForm
+import com.enmanuelbergling.feature.auth.model.LoginChain
+import com.enmanuelbergling.feature.auth.model.LoginChainHandler
+import com.enmanuelbergling.feature.auth.model.LoginEvent
+import com.enmanuelbergling.feature.auth.model.LoginForm
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

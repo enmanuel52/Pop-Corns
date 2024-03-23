@@ -1,9 +1,8 @@
-package com.enmanuelbergling.ktormovies.ui.screen.login.model
+package com.enmanuelbergling.feature.auth.model
 
 import com.enmanuelbergling.core.domain.design.CannotHandleException
 import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.model.core.ResultHandler
-import com.enmanuelbergling.core.domain.usecase.auth.CreateRequestTokenUC
 import kotlinx.coroutines.flow.update
 
 class CreateRequestTokenChainHandler(

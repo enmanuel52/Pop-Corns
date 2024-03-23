@@ -1,6 +1,6 @@
-package com.enmanuelbergling.ktormovies.ui.screen.login.navigation
+package com.enmanuelbergling.feature.auth.navigation
 
-import com.enmanuelbergling.ktormovies.ui.screen.login.LoginRoute
+import com.enmanuelbergling.feature.auth.LoginRoute
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder

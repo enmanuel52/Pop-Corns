@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.login
+package com.enmanuelbergling.feature.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -37,9 +37,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.enmanuelbergling.core.ui.components.CtiTextField
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.core.dimen
-import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginEvent
-import com.enmanuelbergling.ktormovies.ui.screen.login.model.LoginForm
+import com.enmanuelbergling.core.ui.R
+import com.enmanuelbergling.feature.auth.model.LoginEvent
+import com.enmanuelbergling.feature.auth.model.LoginForm
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 
