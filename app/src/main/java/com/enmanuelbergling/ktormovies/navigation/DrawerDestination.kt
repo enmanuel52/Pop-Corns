@@ -11,7 +11,7 @@ import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.feature.actor.navigation.ACTORS_SCREEN_ROUTE
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.LIST_SCREEN_ROUTE
+import com.enmanuelbergling.feature.watchlists.navigation.LIST_SCREEN_ROUTE
 import com.enmanuelbergling.feature.movies.navigation.MOVIES_SCREEN_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.SERIES_SCREEN_ROUTE
 
@@ -23,5 +23,7 @@ enum class DrawerDestination(
 ) {
     Home(R.string.home, Icons.Rounded.Home, Icons.Outlined.Home, listOf(MOVIES_SCREEN_ROUTE, SERIES_SCREEN_ROUTE)),
     Actors(R.string.actors,Icons.Rounded.Person2, Icons.Outlined.Person2, listOf(ACTORS_SCREEN_ROUTE)),
-    Lists(R.string.watch_lists,Icons.Rounded.PlaylistPlay, Icons.Outlined.PlaylistPlay, listOf(LIST_SCREEN_ROUTE))
+    Lists(R.string.watch_lists,Icons.Rounded.PlaylistPlay, Icons.Outlined.PlaylistPlay, listOf(
+        LIST_SCREEN_ROUTE
+    ))
 }

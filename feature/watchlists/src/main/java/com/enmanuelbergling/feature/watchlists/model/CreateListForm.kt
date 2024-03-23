@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist.model
+package com.enmanuelbergling.feature.watchlists.model
 
 import com.enmanuelbergling.core.model.user.CreateListPost
 

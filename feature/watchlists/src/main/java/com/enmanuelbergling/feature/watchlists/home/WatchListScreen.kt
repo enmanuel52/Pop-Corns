@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
+package com.enmanuelbergling.feature.watchlists.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,20 +42,20 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.user.WatchList
+import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.CtiContentDialog
 import com.enmanuelbergling.core.ui.components.CtiTextField
 import com.enmanuelbergling.core.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.NewerDragListItem
 import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
+import com.enmanuelbergling.core.ui.components.common.WatchListCard
+import com.enmanuelbergling.core.ui.components.common.WatchListCardPlaceholder
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.core.ui.components.common.WatchListCard
-import com.enmanuelbergling.core.ui.components.common.WatchListCardPlaceholder
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListEvent
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListForm
+import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
+import com.enmanuelbergling.feature.watchlists.model.CreateListForm
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 

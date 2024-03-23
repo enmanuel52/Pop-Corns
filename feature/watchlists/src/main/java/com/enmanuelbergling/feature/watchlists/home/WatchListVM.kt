@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist.home
+package com.enmanuelbergling.feature.watchlists.home
 
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -12,9 +12,8 @@ import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.ktormovies.BuildConfig
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListEvent
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.model.CreateListForm
+import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
+import com.enmanuelbergling.feature.watchlists.model.CreateListForm
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist.details
+package com.enmanuelbergling.feature.watchlists.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +42,7 @@ import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import com.enmanuelbergling.ktormovies.R
+import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.common.MovieLandCard
 import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle

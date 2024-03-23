@@ -7,8 +7,8 @@ import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.enmanuelbergling.feature.movies.navigation.MOVIES_SCREEN_ROUTE
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_SCREEN_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.SERIES_SCREEN_ROUTE
 
 enum class TopDestination(

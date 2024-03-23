@@ -11,8 +11,8 @@ import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
 import com.enmanuelbergling.feature.movies.search.movieSearch
 import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.seriesGraph
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.listGraph
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation.navigateToListDetailsScreen
+import com.enmanuelbergling.feature.watchlists.navigation.listGraph
+import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
 import moe.tlaster.precompose.navigation.NavHost as PreNavHost
 
 

@@ -95,6 +95,8 @@ dependencies {
     implementation(project(":feature:actor"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:movies"))
+    implementation(project(":feature:series"))
+    implementation(project(":feature:watchlists"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)

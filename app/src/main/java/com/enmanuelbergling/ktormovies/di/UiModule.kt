@@ -22,8 +22,8 @@ import com.enmanuelbergling.feature.movies.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.UpcomingMoviesVM
 import com.enmanuelbergling.feature.movies.search.MovieSearchVM
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.details.WatchListDetailsVM
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.home.WatchListVM
+import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsVM
+import com.enmanuelbergling.feature.watchlists.home.WatchListVM
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

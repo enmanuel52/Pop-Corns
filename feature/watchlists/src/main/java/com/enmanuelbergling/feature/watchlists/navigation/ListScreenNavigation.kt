@@ -1,7 +1,7 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist.navigation
+package com.enmanuelbergling.feature.watchlists.navigation
 
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.details.WatchListDetailsRoute
-import com.enmanuelbergling.ktormovies.ui.screen.watchlist.home.WatchListRoute
+import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsRoute
+import com.enmanuelbergling.feature.watchlists.home.WatchListRoute
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder

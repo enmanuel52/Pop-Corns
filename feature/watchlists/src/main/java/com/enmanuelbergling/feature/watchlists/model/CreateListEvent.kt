@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.watchlist.model
+package com.enmanuelbergling.feature.watchlists.model
 
 sealed interface CreateListEvent {
     data class Name(val value: String) : CreateListEvent

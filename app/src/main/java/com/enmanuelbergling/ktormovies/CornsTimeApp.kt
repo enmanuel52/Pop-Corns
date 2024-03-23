@@ -65,11 +65,11 @@ import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.ui.components.UserImage
 import com.enmanuelbergling.core.ui.components.icon
 import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.feature.movies.filter.navigateToMovieFilter
+import com.enmanuelbergling.feature.movies.search.navigateToMovieSearch
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
-import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.navigateToMovieFilter
-import com.enmanuelbergling.ktormovies.ui.screen.movie.search.navigateToMovieSearch
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
