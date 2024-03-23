@@ -42,7 +42,7 @@ class PreComposeAppState(
     @Composable
     fun matchRoute(route: String) = backStackEntry?.hasRoute("/$route") ?: false
 
-    val startDestination = MOVIES_GRAPH_ROUTE
+    val startDestination = ITEM_GRAPH//MOVIES_GRAPH_ROUTE
 
     val isTopDestination: Boolean
         @Composable get() = TopDestination.entries.map { it.route }

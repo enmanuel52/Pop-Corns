@@ -13,6 +13,9 @@ import com.enmanuelbergling.feature.movies.search.movieSearch
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
+import com.enmanuelbergling.ktormovies.ui.sharedItemsGraph
+import com.enmanuelbergling.ktormovies.ui.toItemDetails
+import com.mxalbert.sharedelements.SharedElementsRoot
 import moe.tlaster.precompose.navigation.NavHost as PreNavHost
 
 
@@ -21,33 +24,39 @@ fun PreCtiNavHost(
     state: PreComposeAppState,
 ) {
     val navigator = state.navigator
-    PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
 
-        moviesGraph(
-            navigator::popBackStack,
-            navigator::navigateToMoviesDetails,
-            navigator::navigateToActorsDetails,
-            navigator::navigateToMoviesSection
-        )
+    SharedElementsRoot {
 
-        seriesGraph()
+        PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
 
-        actorsGraph(
-            navigator::popBackStack,
-            navigator::navigateToActorsDetails,
-            navigator::navigateToMoviesDetails
-        )
+            moviesGraph(
+                navigator::popBackStack,
+                navigator::navigateToMoviesDetails,
+                navigator::navigateToActorsDetails,
+                navigator::navigateToMoviesSection
+            )
 
-        loginScreen(navigator::popBackStack)
+            seriesGraph()
 
-        listGraph(
-            navigator::navigateToListDetailsScreen,
-            navigator::navigateToMoviesDetails,
-            navigator::popBackStack
-        )
+            actorsGraph(
+                navigator::popBackStack,
+                navigator::navigateToActorsDetails,
+                navigator::navigateToMoviesDetails
+            )
 
-        movieSearch(navigator::navigateToMoviesDetails, navigator::popBackStack)
+            loginScreen(navigator::popBackStack)
 
-        moviesFilter(navigator::navigateToMoviesDetails, navigator::popBackStack)
+            listGraph(
+                navigator::navigateToListDetailsScreen,
+                navigator::navigateToMoviesDetails,
+                navigator::popBackStack
+            )
+
+            movieSearch(navigator::navigateToMoviesDetails, navigator::popBackStack)
+
+            moviesFilter(navigator::navigateToMoviesDetails, navigator::popBackStack)
+
+            sharedItemsGraph(navigator::toItemDetails)
+        }
     }
 }
