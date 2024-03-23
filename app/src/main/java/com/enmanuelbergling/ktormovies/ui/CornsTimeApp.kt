@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies
+package com.enmanuelbergling.ktormovies.ui
 
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
@@ -67,6 +67,7 @@ import com.enmanuelbergling.core.ui.components.icon
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.feature.movies.filter.navigateToMovieFilter
 import com.enmanuelbergling.feature.movies.search.navigateToMovieSearch
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination

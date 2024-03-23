@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies
+package com.enmanuelbergling.ktormovies.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

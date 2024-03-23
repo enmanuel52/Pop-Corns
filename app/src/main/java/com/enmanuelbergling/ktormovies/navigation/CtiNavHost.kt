@@ -1,7 +1,7 @@
 package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
-import com.enmanuelbergling.ktormovies.PreComposeAppState
+import com.enmanuelbergling.ktormovies.ui.PreComposeAppState
 import com.enmanuelbergling.feature.actor.navigation.actorsGraph
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.feature.auth.navigation.loginScreen

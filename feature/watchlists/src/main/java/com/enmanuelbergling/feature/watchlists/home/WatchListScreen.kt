@@ -44,7 +44,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.CtiContentDialog
-import com.enmanuelbergling.core.ui.components.CtiTextField
+import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.NewerDragListItem

@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies
+package com.enmanuelbergling.ktormovies.ui
 
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
