@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
-import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsGraph
+import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
 import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.navigateToLoginScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.navigateToMoviesGraph

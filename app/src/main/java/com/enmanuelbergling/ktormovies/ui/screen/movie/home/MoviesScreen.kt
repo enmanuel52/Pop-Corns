@@ -45,10 +45,10 @@ import com.enmanuelbergling.core.ui.components.listItemWindAnimation
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isScrollingForward
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMovieCard
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.HeaderMoviePlaceholder
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
+import com.enmanuelbergling.core.ui.components.common.HeaderMovieCard
+import com.enmanuelbergling.core.ui.components.common.HeaderMoviePlaceholder
+import com.enmanuelbergling.core.ui.components.common.MovieCard
+import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.valentinilk.shimmer.shimmer
 import moe.tlaster.precompose.koin.koinViewModel
 

@@ -38,8 +38,8 @@ import com.enmanuelbergling.core.ui.core.isScrollingForward
 import com.enmanuelbergling.core.ui.core.items
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
+import com.enmanuelbergling.core.ui.components.common.MovieCard
+import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.NowPlayingMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.ktormovies.ui.screen.movie.list.viewmodel.TopRatedMoviesVM

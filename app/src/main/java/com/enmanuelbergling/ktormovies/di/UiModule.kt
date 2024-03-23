@@ -7,9 +7,9 @@ import com.enmanuelbergling.core.model.movie.MovieFilter
 import com.enmanuelbergling.core.model.movie.QueryString
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.model.user.WatchListDetails
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsVM
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.di.actorDetailsModule
-import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsVM
+import com.enmanuelbergling.feature.actor.details.ActorDetailsVM
+import com.enmanuelbergling.feature.actor.details.di.actorDetailsModule
+import com.enmanuelbergling.feature.actor.home.ActorsVM
 import com.enmanuelbergling.ktormovies.ui.screen.login.LoginVM
 import com.enmanuelbergling.ktormovies.ui.screen.login.di.loginModule
 import com.enmanuelbergling.ktormovies.ui.screen.movie.details.MovieDetailsVM

@@ -2,8 +2,8 @@ package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
 import com.enmanuelbergling.ktormovies.PreComposeAppState
-import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.actorsGraph
-import com.enmanuelbergling.ktormovies.ui.screen.actor.navigation.navigateToActorsDetails
+import com.enmanuelbergling.feature.actor.navigation.actorsGraph
+import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.ktormovies.ui.screen.login.navigation.loginScreen
 import com.enmanuelbergling.ktormovies.ui.screen.movie.filter.moviesFilter
 import com.enmanuelbergling.ktormovies.ui.screen.movie.navigation.moviesGraph

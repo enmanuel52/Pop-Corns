@@ -1,7 +1,7 @@
-package com.enmanuelbergling.ktormovies.ui.screen.actor.navigation
+package com.enmanuelbergling.feature.actor.navigation
 
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.ActorDetailsRoute
-import com.enmanuelbergling.ktormovies.ui.screen.actor.home.ActorsScreen
+import com.enmanuelbergling.feature.actor.details.ActorDetailsRoute
+import com.enmanuelbergling.feature.actor.home.ActorsScreen
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder

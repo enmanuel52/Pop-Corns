@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.actor.home
+package com.enmanuelbergling.feature.actor.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,12 +28,12 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.actor.Actor
+import com.enmanuelbergling.core.ui.R
+import com.enmanuelbergling.core.ui.components.common.ActorCard
+import com.enmanuelbergling.core.ui.components.common.ActorPlaceHolder
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.items
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorCard
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.ActorPlaceHolder
 import moe.tlaster.precompose.koin.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

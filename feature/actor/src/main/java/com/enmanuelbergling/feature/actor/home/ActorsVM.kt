@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.actor.home
+package com.enmanuelbergling.feature.actor.home
 
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.model.actor.Actor

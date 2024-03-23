@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":core:common:util"))
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
+    implementation(project(":core:network"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
@@ -23,6 +24,8 @@ dependencies {
     implementation(libs.moe.tlaster.precompose)
     // For ViewModel intergration
     implementation(libs.moe.tlaster.precompose.viewmodel)
+    // For Koin intergration
+    implementation(libs.moe.tlaster.precompose.koin)
 
     implementation(libs.koin.core)
 

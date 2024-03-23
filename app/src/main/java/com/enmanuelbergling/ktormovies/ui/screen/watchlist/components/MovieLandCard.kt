@@ -33,7 +33,7 @@ import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import com.enmanuelbergling.ktormovies.R
+import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
 
 @OptIn(ExperimentalMaterial3Api::class)

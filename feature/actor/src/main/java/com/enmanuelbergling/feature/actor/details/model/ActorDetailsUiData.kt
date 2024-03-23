@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.actor.details.model
+package com.enmanuelbergling.feature.actor.details.model
 
 import com.enmanuelbergling.core.model.actor.ActorDetails
 import com.enmanuelbergling.core.model.actor.KnownMovie

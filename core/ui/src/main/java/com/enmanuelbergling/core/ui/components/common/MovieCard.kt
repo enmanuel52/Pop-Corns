@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.movie.components
+package com.enmanuelbergling.core.ui.components.common
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -30,12 +30,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
+import com.enmanuelbergling.core.common.util.BASE_POSTER_IMAGE_URL
+import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.BASE_BACKDROP_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
 
 /**
  * @param rating between 1 and 5 showed as yellow stars

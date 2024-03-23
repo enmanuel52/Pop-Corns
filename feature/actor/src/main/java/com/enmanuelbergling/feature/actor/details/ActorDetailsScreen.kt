@@ -1,4 +1,4 @@
-package com.enmanuelbergling.ktormovies.ui.screen.actor.details
+package com.enmanuelbergling.feature.actor.details
 
 import android.util.Log
 import androidx.compose.animation.animateContentSize
@@ -46,17 +46,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.enmanuelbergling.core.common.util.BASE_POSTER_IMAGE_URL
+import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.actor.KnownMovie
 import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.RatingStars
+import com.enmanuelbergling.core.ui.components.common.MovieCard
+import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.enmanuelbergling.core.ui.core.dimen
-import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.domain.BASE_POSTER_IMAGE_URL
-import com.enmanuelbergling.ktormovies.domain.TAG
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsUiData
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCard
-import com.enmanuelbergling.ktormovies.ui.screen.movie.components.MovieCardPlaceholder
+import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
 import com.valentinilk.shimmer.shimmer
 import moe.tlaster.precompose.koin.koinViewModel
 import org.koin.core.parameter.parametersOf

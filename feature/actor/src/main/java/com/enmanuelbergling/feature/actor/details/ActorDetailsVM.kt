@@ -1,10 +1,10 @@
-package com.enmanuelbergling.ktormovies.ui.screen.actor.details
+package com.enmanuelbergling.feature.actor.details
 
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsChainStart
-import com.enmanuelbergling.ktormovies.ui.screen.actor.details.model.ActorDetailsUiData
+import com.enmanuelbergling.feature.actor.details.model.ActorDetailsChainStart
+import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
