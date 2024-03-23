@@ -1,6 +1,6 @@
-package com.enmanuelbergling.ktormovies.ui.screen.series.navigation
+package com.enmanuelbergling.feature.series.navigation
 
-import com.enmanuelbergling.ktormovies.ui.screen.series.home.SeriesScreen
+import com.enmanuelbergling.feature.series.home.SeriesScreen
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder

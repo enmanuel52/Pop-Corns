@@ -13,7 +13,7 @@ import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.feature.actor.navigation.ACTORS_SCREEN_ROUTE
 import com.enmanuelbergling.feature.watchlists.navigation.LIST_SCREEN_ROUTE
 import com.enmanuelbergling.feature.movies.navigation.MOVIES_SCREEN_ROUTE
-import com.enmanuelbergling.ktormovies.ui.screen.series.navigation.SERIES_SCREEN_ROUTE
+import com.enmanuelbergling.feature.series.navigation.SERIES_SCREEN_ROUTE
 
 enum class DrawerDestination(
     @StringRes val label: Int,
