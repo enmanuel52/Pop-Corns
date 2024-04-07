@@ -1,12 +1,11 @@
 [versions]
-androidx-activity = "1.8.0"
-androidxComposeBom = "2023.10.00"
+androidx-activity = "1.8.2"
+androidxComposeBom = "2024.03.00"
 androidx-compose-foundation = "1.6.1"
 androidx-datastore = "1.0.0"
 androidx-lifecycle = "2.6.2"
 androidx-test-espresso = "3.5.1"
-com-google-devtools-ksp = "1.9.10-1.0.13"
-core-ktx = "1.9.0"
+core-ktx = "1.12.0"
 core-splashscreen = "1.0.1"
 de-jensklingenberg-ktorfit = "1.12.0"
 io-coil-kt = "2.4.0"
@@ -18,23 +17,21 @@ kotlinSerialization = "1.9.0"
 kotlinxSerializationJson = "1.6.0"
 material-icons-extended = "1.5.2"
 moe-tlaster = "1.5.8"
-org-jetbrains-kotlin = "1.9.10"
-org-jetbrains-kotlinx = "1.7.3"
 paging-runtime = "3.1.1"
 
 #plugings
 application = "8.2.1"
 library = "8.2.1"
 ben-manes-versions = "0.50.0"
-ksp = "1.9.10-1.0.13"
+ksp = "1.9.22-1.0.17"
 protobuf = "0.9.1"
 ktorfit = "1.12.0"
 version-catalog-update = "0.8.3"
-kotlin = "1.19.10"
+kotlin = "1.9.22"
 pagingCommonKtx = "3.2.1"
 
 [libraries]
-androidx-activity-activity-compose = "androidx.activity:activity-compose:1.7.2"
+androidx-activity-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose-foundation" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
@@ -57,7 +54,6 @@ androidx-test-espresso-espresso-core = { module = "androidx.test.espresso:espres
 androidx-test-ext-junit = "androidx.test.ext:junit:1.1.5"
 com-github-a914-gowtham-compose-ratingbar = "com.github.a914-gowtham:compose-ratingbar:1.3.4"
 com-google-protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.24.4"
-com-google-protobuf-protoc = "com.google.protobuf:protoc:3.14.0"
 com-valentinilk-shimmer-compose-shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.5"
 de-jensklingenberg-ktorfit-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "de-jensklingenberg-ktorfit" }
 de-jensklingenberg-ktorfit-ktorfit-lib-light = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "de-jensklingenberg-ktorfit" }

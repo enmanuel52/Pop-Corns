@@ -44,7 +44,9 @@ dependencies {
     api(libs.com.github.a914.gowtham.compose.ratingbar)
 
     api("com.github.skydoves:orbital:0.3.4")
-    api("com.mxalbert.sharedelements:shared-elements:0.1.0-SNAPSHOT")
+
+    api("androidx.compose.animation:animation:1.7.0-SNAPSHOT")
+    api("androidx.compose.ui:ui:1.7.0-SNAPSHOT")
 
     implementation(libs.androidx.paging.paging.compose)
 }
