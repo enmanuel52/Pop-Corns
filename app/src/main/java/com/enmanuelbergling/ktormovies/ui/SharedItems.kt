@@ -1,5 +1,15 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.enmanuelbergling.ktormovies.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.BoundsTransform
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,113 +26,113 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.enmanuelbergling.core.ui.R
-import com.mxalbert.sharedelements.MaterialContainerTransformSpec
-import com.mxalbert.sharedelements.SharedElement
-import com.mxalbert.sharedelements.SharedMaterialContainer
-import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.BackHandler
 import moe.tlaster.precompose.navigation.RouteBuilder
-import moe.tlaster.precompose.navigation.path
+
+private val boundsTransition = BoundsTransform { _, _ -> spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow) }
+
 
 @Composable
-fun ListItems(onItemDetails: (Int) -> Unit) {
+fun SharedTransitionScope.ListItems(visible: Boolean, onItemDetails: (Int) -> Unit) {
     LazyColumn {
         items(8) {
-            ListItem(index = it) { onItemDetails(it) }
+            ListItem(visible = visible, index = it) { onItemDetails(it) }
         }
     }
 }
 
 @Composable
-fun ListItem(index: Int, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
+fun SharedTransitionScope.ListItem(visible: Boolean, index: Int, onClick: () -> Unit) {
+    AnimatedVisibility(visible = visible, enter = fadeIn()) {
+        Row(modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        SharedMaterialContainer(
-            key = index,
-            screenKey = ITEMS_SCREEN,
-            color = Color.Transparent,
-        ) {
+            verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.mr_bean),
                 contentDescription = "item image",
                 Modifier
+                    .sharedElement(
+                        state = rememberSharedContentState(key = index),
+                        animatedVisibilityScope = this@AnimatedVisibility,
+                        boundsTransform = boundsTransition
+                    )
                     .size(58.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-        }
 
-        SharedElement(key = "Item $index", screenKey = ITEMS_SCREEN) {
             Text(text = "Item $index", Modifier.padding(16.dp))
         }
     }
 }
 
 @Composable
-fun ItemDetail(index: Int) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        SharedMaterialContainer(
-            key = index,
-            screenKey = ITEM_DETAILS_SCREEN,
-            color = Color.Transparent,
+fun SharedTransitionScope.ItemDetail(visible: Boolean, index: Int) {
+    AnimatedVisibility(visible = visible, enter = fadeIn()) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Image(
                 painter = painterResource(id = R.drawable.mr_bean),
                 contentDescription = "item image",
                 Modifier
+                    .sharedElement(
+                        state = rememberSharedContentState(key = index),
+                        animatedVisibilityScope = this@AnimatedVisibility,
+                        boundsTransform = boundsTransition
+                    )
                     .width(200.dp)
                     .aspectRatio(1f)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-        }
-
-        SharedElement(key = "Item $index", screenKey = ITEM_DETAILS_SCREEN) {
             Text(
                 text = "Item $index",
                 style = MaterialTheme.typography.titleLarge,
             )
+
         }
     }
 }
 
-const val ITEMS_SCREEN = "items_screen"
-const val ITEM_DETAILS_SCREEN = "items_details_screen"
+const val ITEMS_AND_DETAIL_SCREEN = "items_screen"
 const val ITEM_GRAPH = "item_graph"
 
-const val INDEX_ARG = "index_arg"
+fun RouteBuilder.sharedItemsGraph() {
+    group(ITEM_GRAPH, ITEMS_AND_DETAIL_SCREEN) {
+        scene(ITEMS_AND_DETAIL_SCREEN) {
+            val selectedItem = rememberSaveable {
+                mutableIntStateOf(-1)
+            }
 
-fun Navigator.toItemDetails(index: Int) {
-    navigate("/$ITEM_DETAILS_SCREEN/$index")
-}
+            SharedTransitionLayout {
 
-fun RouteBuilder.sharedItemsGraph(onDetails: (Int) -> Unit) {
-    group(ITEM_GRAPH, ITEMS_SCREEN) {
-        scene(ITEMS_SCREEN) {
-            ListItems(onDetails)
-        }
+                ListItems(visible = selectedItem.intValue == -1) { index ->
+                    selectedItem.intValue = index
+                }
 
-        scene("/$ITEM_DETAILS_SCREEN/{$INDEX_ARG}") {
-            val index = it.path(INDEX_ARG, 0)!!
-            ItemDetail(index = index)
+                ItemDetail(visible = selectedItem.intValue != -1, index = selectedItem.intValue)
+            }
+
+            BackHandler(enabled = selectedItem.intValue != -1) {
+                selectedItem.intValue = -1
+            }
+
         }
     }
 }

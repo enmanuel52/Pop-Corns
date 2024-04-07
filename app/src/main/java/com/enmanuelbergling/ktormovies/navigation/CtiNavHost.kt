@@ -1,7 +1,6 @@
 package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
-import com.enmanuelbergling.ktormovies.ui.PreComposeAppState
 import com.enmanuelbergling.feature.actor.navigation.actorsGraph
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.feature.auth.navigation.loginScreen
@@ -13,9 +12,8 @@ import com.enmanuelbergling.feature.movies.search.movieSearch
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
+import com.enmanuelbergling.ktormovies.ui.PreComposeAppState
 import com.enmanuelbergling.ktormovies.ui.sharedItemsGraph
-import com.enmanuelbergling.ktormovies.ui.toItemDetails
-import com.mxalbert.sharedelements.SharedElementsRoot
 import moe.tlaster.precompose.navigation.NavHost as PreNavHost
 
 
@@ -25,38 +23,35 @@ fun PreCtiNavHost(
 ) {
     val navigator = state.navigator
 
-    SharedElementsRoot {
+    PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
 
-        PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
+        moviesGraph(
+            navigator::popBackStack,
+            navigator::navigateToMoviesDetails,
+            navigator::navigateToActorsDetails,
+            navigator::navigateToMoviesSection
+        )
 
-            moviesGraph(
-                navigator::popBackStack,
-                navigator::navigateToMoviesDetails,
-                navigator::navigateToActorsDetails,
-                navigator::navigateToMoviesSection
-            )
+        seriesGraph()
 
-            seriesGraph()
+        actorsGraph(
+            navigator::popBackStack,
+            navigator::navigateToActorsDetails,
+            navigator::navigateToMoviesDetails
+        )
 
-            actorsGraph(
-                navigator::popBackStack,
-                navigator::navigateToActorsDetails,
-                navigator::navigateToMoviesDetails
-            )
+        loginScreen(navigator::popBackStack)
 
-            loginScreen(navigator::popBackStack)
+        listGraph(
+            navigator::navigateToListDetailsScreen,
+            navigator::navigateToMoviesDetails,
+            navigator::popBackStack
+        )
 
-            listGraph(
-                navigator::navigateToListDetailsScreen,
-                navigator::navigateToMoviesDetails,
-                navigator::popBackStack
-            )
+        movieSearch(navigator::navigateToMoviesDetails, navigator::popBackStack)
 
-            movieSearch(navigator::navigateToMoviesDetails, navigator::popBackStack)
+        moviesFilter(navigator::navigateToMoviesDetails, navigator::popBackStack)
 
-            moviesFilter(navigator::navigateToMoviesDetails, navigator::popBackStack)
-
-            sharedItemsGraph(navigator::toItemDetails)
-        }
+        sharedItemsGraph()
     }
 }
