@@ -3,12 +3,8 @@
 package com.enmanuelbergling.ktormovies.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -35,42 +32,43 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.enmanuelbergling.core.ui.R
+import com.enmanuelbergling.core.ui.core.BoundsTransition
+import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import moe.tlaster.precompose.navigation.BackHandler
 import moe.tlaster.precompose.navigation.RouteBuilder
 
-private val boundsTransition = BoundsTransform { _, _ -> spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow) }
-
-
 @Composable
-fun SharedTransitionScope.ListItems(visible: Boolean, onItemDetails: (Int) -> Unit) {
+fun ListItems(isScreenVisible: Boolean, onItemDetails: (Int) -> Unit) {
     LazyColumn {
         items(8) {
-            ListItem(visible = visible, index = it) { onItemDetails(it) }
+            ListItem(visible = isScreenVisible, index = it) { onItemDetails(it) }
         }
     }
 }
 
 @Composable
-fun SharedTransitionScope.ListItem(visible: Boolean, index: Int, onClick: () -> Unit) {
+fun ListItem(visible: Boolean, index: Int, onClick: () -> Unit) {
     AnimatedVisibility(visible = visible, enter = fadeIn()) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = R.drawable.mr_bean),
-                contentDescription = "item image",
-                Modifier
-                    .sharedElement(
-                        state = rememberSharedContentState(key = index),
-                        animatedVisibilityScope = this@AnimatedVisibility,
-                        boundsTransform = boundsTransition
-                    )
-                    .size(58.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+            with(LocalSharedTransitionScope.current!!) {
+                Image(
+                    painter = painterResource(id = R.drawable.mr_bean),
+                    contentDescription = "item image",
+                    Modifier
+                        .sharedElement(
+                            state = rememberSharedContentState(key = index),
+                            animatedVisibilityScope = this@AnimatedVisibility,
+                            boundsTransform = BoundsTransition
+                        )
+                        .size(58.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             Text(text = "Item $index", Modifier.padding(16.dp))
         }
@@ -78,7 +76,7 @@ fun SharedTransitionScope.ListItem(visible: Boolean, index: Int, onClick: () -> 
 }
 
 @Composable
-fun SharedTransitionScope.ItemDetail(visible: Boolean, index: Int) {
+fun ItemDetail(visible: Boolean, index: Int) {
     AnimatedVisibility(visible = visible, enter = fadeIn()) {
         Column(
             Modifier
@@ -87,20 +85,22 @@ fun SharedTransitionScope.ItemDetail(visible: Boolean, index: Int) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.mr_bean),
-                contentDescription = "item image",
-                Modifier
-                    .sharedElement(
-                        state = rememberSharedContentState(key = index),
-                        animatedVisibilityScope = this@AnimatedVisibility,
-                        boundsTransform = boundsTransition
-                    )
-                    .width(200.dp)
-                    .aspectRatio(1f)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+            with(LocalSharedTransitionScope.current!!) {
+                Image(
+                    painter = painterResource(id = R.drawable.mr_bean),
+                    contentDescription = "item image",
+                    Modifier
+                        .sharedElement(
+                            state = rememberSharedContentState(key = index),
+                            animatedVisibilityScope = this@AnimatedVisibility,
+                            boundsTransform = BoundsTransition
+                        )
+                        .width(200.dp)
+                        .aspectRatio(1f)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Text(
                 text = "Item $index",
                 style = MaterialTheme.typography.titleLarge,
@@ -121,12 +121,19 @@ fun RouteBuilder.sharedItemsGraph() {
             }
 
             SharedTransitionLayout {
+                CompositionLocalProvider(value = LocalSharedTransitionScope provides this) {
 
-                ListItems(visible = selectedItem.intValue == -1) { index ->
-                    selectedItem.intValue = index
+                    ListItems(isScreenVisible = selectedItem.intValue == -1) { index ->
+                        selectedItem.intValue = index
+                    }
+
+
+                    ItemDetail(
+                        visible = selectedItem.intValue != -1,
+                        index = selectedItem.intValue,
+                        )
                 }
 
-                ItemDetail(visible = selectedItem.intValue != -1, index = selectedItem.intValue)
             }
 
             BackHandler(enabled = selectedItem.intValue != -1) {
