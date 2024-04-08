@@ -13,25 +13,21 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class ActorDetailsVM(
-    actorId: Int = 0,
     private val actorDetailsChainStart: ActorDetailsChainStart,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
     val uiState = _uiState.asStateFlow()
 
-    private val _uiDataState = MutableStateFlow(ActorDetailsUiData(actorId = actorId))
+    private val _uiDataState = MutableStateFlow(ActorDetailsUiData(actorId = 0))
     val uiDataState get() = _uiDataState.asStateFlow()
 
-    init {
-        loadPage()
-    }
-
-    fun loadPage() = viewModelScope.launch {
+    fun loadPage(actorId: Int) = viewModelScope.launch {
+        _uiDataState.update { ActorDetailsUiData(actorId = actorId) }
         _uiState.update { SimplerUi.Loading }
         runCatching {
             actorDetailsChainStart.invoke(_uiDataState)
-        }.onFailure { throwable ->
+        }.onFailure { _ ->
             _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
         }.onSuccess {
             _uiState.update { SimplerUi.Idle }

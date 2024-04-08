@@ -1,42 +1,93 @@
 package com.enmanuelbergling.feature.actor.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.feature.actor.details.ActorDetailsRoute
 import com.enmanuelbergling.feature.actor.home.ActorsScreen
+import moe.tlaster.precompose.navigation.BackHandler
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.RouteBuilder
 import moe.tlaster.precompose.navigation.path
 import moe.tlaster.precompose.navigation.transition.NavTransition
 
-const val ACTORS_GRAPH_ROUTE = "actors_graph_route"
 
 const val ACTORS_SCREEN_ROUTE = "actors_screen_route"
-private const val ACTORS_DETAILS_SCREEN_ROUTE = "actors_details_screen_route"
 
 private const val ID_ARG = "id_arg"
 
+private const val NO_ACTOR_SELECTED = -1
+
 fun Navigator.navigateToActorsGraph(navOptions: NavOptions? = null) {
-    navigate(ACTORS_GRAPH_ROUTE, navOptions)
+    navigate("/$ACTORS_SCREEN_ROUTE/-1", navOptions)
 }
 
 fun Navigator.navigateToActorsDetails(id: Int, navOptions: NavOptions? = null) {
-    navigate("/$ACTORS_DETAILS_SCREEN_ROUTE/$id", navOptions)
+    navigate("/$ACTORS_SCREEN_ROUTE/$id", navOptions)
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun RouteBuilder.actorsGraph(
-    onBack: () -> Unit, onActor: (id: Int) -> Unit,
+    onBack: () -> Unit,
     onMovie: (movieId: Int) -> Unit,
 ) {
-    group(ACTORS_GRAPH_ROUTE, "/$ACTORS_SCREEN_ROUTE") {
-        scene(
-            "/$ACTORS_SCREEN_ROUTE", navTransition = NavTransition()
-        ) {
-            ActorsScreen(onDetails = onActor, onBack = onBack)
+    scene(
+        "/$ACTORS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()
+    ) {
+        var actorId by rememberSaveable {
+            mutableIntStateOf(NO_ACTOR_SELECTED)
+        }
+        var actorImagePath by rememberSaveable {
+            mutableStateOf("")
         }
 
-        scene("/$ACTORS_DETAILS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()) {
-            val id: Int = it.path(ID_ARG, 0)!!
-            ActorDetailsRoute(id = id, onMovie, onBack)
+        LaunchedEffect(key1 = Unit) {
+            actorId = it.path(ID_ARG, NO_ACTOR_SELECTED)!!
         }
+        BackHandler(enabled = actorId != NO_ACTOR_SELECTED) {
+            actorId = NO_ACTOR_SELECTED
+        }
+
+        SharedTransitionLayout {
+            CompositionLocalProvider(value = LocalSharedTransitionScope provides this) {
+                AnimatedVisibility(
+                    visible = actorId == NO_ACTOR_SELECTED,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    ActorsScreen(
+                        onDetails = { id, imagePath ->
+                            actorId = id
+                            actorImagePath = imagePath
+                        }, onBack = onBack
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = actorId != NO_ACTOR_SELECTED,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    ActorDetailsRoute(
+                        id = actorId,
+                        imagePath = actorImagePath,
+                        onMovie = onMovie,
+                        onBack = { actorId = NO_ACTOR_SELECTED })
+                }
+            }
+        }
+
+
     }
 }

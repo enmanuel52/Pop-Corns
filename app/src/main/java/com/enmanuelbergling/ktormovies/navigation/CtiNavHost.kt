@@ -35,9 +35,8 @@ fun PreCtiNavHost(
         seriesGraph()
 
         actorsGraph(
-            navigator::popBackStack,
-            navigator::navigateToActorsDetails,
-            navigator::navigateToMoviesDetails
+            onBack = navigator::popBackStack,
+            onMovie = navigator::navigateToMoviesDetails
         )
 
         loginScreen(navigator::popBackStack)

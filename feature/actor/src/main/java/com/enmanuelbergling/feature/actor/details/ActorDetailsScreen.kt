@@ -1,6 +1,7 @@
 package com.enmanuelbergling.feature.actor.details
 
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -19,8 +20,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIos
+import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_POSTER_IMAGE_URL
-import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.actor.KnownMovie
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.R
@@ -55,32 +56,45 @@ import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.components.common.MovieCard
 import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
+import com.enmanuelbergling.core.ui.core.BoundsTransition
+import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
 import com.valentinilk.shimmer.shimmer
 import moe.tlaster.precompose.koin.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
-fun ActorDetailsRoute(id: Int, onMovie: (movieId: Int) -> Unit, onBack: () -> Unit) {
+fun AnimatedVisibilityScope.ActorDetailsRoute(
+    id: Int,
+    imagePath: String,
+    onMovie: (movieId: Int) -> Unit,
+    onBack: () -> Unit,
+) {
 
-    val viewModel = koinViewModel<ActorDetailsVM> { parametersOf(id) }
+    val viewModel = koinViewModel<ActorDetailsVM>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.loadPage(id)
+    }
+
     ActorDetailsRoute(
+        imagePath = imagePath,
         uiData = uiData,
-        uiState,
+        uiState = uiState,
         onMovie = onMovie,
         onBack = onBack,
-        onRetry = viewModel::loadPage
+        onRetry = { viewModel.loadPage(id) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ActorDetailsRoute(
+private fun AnimatedVisibilityScope.ActorDetailsRoute(
+    imagePath: String,
     uiData: ActorDetailsUiData,
     uiState: SimplerUi,
     onMovie: (movieId: Int) -> Unit,
@@ -92,15 +106,15 @@ private fun ActorDetailsRoute(
 
     val (details, knownMovies) = uiData
 
-    val snackbarHostState = remember {
+    val snackBarHostState = remember {
         SnackbarHostState()
     }
 
     HandleUiState(
         uiState = uiState,
-        snackState = snackbarHostState,
+        snackState = snackBarHostState,
         onRetry,
-        getFocus = details == null
+        getFocus = details == null && imagePath.isBlank()
     )
 
     Scaffold(
@@ -112,7 +126,7 @@ private fun ActorDetailsRoute(
                         onClick = onBack,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.ArrowBackIos,
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
                             contentDescription = stringResource(R.string.back_icon)
                         )
                     }
@@ -126,6 +140,7 @@ private fun ActorDetailsRoute(
                 .padding(paddingValues)
         ) {
 
+
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Adaptive(120.dp),
                 verticalItemSpacing = MaterialTheme.dimen.small,
@@ -134,14 +149,15 @@ private fun ActorDetailsRoute(
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(MaterialTheme.dimen.verySmall)
             ) {
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    DetailsHeader(
+                        imagePath = imagePath.ifBlank { details?.profilePath.orEmpty() },
+                        name = details?.name,
+                        popularity = details?.popularity
+                    )
+                }
 
                 details?.let {
-                    detailsHeader(
-                        imageUrl = BASE_POSTER_IMAGE_URL + details.profilePath,
-                        name = details.name,
-                        popularity = details.popularity
-                    )
-
                     if (details.biography.isNotBlank()) {
                         about(biography = details.biography)
                     }
@@ -150,10 +166,21 @@ private fun ActorDetailsRoute(
                         knownMovies = knownMovies,
                         onMovie = onMovie
                     )
+                } ?: run {
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(MaterialTheme.dimen.large),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
-
         }
+
     }
 }
 
@@ -222,53 +249,59 @@ private fun LazyStaggeredGridScope.about(
 /**
  * @param popularity in percent max 100
  * */
-private fun LazyStaggeredGridScope.detailsHeader(
-    imageUrl: String,
-    name: String,
-    popularity: Double,
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun AnimatedVisibilityScope.DetailsHeader(
+    imagePath: String,
+    name: String?,
+    popularity: Double?,
 ) {
-    item(span = StaggeredGridItemSpan.FullLine) {
-        Row(
-            Modifier
-                .heightIn(max = 250.dp)
-                .fillMaxWidth()
-        ) {
+    Row(
+        Modifier
+            .heightIn(max = 250.dp)
+            .fillMaxWidth()
+    ) {
+        with(LocalSharedTransitionScope.current!!) {
+
             AsyncImage(
-                model = imageUrl,
+                model = BASE_POSTER_IMAGE_URL + imagePath,
                 contentDescription = stringResource(R.string.movie_image),
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),
                 modifier = Modifier
+                    .sharedElement(
+                        state = rememberSharedContentState(key = imagePath),
+                        animatedVisibilityScope = this@DetailsHeader,
+                        boundsTransform = BoundsTransition
+                    )
+                    .fillMaxHeight()
                     .padding(all = MaterialTheme.dimen.verySmall)
                     .clip(MaterialTheme.shapes.medium)
             )
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(
-                    MaterialTheme.dimen.mediumSmall,
-                    Alignment.CenterVertically
-                ),
-            ) {
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(
+                MaterialTheme.dimen.mediumSmall,
+                Alignment.CenterVertically
+            ),
+        ) {
+            name?.let {
                 Text(
-                    text = name,
+                    text = it,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
-
-                LaunchedEffect(key1 = Unit) {
-                    Log.d(
-                        TAG,
-                        "detailsHeader: $popularity, ${popularity.div(100).times(5).toFloat()}"
-                    )
-                }
-                RatingStars(
-                    value = popularity.div(100).times(5).toFloat(),
-                    size = 30.dp, spaceBetween = 3.dp
-                )
             }
+
+            RatingStars(
+                value = popularity?.div(100)?.times(5)?.toFloat() ?: 0f,
+                size = 30.dp, spaceBetween = 3.dp,
+                modifier = Modifier.shimmerIf { popularity == null }
+            )
         }
     }
 }

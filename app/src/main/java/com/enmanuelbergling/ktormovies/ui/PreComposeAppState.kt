@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import com.enmanuelbergling.core.model.settings.DarkTheme
-import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
-import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
 import com.enmanuelbergling.feature.auth.navigation.navigateToLoginScreen
 import com.enmanuelbergling.feature.movies.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.series.navigation.navigateToSeriesGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListGraph
+import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
+import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.BackStackEntry
 import moe.tlaster.precompose.navigation.NavOptions
@@ -42,7 +42,7 @@ class PreComposeAppState(
     @Composable
     fun matchRoute(route: String) = backStackEntry?.hasRoute("/$route") ?: false
 
-    val startDestination = ITEM_GRAPH//MOVIES_GRAPH_ROUTE
+    val startDestination = MOVIES_GRAPH_ROUTE
 
     val isTopDestination: Boolean
         @Composable get() = TopDestination.entries.map { it.route }

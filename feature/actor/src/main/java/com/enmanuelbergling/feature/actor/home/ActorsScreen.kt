@@ -1,5 +1,7 @@
 package com.enmanuelbergling.feature.actor.home
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,7 +12,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIos
+import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +33,8 @@ import com.enmanuelbergling.core.model.actor.Actor
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.common.ActorCard
 import com.enmanuelbergling.core.ui.components.common.ActorPlaceHolder
+import com.enmanuelbergling.core.ui.core.BoundsTransition
+import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.items
 import com.enmanuelbergling.core.ui.core.shimmerIf
@@ -38,12 +42,16 @@ import moe.tlaster.precompose.koin.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ActorsScreen(onDetails: (id: Int) -> Unit, onBack: () -> Unit) {
+fun AnimatedVisibilityScope.ActorsScreen(
+    onDetails: (id: Int, imagePath: String) -> Unit,
+    onBack: () -> Unit,
+) {
     val viewModel = koinViewModel<ActorsVM>()
 
     val actors = viewModel.actors.collectAsLazyPagingItems()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 
     Scaffold(
         topBar = {
@@ -52,7 +60,7 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit, onBack: () -> Unit) {
             }, navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
-                        imageVector = Icons.Rounded.ArrowBackIos,
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
                         contentDescription = stringResource(id = R.string.back_icon)
                     )
                 }
@@ -75,11 +83,12 @@ fun ActorsScreen(onDetails: (id: Int) -> Unit, onBack: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ActorsGrid(
+fun AnimatedVisibilityScope.ActorsGrid(
     actors: LazyPagingItems<Actor>,
     modifier: Modifier = Modifier,
-    onDetails: (id: Int) -> Unit,
+    onDetails: (id: Int, imagePath: String) -> Unit,
 ) {
     val listState = rememberLazyStaggeredGridState()
 
@@ -96,11 +105,21 @@ fun ActorsGrid(
     ) {
         items(actors) { actor ->
             actor?.let {
-                ActorCard(
-                    imageUrl = actor.profilePath,
-                    name = actor.originalName,
-                    onCLick = { onDetails(actor.id) },
-                )
+                with(LocalSharedTransitionScope.current!!) {
+
+                    ActorCard(
+                        imageUrl = actor.profilePath,
+                        name = actor.originalName,
+                        onCLick = { onDetails(actor.id, actor.profilePath.orEmpty()) },
+                        modifier = Modifier
+                            .sharedElement(
+                                state = rememberSharedContentState(key = actor.profilePath.orEmpty()),
+                                animatedVisibilityScope = this@ActorsGrid,
+                                boundsTransform = BoundsTransition
+                            )
+                    )
+
+                }
             }
         }
         if (actors.itemCount == 0 && actors.loadState.refresh == LoadState.Loading) {
