@@ -45,8 +45,8 @@ dependencies {
 
     api("com.github.skydoves:orbital:0.3.4")
 
-    api("androidx.compose.animation:animation:1.7.0-SNAPSHOT")
-    api("androidx.compose.ui:ui:1.7.0-SNAPSHOT")
+    api("androidx.compose.animation:animation:1.7.0-alpha07")
+    api("androidx.compose.ui:ui:1.7.0-alpha07")
 
     implementation(libs.androidx.paging.paging.compose)
 }
