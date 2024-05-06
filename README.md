@@ -5,14 +5,19 @@ Can you guess the best way to eat them? Of course watching a movie :).
 ## 🔥Cool stuffs🔥
 
 * **MVVM.**
-* **🧹🧹  Clean architecture.**
-* **🌍🌎  Ktor and Ktorfit** as remote data source .
-* **💉💉  Koin:** for dependency injection.
-* **🎨🎨  Precompose:** for navigation and ViewModel management.
-* **🎉🎉  Cool animations:** it can't be missed 😅.
+* **🧹  Clean architecture, MVVM.**
+* **🌍  Ktor and Ktorfit** as remote data source .
+* **💉  Koin:** for dependency injection.
+* **🎨  Precompose:** for navigation and ViewModel management.
+* **🎉  Cool animations:** it can't be missed 😅.
 * **🔗🔗  Chain of command(design pattern) applied to sort api calls in Home Screen.
+* **🛠   Modularization**
 
-## 📸ScreenShoot📸
+## 📸Screenshoots📸
+
+### Modularization
+![Captura de pantalla 2024-03-23 020225](https://github.com/enmanuel52/Pop-Corns/assets/102194318/a9aaaf54-084f-4aa6-b5e1-6ab936870b94)
+
 
 ### Movies
 
