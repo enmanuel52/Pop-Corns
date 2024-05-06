@@ -1,5 +1,7 @@
 package com.enmanuelbergling.feature.watchlists.home
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
@@ -24,8 +26,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class WatchListVM(
     getPaginatedLists: GetFilteredPagingFlowUC<WatchList, AccountListsFilter>,

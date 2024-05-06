@@ -6,7 +6,7 @@ import com.enmanuelbergling.feature.auth.model.CreateSessionFromLoginChainHandle
 import com.enmanuelbergling.feature.auth.model.CreateSessionIdChainHandler
 import com.enmanuelbergling.feature.auth.model.GetUserDetailsChainHandler
 import com.enmanuelbergling.feature.auth.model.LoginChainHandler
-import org.koin.core.module.dsl.factoryOf
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -20,5 +20,5 @@ internal val loginScreenModule = module {
 
 val loginModule = module {
     includes(loginScreenModule)
-    factoryOf(::LoginVM)
+    viewModelOf(::LoginVM)
 }

@@ -50,7 +50,7 @@ import com.enmanuelbergling.core.ui.components.listItemWindAnimation
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isScrollingForward
 import com.valentinilk.shimmer.shimmer
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MoviesScreen(

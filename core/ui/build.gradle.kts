@@ -36,8 +36,9 @@ dependencies {
     api(libs.io.coil.kt.coil.compose)
     api(libs.androidx.compose.material.icons.extended)
 
-    // Koin Multiplatform
-    api(libs.io.insert.koin.koin.compose)
+    // Koin Multiplatform soon
+//    api(libs.io.insert.koin.compose)
+    api(libs.koin.compose.androidx)
 
     //Shimmer
     api(libs.com.valentinilk.shimmer.compose.shimmer)

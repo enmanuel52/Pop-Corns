@@ -50,15 +50,5 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.espresso.core)
 
-    implementation(libs.koin.core)
-
     implementation(libs.androidx.core.splashscreen)
-
-    //Navigation
-    implementation(libs.moe.tlaster.precompose)
-
-    // For ViewModel intergration
-    implementation(libs.moe.tlaster.precompose.viewmodel)
-    // For Koin intergration
-    implementation(libs.moe.tlaster.precompose.koin)
 }

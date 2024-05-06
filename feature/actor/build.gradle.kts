@@ -20,15 +20,6 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
 
-    //Navigation
-    implementation(libs.moe.tlaster.precompose)
-    // For ViewModel integration
-    implementation(libs.moe.tlaster.precompose.viewmodel)
-    // For Koin integration
-    implementation(libs.moe.tlaster.precompose.koin)
-
-    implementation(libs.koin.core)
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

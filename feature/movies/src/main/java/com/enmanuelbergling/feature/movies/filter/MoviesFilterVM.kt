@@ -1,5 +1,7 @@
 package com.enmanuelbergling.feature.movies.filter
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieGenresUC
 import com.enmanuelbergling.core.model.core.ResultHandler
@@ -18,8 +20,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class MoviesFilterVM(
     getMovies: GetFilteredPagingFlowUC<Movie, MovieFilter>,

@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.movie.Genre
@@ -59,8 +60,7 @@ import com.enmanuelbergling.core.ui.core.isAppending
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.feature.movies.filter.model.MovieFilterEvent
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MoviesFilterRoute(

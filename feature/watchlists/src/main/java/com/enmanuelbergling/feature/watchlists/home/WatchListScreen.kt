@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.CardDefaults
@@ -38,13 +38,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.CtiContentDialog
-import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.NewerDragListItem
@@ -54,10 +54,10 @@ import com.enmanuelbergling.core.ui.components.common.WatchListCardPlaceholder
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
+import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
 import com.enmanuelbergling.feature.watchlists.model.CreateListForm
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 private const val NO_LIST = -1
@@ -121,7 +121,7 @@ private fun WatchListScreen(
             navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
-                        imageVector = Icons.Rounded.ArrowBackIos,
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
                         contentDescription = stringResource(id = R.string.back_icon)
                     )
                 }

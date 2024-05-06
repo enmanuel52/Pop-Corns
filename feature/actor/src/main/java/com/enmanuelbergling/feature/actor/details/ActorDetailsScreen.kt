@@ -62,7 +62,7 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
 import com.valentinilk.shimmer.shimmer
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AnimatedVisibilityScope.ActorDetailsRoute(

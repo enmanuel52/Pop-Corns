@@ -78,7 +78,7 @@ import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)

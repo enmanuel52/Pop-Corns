@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.FromDirection
@@ -40,8 +41,7 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isAppending
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
