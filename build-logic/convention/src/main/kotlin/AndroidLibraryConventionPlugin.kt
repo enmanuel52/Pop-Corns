@@ -24,6 +24,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
     private fun Project.applyPlugins() = apply {
         plugin("com.android.library")
         plugin("org.jetbrains.kotlin.android")
+        plugin("org.jetbrains.kotlin.plugin.serialization")
     }
 
 }
