@@ -8,15 +8,18 @@ import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.enmanuelbergling.feature.movies.navigation.MOVIES_SCREEN_ROUTE
+import com.enmanuelbergling.feature.movies.navigation.MoviesDestination
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.feature.series.navigation.SERIES_SCREEN_ROUTE
+import com.enmanuelbergling.feature.series.navigation.SeriesDestination
+import java.io.Serializable
 
 enum class TopDestination(
     @StringRes val label: Int,
     val icon: ImageVector,
     val unselectedIcon: ImageVector,
-    val route: String
+    val route: Any
 ) {
-    Movies(R.string.movies,Icons.Rounded.Movie, Icons.Outlined.Movie, MOVIES_SCREEN_ROUTE),
-    Series(R.string.series,Icons.Rounded.Tv, Icons.Outlined.Tv, SERIES_SCREEN_ROUTE)
+    Movies(R.string.movies,Icons.Rounded.Movie, Icons.Outlined.Movie, MoviesDestination),
+    Series(R.string.series,Icons.Rounded.Tv, Icons.Outlined.Tv, SeriesDestination)
 }

@@ -42,7 +42,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            val appState = rememberPreCtiAppState(
+                            val appState = rememberCornTimeAppState(
                                 isOnline = isOnlineState,
                                 darkTheme = darkTheme
                             )

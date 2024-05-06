@@ -1,44 +1,53 @@
 package com.enmanuelbergling.feature.watchlists.navigation
 
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsRoute
 import com.enmanuelbergling.feature.watchlists.home.WatchListRoute
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.RouteBuilder
-import moe.tlaster.precompose.navigation.path
+import kotlinx.serialization.Serializable
 
-const val LIST_GRAPH_ROUTE = "list_graph_route"
 const val LIST_SCREEN_ROUTE = "list_screen_route"
-private const val LIST_DETAILS_SCREEN_ROUTE = "list_details_screen_route"
 
-private const val LIST_ID_ARG = "list_id_arg"
-private const val LIST_NAME_ARG = "list_name_arg"
+@Serializable
+data object ListGraphDestination
 
-fun Navigator.navigateToListGraph(navOptions: NavOptions? = null) {
-    navigate(LIST_GRAPH_ROUTE, navOptions)
+@Serializable
+data object WatchListDestination
+
+@Serializable
+data class ListDetailsDestination(
+    val listId: Int,
+    val listName: String,
+)
+
+fun NavHostController.navigateToListGraph(navOptions: NavOptions? = null) {
+    navigate(ListGraphDestination, navOptions)
 }
 
-fun Navigator.navigateToListDetailsScreen(
+fun NavHostController.navigateToListDetailsScreen(
     listId: Int,
     listName: String,
     navOptions: NavOptions? = null,
 ) {
-    navigate("/$LIST_DETAILS_SCREEN_ROUTE/$listId/$listName", navOptions)
+    navigate(ListDetailsDestination(listId, listName), navOptions)
 }
 
-fun RouteBuilder.listGraph(
+fun NavGraphBuilder.listGraph(
     onDetails: (listId: Int, listName: String) -> Unit,
     onMovieDetails: (movieId: Int) -> Unit,
     onBack: () -> Unit,
 ) {
-    group(route = LIST_GRAPH_ROUTE, initialRoute = "/$LIST_SCREEN_ROUTE") {
-        scene("/$LIST_SCREEN_ROUTE") {
+    navigation<ListGraphDestination>(startDestination = WatchListDestination) {
+        composable<WatchListDestination> {
             WatchListRoute(onDetails = onDetails, onBack = onBack)
         }
 
-        scene("/$LIST_DETAILS_SCREEN_ROUTE/{$LIST_ID_ARG}/{$LIST_NAME_ARG}") {
-            val listId = it.path(LIST_ID_ARG, 0)!!
-            val listName = it.path(LIST_NAME_ARG, "Details")!!
+        composable<ListDetailsDestination> { backStackEntry ->
+            val (listId, listName) = backStackEntry.toRoute<ListDetailsDestination>()
 
             WatchListDetailsRoute(
                 listId = listId,
