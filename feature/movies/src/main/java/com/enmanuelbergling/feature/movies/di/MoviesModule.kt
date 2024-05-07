@@ -20,7 +20,8 @@ import com.enmanuelbergling.feature.movies.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.UpcomingMoviesVM
 import com.enmanuelbergling.feature.movies.search.MovieSearchVM
-import org.koin.core.module.dsl.factoryOf
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -42,14 +43,14 @@ internal val movieDetailsScreenModule = module {
 val moviesModule = module {
     includes(movieScreenModule, movieDetailsScreenModule)
 
-    factory { MovieDetailsVM(get(), get(named<WatchList>()), get(), get(), get(), get()) }
-    factoryOf(::MoviesVM)
+    viewModel { MovieDetailsVM(get(), get(named<WatchList>()), get(), get(), get(), get()) }
+    viewModelOf(::MoviesVM)
 
-    factory { NowPlayingMoviesVM(get(qualifier = named(MovieSection.NowPlaying.toString()))) }
-    factory { TopRatedMoviesVM(get(qualifier = named(MovieSection.TopRated.toString()))) }
-    factory { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
-    factory { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
+    viewModel { NowPlayingMoviesVM(get(qualifier = named(MovieSection.NowPlaying.toString()))) }
+    viewModel { TopRatedMoviesVM(get(qualifier = named(MovieSection.TopRated.toString()))) }
+    viewModel { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
+    viewModel { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
 
-    factory { MovieSearchVM(get(named<QueryString>())) }
-    factory { MoviesFilterVM(get(named<MovieFilter>()), get()) }
+    viewModel { MovieSearchVM(get(named<QueryString>())) }
+    viewModel { MoviesFilterVM(get(named<MovieFilter>()), get()) }
 }

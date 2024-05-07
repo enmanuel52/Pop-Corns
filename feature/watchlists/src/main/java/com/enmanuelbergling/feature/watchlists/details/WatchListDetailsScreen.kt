@@ -31,22 +31,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.NewerDragListItem
 import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
+import com.enmanuelbergling.core.ui.components.common.MovieLandCard
+import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.components.common.MovieLandCard
-import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable

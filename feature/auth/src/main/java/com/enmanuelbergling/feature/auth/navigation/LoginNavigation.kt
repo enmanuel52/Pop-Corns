@@ -1,21 +1,21 @@
 package com.enmanuelbergling.feature.auth.navigation
 
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
 import com.enmanuelbergling.feature.auth.LoginRoute
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.RouteBuilder
-import moe.tlaster.precompose.navigation.transition.NavTransition
+import kotlinx.serialization.Serializable
 
-const val LOGIN_ROUTE = "login_route"
+@Serializable
+data object LoginDestination
 
-fun Navigator.navigateToLoginScreen(navOptions: NavOptions? = null) {
-    navigate("/$LOGIN_ROUTE", navOptions)
+fun NavHostController.navigateToLoginScreen(navOptions: NavOptions? = null) {
+    navigate(LoginDestination, navOptions)
 }
 
-fun RouteBuilder.loginScreen(onLoginSucceed: () -> Unit) {
-    scene(
-        "/$LOGIN_ROUTE", navTransition = NavTransition()
-    ) {
+fun NavGraphBuilder.loginScreen(onLoginSucceed: () -> Unit) {
+    composable<LoginDestination> {
         LoginRoute(onLoginSucceed)
     }
 }

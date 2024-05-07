@@ -1,64 +1,70 @@
 package com.enmanuelbergling.feature.movies.navigation
 
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.enmanuelbergling.core.model.MovieSection
 import com.enmanuelbergling.feature.movies.details.MovieDetailsScreen
+import com.enmanuelbergling.feature.movies.filter.MoviesFilterRoute
 import com.enmanuelbergling.feature.movies.home.MoviesScreen
 import com.enmanuelbergling.feature.movies.list.NowPlayingMoviesScreen
 import com.enmanuelbergling.feature.movies.list.PopularMoviesScreen
 import com.enmanuelbergling.feature.movies.list.TopRatedMoviesScreen
 import com.enmanuelbergling.feature.movies.list.UpcomingMoviesScreen
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.RouteBuilder
-import moe.tlaster.precompose.navigation.path
-import moe.tlaster.precompose.navigation.transition.NavTransition
+import com.enmanuelbergling.feature.movies.search.MovieSearchScreen
+import kotlinx.serialization.Serializable
 
 const val MOVIES_GRAPH_ROUTE = "movies_graph_route"
 
 const val MOVIES_SCREEN_ROUTE = "movies_screen_route"
-private const val MOVIES_DETAILS_SCREEN_ROUTE = "movies_details_screen_route"
 
-const val MOVIES_SECTION_SCREEN_ROUTE = "movies_section_screen_route"
+@Serializable
+data object MoviesGraphDestination
 
-private const val ID_ARG = "id_arg"
-private const val MOVIE_SECTION_ARG = "movie_section_arg"
+@Serializable
+data object MoviesDestination
 
-fun Navigator.navigateToMoviesGraph(navOptions: NavOptions? = null) {
-    navigate(MOVIES_GRAPH_ROUTE, navOptions)
+@Serializable
+data class MoviesDetailsDestination(val id: Int)
+
+@Serializable
+data class MoviesSectionDestination(val section: String)
+
+fun NavHostController.navigateToMoviesGraph(navOptions: NavOptions? = null) {
+    navigate(MoviesGraphDestination, navOptions)
 }
 
-fun Navigator.navigateToMoviesDetails(id: Int, navOptions: NavOptions? = null) {
-    navigate("/$MOVIES_DETAILS_SCREEN_ROUTE/$id", navOptions)
+fun NavHostController.navigateToMoviesDetails(id: Int, navOptions: NavOptions? = null) {
+    navigate(MoviesDetailsDestination(id), navOptions)
 }
 
-fun Navigator.navigateToMoviesSection(
+fun NavHostController.navigateToMoviesSection(
     movieSection: MovieSection,
-    navOptions: NavOptions? = null
+    navOptions: NavOptions? = null,
 ) {
-    navigate("/$MOVIES_SECTION_SCREEN_ROUTE/$movieSection", navOptions)
+    navigate(MoviesSectionDestination("$movieSection"), navOptions)
 }
 
-fun RouteBuilder.moviesGraph(
+fun NavGraphBuilder.moviesGraph(
     onBack: () -> Unit,
     onMovie: (id: Int) -> Unit,
     onActor: (actorId: Int) -> Unit,
     onMore: (MovieSection) -> Unit,
 ) {
-    group(MOVIES_GRAPH_ROUTE, "/$MOVIES_SCREEN_ROUTE") {
-        scene(
-            "/$MOVIES_SCREEN_ROUTE", navTransition = NavTransition()
-        ) {
+    navigation<MoviesGraphDestination>(startDestination = MoviesDestination) {
+        composable<MoviesDestination> {
             MoviesScreen(onDetails = onMovie, onMore)
         }
 
-        scene("/$MOVIES_DETAILS_SCREEN_ROUTE/{$ID_ARG}", navTransition = NavTransition()) {
-            val id: Int = it.path(ID_ARG, 0)!!
+        composable<MoviesDetailsDestination> { backStackEntry ->
+            val id = backStackEntry.toRoute<MoviesDetailsDestination>().id
             MovieDetailsScreen(id = id, onActor, onBack)
         }
-        scene(
-            "/$MOVIES_SECTION_SCREEN_ROUTE/{$MOVIE_SECTION_ARG}"
-        ) {
-            val stringSection: String = it.path(MOVIE_SECTION_ARG)!!
+        composable<MoviesSectionDestination> { backStackEntry ->
+            val stringSection: String = backStackEntry.toRoute<MoviesSectionDestination>().section
 
             val sectionResult = runCatching { MovieSection.valueOf(stringSection) }
             sectionResult.onSuccess { result ->
@@ -81,5 +87,42 @@ fun RouteBuilder.moviesGraph(
                 }
             }.onFailure { onBack() }
         }
+    }
+}
+
+fun NavHostController.navigateToMovieFilter(
+    navOptions: NavOptions? = null,
+) {
+    navigate(MoviesFilterDestination, navOptions)
+}
+
+@Serializable
+data object MoviesFilterDestination
+
+fun NavGraphBuilder.moviesFilterScreen(
+    onMovie: (id: Int) -> Unit,
+    onBack: () -> Unit,
+) {
+    composable<MoviesFilterDestination> {
+        MoviesFilterRoute(onBack = onBack, onMovie = onMovie)
+    }
+}
+
+
+
+fun NavHostController.navigateToMovieSearch(
+    navOptions: NavOptions? = null,
+) {
+    navigate(MovieSearchDestination, navOptions)
+}
+@Serializable
+data object MovieSearchDestination
+
+fun NavGraphBuilder.movieSearchScreen(
+    onMovie: (id: Int) -> Unit,
+    onBack: () -> Unit,
+) {
+    composable<MovieSearchDestination> {
+        MovieSearchScreen(onMovieDetails = onMovie, onBack)
     }
 }

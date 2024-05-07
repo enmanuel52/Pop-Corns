@@ -38,7 +38,7 @@ import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.items
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

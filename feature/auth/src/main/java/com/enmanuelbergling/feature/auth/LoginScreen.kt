@@ -34,14 +34,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import com.enmanuelbergling.core.ui.design.CtiTextField
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.core.dimen
-import com.enmanuelbergling.core.ui.R
+import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.feature.auth.model.LoginEvent
 import com.enmanuelbergling.feature.auth.model.LoginForm
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginRoute(onLoginSucceed: () -> Unit) {

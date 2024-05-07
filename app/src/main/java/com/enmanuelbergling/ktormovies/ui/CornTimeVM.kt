@@ -1,5 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
@@ -9,8 +11,6 @@ import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class CornTimeVM(
     getDarkThemeUC: GetDarkThemeUC,

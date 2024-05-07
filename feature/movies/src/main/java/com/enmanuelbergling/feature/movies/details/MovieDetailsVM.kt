@@ -1,6 +1,8 @@
 package com.enmanuelbergling.feature.movies.details
 
 import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.common.util.TAG
@@ -27,8 +29,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class MovieDetailsVM(
     private val detailsChainHandler: MovieDetailsChainHandler,

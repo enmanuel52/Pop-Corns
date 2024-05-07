@@ -1,56 +1,58 @@
 package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
 import com.enmanuelbergling.feature.actor.navigation.actorsGraph
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.feature.auth.navigation.loginScreen
-import com.enmanuelbergling.feature.movies.filter.moviesFilter
+import com.enmanuelbergling.feature.movies.navigation.movieSearchScreen
+import com.enmanuelbergling.feature.movies.navigation.moviesFilterScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
-import com.enmanuelbergling.feature.movies.search.movieSearch
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
-import com.enmanuelbergling.ktormovies.ui.PreComposeAppState
+import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
+import com.enmanuelbergling.ktormovies.ui.onSharedItemsDetails
 import com.enmanuelbergling.ktormovies.ui.sharedItemsGraph
-import moe.tlaster.precompose.navigation.NavHost as PreNavHost
 
 
 @Composable
-fun PreCtiNavHost(
-    state: PreComposeAppState,
+fun CtiNavHost(
+    state: CornTimeAppState,
 ) {
-    val navigator = state.navigator
+    val navController = state.navController
 
-    PreNavHost(navigator = navigator, initialRoute = state.startDestination) {
+    NavHost( navController, startDestination = state.startDestination) {
 
         moviesGraph(
-            navigator::popBackStack,
-            navigator::navigateToMoviesDetails,
-            navigator::navigateToActorsDetails,
-            navigator::navigateToMoviesSection
+            navController::popBackStack,
+            navController::navigateToMoviesDetails,
+            navController::navigateToActorsDetails,
+            navController::navigateToMoviesSection
         )
 
         seriesGraph()
 
         actorsGraph(
-            onBack = navigator::popBackStack,
-            onMovie = navigator::navigateToMoviesDetails
+            onBack = navController::popBackStack,
+            navController::navigateToActorsDetails,
+            onMovie = navController::navigateToMoviesDetails
         )
 
-        loginScreen(navigator::popBackStack)
+        loginScreen(navController::popBackStack)
 
         listGraph(
-            navigator::navigateToListDetailsScreen,
-            navigator::navigateToMoviesDetails,
-            navigator::popBackStack
+            navController::navigateToListDetailsScreen,
+            navController::navigateToMoviesDetails,
+            navController::popBackStack
         )
 
-        movieSearch(navigator::navigateToMoviesDetails, navigator::popBackStack)
+        movieSearchScreen(navController::navigateToMoviesDetails, navController::popBackStack)
 
-        moviesFilter(navigator::navigateToMoviesDetails, navigator::popBackStack)
+        moviesFilterScreen(navController::navigateToMoviesDetails, navController::popBackStack)
 
-        sharedItemsGraph()
+        sharedItemsGraph(navController::onSharedItemsDetails)
     }
 }

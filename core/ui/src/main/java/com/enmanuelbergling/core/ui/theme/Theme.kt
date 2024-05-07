@@ -87,7 +87,7 @@ private val darkColorScheme = darkColorScheme(
 fun CornTimeTheme(
     darkTheme: DarkTheme = DarkTheme.System,
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {

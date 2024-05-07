@@ -5,7 +5,7 @@ import com.enmanuelbergling.feature.auth.di.loginModule
 import com.enmanuelbergling.feature.movies.di.moviesModule
 import com.enmanuelbergling.feature.watchlists.di.watchlistModule
 import com.enmanuelbergling.ktormovies.ui.CornTimeVM
-import org.koin.core.module.dsl.factoryOf
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 val uiModule = module {
@@ -16,5 +16,5 @@ val uiModule = module {
         loginModule
     )
 
-    factoryOf(::CornTimeVM)
+    viewModelOf(::CornTimeVM)
 }

@@ -3,6 +3,8 @@ package com.enmanuelbergling.ktormovies.ui
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -46,6 +48,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -64,19 +67,20 @@ import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.ui.components.UserImage
 import com.enmanuelbergling.core.ui.components.icon
+import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
-import com.enmanuelbergling.feature.movies.filter.navigateToMovieFilter
-import com.enmanuelbergling.feature.movies.search.navigateToMovieSearch
+import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
+import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
-import com.enmanuelbergling.ktormovies.navigation.PreCtiNavHost
+import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun CornsTimeApp(
-    state: PreComposeAppState = rememberPreCtiAppState(),
+    state: CornTimeAppState = rememberCornTimeAppState(),
     userDetails: UserDetails,
     onLogout: () -> Unit,
     onDarkTheme: (DarkTheme) -> Unit,
@@ -135,8 +139,8 @@ fun CornsTimeApp(
                                 drawerState.open()
                             }
                         },
-                        onSearch = state.navigator::navigateToMovieSearch,
-                        onFilter = state.navigator::navigateToMovieFilter,
+                        onSearch = state.navController::navigateToMovieSearch,
+                        onFilter = state.navController::navigateToMovieFilter,
                     )
                 }
             }
@@ -146,7 +150,11 @@ fun CornsTimeApp(
                     .padding(paddingValues)
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
             ) {
-                PreCtiNavHost(state)
+                SharedTransitionLayout {
+                    CompositionLocalProvider(value = LocalSharedTransitionScope provides this) {
+                        CtiNavHost(state)
+                    }
+                }
             }
         }
     }
@@ -381,7 +389,7 @@ private fun AnimatedDarkThemeIcon(darkTheme: DarkTheme) {
 @Composable
 fun CornBottomNav(
     onDestination: (TopDestination) -> Unit,
-    isSelected: @Composable (String) -> Boolean,
+    isSelected: @Composable (Any) -> Boolean,
 ) {
     NavigationBar {
         TopDestination.entries.forEach { cinemaContent ->

@@ -11,12 +11,11 @@ de-jensklingenberg-ktorfit = "1.12.0"
 io-coil-kt = "2.4.0"
 io-insert-koin = "1.1.2"
 io-ktor = "2.3.5"
-koin-core = "3.5.0"
+koin-core = "3.5.6"
 kotlinx-coroutines = "1.8.0"
 kotlinSerialization = "1.9.0"
 kotlinxSerializationJson = "1.6.0"
 material-icons-extended = "1.5.2"
-moe-tlaster = "1.5.8"
 paging-runtime = "3.1.1"
 
 #plugings
@@ -57,9 +56,8 @@ com-google-protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.24.4"
 com-valentinilk-shimmer-compose-shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.5"
 de-jensklingenberg-ktorfit-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "de-jensklingenberg-ktorfit" }
 de-jensklingenberg-ktorfit-ktorfit-lib-light = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "de-jensklingenberg-ktorfit" }
-io-coil-kt-coil = { module = "io.coil-kt:coil", version.ref = "io-coil-kt" }
 io-coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "io-coil-kt" }
-io-insert-koin-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "io-insert-koin" }
+io-insert-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "io-insert-koin" }
 io-ktor-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "io-ktor" }
 io-ktor-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "io-ktor" }
 io-ktor-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "io-ktor" }
@@ -69,11 +67,9 @@ io-ktor-ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", ve
 io-ktor-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "io-ktor" }
 junit = "junit:junit:4.13.2"
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
+koin-compose-androidx = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-core" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-moe-tlaster-precompose = { module = "moe.tlaster:precompose", version.ref = "moe-tlaster" }
-moe-tlaster-precompose-koin = { module = "moe.tlaster:precompose-koin", version.ref = "moe-tlaster" }
-moe-tlaster-precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "moe-tlaster" }
 org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "pagingCommonKtx" }
 

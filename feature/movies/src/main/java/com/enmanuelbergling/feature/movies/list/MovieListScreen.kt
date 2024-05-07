@@ -44,7 +44,7 @@ import com.enmanuelbergling.feature.movies.list.viewmodel.NowPlayingMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.PopularMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.UpcomingMoviesVM
-import moe.tlaster.precompose.koin.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable

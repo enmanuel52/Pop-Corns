@@ -1,7 +1,7 @@
 package com.enmanuelbergling.core.ui.components
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
@@ -35,18 +35,20 @@ fun NewerDragListItem(
     }
 
     val density = LocalDensity.current
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
 
     val state = remember {
         AnchoredDraggableState(
             initialValue = DragState.Closed,
-            anchors = anchors,
-            positionalThreshold = { distance -> distance * 0.6f },
+            positionalThreshold = { distance: Float -> distance * 0.6f },
             velocityThreshold = { with(density) { 80.dp.toPx() } },
-            animationSpec = spring()
+            decayAnimationSpec = decayAnimationSpec,
+            snapAnimationSpec = spring(),
+            anchors = anchors
         )
     }
 
-    Box (modifier){
+    Box(modifier) {
         bottomContent()
 
         Box(modifier = Modifier
