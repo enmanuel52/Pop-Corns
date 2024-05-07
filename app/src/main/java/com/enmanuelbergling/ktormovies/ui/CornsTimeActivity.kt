@@ -3,7 +3,6 @@ package com.enmanuelbergling.ktormovies.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,7 +14,6 @@ import com.enmanuelbergling.core.common.android_util.isOnline
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import org.koin.android.ext.android.inject
-import org.koin.compose.KoinContext
 import org.koin.core.component.KoinComponent
 
 class CornsTimeActivity : ComponentActivity(), KoinComponent {
@@ -29,8 +27,6 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
 
         setContent {
 
-//            KoinContext {
-//            }
             val isOnlineState by isOnline.collectAsStateWithLifecycle(initialValue = true)
             val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
 
