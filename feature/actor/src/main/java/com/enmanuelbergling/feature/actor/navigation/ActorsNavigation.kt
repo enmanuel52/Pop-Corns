@@ -19,9 +19,10 @@ data object ActorsGraphDestination
 data object ActorsDestination
 
 @Serializable
-data class ActorDetailsDestination(
+internal data class ActorDetailsDestination(
     val id: Int,
     val imageUrl: String,
+    val name: String,
 ) {
     init {
         require(imageUrl.isNotBlank()) { "actor image url must not be blank" }
@@ -35,9 +36,10 @@ fun NavHostController.navigateToActorsGraph(navOptions: NavOptions? = null) {
 fun NavHostController.navigateToActorsDetails(
     id: Int,
     imageUrl: String,
+    name: String,
     navOptions: NavOptions? = null,
 ) {
-    navigate(ActorDetailsDestination(id, imageUrl), navOptions)
+    navigate(ActorDetailsDestination(id, imageUrl, name), navOptions)
 }
 
 fun NavGraphBuilder.actorsGraph(
@@ -58,6 +60,7 @@ fun NavGraphBuilder.actorsGraph(
             ActorDetailsRoute(
                 id = destination.id,
                 imagePath = destination.imageUrl,
+                name = destination.name,
                 onMovie = onMovie,
                 onBack = onBack
             )

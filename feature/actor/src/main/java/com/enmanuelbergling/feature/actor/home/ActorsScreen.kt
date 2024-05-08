@@ -1,7 +1,6 @@
 package com.enmanuelbergling.feature.actor.home
 
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,8 +32,6 @@ import com.enmanuelbergling.core.model.actor.Actor
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.common.ActorCard
 import com.enmanuelbergling.core.ui.components.common.ActorPlaceHolder
-import com.enmanuelbergling.core.ui.core.BoundsTransition
-import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.items
 import com.enmanuelbergling.core.ui.core.shimmerIf
@@ -43,7 +40,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnimatedVisibilityScope.ActorsScreen(
+fun AnimatedContentScope.ActorsScreen(
     onDetails: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
 ) {
@@ -84,9 +81,8 @@ fun AnimatedVisibilityScope.ActorsScreen(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun AnimatedVisibilityScope.ActorsGrid(
+fun AnimatedContentScope.ActorsGrid(
     actors: LazyPagingItems<Actor>,
     modifier: Modifier = Modifier,
     onDetails: (ActorDetailNavAction) -> Unit,
@@ -106,29 +102,19 @@ fun AnimatedVisibilityScope.ActorsGrid(
     ) {
         items(actors) { actor ->
             actor?.let {
-                with(LocalSharedTransitionScope.current!!) {
-
-                    ActorCard(
-                        imageUrl = actor.profilePath,
-                        name = actor.originalName,
-                        onCLick = {
-                            onDetails(
-                                ActorDetailNavAction(
-                                    id = actor.id,
-                                    imageUrl = actor.profilePath ?: "error",
-                                    name = actor.originalName
-                                )
+                ActorCard(
+                    imageUrl = actor.profilePath,
+                    name = actor.originalName,
+                    onCLick = {
+                        onDetails(
+                            ActorDetailNavAction(
+                                id = actor.id,
+                                imageUrl = actor.profilePath ?: "error",
+                                name = actor.originalName
                             )
-                        },
-                        modifier = Modifier
-                            .sharedElement(
-                                state = rememberSharedContentState(key = actor.profilePath.orEmpty()),
-                                animatedVisibilityScope = this@ActorsGrid,
-                                boundsTransform = BoundsTransition
-                            )
-                    )
-
-                }
+                        )
+                    },
+                )
             }
         }
         if (actors.itemCount == 0 && actors.loadState.refresh == LoadState.Loading) {

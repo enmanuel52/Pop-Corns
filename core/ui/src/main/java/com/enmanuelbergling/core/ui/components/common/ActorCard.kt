@@ -1,5 +1,7 @@
 package com.enmanuelbergling.core.ui.components.common
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_POSTER_IMAGE_URL
 import com.enmanuelbergling.core.ui.R
+import com.enmanuelbergling.core.ui.core.BoundsTransition
+import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.valentinilk.shimmer.shimmer
 
@@ -72,34 +76,54 @@ fun ActorsRowPlaceholder(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ActorCard(
+fun AnimatedContentScope.ActorCard(
     imageUrl: String?,
     name: String,
     modifier: Modifier = Modifier,
     onCLick: () -> Unit,
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current!!
+
     Column(modifier) {
         ElevatedCard(
             onCLick,
             Modifier.animateContentSize()
         ) {
+
             AsyncImage(
                 model = BASE_POSTER_IMAGE_URL + imageUrl,
                 contentDescription = "movie image",
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),
-                modifier = Modifier.aspectRatio(.65f),
+                modifier = Modifier
+                    .aspectRatio(.65f)
+                        then with(sharedTransitionScope) {
+                    Modifier.sharedElement(
+                        state = rememberSharedContentState(key = imageUrl.orEmpty()),
+                        animatedVisibilityScope = this@ActorCard,
+                        boundsTransform = BoundsTransition
+                    )
+                },
                 contentScale = ContentScale.Crop
             )
         }
+
         Text(
             text = name,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(MaterialTheme.dimen.small),
+                .padding(MaterialTheme.dimen.small)
+                    then with(sharedTransitionScope) {
+                Modifier.sharedBounds(
+                    rememberSharedContentState(key = name),
+                    animatedVisibilityScope = this@ActorCard,
+                    boundsTransform = BoundsTransition
+                )
+            },
             maxLines = 2,
             minLines = 2,
             overflow = TextOverflow.Ellipsis

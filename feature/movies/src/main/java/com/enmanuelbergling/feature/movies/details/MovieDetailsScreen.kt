@@ -337,17 +337,13 @@ private fun LazyListScope.persons(
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
                     items(persons) { person ->
-                        with(LocalSharedTransitionScope.current!!) {
+
+                        with(animatedContentScope){
                             ActorCard(
                                 imageUrl = person.imageUrl,
                                 name = person.name,
                                 modifier = Modifier
                                     .width(110.dp)
-                                    .sharedElement(
-                                        state = rememberSharedContentState(key = person.imageUrl),
-                                        animatedVisibilityScope = animatedContentScope,
-                                        boundsTransform = BoundsTransition
-                                    )
                             ) {
                                 onActor(
                                     ActorDetailNavAction(

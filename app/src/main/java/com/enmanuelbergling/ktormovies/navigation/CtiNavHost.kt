@@ -31,7 +31,7 @@ fun CtiNavHost(
             onMovie = navController::navigateToMoviesDetails,
             onActor = { action ->
                 navController.navigateToActorsDetails(
-                    action.id, action.imageUrl
+                    action.id, action.imageUrl, action.name
                 )
             },
             onMore = navController::navigateToMoviesSection
@@ -43,7 +43,7 @@ fun CtiNavHost(
             onBack = navController::popBackStack,
             onDetails = { action ->
                 navController.navigateToActorsDetails(
-                    action.id, action.imageUrl
+                    action.id, action.imageUrl, action.name
                 )
             },
             onMovie = navController::navigateToMoviesDetails
