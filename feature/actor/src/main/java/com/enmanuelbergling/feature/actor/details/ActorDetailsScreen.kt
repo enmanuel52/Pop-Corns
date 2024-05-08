@@ -68,6 +68,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AnimatedVisibilityScope.ActorDetailsRoute(
     id: Int,
     imagePath: String,
+    name: String,
     onMovie: (movieId: Int) -> Unit,
     onBack: () -> Unit,
 ) {
@@ -83,6 +84,7 @@ fun AnimatedVisibilityScope.ActorDetailsRoute(
 
     ActorDetailsRoute(
         imagePath = imagePath,
+        name = name,
         uiData = uiData,
         uiState = uiState,
         onMovie = onMovie,
@@ -95,6 +97,7 @@ fun AnimatedVisibilityScope.ActorDetailsRoute(
 @Composable
 private fun AnimatedVisibilityScope.ActorDetailsRoute(
     imagePath: String,
+    name: String,
     uiData: ActorDetailsUiData,
     uiState: SimplerUi,
     onMovie: (movieId: Int) -> Unit,
@@ -152,7 +155,7 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
                 item(span = StaggeredGridItemSpan.FullLine) {
                     DetailsHeader(
                         imagePath = imagePath.ifBlank { details?.profilePath.orEmpty() },
-                        name = details?.name,
+                        name = name,
                         popularity = details?.popularity
                     )
                 }
@@ -253,7 +256,7 @@ private fun LazyStaggeredGridScope.about(
 @Composable
 private fun AnimatedVisibilityScope.DetailsHeader(
     imagePath: String,
-    name: String?,
+    name: String,
     popularity: Double?,
 ) {
     Row(
@@ -279,6 +282,7 @@ private fun AnimatedVisibilityScope.DetailsHeader(
                     .clip(MaterialTheme.shapes.medium)
             )
         }
+
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -289,11 +293,17 @@ private fun AnimatedVisibilityScope.DetailsHeader(
                 Alignment.CenterVertically
             ),
         ) {
-            name?.let {
+            with(LocalSharedTransitionScope.current!!) {
                 Text(
-                    text = it,
+                    text = name,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(key = name),
+                            animatedVisibilityScope = this@DetailsHeader,
+                            boundsTransform = BoundsTransition
+                        )
                 )
             }
 

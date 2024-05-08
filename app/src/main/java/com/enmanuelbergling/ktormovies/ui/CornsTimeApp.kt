@@ -220,7 +220,7 @@ fun DrawerContent(
     onDrawerDestination: (DrawerDestination) -> Unit,
     darkTheme: DarkTheme,
     onDarkTheme: (DarkTheme) -> Unit,
-    isSelected: @Composable (List<String>) -> Boolean,
+    isSelected: @Composable (List<Any>) -> Boolean,
     userDetails: UserDetails,
     onLogout: () -> Unit,
     onLogin: () -> Unit,

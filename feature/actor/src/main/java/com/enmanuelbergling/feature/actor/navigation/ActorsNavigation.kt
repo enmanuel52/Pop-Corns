@@ -6,12 +6,11 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.actor.details.ActorDetailsRoute
 import com.enmanuelbergling.feature.actor.home.ActorsScreen
 import kotlinx.serialization.Serializable
 
-
-const val ACTORS_SCREEN_ROUTE = "actors_screen_route"
 
 @Serializable
 data object ActorsGraphDestination
@@ -20,7 +19,15 @@ data object ActorsGraphDestination
 data object ActorsDestination
 
 @Serializable
-data class ActorDetailsDestination(val id: Int, val imageUrl: String)
+internal data class ActorDetailsDestination(
+    val id: Int,
+    val imageUrl: String,
+    val name: String,
+) {
+    init {
+        require(imageUrl.isNotBlank()) { "actor image url must not be blank" }
+    }
+}
 
 fun NavHostController.navigateToActorsGraph(navOptions: NavOptions? = null) {
     navigate(ActorsGraphDestination, navOptions)
@@ -28,23 +35,22 @@ fun NavHostController.navigateToActorsGraph(navOptions: NavOptions? = null) {
 
 fun NavHostController.navigateToActorsDetails(
     id: Int,
-    imageUrl: String = "",
+    imageUrl: String,
+    name: String,
     navOptions: NavOptions? = null,
 ) {
-    navigate(ActorDetailsDestination(id, imageUrl), navOptions)
+    navigate(ActorDetailsDestination(id, imageUrl, name), navOptions)
 }
 
 fun NavGraphBuilder.actorsGraph(
     onBack: () -> Unit,
-    onDetails: (actorId: Int, imageUrl: String) -> Unit,
+    onDetails: (ActorDetailNavAction) -> Unit,
     onMovie: (movieId: Int) -> Unit,
 ) {
     navigation<ActorsGraphDestination>(ActorsDestination) {
         composable<ActorsDestination> {
             ActorsScreen(
-                onDetails = { id, imageUrl ->
-                    onDetails(id, imageUrl)
-                }, onBack = onBack
+                onDetails = onDetails, onBack = onBack
             )
         }
 
@@ -54,6 +60,7 @@ fun NavGraphBuilder.actorsGraph(
             ActorDetailsRoute(
                 id = destination.id,
                 imagePath = destination.imageUrl,
+                name = destination.name,
                 onMovie = onMovie,
                 onBack = onBack
             )

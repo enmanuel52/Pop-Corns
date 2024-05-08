@@ -1,5 +1,8 @@
 package com.enmanuelbergling.feature.movies.details
 
+import android.util.Log
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -61,6 +64,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
+import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.MovieDetails
 import com.enmanuelbergling.core.model.user.WatchList
@@ -70,10 +74,13 @@ import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.components.common.ActorCard
 import com.enmanuelbergling.core.ui.components.common.ActorsRowPlaceholder
 import com.enmanuelbergling.core.ui.components.common.WatchListCard
+import com.enmanuelbergling.core.ui.core.BoundsTransition
+import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isAppending
 import com.enmanuelbergling.core.ui.core.isEmpty
 import com.enmanuelbergling.core.ui.core.isRefreshing
+import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
@@ -81,9 +88,12 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> Unit) {
+fun AnimatedContentScope.MovieDetailsScreen(
+    id: Int,
+    onActor: (ActorDetailNavAction) -> Unit,
+    onBack: () -> Unit,
+) {
 
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
 
@@ -118,11 +128,11 @@ fun MovieDetailsScreen(id: Int, onActor: (actorId: Int) -> Unit, onBack: () -> U
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MovieDetailsScreen(
+private fun AnimatedContentScope.MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
     hasWatchList: Boolean,
-    onActor: (actorId: Int) -> Unit,
+    onActor: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
     watchListsSheet: @Composable () -> Unit,
@@ -200,6 +210,7 @@ private fun MovieDetailsScreen(
                         title = context.getString(R.string.cast),
                         persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
                         isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                        animatedContentScope = this@MovieDetailsScreen,
                         onActor = onActor
                     )
 
@@ -207,6 +218,7 @@ private fun MovieDetailsScreen(
                         title = context.getString(R.string.crew),
                         persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
                         isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                        animatedContentScope = this@MovieDetailsScreen,
                         onActor = onActor
                     )
                 }
@@ -301,11 +313,13 @@ private fun LazyListScope.addToListButton(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 private fun LazyListScope.persons(
     title: String,
     persons: List<PersonUiItem>,
     isLoading: Boolean = false,
-    onActor: (personId: Int) -> Unit,
+    animatedContentScope: AnimatedContentScope,
+    onActor: (ActorDetailNavAction) -> Unit,
 ) {
     item {
         Column(Modifier.padding(all = MaterialTheme.dimen.small)) {
@@ -323,12 +337,22 @@ private fun LazyListScope.persons(
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
                     items(persons) { person ->
-                        ActorCard(
-                            imageUrl = person.imageUrl,
-                            name = person.name,
-                            modifier = Modifier.width(110.dp)
-                        ) {
-                            onActor(person.id)
+
+                        with(animatedContentScope){
+                            ActorCard(
+                                imageUrl = person.imageUrl,
+                                name = person.name,
+                                modifier = Modifier
+                                    .width(110.dp)
+                            ) {
+                                onActor(
+                                    ActorDetailNavAction(
+                                        person.id,
+                                        person.imageUrl,
+                                        person.name
+                                    )
+                                )
+                            }
                         }
                     }
                 }
