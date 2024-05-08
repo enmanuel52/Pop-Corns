@@ -8,7 +8,9 @@ Can you guess the best way to eat them? Of course watching a movie :).
 * **🧹  Clean architecture, MVVM.**
 * **🌍  Ktor and Ktorfit** as remote data source .
 * **💉  Koin:** for dependency injection.
-* **🎨  Precompose:** for navigation and ViewModel management.
+* **Navigation and ViewModel Management:**
+  1.  🎨 Precompose: third-parties branch.
+  2.  🚀🚀 Jetpack Libraries. 
 * **🎉  Cool animations:** it can't be missed 😅.
 * **🔗🔗  Chain of command(design pattern) applied to sort api calls in Home Screen.
 * **🛠   Modularization**
