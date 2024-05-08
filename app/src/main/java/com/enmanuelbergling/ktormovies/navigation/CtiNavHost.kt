@@ -24,20 +24,28 @@ fun CtiNavHost(
 ) {
     val navController = state.navController
 
-    NavHost( navController, startDestination = state.startDestination) {
+    NavHost(navController, startDestination = state.startDestination) {
 
         moviesGraph(
-            navController::popBackStack,
-            navController::navigateToMoviesDetails,
-            navController::navigateToActorsDetails,
-            navController::navigateToMoviesSection
+            onBack = navController::popBackStack,
+            onMovie = navController::navigateToMoviesDetails,
+            onActor = { action ->
+                navController.navigateToActorsDetails(
+                    action.id, action.imageUrl
+                )
+            },
+            onMore = navController::navigateToMoviesSection
         )
 
         seriesGraph()
 
         actorsGraph(
             onBack = navController::popBackStack,
-            navController::navigateToActorsDetails,
+            onDetails = { action ->
+                navController.navigateToActorsDetails(
+                    action.id, action.imageUrl
+                )
+            },
             onMovie = navController::navigateToMoviesDetails
         )
 

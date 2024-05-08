@@ -38,12 +38,13 @@ import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.items
 import com.enmanuelbergling.core.ui.core.shimmerIf
+import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnimatedVisibilityScope.ActorsScreen(
-    onDetails: (id: Int, imagePath: String) -> Unit,
+    onDetails: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
 ) {
     val viewModel = koinViewModel<ActorsVM>()
@@ -88,7 +89,7 @@ fun AnimatedVisibilityScope.ActorsScreen(
 fun AnimatedVisibilityScope.ActorsGrid(
     actors: LazyPagingItems<Actor>,
     modifier: Modifier = Modifier,
-    onDetails: (id: Int, imagePath: String) -> Unit,
+    onDetails: (ActorDetailNavAction) -> Unit,
 ) {
     val listState = rememberLazyStaggeredGridState()
 
@@ -110,7 +111,15 @@ fun AnimatedVisibilityScope.ActorsGrid(
                     ActorCard(
                         imageUrl = actor.profilePath,
                         name = actor.originalName,
-                        onCLick = { onDetails(actor.id, actor.profilePath.orEmpty()) },
+                        onCLick = {
+                            onDetails(
+                                ActorDetailNavAction(
+                                    id = actor.id,
+                                    imageUrl = actor.profilePath ?: "error",
+                                    name = actor.originalName
+                                )
+                            )
+                        },
                         modifier = Modifier
                             .sharedElement(
                                 state = rememberSharedContentState(key = actor.profilePath.orEmpty()),

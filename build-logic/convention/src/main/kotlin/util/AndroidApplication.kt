@@ -17,7 +17,7 @@ fun ApplicationExtension.flavors() {
 fun ApplicationExtension.buildTypes() {
     buildTypes {
         debug {
-//            applicationIdSuffix ".debug"
+            applicationIdSuffix = ".debug"
         }
         release {
             isMinifyEnabled = true

@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.enmanuelbergling.core.model.MovieSection
+import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.movies.details.MovieDetailsScreen
 import com.enmanuelbergling.feature.movies.filter.MoviesFilterRoute
 import com.enmanuelbergling.feature.movies.home.MoviesScreen
@@ -51,7 +52,7 @@ fun NavHostController.navigateToMoviesSection(
 fun NavGraphBuilder.moviesGraph(
     onBack: () -> Unit,
     onMovie: (id: Int) -> Unit,
-    onActor: (actorId: Int) -> Unit,
+    onActor: (ActorDetailNavAction) -> Unit,
     onMore: (MovieSection) -> Unit,
 ) {
     navigation<MoviesGraphDestination>(startDestination = MoviesDestination) {
@@ -109,12 +110,12 @@ fun NavGraphBuilder.moviesFilterScreen(
 }
 
 
-
 fun NavHostController.navigateToMovieSearch(
     navOptions: NavOptions? = null,
 ) {
     navigate(MovieSearchDestination, navOptions)
 }
+
 @Serializable
 data object MovieSearchDestination
 
