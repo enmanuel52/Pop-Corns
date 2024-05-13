@@ -11,14 +11,8 @@ import org.koin.dsl.module
 
 fun preferencesModule(context: Context) = module {
     single<PreferencesDS> { PreferencesDSImpl(context) }
-    single<AuthPreferenceDS> {
-        AuthPreferenceDSImpl(
-            context
-        )
-    }
-    single<UserPreferenceDS> {
-        UserPreferenceDSImpl(
-            context
-        )
-    }
+
+    single<AuthPreferenceDS> { AuthPreferenceDSImpl(context) }
+
+    single<UserPreferenceDS> { UserPreferenceDSImpl(context) }
 }

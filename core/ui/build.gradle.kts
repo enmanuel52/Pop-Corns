@@ -39,12 +39,6 @@ dependencies {
     // Koin Multiplatform soon
 //    api(libs.io.insert.koin.compose)
     api(libs.koin.compose.androidx)
-    // Koin testing tools
-    api (libs.koin.test)
-    // Needed JUnit version
-    api( libs.koin.test.junit4)
-    //Kotest
-    api (libs.kotest.runner.junit5)
 
     //Shimmer
     api(libs.com.valentinilk.shimmer.compose.shimmer)

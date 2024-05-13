@@ -14,6 +14,7 @@ io-insert-koin = "1.1.2"
 io-ktor = "2.3.5"
 koin-core = "3.5.6"
 koin-test = "3.5.6"
+kotestExtensionsKoin = "1.3.0"
 kotestRunnerJunit5 = "5.9.0"
 kotlinx-coroutines = "1.8.0"
 kotlinSerialization = "1.9.0"
@@ -34,6 +35,7 @@ ui = "1.7.0-alpha08"
 version-catalog-update = "0.8.3"
 kotlin = "1.9.22"
 pagingCommonKtx = "3.2.1"
+junit-bom = "5.9.3"
 
 [libraries]
 androidx-activity-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -81,6 +83,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 koin-compose-androidx = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-core" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-test" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-test" }
+kotest-extensions-koin = { module = "io.kotest.extensions:kotest-extensions-koin", version.ref = "kotestExtensionsKoin" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotestRunnerJunit5" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
@@ -88,6 +91,9 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "pagingCommonKtx" }
+junit-jupiter-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }

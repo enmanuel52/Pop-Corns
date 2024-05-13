@@ -10,10 +10,11 @@ import org.koin.dsl.module
 
 val uiModule = module {
     includes(
-        moviesModule,
-        actorsModule,
-        watchlistModule,
-        loginModule
+        listOf(
+            moviesModule,
+            actorsModule,
+            watchlistModule,
+        ) + loginModule
     )
 
     viewModelOf(::CornTimeVM)

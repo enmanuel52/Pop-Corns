@@ -27,7 +27,18 @@ import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteMovieFromLi
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val ucModule = module {
+val authUcModule = module {
+    singleOf(::CreateRequestTokenUC)
+    singleOf(::CreateSessionFromLoginUC)
+    singleOf(::CreateSessionIdUC)
+    singleOf(::GetSavedSessionIdUC)
+}
+
+val formValidationUcModule = module {
+    singleOf(::BasicFormValidationUC)
+}
+
+val moviesUcModule = module {
     singleOf(::GetMovieDetailsUC)
     singleOf(::GetMovieCreditsUC)
     singleOf(::GetNowPlayingMoviesUC)
@@ -39,25 +50,22 @@ val ucModule = module {
     singleOf(::SetDarkThemeUC)
     singleOf(::GetDarkThemeUC)
     singleOf(::GetMovieGenresUC)
+}
 
-    //Auth
-    singleOf(::CreateRequestTokenUC)
-    singleOf(::CreateSessionFromLoginUC)
-    singleOf(::CreateSessionIdUC)
-    singleOf(::GetSavedSessionIdUC)
-
-    //User
+val userUcModule = module {
     singleOf(::GetUserDetailsUC)
     singleOf(::GetSavedUserUC)
     singleOf(::UserLogoutUC)
+}
 
-    //List
+val listsUcModule = module {
     singleOf(::CreateListUC)
     singleOf(::DeleteMovieFromListUC)
     singleOf(::AddMovieToListUC)
     singleOf(::DeleteListUC)
     singleOf(::CheckItemStatusUC)
-
-    //Validation
-    singleOf(::BasicFormValidationUC)
 }
+
+val ucModule = listOf(
+    authUcModule, formValidationUcModule, moviesUcModule, userUcModule, listsUcModule
+)
