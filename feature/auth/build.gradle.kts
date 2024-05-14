@@ -26,25 +26,8 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
 
-    // Koin testing tools
-    testImplementation(libs.koin.test)
-    // Needed JUnit version
-    api( libs.koin.test.junit4)
+    testImplementation(project(":core:testing"))
 
-    //Kotest
-    testImplementation(libs.kotest.runner.junit5)
-    testImplementation(libs.kotest.extensions.koin)
-
-//    testImplementation(platform(libs.junit.jupiter.bom))
-//    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.kotlinx.coroutines.test)
-//    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-
-//    testRuntimeOnly(libs.junit.jupiter.engine)
-//
-//    testFixturesImplementation(libs.kotest.runner.junit5)
-
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.espresso.core)
 }

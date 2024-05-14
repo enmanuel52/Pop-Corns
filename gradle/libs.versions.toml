@@ -36,6 +36,8 @@ version-catalog-update = "0.8.3"
 kotlin = "1.9.22"
 pagingCommonKtx = "3.2.1"
 junit-bom = "5.9.3"
+appcompat = "1.6.1"
+material = "1.10.0"
 
 [libraries]
 androidx-activity-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -94,6 +96,8 @@ androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-
 junit-jupiter-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }
