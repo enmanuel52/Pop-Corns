@@ -6,7 +6,7 @@ import com.enmanuelbergling.core.model.SessionId
 import com.enmanuelbergling.core.model.auth.CreateSessionPost
 import com.enmanuelbergling.core.model.core.ResultHandler
 
-class FakeAuthRemoteDS : AuthRemoteDS {
+object FakeAuthRemoteDS : AuthRemoteDS {
 
     override suspend fun createRequestToken(): ResultHandler<RequestToken> =
         ResultHandler.Success("new token")

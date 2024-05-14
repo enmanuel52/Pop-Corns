@@ -29,25 +29,22 @@ dependencies {
     // Koin testing tools
     testImplementation(libs.koin.test)
     // Needed JUnit version
-//    api( libs.koin.test.junit4)
+    api( libs.koin.test.junit4)
 
     //Kotest
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.kotest.extensions.koin)
 
-    testImplementation(platform(libs.junit.jupiter.bom))
-    testImplementation(libs.junit.jupiter.api)
+//    testImplementation(platform(libs.junit.jupiter.bom))
+//    testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
+//    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
-    testRuntimeOnly(libs.junit.jupiter.engine)
-
-    testFixturesImplementation(libs.kotest.runner.junit5)
+//    testRuntimeOnly(libs.junit.jupiter.engine)
+//
+//    testFixturesImplementation(libs.kotest.runner.junit5)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.espresso.core)
 }
-
-//tasks.withType<Test>().configureEach {
-//    useJUnitPlatform()
-//}
