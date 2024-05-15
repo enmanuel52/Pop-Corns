@@ -7,8 +7,6 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:common:util"))
 
-    implementation(libs.androidx.core.ktx)
-
     // Koin testing tools
     api(libs.koin.test)
     // Needed JUnit version
@@ -16,9 +14,12 @@ dependencies {
 
     //Kotest
     api(libs.kotest.runner.junit5)
-    api(libs.kotest.extensions.koin)
 
     api(libs.kotlinx.coroutines.test)
 
     api(libs.junit)
+
+    //Kotest
+    testImplementation(libs.kotest.runner.junit5)
+
 }

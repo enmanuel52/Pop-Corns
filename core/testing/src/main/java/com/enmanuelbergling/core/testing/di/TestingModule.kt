@@ -16,7 +16,7 @@ import com.enmanuelbergling.core.testing.datasource.remote.FakeMovieRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.FakeUserRemoteDS
 import org.koin.dsl.module
 
-val TestingPreferenceModule = module {
+val testingPreferenceModule = module {
     single<PreferencesDS> { FakePreferencesDS() }
 
     single<AuthPreferenceDS> { FakeAuthPreferenceDS() }
@@ -24,7 +24,7 @@ val TestingPreferenceModule = module {
     single<UserPreferenceDS> { FakeUserPreferencesDS() }
 }
 
-val TestingRemoteModule = module {
+val testingRemoteModule = module {
     single<MovieRemoteDS> { FakeMovieRemoteDS() }
 
     single<ActorRemoteDS> { FakeActorRemoteDS() }
@@ -34,4 +34,4 @@ val TestingRemoteModule = module {
     single<UserRemoteDS> { FakeUserRemoteDS() }
 }
 
-val TestingDataModule = listOf(TestingRemoteModule, TestingPreferenceModule)
+val testingDataSourceModule = listOf(testingRemoteModule, testingPreferenceModule)

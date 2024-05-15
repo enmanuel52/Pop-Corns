@@ -32,6 +32,7 @@ val authUcModule = module {
     singleOf(::CreateSessionFromLoginUC)
     singleOf(::CreateSessionIdUC)
     singleOf(::GetSavedSessionIdUC)
+    singleOf(::UserLogoutUC)
 }
 
 val formValidationUcModule = module {
@@ -55,7 +56,6 @@ val moviesUcModule = module {
 val userUcModule = module {
     singleOf(::GetUserDetailsUC)
     singleOf(::GetSavedUserUC)
-    singleOf(::UserLogoutUC)
 }
 
 val listsUcModule = module {

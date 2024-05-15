@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.auth
+package com.enmanuelbergling.core.testing
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec

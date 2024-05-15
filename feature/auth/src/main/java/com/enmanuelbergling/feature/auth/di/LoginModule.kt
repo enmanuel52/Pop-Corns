@@ -7,7 +7,6 @@ import com.enmanuelbergling.feature.auth.model.CreateSessionIdChainHandler
 import com.enmanuelbergling.feature.auth.model.GetUserDetailsChainHandler
 import com.enmanuelbergling.feature.auth.model.LoginChainHandler
 import org.koin.androidx.viewmodel.dsl.viewModelOf
-import org.koin.core.context.loadKoinModules
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

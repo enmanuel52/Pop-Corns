@@ -1,42 +1,23 @@
 package com.enmanuelbergling.feature.auth
 
-import com.enmanuelbergling.core.domain.usecase.di.authUcModule
-import com.enmanuelbergling.core.domain.usecase.di.formValidationUcModule
-import com.enmanuelbergling.core.domain.usecase.di.userUcModule
 import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.feature.auth.di.dataSourcesModule
+import com.enmanuelbergling.core.network.di.pagingSourceModule
+import com.enmanuelbergling.core.network.di.pagingUCModule
+import com.enmanuelbergling.core.testing.test.BaseBehaviorTest
 import com.enmanuelbergling.feature.auth.di.loginModule
 import com.enmanuelbergling.feature.auth.model.LoginEvent
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.koin.test.inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class LoginVMTest : BasicBehaviorTest(
-    listOf(
-        dataSourcesModule,
-        authUcModule,
-        userUcModule,
-        formValidationUcModule,
-    ) + loginModule
+class LoginVMTest : BaseBehaviorTest(
+    loginModule + pagingSourceModule + pagingUCModule
 ) {
 
     private val loginVM: LoginVM by inject()
 
     init {
-        beforeSpec {
-            Dispatchers.setMain(Dispatchers.Unconfined)
-        }
-
-        afterSpec {
-            Dispatchers.resetMain()
-        }
-
         Given("Login is open") {
 
             Then("ui is Idle") {

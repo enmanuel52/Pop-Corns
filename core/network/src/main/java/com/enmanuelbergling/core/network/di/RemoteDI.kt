@@ -54,7 +54,7 @@ val pagingSourceModule = module {
     singleOf(::PopularActorsSource)
 }
 
-val pagingModule = module {
+val pagingUCModule = module {
     single<GetPagingFlowUC<Movie>> { GetUpcomingMoviesUCImpl(get()) } withOptions {
         named(MovieSection.Upcoming.toString())
     }
@@ -103,14 +103,14 @@ val remoteModule = module {
     singleOf(::AuthService)
 
     singleOf(::UserService)
+}
 
-    single<MovieRemoteDS> { MovieRemoteDSImpl(get()) }
+val remoteDsModule = module {
+    single<MovieRemoteDS> { MovieRemoteDSImpl(get(), get(), get()) }
 
     single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
 
     single<AuthRemoteDS> { AuthRemoteDSImpl(get()) }
 
     single<UserRemoteDS> { UserRemoteDSImpl(get()) }
-
-    loadKoinModules(listOf(pagingSourceModule, pagingModule))
 }
