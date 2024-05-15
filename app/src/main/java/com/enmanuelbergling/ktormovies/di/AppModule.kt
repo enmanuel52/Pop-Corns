@@ -9,7 +9,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     loadKoinModules(
-        modules = ucModule + remoteModule + uiModule
+        modules = ucModule + remoteModule + featuresModule
     )
 }
 
