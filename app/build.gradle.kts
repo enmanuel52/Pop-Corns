@@ -40,6 +40,8 @@ dependencies {
     implementation(project(":feature:series"))
     implementation(project(":feature:watchlists"))
 
+    testImplementation(project(":core:testing"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
 
