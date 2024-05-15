@@ -1,5 +1,6 @@
 package com.enmanuelbergling.core.domain.datasource.remote
 
+import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.movie.Genre
 import com.enmanuelbergling.core.model.movie.Movie
@@ -12,21 +13,24 @@ interface MovieRemoteDS : RemoteDataSource {
 
     suspend fun getMovieCredits(id: Int): ResultHandler<MovieCredits>
 
-    /**
-     * just first page*/
-    suspend fun getNowPlayingMovies(): ResultHandler<List<Movie>>
+    suspend fun getNowPlayingMovies(page: Int = 1): ResultHandler<PageModel<Movie>>
 
-    /**
-     * just first page*/
-    suspend fun getUpcomingMovies(): ResultHandler<List<Movie>>
+    suspend fun getUpcomingMovies(page: Int = 1): ResultHandler<PageModel<Movie>>
 
-    /**
-     * just first page*/
-    suspend fun getTopRatedMovies(): ResultHandler<List<Movie>>
 
-    /**
-     * just first page*/
-    suspend fun getPopularMovies(): ResultHandler<List<Movie>>
+    suspend fun getTopRatedMovies(page: Int = 1): ResultHandler<PageModel<Movie>>
 
+    suspend fun getPopularMovies(page: Int = 1): ResultHandler<PageModel<Movie>>
     suspend fun getMovieGenres(): ResultHandler<List<Genre>>
+
+    suspend fun getMoviesByGenre(
+        genres: String,
+        sortBy: String,
+        page: Int,
+    ): ResultHandler<PageModel<Movie>>
+
+    suspend fun searchMovie(
+        query: String,
+        page: Int,
+    ): ResultHandler<PageModel<Movie>>
 }

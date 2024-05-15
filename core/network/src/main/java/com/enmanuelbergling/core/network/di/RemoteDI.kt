@@ -26,8 +26,8 @@ import com.enmanuelbergling.core.network.ktor.service.AuthService
 import com.enmanuelbergling.core.network.ktor.service.MovieService
 import com.enmanuelbergling.core.network.ktor.service.UserService
 import com.enmanuelbergling.core.network.ktorfit.KtorfitClient
-import com.enmanuelbergling.core.network.ktorfit.service.FilterService
-import com.enmanuelbergling.core.network.ktorfit.service.SearchService
+import com.enmanuelbergling.core.network.ktorfit.service.MoviesFilterService
+import com.enmanuelbergling.core.network.ktorfit.service.MoviesSearchService
 import com.enmanuelbergling.core.network.paging.usecase.GetMoviesByFilterUCImpl
 import com.enmanuelbergling.core.network.paging.usecase.GetSearchMovieUCImpl
 import com.enmanuelbergling.core.model.MovieSection
@@ -93,8 +93,8 @@ val pagingModule = module {
 val remoteModule = module {
     single { ktorClient }
 
-    single { KtorfitClient.create<FilterService>() }
-    single { KtorfitClient.create<SearchService>() }
+    single { KtorfitClient.create<MoviesFilterService>() }
+    single { KtorfitClient.create<MoviesSearchService>() }
 
     singleOf(::MovieService)
 

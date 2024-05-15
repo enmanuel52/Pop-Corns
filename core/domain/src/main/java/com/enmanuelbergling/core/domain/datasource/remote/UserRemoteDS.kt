@@ -1,8 +1,11 @@
 package com.enmanuelbergling.core.domain.datasource.remote
 
+import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.user.CreateListPost
 import com.enmanuelbergling.core.model.user.UserDetails
+import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.model.user.WatchResponse
 
 interface UserRemoteDS : RemoteDataSource {
@@ -34,4 +37,15 @@ interface UserRemoteDS : RemoteDataSource {
         listId: Int,
         movieId: Int,
     ): ResultHandler<Boolean>
+
+     suspend fun getListDetails(
+        listId: Int,
+        page: Int,
+    ): ResultHandler<PageModel<Movie>>
+
+    suspend fun getAccountLists(
+        accountId: String,
+        sessionId: String,
+        page: Int,
+    ): ResultHandler<PageModel<WatchList>>
 }
