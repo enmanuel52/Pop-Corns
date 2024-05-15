@@ -98,17 +98,17 @@ val remoteModule = module {
 
     singleOf(::MovieService)
 
-    single<MovieRemoteDS> { MovieRemoteDSImpl(get()) }
-
     singleOf(::ActorService)
-
-    single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
 
     singleOf(::AuthService)
 
-    single<AuthRemoteDS> { AuthRemoteDSImpl(get()) }
-
     singleOf(::UserService)
+
+    single<MovieRemoteDS> { MovieRemoteDSImpl(get()) }
+
+    single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
+
+    single<AuthRemoteDS> { AuthRemoteDSImpl(get()) }
 
     single<UserRemoteDS> { UserRemoteDSImpl(get()) }
 
