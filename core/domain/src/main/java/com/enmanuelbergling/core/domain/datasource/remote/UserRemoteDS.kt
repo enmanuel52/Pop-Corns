@@ -38,12 +38,12 @@ interface UserRemoteDS : RemoteDataSource {
         movieId: Int,
     ): ResultHandler<Boolean>
 
-     suspend fun getListDetails(
+     suspend fun getWatchListMovies(
         listId: Int,
         page: Int,
     ): ResultHandler<PageModel<Movie>>
 
-    suspend fun getAccountLists(
+    suspend fun getWatchLists(
         accountId: String,
         sessionId: String,
         page: Int,
