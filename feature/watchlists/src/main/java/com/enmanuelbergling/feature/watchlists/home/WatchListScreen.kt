@@ -128,7 +128,7 @@ private fun WatchListScreen(
             },
             actions = {
                 if (!lists.isRefreshing) {
-                    IconButton(onClick = { onCreateFormEvent(CreateListEvent.OpenForm) }) {
+                    IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
                         Icon(
                             imageVector = Icons.Rounded.Add,
                             contentDescription = stringResource(R.string.add_icon)
@@ -218,7 +218,7 @@ private fun WatchListScreen(
 
     if (createListForm.isVisible) {
         CtiContentDialog(
-            onDismiss = { onCreateFormEvent(CreateListEvent.OpenForm) },
+            onDismiss = { onCreateFormEvent(CreateListEvent.ToggleVisibility) },
             title = { Text("New List") },
             confirmButton = {
                 TextButton(onClick = { onCreateFormEvent(CreateListEvent.Submit) }) {

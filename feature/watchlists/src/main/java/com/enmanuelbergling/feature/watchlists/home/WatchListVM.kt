@@ -35,7 +35,7 @@ class WatchListVM(
     private val basicFormValidationUC: BasicFormValidationUC,
 ) : ViewModel() {
 
-    val sessionId = getSessionId().stateIn(
+    private val sessionId = getSessionId().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         ""
@@ -76,7 +76,7 @@ class WatchListVM(
                     it
                 }
 
-                CreateListEvent.OpenForm -> {
+                CreateListEvent.ToggleVisibility -> {
                     it.copy(isVisible = !it.isVisible).let { form ->
                         if (!form.isVisible) {
                             //reset

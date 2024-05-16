@@ -14,7 +14,6 @@ import org.koin.test.inject
 class LoginVMTest : BaseBehaviorTest(
     loginModule + pagingSourceModule + pagingUCModule
 ) {
-
     private val loginVM: LoginVM by inject()
 
     init {
