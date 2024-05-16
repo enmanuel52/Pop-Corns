@@ -1,5 +1,8 @@
 package com.enmanuelbergling.feature.watchlists.home
 
+import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
+import com.enmanuelbergling.core.model.core.PageModel
+import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.network.di.pagingSourceModule
 import com.enmanuelbergling.core.network.di.pagingUCModule
@@ -7,6 +10,8 @@ import com.enmanuelbergling.core.testing.test.BaseBehaviorTest
 import com.enmanuelbergling.feature.watchlists.di.watchlistModule
 import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
 import com.enmanuelbergling.feature.watchlists.model.CreateListForm
+import io.kotest.matchers.collections.shouldContainOnly
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -17,6 +22,8 @@ class WatchListVMTest : BaseBehaviorTest(
     watchlistModule + pagingSourceModule + pagingUCModule
 ) {
     private val watchListVM: WatchListVM by inject()
+
+    private val userRemoteDS: UserRemoteDS by inject()
 
     init {
 
@@ -90,9 +97,61 @@ class WatchListVMTest : BaseBehaviorTest(
                         form.isVisible shouldBeEqual false
 
                         watchListVM.uiState.value shouldBe SimplerUi.Success
+
+                        val watchLists = getRemoteFirstPage {
+                            userRemoteDS.getWatchLists(
+                                accountId = "",
+                                sessionId = "",
+                                page = 1
+                            )
+                        }
+
+                        watchLists.any { it.name == listName && it.description == listDescription } shouldBe true
+                    }
+
+                    val newMoviesId = (20..30).toList()
+
+                    newMoviesId.forEach { movieId ->
+                        userRemoteDS.addMovieToList(movieId, 0, "")
+                    }
+
+                    Then("check that movies are saved") {
+                        val watchListMovies = getRemoteFirstPage {
+                            userRemoteDS.getWatchListMovies(0, 1)
+                        }
+
+                        watchListMovies.map { it.id } shouldContainOnly newMoviesId
+                    }
+
+                    And("user delete the list") {
+                        watchListVM.deleteList(0)
+
+                        Then("list and movies inside are deleted") {
+                            val watchLists = getRemoteFirstPage {
+                                userRemoteDS.getWatchLists(
+                                    accountId = "",
+                                    sessionId = "",
+                                    page = 1
+                                )
+                            }
+
+                            val watchListMovies = getRemoteFirstPage {
+                                userRemoteDS.getWatchListMovies(0, 1)
+                            }
+
+                            watchLists shouldHaveSize 0
+                            watchListMovies shouldHaveSize 0
+                        }
                     }
                 }
             }
         }
+    }
+
+    private suspend fun <T> getRemoteFirstPage(call: suspend () -> ResultHandler<PageModel<T>>): List<T> {
+        val remoteLists = call() as ResultHandler.Success
+
+        val lists = remoteLists.data?.results.orEmpty()
+        return lists
     }
 }

@@ -64,14 +64,14 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
             service.checkItemStatus(listId, movieId).itemPresent
         }
 
-    override suspend fun getListDetails(listId: Int, page: Int) = safeKtorCall {
+    override suspend fun getWatchListMovies(listId: Int, page: Int) = safeKtorCall {
         val result = service.getListDetails(listId, page)
         val movies = result.items.map { it.toModel() }
 
         PageModel(movies, result.itemCount)
     }
 
-    override suspend fun getAccountLists(
+    override suspend fun getWatchLists(
         accountId: String,
         sessionId: String,
         page: Int,

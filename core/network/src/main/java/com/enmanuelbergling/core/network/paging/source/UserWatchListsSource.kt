@@ -8,10 +8,10 @@ import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.network.BuildConfig
 import com.enmanuelbergling.core.network.paging.source.core.GenericPagingSource
 
-internal class AccountListsSource(service: UserRemoteDS, filter: AccountListsFilter) :
+internal class UserWatchListsSource(service: UserRemoteDS, filter: AccountListsFilter) :
     GenericPagingSource<WatchList>(
         request = { page ->
-            val result = service.getAccountLists(BuildConfig.ACCOUNT_ID, filter.sessionId, page)
+            val result = service.getWatchLists(BuildConfig.ACCOUNT_ID, filter.sessionId, page)
             when (result) {
                 is ResultHandler.Error -> PageModel(emptyList(), 0)
                 is ResultHandler.Success -> result.data ?: PageModel(emptyList(), 0)

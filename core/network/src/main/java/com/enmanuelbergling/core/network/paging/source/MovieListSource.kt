@@ -8,7 +8,7 @@ import com.enmanuelbergling.core.network.paging.source.core.GenericPagingSource
 
 internal class MovieListSource(remoteDS: UserRemoteDS, listId: Int) : GenericPagingSource<Movie>(
     request = { page ->
-        when (val result = remoteDS.getListDetails(listId, page)) {
+        when (val result = remoteDS.getWatchListMovies(listId, page)) {
             is ResultHandler.Error -> PageModel(emptyList(), 0)
             is ResultHandler.Success -> result.data ?: PageModel(emptyList(), 0)
         }

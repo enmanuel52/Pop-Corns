@@ -14,7 +14,7 @@ import com.enmanuelbergling.core.network.paging.source.PopularActorsSource
 import com.enmanuelbergling.core.network.paging.source.PopularMovieSource
 import com.enmanuelbergling.core.network.paging.source.TopRatedMovieSource
 import com.enmanuelbergling.core.network.paging.source.UpcomingMovieSource
-import com.enmanuelbergling.core.network.paging.usecase.GetAccountListsUCImpl
+import com.enmanuelbergling.core.network.paging.usecase.GetUserWatchListsUCImpl
 import com.enmanuelbergling.core.network.paging.usecase.GetMovieListUCImpl
 import com.enmanuelbergling.core.network.paging.usecase.GetNowPlayingMoviesUCImpl
 import com.enmanuelbergling.core.network.paging.usecase.GetPopularActorsUCImpl
@@ -40,7 +40,6 @@ import com.enmanuelbergling.core.model.movie.QueryString
 import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.model.user.WatchListDetails
-import org.koin.core.context.loadKoinModules
 import org.koin.core.module.dsl.named
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
@@ -77,7 +76,7 @@ val pagingUCModule = module {
         named<WatchListDetails>()
     }
     //get account lists
-    single<GetFilteredPagingFlowUC<WatchList, AccountListsFilter>> { GetAccountListsUCImpl(get()) } withOptions {
+    single<GetFilteredPagingFlowUC<WatchList, AccountListsFilter>> { GetUserWatchListsUCImpl(get()) } withOptions {
         named<WatchList>()
     }
 
