@@ -12,8 +12,9 @@ Can you guess the best way to eat them? Of course watching a movie :).
   1.  🎨 Precompose: third-parties branch.
   2.  🚀🚀 Jetpack Libraries. 
 * **🎉  Cool animations:** it can't be missed 😅.
-* **🔗🔗  Chain of command(design pattern) applied to sort api calls in Home Screen.
+* **🔗🔗 Chain of command(design pattern)** applied to sort api calls in Home Screen.
 * **🛠   Modularization**
+* **🧪 Testing:** Behaviour Driven Development using [Kotest](https://kotest.io/ "Kotest docs")
 
 ## 📸Screenshoots📸
 
