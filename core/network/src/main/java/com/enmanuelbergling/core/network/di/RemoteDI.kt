@@ -26,8 +26,8 @@ import com.enmanuelbergling.core.network.ktor.service.AuthService
 import com.enmanuelbergling.core.network.ktor.service.MovieService
 import com.enmanuelbergling.core.network.ktor.service.UserService
 import com.enmanuelbergling.core.network.ktorfit.KtorfitClient
-import com.enmanuelbergling.core.network.ktorfit.service.FilterService
-import com.enmanuelbergling.core.network.ktorfit.service.SearchService
+import com.enmanuelbergling.core.network.ktorfit.service.MoviesFilterService
+import com.enmanuelbergling.core.network.ktorfit.service.MoviesSearchService
 import com.enmanuelbergling.core.network.paging.usecase.GetMoviesByFilterUCImpl
 import com.enmanuelbergling.core.network.paging.usecase.GetSearchMovieUCImpl
 import com.enmanuelbergling.core.model.MovieSection
@@ -54,7 +54,7 @@ val pagingSourceModule = module {
     singleOf(::PopularActorsSource)
 }
 
-val pagingModule = module {
+val pagingUCModule = module {
     single<GetPagingFlowUC<Movie>> { GetUpcomingMoviesUCImpl(get()) } withOptions {
         named(MovieSection.Upcoming.toString())
     }
@@ -93,24 +93,24 @@ val pagingModule = module {
 val remoteModule = module {
     single { ktorClient }
 
-    single { KtorfitClient.create<FilterService>() }
-    single { KtorfitClient.create<SearchService>() }
+    single { KtorfitClient.create<MoviesFilterService>() }
+    single { KtorfitClient.create<MoviesSearchService>() }
 
     singleOf(::MovieService)
 
-    single<MovieRemoteDS> { MovieRemoteDSImpl(get()) }
-
     singleOf(::ActorService)
-
-    single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
 
     singleOf(::AuthService)
 
+    singleOf(::UserService)
+}
+
+val remoteDsModule = module {
+    single<MovieRemoteDS> { MovieRemoteDSImpl(get(), get(), get()) }
+
+    single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
+
     single<AuthRemoteDS> { AuthRemoteDSImpl(get()) }
 
-    singleOf(::UserService)
-
     single<UserRemoteDS> { UserRemoteDSImpl(get()) }
-
-    loadKoinModules(listOf(pagingSourceModule, pagingModule))
 }

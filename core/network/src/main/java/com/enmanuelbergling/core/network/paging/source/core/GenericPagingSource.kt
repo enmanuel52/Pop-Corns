@@ -4,18 +4,18 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.enmanuelbergling.core.common.util.TAG
-import com.enmanuelbergling.core.network.paging.model.PagingResponse
+import com.enmanuelbergling.core.model.core.PageModel
 
-open class GenericPagingSource<Dto : Any>(
-    private val request: suspend (page: Int) -> PagingResponse<Dto>,
-) : PagingSource<Int, Dto>() {
-    override fun getRefreshKey(state: PagingState<Int, Dto>): Int? =
+open class GenericPagingSource<Model : Any>(
+    private val request: suspend (page: Int) -> PageModel<Model>,
+) : PagingSource<Int, Model>() {
+    override fun getRefreshKey(state: PagingState<Int, Model>): Int? =
         state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Dto> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Model> {
         val position = params.key ?: 1
 
         return try {

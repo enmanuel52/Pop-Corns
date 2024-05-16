@@ -17,7 +17,7 @@ class PopularMoviesChainHandler(
         else when (val result = getPopularMoviesUC()) {
             is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
             is ResultHandler.Success -> request.update {
-                it.copy(popular = result.data.orEmpty())
+                it.copy(popular = result.data?.results.orEmpty())
             }
         }
 }

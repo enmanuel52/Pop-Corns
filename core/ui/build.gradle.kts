@@ -29,8 +29,8 @@ dependencies {
 
     //for collect
     api(libs.androidx.lifecycle.lifecycle.runtime.compose)
-    api("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    api(libs.androidx.lifecycle.viewmodel.compose)
+    api(libs.androidx.lifecycle.viewmodel.ktx)
 
     //Images--Icons
     api(libs.io.coil.kt.coil.compose)
@@ -46,13 +46,13 @@ dependencies {
     //Rating Bar
     api(libs.com.github.a914.gowtham.compose.ratingbar)
 
-    api("com.github.skydoves:orbital:0.3.4")
+    api(libs.orbital)
 
-    api("androidx.compose.animation:animation:1.7.0-alpha08")
-    api("androidx.compose.ui:ui:1.7.0-alpha08")
+    api(libs.androidx.animation)
+    api(libs.androidx.ui)
 
-    api("androidx.navigation:navigation-compose:2.8.0-alpha08")
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    api(libs.androidx.navigation.compose)
+    api(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.paging.paging.compose)
 }

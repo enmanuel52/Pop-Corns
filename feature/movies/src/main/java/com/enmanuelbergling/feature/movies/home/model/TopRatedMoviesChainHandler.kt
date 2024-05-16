@@ -18,7 +18,7 @@ class TopRatedMoviesChainHandler(
         else when (val result = getTopRatedMoviesUC()) {
             is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
             is ResultHandler.Success -> request.update {
-                it.copy(topRated = result.data.orEmpty())
+                it.copy(topRated = result.data?.results.orEmpty())
             }
         }
 }

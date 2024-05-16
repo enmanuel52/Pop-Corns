@@ -6,6 +6,12 @@ plugins {
 
 android {
     namespace = "com.enmanuelbergling.feature.series"
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
@@ -20,6 +26,8 @@ dependencies {
     //paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
+
+    testImplementation(project(":core:testing"))
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

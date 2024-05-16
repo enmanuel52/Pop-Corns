@@ -25,8 +25,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    lint {
-        checkReleaseBuilds = false
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
     }
 }
 
@@ -42,6 +45,8 @@ dependencies {
     implementation(project(":feature:movies"))
     implementation(project(":feature:series"))
     implementation(project(":feature:watchlists"))
+
+    testImplementation(project(":core:testing"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)

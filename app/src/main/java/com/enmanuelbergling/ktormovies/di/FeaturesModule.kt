@@ -8,12 +8,13 @@ import com.enmanuelbergling.ktormovies.ui.CornTimeVM
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-val uiModule = module {
+val featuresModule = module {
     includes(
-        moviesModule,
-        actorsModule,
-        watchlistModule,
-        loginModule
+        listOf(
+            moviesModule,
+            actorsModule,
+            watchlistModule,
+        ) + loginModule
     )
 
     viewModelOf(::CornTimeVM)

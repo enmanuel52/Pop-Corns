@@ -2,7 +2,6 @@ package com.enmanuelbergling.core.network.dto.user.watch
 
 
 import com.enmanuelbergling.core.network.dto.movie.MovieDTO
-import com.enmanuelbergling.core.network.paging.model.PagingResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -26,9 +25,4 @@ internal data class MovieListPageDTO(
     val name: String,
     @SerialName("poster_path")
     val posterPath: String?,
-) : PagingResponse<MovieDTO> {
-    override val totalPages: Int
-        get() = itemCount
-    override val results: List<MovieDTO>
-        get() = items
-}
+)

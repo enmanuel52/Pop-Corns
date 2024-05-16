@@ -19,6 +19,5 @@ internal val loginScreenModule = module {
 }
 
 val loginModule = module {
-    includes(loginScreenModule)
     viewModelOf(::LoginVM)
-}
+} + loginScreenModule
