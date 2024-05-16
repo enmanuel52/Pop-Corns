@@ -5,6 +5,12 @@ plugins {
 
 android {
     namespace = "com.enmanuelbergling.feature.actor"
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {

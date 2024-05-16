@@ -6,6 +6,11 @@ plugins {
 android {
     namespace = "com.enmanuelbergling.feature.movies"
 
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {

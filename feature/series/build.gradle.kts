@@ -6,6 +6,12 @@ plugins {
 
 android {
     namespace = "com.enmanuelbergling.feature.series"
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
