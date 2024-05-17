@@ -4,7 +4,6 @@ Can you guess the best way to eat them? Of course watching a movie :).
 
 ## 🔥Cool stuffs🔥
 
-* **MVVM.**
 * **🧹  Clean architecture**
 * **MVVM**
 * 🌍  [Ktor](https://github.com/ktorio/ktor "ktor repo") and [Ktorfit](https://github.com/Foso/Ktorfit "ktorfit repo") as remote data source .
