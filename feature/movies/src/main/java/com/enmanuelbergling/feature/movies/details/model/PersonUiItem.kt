@@ -5,9 +5,9 @@ import com.enmanuelbergling.core.model.movie.Crew
 
 data class PersonUiItem(
     val id: Int,
-    val imageUrl: String,
+    val imageUrl: String?,
     val name: String,
 )
 
-fun Cast.toPersonUi() = PersonUiItem(id, profilePath.orEmpty(), name)
-fun Crew.toPersonUi() = PersonUiItem(id, profilePath.orEmpty(), name)
+fun Cast.toPersonUi() = PersonUiItem(id, profilePath, name)
+fun Crew.toPersonUi() = PersonUiItem(id, profilePath, name)
