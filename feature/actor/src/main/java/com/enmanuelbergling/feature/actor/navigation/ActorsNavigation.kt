@@ -21,11 +21,11 @@ data object ActorsDestination
 @Serializable
 internal data class ActorDetailsDestination(
     val id: Int,
-    val imageUrl: String,
+    val imageUrl: String?,
     val name: String,
 ) {
     init {
-        require(imageUrl.isNotBlank()) { "actor image url must not be blank" }
+        require(imageUrl == null || imageUrl.isNotBlank()) { "actor image url must not be blank" }
     }
 }
 
@@ -35,7 +35,7 @@ fun NavHostController.navigateToActorsGraph(navOptions: NavOptions? = null) {
 
 fun NavHostController.navigateToActorsDetails(
     id: Int,
-    imageUrl: String,
+    imageUrl: String?,
     name: String,
     navOptions: NavOptions? = null,
 ) {

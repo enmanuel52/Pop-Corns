@@ -67,7 +67,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AnimatedVisibilityScope.ActorDetailsRoute(
     id: Int,
-    imagePath: String,
+    imagePath: String?,
     name: String,
     onMovie: (movieId: Int) -> Unit,
     onBack: () -> Unit,
@@ -96,7 +96,7 @@ fun AnimatedVisibilityScope.ActorDetailsRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AnimatedVisibilityScope.ActorDetailsRoute(
-    imagePath: String,
+    imagePath: String?,
     name: String,
     uiData: ActorDetailsUiData,
     uiState: SimplerUi,
@@ -117,7 +117,7 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
         uiState = uiState,
         snackState = snackBarHostState,
         onRetry,
-        getFocus = details == null && imagePath.isBlank()
+        getFocus = false
     )
 
     Scaffold(
@@ -154,7 +154,7 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
             ) {
                 item(span = StaggeredGridItemSpan.FullLine) {
                     DetailsHeader(
-                        imagePath = imagePath.ifBlank { details?.profilePath.orEmpty() },
+                        imagePath = imagePath,
                         name = name,
                         popularity = details?.popularity
                     )
@@ -255,7 +255,7 @@ private fun LazyStaggeredGridScope.about(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun AnimatedVisibilityScope.DetailsHeader(
-    imagePath: String,
+    imagePath: String?,
     name: String,
     popularity: Double?,
 ) {
@@ -273,7 +273,7 @@ private fun AnimatedVisibilityScope.DetailsHeader(
                 placeholder = painterResource(id = R.drawable.mr_bean),
                 modifier = Modifier
                     .sharedElement(
-                        state = rememberSharedContentState(key = imagePath),
+                        state = rememberSharedContentState(key = imagePath.orEmpty()),
                         animatedVisibilityScope = this@DetailsHeader,
                         boundsTransform = BoundsTransition
                     )

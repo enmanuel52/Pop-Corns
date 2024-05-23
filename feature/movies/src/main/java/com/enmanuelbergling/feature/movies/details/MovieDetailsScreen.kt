@@ -1,8 +1,6 @@
 package com.enmanuelbergling.feature.movies.details
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -64,7 +62,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
-import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.MovieDetails
 import com.enmanuelbergling.core.model.user.WatchList
@@ -74,8 +71,6 @@ import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.components.common.ActorCard
 import com.enmanuelbergling.core.ui.components.common.ActorsRowPlaceholder
 import com.enmanuelbergling.core.ui.components.common.WatchListCard
-import com.enmanuelbergling.core.ui.core.BoundsTransition
-import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isAppending
 import com.enmanuelbergling.core.ui.core.isEmpty
@@ -313,7 +308,6 @@ private fun LazyListScope.addToListButton(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 private fun LazyListScope.persons(
     title: String,
     persons: List<PersonUiItem>,
@@ -338,7 +332,7 @@ private fun LazyListScope.persons(
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
                     items(persons) { person ->
 
-                        with(animatedContentScope){
+                        with(animatedContentScope) {
                             ActorCard(
                                 imageUrl = person.imageUrl,
                                 name = person.name,
