@@ -1,14 +1,125 @@
 package com.enmanuelbergling.feature.auth
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
+@Preview(showBackground = true)
+@Composable
+private fun ArtisticBackground(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        MiddleShape()
+
+        TopCornerStain()
+
+        BottomShape()
+    }
+}
+
+@Composable
+private fun MiddleShape() {
+    val configuration = LocalConfiguration.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .graphicsLayer(scaleX = 1.1f, scaleY = 1.1f)
+            .offset(
+                -configuration.screenWidthDp.dp * .25f,
+                configuration.screenWidthDp.dp * .4f,
+
+                )
+            .rotate(30f)
+            .clip(RoundedCornerShape(25))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primaryContainer,
+                        Color.Transparent
+                    ),
+                    startY = .5f,
+                )
+            )
+    )
+}
+
+@Composable
+private fun BottomShape() {
+    val configuration = LocalConfiguration.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .graphicsLayer(scaleX = 1.2f, scaleY = 1.2f)
+            .offset(
+                configuration.screenWidthDp.dp * .15f,
+                configuration.screenWidthDp.dp * .7f,
+
+                )
+            .rotate(60f)
+            .clip(RoundedCornerShape(25))
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = .6f),
+                        Color.Transparent,
+                    ),
+                    startY = .7f
+                )
+            )
+    )
+}
+
+@Composable
+private fun TopCornerStain() {
+    val configuration = LocalConfiguration.current
+
+    val containerColor = MaterialTheme.colorScheme.tertiaryContainer
+    Canvas(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .graphicsLayer(scaleX = 1.2f, scaleY = 1.2f)
+            .offset(
+                -configuration.screenWidthDp.dp * .3f,
+                -configuration.screenWidthDp.dp * .25f,
+
+                )
+            .rotate(60f)
+    ) {
+        val roundPercentage = .2f
+        val innerRoundPercentage = .08f
+
+        val stainPath = getStainPath(roundPercentage, innerRoundPercentage)
+
+        drawPath(stainPath, containerColor.copy(alpha = .75f))
+    }
+}
 
 @Preview
 @Composable
