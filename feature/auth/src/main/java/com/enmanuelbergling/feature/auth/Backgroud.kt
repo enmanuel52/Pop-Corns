@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview(showBackground = true)
 @Composable
-private fun ArtisticBackground(modifier: Modifier = Modifier) {
+fun ArtisticBackground(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -117,7 +117,7 @@ private fun TopCornerStain() {
 
         val stainPath = getStainPath(roundPercentage, innerRoundPercentage)
 
-        drawPath(stainPath, containerColor.copy(alpha = .75f))
+        drawPath(stainPath, containerColor.copy(alpha = .6f))
     }
 }
 

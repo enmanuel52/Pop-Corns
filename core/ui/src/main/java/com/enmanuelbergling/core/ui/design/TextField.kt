@@ -1,12 +1,16 @@
 package com.enmanuelbergling.core.ui.design
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * @param errorText when isn't null turn on isError
@@ -16,11 +20,11 @@ fun CtiTextField(
     text: String,
     onTextChange: (String) -> Unit,
     hint: String,
-    leadingIcon: ImageVector,
     modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
     errorText: String? = null,
     trailingIcon: @Composable () -> Unit = {},
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     TextField(
         value = text,
@@ -32,17 +36,32 @@ fun CtiTextField(
             )
         },
         isError = errorText != null,
-        supportingText = {
-            errorText?.let {
+        supportingText = if (errorText != null) {
+            {
                 Text(
-                    text = it
+                    text = errorText
                 )
             }
-        },
+        } else null,
         leadingIcon = {
-            Icon(imageVector = leadingIcon, contentDescription = "$hint icon")
+            if (leadingIcon != null) {
+                Icon(imageVector = leadingIcon, contentDescription = "$hint icon")
+            }
         },
         trailingIcon = trailingIcon,
-        visualTransformation = visualTransformation
+        visualTransformation = visualTransformation,
+        shape = CircleShape,
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
     )
+}
+
+@Preview
+@Composable
+private fun CtiTextFieldPrev() {
+    CtiTextField("", {}, "username")
 }

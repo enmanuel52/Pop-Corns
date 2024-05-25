@@ -58,4 +58,5 @@
     <string name="user_unauthorized_message">Permiso requerido, regístrese e inténtelo de nuevo</string>
     <string name="default_net_exception_message">Ha ocurrido un error, compruebe su conexión e inténtelo de nuevo</string>
     <string name="net_time_out_exception_message">El tiempo de espera por la respuesta ha terminado, compruebe su conexión e inténtelo de nuevo</string>
+    <string name="welcome_back">Bienvenido</string>
 </resources>

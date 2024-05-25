@@ -49,12 +49,15 @@ fun CtiNavHost(
             onMovie = navController::navigateToMoviesDetails
         )
 
-        loginScreen(navController::popBackStack)
+        loginScreen(
+            onLoginSucceed = navController::popBackStack,
+            onBack = navController::popBackStack
+        )
 
         listGraph(
-            navController::navigateToListDetailsScreen,
-            navController::navigateToMoviesDetails,
-            navController::popBackStack
+            onDetails = navController::navigateToListDetailsScreen,
+            onMovieDetails = navController::navigateToMoviesDetails,
+            onBack = navController::popBackStack
         )
 
         movieSearchScreen(navController::navigateToMoviesDetails, navController::popBackStack)
