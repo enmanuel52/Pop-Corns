@@ -286,7 +286,7 @@ fun CornTimeTheme(
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
+            typography = AppTypography,
             shapes = Shape,
             content = content
         )
