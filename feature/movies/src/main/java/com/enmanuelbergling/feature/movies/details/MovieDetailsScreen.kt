@@ -30,7 +30,7 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -76,6 +80,7 @@ import com.enmanuelbergling.core.ui.core.isAppending
 import com.enmanuelbergling.core.ui.core.isEmpty
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
+import com.enmanuelbergling.core.ui.theme.DimensionTokens
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
@@ -121,7 +126,7 @@ fun AnimatedContentScope.MovieDetailsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun AnimatedContentScope.MovieDetailsScreen(
     uiData: MovieDetailsUiData,
@@ -178,6 +183,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
+                topAppBar(onBack)
 
                 details?.let {
                     detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
@@ -220,26 +226,62 @@ private fun AnimatedContentScope.MovieDetailsScreen(
 
             }
 
-
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier
-                    .align(Alignment.TopStart),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Transparent.copy(
-                        alpha = .8f
-                    )
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.ArrowBackIosNew,
-                    contentDescription = stringResource(id = R.string.back_icon),
-                    tint = Color.White
-                )
-            }
         }
     }
 
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.topAppBar(onBack: () -> Unit) {
+    stickyHeader {
+        CompositionLocalProvider(value = LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(DimensionTokens.TopAppBarHeight)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(12.dp)
+                )
+                Row(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(MaterialTheme.dimen.verySmall),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ArrowBack(onBack)
+
+                    Text(
+                        text = stringResource(id = R.string.details),
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+private fun ArrowBack(onBack: () -> Unit, modifier: Modifier = Modifier) {
+    IconButton(
+        onClick = onBack,
+        modifier = modifier,
+//        colors = IconButtonDefaults.iconButtonColors(
+//            containerColor = Color.Transparent.copy(
+//                alpha = .8f
+//            )
+//        )
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.ArrowBackIosNew,
+            contentDescription = stringResource(id = R.string.back_icon),
+            tint = Color.White
+        )
+    }
 }
 
 @Composable
