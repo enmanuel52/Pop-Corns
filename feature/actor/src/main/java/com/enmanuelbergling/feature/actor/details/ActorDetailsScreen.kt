@@ -8,9 +8,9 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -40,7 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +62,10 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
 import com.valentinilk.shimmer.shimmer
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -105,7 +109,6 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
     onRetry: () -> Unit,
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val (details, knownMovies) = uiData
 
@@ -119,6 +122,8 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
         onRetry,
         getFocus = false
     )
+
+    val hazeState = remember { HazeState() }
 
     Scaffold(
         topBar = {
@@ -134,56 +139,59 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
+                modifier = Modifier
+                    .hazeChild(
+                        hazeState,
+                        style = HazeStyle(MaterialTheme.colorScheme.background.copy(alpha = .5f))
+                    )
+                    .fillMaxWidth(),
+                // Need to make app bar transparent to see the content behind
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    Color.Transparent,
+                    scrolledContainerColor = Color.Transparent
+                ),
             )
         }
     ) { paddingValues ->
-        Column(
-            Modifier
-                .padding(paddingValues)
+        LazyVerticalStaggeredGrid(
+            columns = StaggeredGridCells.Adaptive(120.dp),
+            verticalItemSpacing = MaterialTheme.dimen.small,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+            modifier = Modifier
+                .haze(hazeState)
+                .fillMaxSize(),
+            contentPadding = paddingValues
         ) {
+            item(span = StaggeredGridItemSpan.FullLine) {
+                DetailsHeader(
+                    imagePath = imagePath,
+                    name = name,
+                    popularity = details?.popularity
+                )
+            }
 
-
-            LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Adaptive(120.dp),
-                verticalItemSpacing = MaterialTheme.dimen.small,
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-                modifier = Modifier
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
-                contentPadding = PaddingValues(MaterialTheme.dimen.verySmall)
-            ) {
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    DetailsHeader(
-                        imagePath = imagePath,
-                        name = name,
-                        popularity = details?.popularity
-                    )
+            details?.let {
+                if (details.biography.isNotBlank()) {
+                    about(biography = details.biography)
                 }
 
-                details?.let {
-                    if (details.biography.isNotBlank()) {
-                        about(biography = details.biography)
-                    }
-
-                    knownMovies(
-                        knownMovies = knownMovies,
-                        onMovie = onMovie
-                    )
-                } ?: run {
-                    item(span = StaggeredGridItemSpan.FullLine) {
-                        Column(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(MaterialTheme.dimen.large),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator()
-                        }
+                knownMovies(
+                    knownMovies = knownMovies,
+                    onMovie = onMovie
+                )
+            } ?: run {
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(MaterialTheme.dimen.large),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
             }
         }
-
     }
 }
 

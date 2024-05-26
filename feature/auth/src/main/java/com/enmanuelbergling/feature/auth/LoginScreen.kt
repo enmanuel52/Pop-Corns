@@ -1,6 +1,5 @@
 package com.enmanuelbergling.feature.auth
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Visibility
@@ -27,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -42,6 +39,10 @@ import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.auth.model.LoginEvent
 import com.enmanuelbergling.feature.auth.model.LoginForm
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -68,8 +69,15 @@ fun LoginScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    val hazeState = remember { HazeState() }
+
     Box(modifier = modifier.fillMaxSize()) {
-        ArtisticBackground(Modifier.fillMaxSize())
+        ArtisticBackground(
+            Modifier
+                .fillMaxSize()
+                .haze(hazeState)
+        )
 
         TopBar(onBack)
 
@@ -78,6 +86,12 @@ fun LoginScreen(
             onLoginEvent = onLoginEvent,
             modifier = Modifier
                 .align(Alignment.Center)
+                .hazeChild(
+                    hazeState,
+                    shape = MaterialTheme.shapes.small,
+                    style = HazeStyle(blurRadius = 16.dp)
+                )
+                .padding(MaterialTheme.dimen.medium, MaterialTheme.dimen.lessLarge)
         )
 
         val uriHandler = LocalUriHandler.current
@@ -151,9 +165,7 @@ private fun SignIn(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
 
 @Composable
 fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifier: Modifier) {
-    val textFieldElevation by animateDpAsState(
-        targetValue = if (formState.hasAnyError) 0.dp else 6.dp, label = "fields elevation"
-    )
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -166,7 +178,6 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
             onTextChange = { onLoginEvent(LoginEvent.Username(it)) },
             hint = stringResource(R.string.username),
             errorText = formState.usernameError,
-            modifier = Modifier.shadow(textFieldElevation, CircleShape)
         )
 
         CtiTextField(
@@ -183,7 +194,6 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
                 }
             },
             visualTransformation = if (formState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = Modifier.shadow(textFieldElevation, CircleShape)
         )
 
         val errorFound by remember {

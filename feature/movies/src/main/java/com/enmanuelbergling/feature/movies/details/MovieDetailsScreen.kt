@@ -27,10 +27,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -38,10 +38,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,9 +50,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -80,10 +77,13 @@ import com.enmanuelbergling.core.ui.core.isAppending
 import com.enmanuelbergling.core.ui.core.isEmpty
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
-import com.enmanuelbergling.core.ui.theme.DimensionTokens
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -126,7 +126,7 @@ fun AnimatedContentScope.MovieDetailsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AnimatedContentScope.MovieDetailsScreen(
     uiData: MovieDetailsUiData,
@@ -170,95 +170,82 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         }
     }
 
+    val hazeState = remember { HazeState() }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
-        ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                topAppBar(onBack)
-
-                details?.let {
-                    detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
-
-                    information(
-                        details.title,
-                        details.releaseYear,
-                        details.voteAverage.toFloat(),
-                        details.formattedGenres,
-                        details.duration
-                    )
-
-                    if (hasWatchList) {
-                        addToListButton {
-                            scope.launch {
-                                isSheetOpen.value = true
-                            }
-                        }
-                    }
-
-
-                    overview(details.overview)
-
-                    persons(
-                        title = context.getString(R.string.cast),
-                        persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
-                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                        animatedContentScope = this@MovieDetailsScreen,
-                        onActor = onActor
-                    )
-
-                    persons(
-                        title = context.getString(R.string.crew),
-                        persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
-                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                        animatedContentScope = this@MovieDetailsScreen,
-                        onActor = onActor
-                    )
-                }
-
-            }
-
-        }
-    }
-
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-private fun LazyListScope.topAppBar(onBack: () -> Unit) {
-    stickyHeader {
-        CompositionLocalProvider(value = LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DimensionTokens.TopAppBarHeight)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .blur(12.dp)
-                )
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(MaterialTheme.dimen.verySmall),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ArrowBack(onBack)
-
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
                     Text(
                         text = stringResource(id = R.string.details),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f)
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            contentDescription = "back icon"
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .hazeChild(hazeState, style = HazeStyle(MaterialTheme.colorScheme.background.copy(alpha = .5f)))
+                    .fillMaxWidth(),
+                // Need to make app bar transparent to see the content behind
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    Color.Transparent,
+                    scrolledContainerColor = Color.Transparent
+                ),
+            )
+        }
+    ) { paddingValues ->
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+            modifier = Modifier
+                .haze(hazeState)
+                .fillMaxSize(),
+            contentPadding = paddingValues
+        ) {
+
+            details?.let {
+                detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
+
+                information(
+                    details.title,
+                    details.releaseYear,
+                    details.voteAverage.toFloat(),
+                    details.formattedGenres,
+                    details.duration
+                )
+
+                if (hasWatchList) {
+                    addToListButton {
+                        scope.launch {
+                            isSheetOpen.value = true
+                        }
+                    }
                 }
+
+
+                overview(details.overview)
+
+                persons(
+                    title = context.getString(R.string.cast),
+                    persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
+                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    animatedContentScope = this@MovieDetailsScreen,
+                    onActor = onActor
+                )
+
+                persons(
+                    title = context.getString(R.string.crew),
+                    persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
+                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    animatedContentScope = this@MovieDetailsScreen,
+                    onActor = onActor
+                )
             }
 
         }

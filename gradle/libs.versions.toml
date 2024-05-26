@@ -9,6 +9,7 @@ animation = "1.7.0-alpha08"
 core-ktx = "1.12.0"
 core-splashscreen = "1.0.1"
 de-jensklingenberg-ktorfit = "1.12.0"
+haze = "0.7.1"
 io-coil-kt = "2.4.0"
 io-insert-koin = "1.1.2"
 io-ktor = "2.3.5"
@@ -71,6 +72,7 @@ com-google-protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.24.4"
 com-valentinilk-shimmer-compose-shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.5"
 de-jensklingenberg-ktorfit-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "de-jensklingenberg-ktorfit" }
 de-jensklingenberg-ktorfit-ktorfit-lib-light = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "de-jensklingenberg-ktorfit" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 io-coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "io-coil-kt" }
 io-insert-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "io-insert-koin" }
 io-ktor-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "io-ktor" }

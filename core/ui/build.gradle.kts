@@ -47,6 +47,7 @@ dependencies {
     api(libs.com.github.a914.gowtham.compose.ratingbar)
 
     api(libs.orbital)
+    api(libs.haze)
 
     api(libs.androidx.animation)
     api(libs.androidx.ui)

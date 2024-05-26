@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIos
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -110,7 +110,7 @@ private fun MovieListScreen(
             CenterAlignedTopAppBar(title = { Text(text = title) }, navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
-                        imageVector = Icons.Rounded.ArrowBackIos,
+                        imageVector = Icons.Rounded.ArrowBackIosNew,
                         contentDescription = stringResource(
                             id = R.string.back_icon
                         )
