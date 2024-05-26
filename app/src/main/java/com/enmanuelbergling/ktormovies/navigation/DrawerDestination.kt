@@ -40,3 +40,6 @@ enum class DrawerDestination(
         )
     )
 }
+
+val DrawerDestination.loginRequired: Boolean
+    get() = this in listOf(DrawerDestination.Lists)

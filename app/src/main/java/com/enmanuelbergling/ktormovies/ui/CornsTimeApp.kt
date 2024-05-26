@@ -72,9 +72,10 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
 import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
+import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
+import com.enmanuelbergling.ktormovies.navigation.loginRequired
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -256,20 +257,22 @@ fun DrawerContent(
                 darkTheme, onDarkTheme,
             )
         }
-        DrawerDestination.entries.forEach { destination ->
-            NavigationDrawerItem(
-                label = { Text(text = stringResource(destination.label)) },
-                selected = isSelected(destination.routes),
-                onClick = { onDrawerDestination(destination) },
-                icon = {
-                    Icon(
-                        imageVector = if (isSelected(destination.routes)) destination.icon else destination.unselectedIcon,
-                        contentDescription = "nav icon"
-                    )
-                },
-                shape = MaterialTheme.shapes.small
-            )
-        }
+        DrawerDestination.entries
+            .filterNot { it.loginRequired && userDetails.username.isBlank() }
+            .forEach { destination ->
+                NavigationDrawerItem(
+                    label = { Text(text = stringResource(destination.label)) },
+                    selected = isSelected(destination.routes),
+                    onClick = { onDrawerDestination(destination) },
+                    icon = {
+                        Icon(
+                            imageVector = if (isSelected(destination.routes)) destination.icon else destination.unselectedIcon,
+                            contentDescription = "nav icon"
+                        )
+                    },
+                    shape = MaterialTheme.shapes.small
+                )
+            }
     }
 }
 
