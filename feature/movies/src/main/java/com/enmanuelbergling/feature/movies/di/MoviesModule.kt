@@ -51,6 +51,6 @@ val moviesModule = module {
     viewModel { UpcomingMoviesVM(get(qualifier = named(MovieSection.Upcoming.toString()))) }
     viewModel { PopularMoviesVM(get(qualifier = named(MovieSection.Popular.toString()))) }
 
-    viewModel { MovieSearchVM(get(named<QueryString>())) }
+    viewModel { MovieSearchVM(get(named<QueryString>()), get(), get(), get(), get()) }
     viewModel { MoviesFilterVM(get(named<MovieFilter>()), get()) }
 }
