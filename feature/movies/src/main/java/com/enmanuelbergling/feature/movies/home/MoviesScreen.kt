@@ -42,7 +42,6 @@ import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
-import com.enmanuelbergling.core.ui.components.backgroundGradient
 import com.enmanuelbergling.core.ui.components.common.HeaderMovieCard
 import com.enmanuelbergling.core.ui.components.common.HeaderMoviePlaceholder
 import com.enmanuelbergling.core.ui.components.common.MovieCard
@@ -74,7 +73,6 @@ fun MoviesScreen(
     Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)
-            .backgroundGradient()
         ) {
 
             MoviesGrid(

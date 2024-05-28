@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
@@ -35,6 +35,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
@@ -57,6 +58,7 @@ import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.ui.R
+import com.enmanuelbergling.core.ui.components.ArtisticBackground
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.SettingItem
@@ -96,8 +98,6 @@ private fun SettingsScreen(
     onToggleDarkThemeMenu: () -> Unit,
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -109,7 +109,8 @@ private fun SettingsScreen(
                             contentDescription = "icon back"
                         )
                     }
-                }, actions = {
+                },
+                actions = {
                     if (userState.username.isNotBlank()) {
                         IconButton(onClick = onLogout) {
                             Icon(
@@ -119,38 +120,43 @@ private fun SettingsScreen(
                         }
 
                     }
-                }, scrollBehavior = scrollBehavior
+                },
+                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent, Color.Transparent)
             )
         }
     ) { paddingValues ->
-        Column(Modifier.padding(paddingValues)) {
-            ProfileWrapper(
-                userState,
-                Modifier
-                    .fillMaxWidth()
-                    .weight(4f),
-                onLogin
-            )
+        Box {
+            ArtisticBackground(Modifier.fillMaxSize())
 
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = MaterialTheme.dimen.large),
-                modifier = Modifier
-                    .weight(6f)
-                    .fillMaxWidth()
-                    .clip(
-                        RoundedCornerShape(
-                            topStartPercent = 15,
-                            topEndPercent = 15
+
+            Column(Modifier.padding(paddingValues)) {
+                ProfileWrapper(
+                    userState,
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(4f),
+                    onLogin
+                )
+
+                LazyColumn(
+                    contentPadding = PaddingValues(vertical = MaterialTheme.dimen.medium),
+                    modifier = Modifier
+                        .weight(6f)
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = MaterialTheme.shapes.medium
                         )
-                    )
-            ) {
-                item {
-                    SettingItemUi(
-                        item = SettingItem.DarkMode,
-                        textValue = darkTheme.label,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = onToggleDarkThemeMenu
-                    )
+
+                ) {
+                    item {
+                        SettingItemUi(
+                            item = SettingItem.DarkMode,
+                            textValue = darkTheme.label,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = onToggleDarkThemeMenu
+                        )
+                    }
                 }
             }
         }
@@ -163,7 +169,11 @@ private fun SettingsScreen(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall)
             ) {
                 DarkTheme.entries.forEach { theme ->
-                    SelectionText(text = theme.label, selected = theme == darkTheme) {
+                    SelectionText(
+                        text = theme.label,
+                        selected = theme == darkTheme,
+                        modifier = Modifier.height(TextFieldDefaults.MinHeight)
+                    ) {
                         onDarkTheme(theme)
                         onToggleDarkThemeMenu()
                     }
@@ -192,7 +202,7 @@ fun SelectionText(
     Row(
         modifier
             .clickable { onClick() }
-            .padding(vertical = MaterialTheme.dimen.small),
+            .padding(horizontal = MaterialTheme.dimen.small),
         verticalAlignment = Alignment.CenterVertically) {
 
 
@@ -234,6 +244,8 @@ fun SettingItemUi(
     textValue: String = "",
     onClick: () -> Unit,
 ) {
+    val iconContainerColor = MaterialTheme.colorScheme.tertiaryContainer
+
     Row(
         modifier
             .clickable { onClick() }
@@ -243,13 +255,13 @@ fun SettingItemUi(
     ) {
         Box(
             modifier = Modifier
-                .background(item.iconContainerColor, MaterialTheme.shapes.small)
+                .background(iconContainerColor, MaterialTheme.shapes.small)
                 .padding(MaterialTheme.dimen.small),
         ) {
             Icon(
                 imageVector = item.icon,
                 contentDescription = "setting icon",
-                tint = contentColorFor(item.iconContainerColor)
+                tint = contentColorFor(iconContainerColor)
             )
         }
 
@@ -288,13 +300,12 @@ private fun SettingItemUiPrev() {
 @Composable
 fun ProfileWrapper(userState: UserDetails, modifier: Modifier = Modifier, onLogin: () -> Unit) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        //Background with shaders
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             ProfileUi(
                 username = userState.username,
                 imageUrl = userState.avatarPath,
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(110.dp)
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
@@ -365,7 +376,9 @@ fun ProfileImage(avatarPath: String?, modifier: Modifier = Modifier) {
             model = "$BASE_IMAGE_URL$avatarPath",
             contentDescription = "profile image",
             modifier = imageModifier,
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(id = R.drawable.mr_bean),
+            error = painterResource(id = R.drawable.mr_bean),
         )
     }
 }

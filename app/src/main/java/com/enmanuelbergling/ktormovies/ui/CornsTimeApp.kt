@@ -1,14 +1,8 @@
 package com.enmanuelbergling.ktormovies.ui
 
 import android.util.Log
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,6 +27,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -48,14 +43,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.enmanuelbergling.core.common.util.TAG
-import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.ui.components.UserImage
-import com.enmanuelbergling.core.ui.components.icon
 import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
@@ -103,7 +97,7 @@ fun CornsTimeApp(
             }
         },
         gesturesEnabled = state.isTopDestination,
-        drawerState = drawerState
+        drawerState = drawerState,
     ) {
         Scaffold(
             bottomBar = {
@@ -225,8 +219,12 @@ fun DrawerContent(
                 userDetails = userDetails,
                 onSettings = onSettings,
                 modifier = Modifier
+                    .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(all = MaterialTheme.dimen.small)
+                    .padding(
+                        start = MaterialTheme.dimen.small,
+                        top = MaterialTheme.dimen.medium,
+                    )
             )
         }
 
@@ -243,7 +241,12 @@ fun DrawerContent(
                             contentDescription = "nav icon"
                         )
                     },
-                    shape = MaterialTheme.shapes.small
+                    shape = MaterialTheme.shapes.small,
+                    colors = NavigationDrawerItemDefaults.colors(
+                        selectedContainerColor = Color.Transparent,
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                    )
                 )
             }
     }
@@ -264,22 +267,6 @@ fun UserDetailsUi(
         Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
         Text(text = userDetails.username.ifBlank { stringResource(R.string.nosey) })
-    }
-}
-
-
-@Composable
-private fun AnimatedDarkThemeIcon(darkTheme: DarkTheme) {
-    AnimatedContent(
-        darkTheme,
-        label = stringResource(R.string.dark_theme_animation),
-        transitionSpec = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Up,
-                animationSpec = spring(Spring.DampingRatioHighBouncy, Spring.StiffnessLow)
-            ) togetherWith (fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End))
-        }) { theme ->
-        Icon(theme.icon, theme.label)
     }
 }
 

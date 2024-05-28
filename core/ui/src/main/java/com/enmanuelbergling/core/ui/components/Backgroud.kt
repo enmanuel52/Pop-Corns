@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.auth
+package com.enmanuelbergling.core.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 fun ArtisticBackground(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxSize()
     ) {
         MiddleShape()
 
