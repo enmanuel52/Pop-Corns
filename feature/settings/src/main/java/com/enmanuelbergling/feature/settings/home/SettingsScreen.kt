@@ -62,6 +62,8 @@ import com.enmanuelbergling.core.ui.components.ArtisticBackground
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.SettingItem
+import com.enmanuelbergling.feature.settings.model.SettingUiEvent
+import com.enmanuelbergling.feature.settings.model.SettingUiState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -70,18 +72,21 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
     val viewModel = koinViewModel<SettingsVM>()
 
     val darkMode by viewModel.darkThemeState.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
+    val dynamicMode by viewModel.dynamicThemeState.collectAsStateWithLifecycle(initialValue = false)
     val userState by viewModel.userState.collectAsStateWithLifecycle(initialValue = UserDetails())
-    val darkThemeMenuVisible by viewModel.darkThemeMenuState.collectAsStateWithLifecycle()
+    val menuState by viewModel.menuVisibleState.collectAsStateWithLifecycle()
 
     SettingsScreen(
         onBack = onBack,
         onLogin = onLogin,
-        userState = userState,
-        darkTheme = darkMode,
-        darkThemeMenuVisible = darkThemeMenuVisible,
-        onLogout = viewModel::onLogout,
-        onDarkTheme = viewModel::onDarkTheme,
-        onToggleDarkThemeMenu = viewModel::onToggleDarkThemeMenu
+        uiState = SettingUiState(
+            userState,
+            darkMode,
+            dynamicMode,
+            menuState.darkThemeVisible,
+            menuState.dynamicThemeVisible
+        ),
+        viewModel::onEvent
     )
 }
 
@@ -90,12 +95,8 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
 private fun SettingsScreen(
     onBack: () -> Unit,
     onLogin: () -> Unit,
-    userState: UserDetails,
-    darkTheme: DarkTheme,
-    darkThemeMenuVisible: Boolean,
-    onLogout: () -> Unit,
-    onDarkTheme: (DarkTheme) -> Unit,
-    onToggleDarkThemeMenu: () -> Unit,
+    uiState: SettingUiState,
+    onEvent: (SettingUiEvent) -> Unit,
 ) {
 
     Scaffold(
@@ -111,8 +112,8 @@ private fun SettingsScreen(
                     }
                 },
                 actions = {
-                    if (userState.username.isNotBlank()) {
-                        IconButton(onClick = onLogout) {
+                    if (uiState.userDetails.isEmpty) {
+                        IconButton(onClick = { onEvent(SettingUiEvent.Logout) }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
                                 contentDescription = "logout icon"
@@ -131,7 +132,7 @@ private fun SettingsScreen(
 
             Column(Modifier.padding(paddingValues)) {
                 ProfileWrapper(
-                    userState,
+                    uiState.userDetails,
                     Modifier
                         .fillMaxWidth()
                         .weight(4f),
@@ -152,31 +153,94 @@ private fun SettingsScreen(
                     item {
                         SettingItemUi(
                             item = SettingItem.DarkMode,
-                            textValue = darkTheme.label,
+                            textValue = uiState.darkTheme.label,
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = onToggleDarkThemeMenu
-                        )
+                        ) { onEvent(SettingUiEvent.DarkThemeMenu) }
+                    }
+
+                    item {
+                        SettingItemUi(
+                            item = SettingItem.DynamicMode,
+                            textValue = if (uiState.dynamicTheme) "On" else "Off",
+                            modifier = Modifier.fillMaxWidth(),
+                        ) { onEvent(SettingUiEvent.DynamicThemeMenu) }
                     }
                 }
             }
         }
     }
 
-    if (darkThemeMenuVisible) {
-        ModalBottomSheet(onDismissRequest = onToggleDarkThemeMenu) {
-            Column(
-                modifier = Modifier.navigationBarsPadding(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall)
+    if (uiState.darkThemeMenuOpen) {
+        DarkThemeMenu(
+            darkTheme = uiState.darkTheme,
+            onDismiss = { onEvent(SettingUiEvent.DarkThemeMenu) }
+        ) { theme ->
+            onEvent(SettingUiEvent.DarkThemeEvent(theme))
+        }
+    }
+
+    if (uiState.dynamicThemeMenuOpen) {
+        DynamicThemeMenu(
+            active = uiState.dynamicTheme,
+            onDismiss = { onEvent(SettingUiEvent.DynamicThemeMenu) }
+        ) { active ->
+            onEvent(SettingUiEvent.DynamicTheme(active))
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun DynamicThemeMenu(
+    active: Boolean,
+    onDismiss: () -> Unit,
+    onDynamicTheme: (Boolean) -> Unit,
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier.navigationBarsPadding(),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall)
+        ) {
+            SelectionText(
+                text = "On",
+                selected = active,
+                modifier = Modifier.height(TextFieldDefaults.MinHeight)
             ) {
-                DarkTheme.entries.forEach { theme ->
-                    SelectionText(
-                        text = theme.label,
-                        selected = theme == darkTheme,
-                        modifier = Modifier.height(TextFieldDefaults.MinHeight)
-                    ) {
-                        onDarkTheme(theme)
-                        onToggleDarkThemeMenu()
-                    }
+                onDynamicTheme(true)
+                onDismiss()
+            }
+            SelectionText(
+                text = "Off",
+                selected = !active,
+                modifier = Modifier.height(TextFieldDefaults.MinHeight)
+            ) {
+                onDynamicTheme(false)
+                onDismiss()
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun DarkThemeMenu(
+    darkTheme: DarkTheme,
+    onDismiss: () -> Unit,
+    onDarkTheme: (DarkTheme) -> Unit,
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier.navigationBarsPadding(),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall)
+        ) {
+            DarkTheme.entries.forEach { theme ->
+                SelectionText(
+                    text = theme.label,
+                    selected = theme == darkTheme,
+                    modifier = Modifier.height(TextFieldDefaults.MinHeight)
+                ) {
+                    onDarkTheme(theme)
+                    onDismiss()
                 }
             }
         }

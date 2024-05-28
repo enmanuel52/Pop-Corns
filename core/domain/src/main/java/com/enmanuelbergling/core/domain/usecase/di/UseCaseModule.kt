@@ -19,7 +19,9 @@ import com.enmanuelbergling.core.domain.usecase.movie.search.ClearSearchSuggesti
 import com.enmanuelbergling.core.domain.usecase.movie.search.DeleteSearchSuggestionUC
 import com.enmanuelbergling.core.domain.usecase.movie.search.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicThemeUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
@@ -52,9 +54,14 @@ val moviesUcModule = module {
     singleOf(::GetMoviesByActorUC)
     singleOf(::GetTopRatedMoviesUC)
     singleOf(::GetPopularMoviesUC)
+    singleOf(::GetMovieGenresUC)
+}
+
+val settingModule = module {
     singleOf(::SetDarkThemeUC)
     singleOf(::GetDarkThemeUC)
-    singleOf(::GetMovieGenresUC)
+    singleOf(::SetDynamicThemeUC)
+    singleOf(::GetDynamicThemeUC)
 }
 
 val userUcModule = module {
