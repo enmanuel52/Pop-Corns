@@ -101,7 +101,7 @@ fun MovieSearchScreen(
         },
         colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
     ) {
-        if (movies.isRefreshing) {
+        if (movies.isRefreshing && query.isNotBlank()) {
             LinearLoading()
         }
 
@@ -123,12 +123,6 @@ fun MovieSearchScreen(
                 contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
                 state = lazyListState
             ) {
-
-                if (movies.isAppending && query.isNotEmpty()) {
-                    item {
-                        LinearLoading()
-                    }
-                }
 
                 if (query.isEmpty()) {
                     items(searchSuggestions) { query ->
@@ -153,6 +147,14 @@ fun MovieSearchScreen(
                             MovieLandCard(movie = movie, Modifier.fillMaxWidth()) {
                                 onMovieDetails(movie.id)
                             }
+                        }
+                    }
+
+
+
+                    if (movies.isAppending) {
+                        item {
+                            LinearLoading()
                         }
                     }
                 }
@@ -190,15 +192,21 @@ fun SearchSuggestionUi(
     onDelete: () -> Unit = {},
     onClick: () -> Unit,
 ) {
-    SwipeToDismissContainer(onDelete = onDelete, modifier = Modifier
-        .height(DimensionTokens.TopAppBarHeight)
-        .clickable { onClick() } then modifier
+    SwipeToDismissContainer(
+        onDelete = onDelete,
+        modifier = Modifier
+            .height(DimensionTokens.TopAppBarHeight)
+            .clickable { onClick() } then modifier,
+        shape = MaterialTheme.shapes.small,
     ) {
 
         Row(
             Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(
+                    MaterialTheme.colorScheme.background,
+                    shape = MaterialTheme.shapes.small
+                )
         ) {
 
             Icon(
