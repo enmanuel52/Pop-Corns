@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.enmanuelbergling.feature.settings.home.SettingsScreen
+import com.enmanuelbergling.feature.settings.home.SettingsRoute
 import kotlinx.serialization.Serializable
 
 
@@ -19,10 +19,10 @@ fun NavHostController.navigateToSettingsGraph(navOptions: NavOptions) {
     navigate(SettingsGraphDestination, navOptions)
 }
 
-fun NavGraphBuilder.settingsGraph(onBack: ()->Unit) {
+fun NavGraphBuilder.settingsGraph(onBack: ()->Unit, onLogin: ()->Unit) {
     navigation<SettingsGraphDestination>(startDestination = SettingsDestination) {
         composable<SettingsDestination> {
-            SettingsScreen(onBack)
+            SettingsRoute(onBack, onLogin)
         }
     }
 }

@@ -11,11 +11,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
-import com.enmanuelbergling.feature.auth.navigation.navigateToLoginScreen
-import com.enmanuelbergling.feature.movies.navigation.MOVIES_GRAPH_ROUTE
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.series.navigation.navigateToSeriesGraph
+import com.enmanuelbergling.feature.settings.navigation.navigateToSettingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListGraph
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
@@ -55,7 +54,7 @@ class CornTimeAppState(
             TopDestination.Movies -> navController.navigateToMoviesGraph(
                 navOptions {
                     launchSingleTop = true
-                    popUpTo(MOVIES_GRAPH_ROUTE) {
+                    popUpTo(MoviesGraphDestination) {
                         inclusive = true
                     }
                 }
@@ -64,7 +63,7 @@ class CornTimeAppState(
             TopDestination.Series -> navController.navigateToSeriesGraph(
                 navOptions {
                     launchSingleTop = true
-                    popUpTo(MOVIES_GRAPH_ROUTE) {
+                    popUpTo(MoviesGraphDestination) {
                         inclusive = false
                     }
                 }
@@ -77,9 +76,6 @@ class CornTimeAppState(
             DrawerDestination.Home -> navController.navigateToMoviesGraph(
                 navOptions {
                     launchSingleTop = true
-                    popUpTo(MOVIES_GRAPH_ROUTE) {
-                        inclusive = true
-                    }
                 }
             )
 
@@ -94,15 +90,12 @@ class CornTimeAppState(
                     launchSingleTop = true
                 }
             )
+
+            DrawerDestination.Settings -> navController.navigateToSettingsGraph(
+                navOptions {
+                    launchSingleTop = true
+                }
+            )
         }
     }
-
-    fun navigateToLogin() = navController.navigateToLoginScreen(
-        navOptions {
-            launchSingleTop = true
-            popUpTo(MOVIES_GRAPH_ROUTE) {
-                inclusive = true
-            }
-        }
-    )
 }

@@ -44,9 +44,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                     )
                     CornsTimeApp(
                         state = appState,
-                        onDarkTheme = viewModel::setDarkTheme,
                         userDetails = userDetails,
-                        onLogout = viewModel::logout
                     )
                 }
             }

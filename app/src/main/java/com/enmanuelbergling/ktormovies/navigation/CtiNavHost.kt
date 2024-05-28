@@ -2,21 +2,23 @@ package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import com.enmanuelbergling.feature.actor.navigation.actorsGraph
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.feature.auth.navigation.loginScreen
+import com.enmanuelbergling.feature.auth.navigation.navigateToLoginScreen
+import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.movieSearchScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesFilterScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
+import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.settings.navigation.settingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
 import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
-import com.enmanuelbergling.ktormovies.ui.onSharedItemsDetails
-import com.enmanuelbergling.ktormovies.ui.sharedItemsGraph
 
 
 @Composable
@@ -51,7 +53,15 @@ fun CtiNavHost(
         )
 
         loginScreen(
-            onLoginSucceed = navController::popBackStack,
+            onLoginSucceed = {
+                navController.navigateToMoviesGraph(
+                    navOptions {
+                        popUpTo(MoviesGraphDestination) {
+                            inclusive = true
+                        }
+                    }
+                )
+            },
             onBack = navController::popBackStack
         )
 
@@ -65,8 +75,9 @@ fun CtiNavHost(
 
         moviesFilterScreen(navController::navigateToMoviesDetails, navController::popBackStack)
 
-        sharedItemsGraph(navController::onSharedItemsDetails)
-
-        settingsGraph(onBack = navController::popBackStack)
+        settingsGraph(
+            onBack = navController::popBackStack,
+            onLogin = navController::navigateToLoginScreen
+        )
     }
 }

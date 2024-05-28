@@ -59,4 +59,7 @@
     <string name="default_net_exception_message">Ha ocurrido un error, compruebe su conexión e inténtelo de nuevo</string>
     <string name="net_time_out_exception_message">El tiempo de espera por la respuesta ha terminado, compruebe su conexión e inténtelo de nuevo</string>
     <string name="welcome_back">Bienvenido</string>
+    <string name="settings">Ajustes</string>
+    <string name="dark_mode">Modo nocturno</string>
+    <string name="dynamic_mode">Modo dinamico</string>
 </resources>

@@ -25,6 +25,9 @@ class SettingsVM(
     private val _shouldGoOutState = MutableStateFlow(false)
     val shouldGoOutState get() = _shouldGoOutState.asStateFlow()
 
+    private val _darkThemeMenuState = MutableStateFlow(false)
+    val darkThemeMenuState get() = _darkThemeMenuState.asStateFlow()
+
     fun onDarkTheme(darkTheme: DarkTheme) = viewModelScope.launch {
         setDarkThemeUC(darkTheme)
     }
@@ -32,5 +35,9 @@ class SettingsVM(
     fun onLogout() = viewModelScope.launch {
         logoutUC()
         _shouldGoOutState.update { true }
+    }
+
+    fun onToggleDarkThemeMenu(){
+        _darkThemeMenuState.update { !it }
     }
 }

@@ -5,4 +5,6 @@ data class UserDetails(
     val username: String = "",
     val avatarPath: String = "",
     val name: String = "",
-)
+){
+    val isEmpty: Boolean get() = username.isBlank()
+}
