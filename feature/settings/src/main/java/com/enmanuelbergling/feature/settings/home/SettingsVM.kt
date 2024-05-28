@@ -3,9 +3,9 @@ package com.enmanuelbergling.feature.settings.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
-import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
-import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.feature.settings.model.SettingMenuUi
@@ -20,14 +20,14 @@ class SettingsVM(
     getDarkThemeUC: GetDarkThemeUC,
     private val logoutUC: LogoutUC,
     getSavedUserUC: GetSavedUserUC,
-    getDynamicThemeUC: GetDynamicThemeUC,
-    private val setDynamicThemeUC: SetDynamicThemeUC,
+    getDynamicColorUC: GetDynamicColorUC,
+    private val setDynamicColorUC: SetDynamicColorUC,
 ) : ViewModel() {
     val userState = getSavedUserUC()
 
     val darkThemeState = getDarkThemeUC()
 
-    val dynamicThemeState = getDynamicThemeUC()
+    val dynamicColorState = getDynamicColorUC()
 
     private val _menuVisibleState = MutableStateFlow(SettingMenuUi())
     val menuVisibleState get() = _menuVisibleState.asStateFlow()
@@ -42,12 +42,12 @@ class SettingsVM(
                 _menuVisibleState.update { it.copy(darkThemeVisible = !it.darkThemeVisible) }
             }
 
-            is SettingUiEvent.DynamicTheme -> {
-                setDynamicThemeUC(event.active)
+            is SettingUiEvent.DynamicColor -> {
+                setDynamicColorUC(event.active)
             }
 
-            SettingUiEvent.DynamicThemeMenu -> {
-                _menuVisibleState.update { it.copy(dynamicThemeVisible = !it.dynamicThemeVisible) }
+            SettingUiEvent.DynamicColorMenu -> {
+                _menuVisibleState.update { it.copy(dynamicColorVisible = !it.dynamicColorVisible) }
             }
 
             SettingUiEvent.Logout -> {

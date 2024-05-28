@@ -7,7 +7,7 @@ interface SettingsPreferencesDS {
     fun getDarkTheme(): Flow<DarkTheme>
 
     fun setDarkTheme(theme: DarkTheme)
-    fun getDynamicTheme(): Flow<Boolean>
+    fun getDynamicColor(): Flow<Boolean>
 
-    fun setDynamicTheme(active: Boolean)
+    fun setDynamicColor(active: Boolean)
 }

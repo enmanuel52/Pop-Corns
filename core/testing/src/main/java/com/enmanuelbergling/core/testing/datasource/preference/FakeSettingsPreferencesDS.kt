@@ -14,9 +14,9 @@ class FakeSettingsPreferencesDS : SettingsPreferencesDS {
         _darkTheme = theme
     }
 
-    override fun getDynamicTheme(): Flow<Boolean> = flowOf(_dynamicTheme)
+    override fun getDynamicColor(): Flow<Boolean> = flowOf(_dynamicTheme)
 
-    override fun setDynamicTheme(active: Boolean) {
+    override fun setDynamicColor(active: Boolean) {
         _dynamicTheme = active
     }
 }

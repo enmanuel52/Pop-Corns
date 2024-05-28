@@ -30,10 +30,10 @@ class SettingsPreferencesDSImpl(private val context: Context) : SettingsPreferen
         }
     }
 
-    override fun getDynamicTheme(): Flow<Boolean> =
+    override fun getDynamicColor(): Flow<Boolean> =
         context.dataStore.data.map { preferences -> preferences[Keys.DYNAMIC_THEME] ?: false }
 
-    override fun setDynamicTheme(active: Boolean): Unit = runBlocking {
+    override fun setDynamicColor(active: Boolean): Unit = runBlocking {
         context.dataStore.edit { preferences ->
             preferences[Keys.DYNAMIC_THEME] = active
         }

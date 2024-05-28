@@ -9,7 +9,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
@@ -22,15 +21,13 @@ import com.enmanuelbergling.ktormovies.navigation.TopDestination
 @Composable
 fun rememberCornTimeAppState(
     isOnline: Boolean = true,
-    darkTheme: DarkTheme = DarkTheme.System,
     navController: NavHostController = rememberNavController(),
-) = remember(navController) { CornTimeAppState(isOnline, darkTheme, navController) }
+) = remember(navController) { CornTimeAppState(isOnline, navController) }
 
 
 @Stable
 class CornTimeAppState(
     val isOnline: Boolean = true,
-    val darkTheme: DarkTheme = DarkTheme.System,
     val navController: NavHostController,
 ) {
     private val currentDestination: NavDestination?

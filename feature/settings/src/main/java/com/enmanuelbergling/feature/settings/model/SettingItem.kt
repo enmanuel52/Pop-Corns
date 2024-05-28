@@ -4,8 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Forest
 import androidx.compose.material.icons.rounded.NightsStay
-import androidx.compose.material.icons.rounded.Volcano
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.enmanuelbergling.core.ui.R
 
@@ -19,9 +17,9 @@ data class SettingItem(
             label = R.string.dark_mode
         )
 
-        val DynamicMode = SettingItem(
+        val DynamicColor = SettingItem(
             icon = Icons.Rounded.Forest,
-            label = R.string.dynamic_mode
+            label = R.string.dynamic_color
         )
     }
 }

@@ -29,11 +29,11 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
 
             val isOnlineState by isOnline.collectAsStateWithLifecycle(initialValue = true)
             val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
-            val dynamicTheme by viewModel.dynamicTheme.collectAsStateWithLifecycle(initialValue = false)
+            val dynamicColor by viewModel.dynamicColor.collectAsStateWithLifecycle(initialValue = false)
 
             val userDetails by viewModel.userDetails.collectAsStateWithLifecycle()
 
-            CornTimeTheme(darkTheme = darkTheme, dynamicColor = dynamicTheme) {
+            CornTimeTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -41,7 +41,6 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                 ) {
                     val appState = rememberCornTimeAppState(
                         isOnline = isOnlineState,
-                        darkTheme = darkTheme
                     )
                     CornsTimeApp(
                         state = appState,

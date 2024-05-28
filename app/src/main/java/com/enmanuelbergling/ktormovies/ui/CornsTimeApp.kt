@@ -225,6 +225,7 @@ fun DrawerContent(
                         start = MaterialTheme.dimen.small,
                         top = MaterialTheme.dimen.medium,
                     )
+                    .padding(MaterialTheme.dimen.small)
             )
         }
 

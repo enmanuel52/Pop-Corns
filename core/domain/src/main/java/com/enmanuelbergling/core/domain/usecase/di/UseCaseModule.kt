@@ -19,9 +19,9 @@ import com.enmanuelbergling.core.domain.usecase.movie.search.ClearSearchSuggesti
 import com.enmanuelbergling.core.domain.usecase.movie.search.DeleteSearchSuggestionUC
 import com.enmanuelbergling.core.domain.usecase.movie.search.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
-import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
-import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
@@ -60,8 +60,8 @@ val moviesUcModule = module {
 val settingModule = module {
     singleOf(::SetDarkThemeUC)
     singleOf(::GetDarkThemeUC)
-    singleOf(::SetDynamicThemeUC)
-    singleOf(::GetDynamicThemeUC)
+    singleOf(::SetDynamicColorUC)
+    singleOf(::GetDynamicColorUC)
 }
 
 val userUcModule = module {
@@ -90,5 +90,6 @@ val ucModule = listOf(
     moviesUcModule,
     userUcModule,
     listsUcModule,
-    searchSuggestionUcModule
+    searchSuggestionUcModule,
+    settingModule
 )

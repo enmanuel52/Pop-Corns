@@ -2,6 +2,7 @@ package com.enmanuelbergling.core.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.ui.core.LocalDimen
 
@@ -251,16 +253,15 @@ private val highContrastDarkColorScheme = darkColorScheme(
 fun CornTimeTheme(
     darkTheme: DarkTheme = DarkTheme.System,
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) -> {
             val context = LocalContext.current
             if (darkTheme == DarkTheme.Yes) dynamicDarkColorScheme(context)
-            else if (darkTheme == DarkTheme.System && isSystemInDarkTheme()) dynamicDarkColorScheme(
-                context
-            )
+            else if (darkTheme == DarkTheme.System && isSystemInDarkTheme())
+                dynamicDarkColorScheme(context)
             else dynamicLightColorScheme(context)
         }
 
@@ -268,6 +269,8 @@ fun CornTimeTheme(
         darkTheme == DarkTheme.Yes -> darkScheme
         else -> if (isSystemInDarkTheme()) darkScheme else lightScheme
     }
+    Log.d(TAG, "CornTimeTheme: $dynamicColor, ${Build.VERSION.SDK_INT}")
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         val systemInDarkTheme = isSystemInDarkTheme()

@@ -72,7 +72,7 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
     val viewModel = koinViewModel<SettingsVM>()
 
     val darkMode by viewModel.darkThemeState.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
-    val dynamicMode by viewModel.dynamicThemeState.collectAsStateWithLifecycle(initialValue = false)
+    val dynamicColor by viewModel.dynamicColorState.collectAsStateWithLifecycle(initialValue = false)
     val userState by viewModel.userState.collectAsStateWithLifecycle(initialValue = UserDetails())
     val menuState by viewModel.menuVisibleState.collectAsStateWithLifecycle()
 
@@ -82,9 +82,9 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
         uiState = SettingUiState(
             userState,
             darkMode,
-            dynamicMode,
+            dynamicColor,
             menuState.darkThemeVisible,
-            menuState.dynamicThemeVisible
+            menuState.dynamicColorVisible
         ),
         viewModel::onEvent
     )
@@ -112,7 +112,7 @@ private fun SettingsScreen(
                     }
                 },
                 actions = {
-                    if (uiState.userDetails.isEmpty) {
+                    if (!uiState.userDetails.isEmpty) {
                         IconButton(onClick = { onEvent(SettingUiEvent.Logout) }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
@@ -160,10 +160,10 @@ private fun SettingsScreen(
 
                     item {
                         SettingItemUi(
-                            item = SettingItem.DynamicMode,
-                            textValue = if (uiState.dynamicTheme) "On" else "Off",
+                            item = SettingItem.DynamicColor,
+                            textValue = if (uiState.dynamicColor) "On" else "Off",
                             modifier = Modifier.fillMaxWidth(),
-                        ) { onEvent(SettingUiEvent.DynamicThemeMenu) }
+                        ) { onEvent(SettingUiEvent.DynamicColorMenu) }
                     }
                 }
             }
@@ -181,10 +181,10 @@ private fun SettingsScreen(
 
     if (uiState.dynamicThemeMenuOpen) {
         DynamicThemeMenu(
-            active = uiState.dynamicTheme,
-            onDismiss = { onEvent(SettingUiEvent.DynamicThemeMenu) }
+            active = uiState.dynamicColor,
+            onDismiss = { onEvent(SettingUiEvent.DynamicColorMenu) }
         ) { active ->
-            onEvent(SettingUiEvent.DynamicTheme(active))
+            onEvent(SettingUiEvent.DynamicColor(active))
         }
     }
 }

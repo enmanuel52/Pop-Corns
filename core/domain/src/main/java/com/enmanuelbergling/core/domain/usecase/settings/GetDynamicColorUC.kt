@@ -2,8 +2,8 @@ package com.enmanuelbergling.core.domain.usecase.settings
 
 import com.enmanuelbergling.core.domain.datasource.preferences.SettingsPreferencesDS
 
-class GetDynamicThemeUC(
+class GetDynamicColorUC(
     private val preferencesDS: SettingsPreferencesDS
 ) {
-     operator fun invoke()=preferencesDS.getDynamicTheme()
+     operator fun invoke()=preferencesDS.getDynamicColor()
 }
