@@ -22,7 +22,7 @@ import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
-import com.enmanuelbergling.core.domain.usecase.user.UserLogoutUC
+import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CreateListUC
@@ -36,7 +36,7 @@ val authUcModule = module {
     singleOf(::CreateSessionFromLoginUC)
     singleOf(::CreateSessionIdUC)
     singleOf(::GetSavedSessionIdUC)
-    singleOf(::UserLogoutUC)
+    singleOf(::LogoutUC)
 }
 
 val formValidationUcModule = module {

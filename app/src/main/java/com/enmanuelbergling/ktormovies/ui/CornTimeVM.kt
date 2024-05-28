@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
-import com.enmanuelbergling.core.domain.usecase.user.UserLogoutUC
+import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +16,7 @@ class CornTimeVM(
     getDarkThemeUC: GetDarkThemeUC,
     private val setDarkThemeUC: SetDarkThemeUC,
     private val getSavedUserUC: GetSavedUserUC,
-    private val userLogoutUC: UserLogoutUC,
+    private val logoutUC: LogoutUC,
 ) : ViewModel() {
 
     val darkTheme = getDarkThemeUC()
@@ -32,6 +32,6 @@ class CornTimeVM(
     }
 
     fun logout() = viewModelScope.launch {
-        userLogoutUC()
+        logoutUC()
     }
 }

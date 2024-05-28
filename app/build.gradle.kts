@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:movies"))
     implementation(project(":feature:series"))
+    implementation(project(":feature:settings"))
     implementation(project(":feature:watchlists"))
 
     testImplementation(project(":core:testing"))

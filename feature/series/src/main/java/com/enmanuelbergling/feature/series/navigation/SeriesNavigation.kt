@@ -9,8 +9,6 @@ import com.enmanuelbergling.feature.series.home.SeriesScreen
 import kotlinx.serialization.Serializable
 
 
-const val SERIES_SCREEN_ROUTE = "series_screen_route"
-
 @Serializable
 data object SeriesGraphDestination
 

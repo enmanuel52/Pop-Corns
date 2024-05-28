@@ -11,6 +11,7 @@ import com.enmanuelbergling.feature.movies.navigation.moviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
+import com.enmanuelbergling.feature.settings.navigation.settingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
 import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
@@ -65,5 +66,7 @@ fun CtiNavHost(
         moviesFilterScreen(navController::navigateToMoviesDetails, navController::popBackStack)
 
         sharedItemsGraph(navController::onSharedItemsDetails)
+
+        settingsGraph(onBack = navController::popBackStack)
     }
 }
