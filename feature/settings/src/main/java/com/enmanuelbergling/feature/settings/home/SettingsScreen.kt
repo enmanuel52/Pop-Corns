@@ -140,7 +140,7 @@ private fun SettingsScreen(
                 )
 
                 LazyColumn(
-                    contentPadding = PaddingValues(vertical = MaterialTheme.dimen.medium),
+                    contentPadding = PaddingValues(vertical = MaterialTheme.dimen.mediumSmall),
                     modifier = Modifier
                         .weight(6f)
                         .fillMaxWidth()
