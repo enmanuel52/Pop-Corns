@@ -130,28 +130,28 @@ fun MovieSearchScreen(
                 contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
                 state = lazyListState
             ) {
-
                 if (query.isEmpty()) {
-                    item {
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                            TextButton(
-                                onClick = { viewModel.onSuggestionEvent(SuggestionEvent.Clear) },
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = MaterialTheme.colorScheme.error
-                                )
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Delete,
-                                    contentDescription = "delete icon",
-                                    Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
-                                Text(text = stringResource(id = R.string.clear).uppercase())
-                            }
-                        }
-                    }
 
                     if (searchSuggestions.isNotEmpty()) {
+                        item {
+                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                                TextButton(
+                                    onClick = { viewModel.onSuggestionEvent(SuggestionEvent.Clear) },
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.error
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Delete,
+                                        contentDescription = "delete icon",
+                                        Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
+                                    Text(text = stringResource(id = R.string.clear).uppercase())
+                                }
+                            }
+                        }
+
                         items(searchSuggestions, key = { suggestion -> suggestion }) { query ->
                             Column {
                                 SearchSuggestionUi(query = query,

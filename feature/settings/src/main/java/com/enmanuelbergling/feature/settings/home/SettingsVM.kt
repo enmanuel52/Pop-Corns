@@ -10,8 +10,10 @@ import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.feature.settings.model.SettingMenuUi
 import com.enmanuelbergling.feature.settings.model.SettingUiEvent
+import com.enmanuelbergling.feature.settings.model.toSettingsUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -23,7 +25,7 @@ class SettingsVM(
     getDynamicColorUC: GetDynamicColorUC,
     private val setDynamicColorUC: SetDynamicColorUC,
 ) : ViewModel() {
-    val userState = getSavedUserUC()
+    val userState = getSavedUserUC().map { it.toSettingsUi() }
 
     val darkThemeState = getDarkThemeUC()
 

@@ -260,7 +260,7 @@ fun UserDetailsUi(
     modifier: Modifier = Modifier,
 ) {
 
-    Column(modifier.clickable { onSettings() }) {
+    Column(Modifier.clickable { onSettings() }.then(modifier)) {
         UserImage(
             userDetails.avatarPath,
         )

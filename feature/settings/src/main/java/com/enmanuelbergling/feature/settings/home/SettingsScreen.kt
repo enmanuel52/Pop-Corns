@@ -1,6 +1,11 @@
 package com.enmanuelbergling.feature.settings.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,7 +45,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,7 +65,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.model.settings.DarkTheme
-import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
 import com.enmanuelbergling.core.ui.core.dimen
@@ -64,6 +72,7 @@ import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.SettingItem
 import com.enmanuelbergling.feature.settings.model.SettingUiEvent
 import com.enmanuelbergling.feature.settings.model.SettingUiState
+import com.enmanuelbergling.feature.settings.model.UserUi
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -73,7 +82,7 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
 
     val darkMode by viewModel.darkThemeState.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
     val dynamicColor by viewModel.dynamicColorState.collectAsStateWithLifecycle(initialValue = false)
-    val userState by viewModel.userState.collectAsStateWithLifecycle(initialValue = UserDetails())
+    val userState by viewModel.userState.collectAsStateWithLifecycle(initialValue = UserUi())
     val menuState by viewModel.menuVisibleState.collectAsStateWithLifecycle()
 
     SettingsScreen(
@@ -86,7 +95,7 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
             menuState.darkThemeVisible,
             menuState.dynamicColorVisible
         ),
-        viewModel::onEvent
+        onEvent = viewModel::onEvent,
     )
 }
 
@@ -98,74 +107,59 @@ private fun SettingsScreen(
     uiState: SettingUiState,
     onEvent: (SettingUiEvent) -> Unit,
 ) {
+    var visibleState by rememberSaveable {
+        mutableStateOf(false)
+    }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.settings)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
+    LaunchedEffect(key1 = Unit) {
+        visibleState = true
+    }
+
+    Scaffold(topBar = {
+        TopAppBar(title = { Text(text = stringResource(id = R.string.settings)) },
+            navigationIcon = {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBackIosNew,
+                        contentDescription = "icon back"
+                    )
+                }
+            },
+            actions = {
+                if (!uiState.userDetails.isEmpty) {
+                    IconButton(onClick = { onEvent(SettingUiEvent.Logout) }) {
                         Icon(
-                            imageVector = Icons.Rounded.ArrowBackIosNew,
-                            contentDescription = "icon back"
+                            imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
+                            contentDescription = "logout icon"
                         )
                     }
-                },
-                actions = {
-                    if (!uiState.userDetails.isEmpty) {
-                        IconButton(onClick = { onEvent(SettingUiEvent.Logout) }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
-                                contentDescription = "logout icon"
-                            )
-                        }
 
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent, Color.Transparent)
-            )
-        }
-    ) { paddingValues ->
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent, Color.Transparent)
+        )
+    }) { paddingValues ->
         Box {
             ArtisticBackground(Modifier.fillMaxSize())
 
 
             Column(Modifier.padding(paddingValues)) {
                 ProfileWrapper(
-                    uiState.userDetails,
-                    Modifier
+                    userState = uiState.userDetails,
+                    visibleState = visibleState,
+                    modifier = Modifier
                         .fillMaxWidth()
                         .weight(4f),
-                    onLogin
+                    onLogin = onLogin
                 )
 
-                LazyColumn(
-                    contentPadding = PaddingValues(vertical = MaterialTheme.dimen.mediumSmall),
-                    modifier = Modifier
-                        .weight(6f)
-                        .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = MaterialTheme.shapes.medium
-                        )
-
-                ) {
-                    item {
-                        SettingItemUi(
-                            item = SettingItem.DarkMode,
-                            textValue = uiState.darkTheme.label,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) { onEvent(SettingUiEvent.DarkThemeMenu) }
-                    }
-
-                    item {
-                        SettingItemUi(
-                            item = SettingItem.DynamicColor,
-                            textValue = if (uiState.dynamicColor) "On" else "Off",
-                            modifier = Modifier.fillMaxWidth(),
-                        ) { onEvent(SettingUiEvent.DynamicColorMenu) }
-                    }
-                }
+                SettingOptions(
+                    darkTheme = uiState.darkTheme,
+                    dynamicColor = uiState.dynamicColor,
+                    visibleState = visibleState,
+                    modifier = Modifier.weight(6f),
+                    onEvent = onEvent
+                )
             }
         }
     }
@@ -173,25 +167,66 @@ private fun SettingsScreen(
     if (uiState.darkThemeMenuOpen) {
         DarkThemeMenu(
             darkTheme = uiState.darkTheme,
-            onDismiss = { onEvent(SettingUiEvent.DarkThemeMenu) }
-        ) { theme ->
+            onDismiss = { onEvent(SettingUiEvent.DarkThemeMenu) }) { theme ->
             onEvent(SettingUiEvent.DarkThemeEvent(theme))
         }
     }
 
     if (uiState.dynamicThemeMenuOpen) {
-        DynamicThemeMenu(
+        DynamicColorMenu(
             active = uiState.dynamicColor,
-            onDismiss = { onEvent(SettingUiEvent.DynamicColorMenu) }
-        ) { active ->
+            onDismiss = { onEvent(SettingUiEvent.DynamicColorMenu) }) { active ->
             onEvent(SettingUiEvent.DynamicColor(active))
         }
     }
 }
 
 @Composable
+private fun SettingOptions(
+    darkTheme: DarkTheme,
+    dynamicColor: Boolean,
+    visibleState: Boolean,
+    modifier: Modifier,
+    onEvent: (SettingUiEvent) -> Unit,
+) {
+
+    AnimatedVisibility(
+        visible = visibleState,
+        enter = slideInVertically(spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)) { it },
+        modifier = modifier,
+    ) {
+
+        LazyColumn(
+            contentPadding = PaddingValues(vertical = MaterialTheme.dimen.mediumSmall),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium
+                )
+
+        ) {
+            item {
+                SettingItemUi(
+                    item = SettingItem.DarkMode,
+                    textValue = darkTheme.label,
+                    modifier = Modifier.fillMaxWidth(),
+                ) { onEvent(SettingUiEvent.DarkThemeMenu) }
+            }
+
+            item {
+                SettingItemUi(
+                    item = SettingItem.DynamicColor,
+                    textValue = if (dynamicColor) "On" else "Off",
+                    modifier = Modifier.fillMaxWidth(),
+                ) { onEvent(SettingUiEvent.DynamicColorMenu) }
+            }
+        }
+    }
+}
+
+@Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun DynamicThemeMenu(
+private fun DynamicColorMenu(
     active: Boolean,
     onDismiss: () -> Unit,
     onDynamicTheme: (Boolean) -> Unit,
@@ -293,7 +328,8 @@ fun SelectionText(
 private fun SelectionTextPrev() {
     CornTimeTheme {
         SelectionText(
-            text = "System", selected = true,
+            text = "System",
+            selected = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
@@ -315,8 +351,7 @@ fun SettingItemUi(
             .clickable { onClick() }
             .padding(all = MaterialTheme.dimen.medium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
         Box(
             modifier = Modifier
                 .background(iconContainerColor, MaterialTheme.shapes.small)
@@ -354,23 +389,35 @@ private fun SettingItemUiPrev() {
     CornTimeTheme {
 
         SettingItemUi(
-            SettingItem.DarkMode,
-            Modifier.fillMaxWidth(),
-            "System"
+            SettingItem.DarkMode, Modifier.fillMaxWidth(), "System"
         ) {}
     }
 }
 
 @Composable
-fun ProfileWrapper(userState: UserDetails, modifier: Modifier = Modifier, onLogin: () -> Unit) {
+fun ProfileWrapper(
+    userState: UserUi,
+    visibleState: Boolean,
+    modifier: Modifier = Modifier,
+    onLogin: () -> Unit,
+) {
+
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            ProfileUi(
-                username = userState.username,
-                imageUrl = userState.avatarPath,
-                modifier = Modifier.size(110.dp)
-            )
+            AnimatedVisibility(
+                visible = visibleState, enter = expandIn(
+                    spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
+                    expandFrom = Alignment.Center
+                ), modifier = Modifier.clip(CircleShape)
+            ) {
+
+                ProfileUi(
+                    username = userState.username,
+                    imageUrl = userState.avatarPath,
+                    modifier = Modifier.size(110.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
@@ -420,11 +467,9 @@ fun ProfileImage(avatarPath: String?, modifier: Modifier = Modifier) {
 
     val imageModifier = Modifier
         .border(
-            MaterialTheme.dimen.superSmall,
-            MaterialTheme.colorScheme.primary,
-            CircleShape
+            MaterialTheme.dimen.verySmall, MaterialTheme.colorScheme.primary, CircleShape
         )
-        .padding(MaterialTheme.dimen.verySmall)
+        .padding(MaterialTheme.dimen.small)
         .sizeIn(60.dp, 60.dp)
         .clip(CircleShape)
         .then(modifier)
