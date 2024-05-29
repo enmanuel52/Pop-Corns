@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SettingsVM(
+internal class SettingsVM(
     private val setDarkThemeUC: SetDarkThemeUC,
     getDarkThemeUC: GetDarkThemeUC,
     private val logoutUC: LogoutUC,
@@ -27,7 +27,7 @@ class SettingsVM(
 ) : ViewModel() {
     val userState = getSavedUserUC().map { it.toSettingsUi() }
 
-    val darkThemeState = getDarkThemeUC()
+    val darkThemeState = getDarkThemeUC().map { it.toSettingsUi() }
 
     val dynamicColorState = getDynamicColorUC()
 
@@ -37,7 +37,7 @@ class SettingsVM(
     fun onEvent(event: SettingUiEvent) = viewModelScope.launch {
         when (event) {
             is SettingUiEvent.DarkThemeEvent -> {
-                setDarkThemeUC(event.theme)
+                setDarkThemeUC(event.theme.toModel())
             }
 
             SettingUiEvent.DarkThemeMenu -> {

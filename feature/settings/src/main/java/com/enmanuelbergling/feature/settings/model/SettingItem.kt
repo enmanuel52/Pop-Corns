@@ -7,7 +7,7 @@ import androidx.compose.material.icons.rounded.NightsStay
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.enmanuelbergling.core.ui.R
 
-data class SettingItem(
+internal data class SettingItem(
     val icon: ImageVector,
     @StringRes val label: Int,
 ) {

@@ -60,15 +60,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
-import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
+import com.enmanuelbergling.feature.settings.model.DarkThemeUi
 import com.enmanuelbergling.feature.settings.model.SettingItem
 import com.enmanuelbergling.feature.settings.model.SettingUiEvent
 import com.enmanuelbergling.feature.settings.model.SettingUiState
@@ -80,7 +81,7 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
 
     val viewModel = koinViewModel<SettingsVM>()
 
-    val darkMode by viewModel.darkThemeState.collectAsStateWithLifecycle(initialValue = DarkTheme.System)
+    val darkMode by viewModel.darkThemeState.collectAsStateWithLifecycle(initialValue = DarkThemeUi.System)
     val dynamicColor by viewModel.dynamicColorState.collectAsStateWithLifecycle(initialValue = false)
     val userState by viewModel.userState.collectAsStateWithLifecycle(initialValue = UserUi())
     val menuState by viewModel.menuVisibleState.collectAsStateWithLifecycle()
@@ -183,7 +184,7 @@ private fun SettingsScreen(
 
 @Composable
 private fun SettingOptions(
-    darkTheme: DarkTheme,
+    darkTheme: DarkThemeUi,
     dynamicColor: Boolean,
     visibleState: Boolean,
     modifier: Modifier,
@@ -259,16 +260,16 @@ private fun DynamicColorMenu(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun DarkThemeMenu(
-    darkTheme: DarkTheme,
+    darkTheme: DarkThemeUi,
     onDismiss: () -> Unit,
-    onDarkTheme: (DarkTheme) -> Unit,
+    onDarkTheme: (DarkThemeUi) -> Unit,
 ) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier.navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.verySmall)
         ) {
-            DarkTheme.entries.forEach { theme ->
+            DarkThemeUi.entries.forEach { theme ->
                 SelectionText(
                     text = theme.label,
                     selected = theme == darkTheme,
@@ -338,7 +339,7 @@ private fun SelectionTextPrev() {
 }
 
 @Composable
-fun SettingItemUi(
+internal fun SettingItemUi(
     item: SettingItem,
     modifier: Modifier = Modifier,
     textValue: String = "",
@@ -395,7 +396,7 @@ private fun SettingItemUiPrev() {
 }
 
 @Composable
-fun ProfileWrapper(
+internal fun ProfileWrapper(
     userState: UserUi,
     visibleState: Boolean,
     modifier: Modifier = Modifier,
@@ -405,19 +406,12 @@ fun ProfileWrapper(
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            AnimatedVisibility(
-                visible = visibleState, enter = expandIn(
-                    spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
-                    expandFrom = Alignment.Center
-                ), modifier = Modifier.clip(CircleShape)
-            ) {
-
-                ProfileUi(
-                    username = userState.username,
-                    imageUrl = userState.avatarPath,
-                    modifier = Modifier.size(110.dp)
-                )
-            }
+            ProfileUi(
+                username = userState.username,
+                imageUrl = userState.avatarPath,
+                modifier = Modifier.size(110.dp),
+                visibleState = visibleState,
+            )
 
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
@@ -435,12 +429,21 @@ fun ProfileUi(
     username: String,
     imageUrl: String?,
     modifier: Modifier = Modifier,
+    visibleState: Boolean = true,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
     ) {
-        ProfileImage(imageUrl, modifier)
+        AnimatedVisibility(
+            visible = visibleState, enter = expandIn(
+                spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
+                expandFrom = Alignment.Center
+            ), modifier = Modifier.clip(CircleShape)
+        ) {
+
+            ProfileImage(imageUrl, modifier)
+        }
 
         if (username.isNotBlank()) {
             Text(
