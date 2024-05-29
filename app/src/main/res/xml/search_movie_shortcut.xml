@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/search_icon"
+        android:shortcutDisabledMessage="@string/search_movie_disable_label"
+        android:shortcutId="static"
+        android:shortcutLongLabel="@string/search_movie_short_label"
+        android:shortcutShortLabel="@string/search_movie_short_label">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.enmanuelbergling.ktormovies.ui.CornsTimeActivity"
+            android:targetPackage="com.enmanuelbergling.ktormovies">
+
+            <extra
+                android:name="@string/search_movie_short_cut_id"
+                android:value="static" />
+        </intent>
+    </shortcut>
+</shortcuts>

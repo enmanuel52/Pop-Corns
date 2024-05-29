@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -13,6 +14,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.core.common.android_util.isOnline
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
+import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
+import com.enmanuelbergling.ktormovies.R
 import org.koin.android.ext.android.inject
 import org.koin.core.component.KoinComponent
 
@@ -24,6 +27,10 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
+
+        val searchMovieShortCutClicked = intent.getStringExtra(
+            getString(R.string.search_movie_short_cut_id)
+        ) != null
 
         setContent {
 
@@ -46,6 +53,12 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                         state = appState,
                         userDetails = userDetails,
                     )
+
+                    LaunchedEffect(key1 = Unit) {
+                        if (searchMovieShortCutClicked) {
+                            appState.navController.navigateToMovieSearch()
+                        }
+                    }
                 }
             }
         }

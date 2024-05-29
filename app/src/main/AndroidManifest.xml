@@ -26,6 +26,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data android:resource="@xml/search_movie_shortcut"
+                android:name="android.app.shortcuts"
+                />
         </activity>
     </application>
 

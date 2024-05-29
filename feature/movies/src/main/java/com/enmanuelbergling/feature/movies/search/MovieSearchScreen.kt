@@ -151,18 +151,22 @@ fun MovieSearchScreen(
                         }
                     }
 
-                    items(searchSuggestions, key = { suggestion -> suggestion }) { query ->
-                        Column {
-                            SearchSuggestionUi(query = query,
-                                modifier = Modifier.fillMaxWidth(),
-                                onDelete = {
-                                    viewModel.onSuggestionEvent(
-                                        SuggestionEvent.Delete(
-                                            query
+                    if (searchSuggestions.isNotEmpty()) {
+                        items(searchSuggestions, key = { suggestion -> suggestion }) { query ->
+                            Column {
+                                SearchSuggestionUi(query = query,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .animateItem(),
+                                    onDelete = {
+                                        viewModel.onSuggestionEvent(
+                                            SuggestionEvent.Delete(
+                                                query
+                                            )
                                         )
-                                    )
-                                }) {
-                                viewModel.onQueryChange(query)
+                                    }) {
+                                    viewModel.onQueryChange(query)
+                                }
                             }
                         }
                     }
