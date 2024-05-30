@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.enmanuelbergling.feature.actor.navigation.actorsGraph
@@ -26,6 +27,8 @@ fun CtiNavHost(
     state: CornTimeAppState,
 ) {
     val navController = state.navController
+
+    val context = LocalContext.current
 
     NavHost(navController, startDestination = state.startDestination) {
 
@@ -68,6 +71,8 @@ fun CtiNavHost(
         listGraph(
             onDetails = navController::navigateToListDetailsScreen,
             onMovieDetails = navController::navigateToMoviesDetails,
+            onAddShortcut = { watchlist -> state.addWatchlistShortcut(context, watchlist) },
+            onDeleteShortcut = { watchlistId -> state.deleteWatchlistShortcut(context, watchlistId)},
             onBack = navController::popBackStack
         )
 

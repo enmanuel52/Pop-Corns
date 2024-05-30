@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Bookmark
+import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,12 +30,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.enmanuelbergling.core.common.android_util.isDynamicShortcutActive
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
@@ -46,6 +50,8 @@ import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
+import com.enmanuelbergling.core.ui.model.WatchlistShortcut
+import com.enmanuelbergling.core.ui.util.watchlistShortcutId
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -54,6 +60,8 @@ fun WatchListDetailsRoute(
     listId: Int,
     listName: String,
     onMovieDetails: (movieId: Int) -> Unit,
+    onAddShortcut: (WatchlistShortcut) -> Unit,
+    onDeleteShortcut: (watchlistId: Int) -> Unit,
     onBack: () -> Unit,
 ) {
 
@@ -62,14 +70,31 @@ fun WatchListDetailsRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val movies = viewModel.movies.collectAsLazyPagingItems()
 
+    val context = LocalContext.current
+
+    val (isPinned, onPinned) = rememberSaveable {
+        mutableStateOf(
+            context.isDynamicShortcutActive(watchlistShortcutId(listId))
+        )
+    }
+
     WatchListDetailsScreen(
         listName = listName,
         movies = movies,
         uiState = uiState,
+        isPinned = isPinned,
         onDeleteMovie = viewModel::deleteMovieFromList,
         onMovieDetails = onMovieDetails,
         onBack = onBack,
         onIdle = viewModel::onIdle,
+        onAddShortcut = {
+            onAddShortcut(WatchlistShortcut(listId, listName))
+            onPinned(true)
+        },
+        onDeleteShortcut = {
+            onDeleteShortcut(listId)
+            onPinned(false)
+        }
     )
 }
 
@@ -81,10 +106,13 @@ fun WatchListDetailsScreen(
     listName: String,
     movies: LazyPagingItems<Movie>,
     uiState: SimplerUi,
+    isPinned: Boolean,
     onDeleteMovie: (Int) -> Unit,
     onMovieDetails: (movieId: Int) -> Unit,
     onBack: () -> Unit,
     onIdle: () -> Unit,
+    onAddShortcut: () -> Unit,
+    onDeleteShortcut: () -> Unit,
 ) {
     HandleUiState(uiState = uiState, onIdle = onIdle, movies::refresh)
 
@@ -106,14 +134,31 @@ fun WatchListDetailsScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(title = { Text(text = listName) }, navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowBackIosNew,
-                        contentDescription = stringResource(id = R.string.back_icon)
-                    )
-                }
-            }, scrollBehavior = scrollBehaviour)
+            TopAppBar(
+                title = { Text(text = listName) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            contentDescription = stringResource(id = R.string.back_icon)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            if (isPinned) onDeleteShortcut()
+                            else onAddShortcut()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if (isPinned) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
+                            contentDescription = "bookmark icon"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehaviour
+            )
         }
     ) {
         Box(

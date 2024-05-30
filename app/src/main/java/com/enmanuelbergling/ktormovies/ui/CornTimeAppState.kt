@@ -1,5 +1,7 @@
 package com.enmanuelbergling.ktormovies.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -9,12 +11,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.enmanuelbergling.core.common.android_util.ShortCutModel
+import com.enmanuelbergling.core.common.android_util.addDynamicShortCut
+import com.enmanuelbergling.core.common.android_util.removeDynamicShortCut
+import com.enmanuelbergling.core.ui.model.WatchlistShortcut
+import com.enmanuelbergling.core.ui.util.watchlistShortcutId
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.series.navigation.navigateToSeriesGraph
 import com.enmanuelbergling.feature.settings.navigation.navigateToSettingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListGraph
+import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 
@@ -95,4 +103,27 @@ class CornTimeAppState(
             )
         }
     }
+
+    fun addWatchlistShortcut(context: Context, watchlist: WatchlistShortcut) =
+        context addWatchlistShortcut watchlist
+
+    fun deleteWatchlistShortcut(context: Context, watchlistId: Int) =
+        context removeDynamicShortCut watchlistShortcutId(watchlistId)
+}
+
+infix fun Context.addWatchlistShortcut(
+    model: WatchlistShortcut,
+) {
+    addDynamicShortCut(
+        ShortCutModel(
+            id = watchlistShortcutId(model.id),
+            shortLabel = model.name,
+            iconRes = R.drawable.bookmark_icon,
+            intent = Intent(this, CornsTimeActivity::class.java).apply {
+                action = Intent.ACTION_VIEW
+                putExtra(getString(R.string.watch_list_id_extra), model.id)
+                putExtra(getString(R.string.watch_list_name_extra), model.name)
+            },
+        )
+    )
 }

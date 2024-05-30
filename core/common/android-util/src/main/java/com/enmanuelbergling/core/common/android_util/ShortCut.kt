@@ -25,6 +25,12 @@ infix fun Context.removeDynamicShortCut(
 
 fun Context.removeAllDynamicShortCuts() = ShortcutManagerCompat::removeAllDynamicShortcuts
 
+fun Context.isDynamicShortcutActive(shortcutId: String): Boolean {
+    val shortcuts = ShortcutManagerCompat.getDynamicShortcuts(this)
+
+    return shortcuts.any { it.id == shortcutId }
+}
+
 /**
  * Model to create a dynamic shortcut
  *@property intent make sure to pass some extra to run some custom code
