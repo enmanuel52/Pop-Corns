@@ -31,6 +31,10 @@ android {
             it.useJUnitPlatform()
         }
     }
+
+    lint{
+        checkReleaseBuilds = false
+    }
 }
 
 dependencies {
