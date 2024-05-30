@@ -60,4 +60,6 @@
     <string name="net_time_out_exception_message">Waiting time for response has ended, check your internet connection and try again</string>
     <string name="search_movie_short_label">Search a movie</string>
     <string name="search_movie_disable_label">Disable search a movie</string>
+    <string name="watch_list_id_extra" translatable="false">watch list id extra</string>
+    <string name="watch_list_name_extra" translatable="false">watch list name extra</string>
 </resources>

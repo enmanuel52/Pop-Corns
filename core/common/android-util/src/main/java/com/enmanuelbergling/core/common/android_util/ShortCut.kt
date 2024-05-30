@@ -19,6 +19,12 @@ fun Context.addDynamicShortCut(
     ShortcutManagerCompat.pushDynamicShortcut(this, shortCutBuilder.build())
 }
 
+infix fun Context.removeDynamicShortCut(
+    id: String,
+) = ShortcutManagerCompat.removeDynamicShortcuts(this, listOf(id))
+
+fun Context.removeAllDynamicShortCuts() = ShortcutManagerCompat::removeAllDynamicShortcuts
+
 /**
  * Model to create a dynamic shortcut
  *@property intent make sure to pass some extra to run some custom code
