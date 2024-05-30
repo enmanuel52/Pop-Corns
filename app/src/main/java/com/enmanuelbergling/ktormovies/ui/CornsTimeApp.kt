@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CornsTimeApp(
     state: CornTimeAppState = rememberCornTimeAppState(),
-    userDetails: UserDetails,
+    userDetails: UserDetails?,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -198,7 +198,7 @@ private fun AppTopBar(
 fun DrawerContent(
     onDrawerDestination: (DrawerDestination) -> Unit,
     isSelected: @Composable (List<Any>) -> Boolean,
-    userDetails: UserDetails,
+    userDetails: UserDetails?,
     onSettings: () -> Unit,
 ) {
     Column(
@@ -230,7 +230,7 @@ fun DrawerContent(
         }
 
         DrawerDestination.entries
-            .filterNot { it.loginRequired && userDetails.username.isBlank() }
+            .filterNot { it.loginRequired && userDetails == null }
             .forEach { destination ->
                 NavigationDrawerItem(
                     label = { Text(text = stringResource(destination.label)) },
@@ -255,19 +255,22 @@ fun DrawerContent(
 
 @Composable
 fun UserDetailsUi(
-    userDetails: UserDetails,
+    userDetails: UserDetails?,
     onSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
-    Column(Modifier.clickable { onSettings() }.then(modifier)) {
+    Column(
+        Modifier
+            .clickable { onSettings() }
+            .then(modifier)) {
         UserImage(
-            userDetails.avatarPath,
+            userDetails?.avatarPath,
         )
 
         Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-        Text(text = userDetails.username.ifBlank { stringResource(R.string.nosey) })
+        Text(text = userDetails?.username.orEmpty().ifBlank { stringResource(R.string.nosey) })
     }
 }
 

@@ -33,7 +33,7 @@ fun rememberVectorPainter(image: ImageVector, color: Color): VectorPainter =
     )
 
 @Composable
-fun UserImage(avatarPath: String, modifier: Modifier = Modifier) {
+fun UserImage(avatarPath: String?, modifier: Modifier = Modifier) {
     AsyncImage(
         model = "$BASE_IMAGE_URL$avatarPath",
         contentDescription = "user image",

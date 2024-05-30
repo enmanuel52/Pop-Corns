@@ -9,7 +9,8 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
-    implementation(project(":core:common:util"))
+    api(project(":core:common:android-util"))
+    api(project(":core:common:util"))
 
     api(libs.androidx.activity.activity.compose)
 

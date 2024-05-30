@@ -21,7 +21,7 @@ class CornTimeVM(
 
     val userDetails = getSavedUserUC().stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        UserDetails()
+        SharingStarted.WhileSubscribed(5_000),
+        null,
     )
 }
