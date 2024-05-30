@@ -59,6 +59,7 @@ import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.theme.DimensionTokens
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -133,6 +134,22 @@ fun MovieSearchScreen(
                 if (query.isEmpty()) {
 
                     if (searchSuggestions.isNotEmpty()) {
+                        items(searchSuggestions, key = { UUID.randomUUID() }) { query ->
+                            SearchSuggestionUi(query = query,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem(),
+                                onDelete = {
+                                    viewModel.onSuggestionEvent(
+                                        SuggestionEvent.Delete(
+                                            query
+                                        )
+                                    )
+                                }) {
+                                viewModel.onQueryChange(query)
+                            }
+                        }
+
                         item {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                                 TextButton(
@@ -148,24 +165,6 @@ fun MovieSearchScreen(
                                     )
                                     Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
                                     Text(text = stringResource(id = R.string.clear).uppercase())
-                                }
-                            }
-                        }
-
-                        items(searchSuggestions, key = { suggestion -> suggestion }) { query ->
-                            Column {
-                                SearchSuggestionUi(query = query,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .animateItem(),
-                                    onDelete = {
-                                        viewModel.onSuggestionEvent(
-                                            SuggestionEvent.Delete(
-                                                query
-                                            )
-                                        )
-                                    }) {
-                                    viewModel.onQueryChange(query)
                                 }
                             }
                         }

@@ -106,21 +106,7 @@ fun SwipeToDismissContainer(
         mutableStateOf(false)
     }
 
-    val swipeToDismissState = rememberSwipeToDismissBoxState(
-        initialValue = SwipeToDismissBoxValue.Settled,
-        confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart) {
-                isOut = true
-
-                true
-            } else false
-        },
-        positionalThreshold = { distance: Float -> distance * 0.4f },
-    )
-
     LaunchedEffect(key1 = isOut) {
-        swipeToDismissState.snapTo(SwipeToDismissBoxValue.Settled) //due a library fail
-
         if (isOut) {
             delay(animationDuration.toLong())
             onDelete()
@@ -137,6 +123,18 @@ fun SwipeToDismissContainer(
             .clip(shape)
             .then(modifier)
     ) {
+        val swipeToDismissState = rememberSwipeToDismissBoxState(
+            initialValue = SwipeToDismissBoxValue.Settled,
+            confirmValueChange = {
+                if (it == SwipeToDismissBoxValue.EndToStart) {
+                    isOut = true
+
+                    true
+                } else false
+            },
+            positionalThreshold = { distance: Float -> distance * 0.4f },
+        )
+
         SwipeToDismissBox(
             state = swipeToDismissState,
             backgroundContent = { DismissBackground() },

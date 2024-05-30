@@ -37,8 +37,8 @@ class SearchSuggestionDSImpl(private val context: Context): SearchSuggestionDS {
     }
 
     override fun getSuggestions(): Flow<List<StringQuery>> =
-        context.dataStore.data.mapNotNull {
-            it[Keys.SUGGESTIONS]?.toList()
+        context.dataStore.data.map {
+            it[Keys.SUGGESTIONS]?.toList().orEmpty()
         }
 
 }
