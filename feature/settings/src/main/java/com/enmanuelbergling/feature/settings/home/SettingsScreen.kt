@@ -55,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.enmanuelbergling.core.common.android_util.removeAllDynamicShortCuts
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
@@ -116,6 +118,8 @@ private fun SettingsScreen(
         visibleState = true
     }
 
+    val context = LocalContext.current
+
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = stringResource(id = R.string.settings)) },
             navigationIcon = {
@@ -128,7 +132,10 @@ private fun SettingsScreen(
             },
             actions = {
                 if (!uiState.userDetails.isEmpty) {
-                    IconButton(onClick = { onEvent(SettingUiEvent.Logout) }) {
+                    IconButton(onClick = {
+                        onEvent(SettingUiEvent.Logout)
+                        context.removeAllDynamicShortCuts()
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
                             contentDescription = "logout icon"

@@ -23,7 +23,7 @@ infix fun Context.removeDynamicShortCut(
     id: String,
 ) = ShortcutManagerCompat.removeDynamicShortcuts(this, listOf(id))
 
-fun Context.removeAllDynamicShortCuts() = ShortcutManagerCompat::removeAllDynamicShortcuts
+fun Context.removeAllDynamicShortCuts() = ShortcutManagerCompat.removeAllDynamicShortcuts(this)
 
 fun Context.isDynamicShortcutActive(shortcutId: String): Boolean {
     val shortcuts = ShortcutManagerCompat.getDynamicShortcuts(this)

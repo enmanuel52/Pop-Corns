@@ -71,16 +71,11 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                     LaunchedEffect(key1 = userDetails?.isEmpty) {
                         //we collected at least once
                         if (userDetails != null) {
-                            //no user logged
-                            if (userDetails!!.isEmpty) {
-                                removeAllDynamicShortCuts()
-                            } else {
-                                if (watchlistShortCutId != NO_WATCHLIST) {
-                                    appState.navController.navigateToListDetailsScreen(
-                                        listId = watchlistShortCutId,
-                                        listName = watchListShortCutName
-                                    )
-                                }
+                            if (watchlistShortCutId != NO_WATCHLIST) {
+                                appState.navController.navigateToListDetailsScreen(
+                                    listId = watchlistShortCutId,
+                                    listName = watchListShortCutName
+                                )
                             }
                         }
                     }

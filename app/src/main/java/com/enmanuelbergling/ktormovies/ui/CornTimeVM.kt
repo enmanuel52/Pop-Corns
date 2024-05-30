@@ -7,6 +7,7 @@ import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.stateIn
 
 class CornTimeVM(
@@ -19,7 +20,9 @@ class CornTimeVM(
 
     val dynamicColor = getDynamicColorUC()
 
-    val userDetails = getSavedUserUC().stateIn(
+    val userDetails = getSavedUserUC()
+        .filter { !it.isEmpty }
+        .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         null,
