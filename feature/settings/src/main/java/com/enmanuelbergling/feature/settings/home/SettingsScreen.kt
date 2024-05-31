@@ -1,9 +1,13 @@
 package com.enmanuelbergling.feature.settings.home
 
+import android.graphics.RuntimeShader
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
@@ -31,6 +35,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,7 +44,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -48,12 +52,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.CacheDrawScope
+import androidx.compose.ui.draw.DrawResult
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -61,7 +70,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -69,6 +77,7 @@ import com.enmanuelbergling.core.common.android_util.removeAllDynamicShortCuts
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
+import com.enmanuelbergling.core.ui.components.shaders.LavaBallsShader
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.DarkThemeUi
@@ -102,6 +111,8 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
     )
 }
 
+const val SPEED = 1f
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun SettingsScreen(
@@ -121,7 +132,8 @@ private fun SettingsScreen(
     val context = LocalContext.current
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = stringResource(id = R.string.settings)) },
+        TopAppBar(
+            title = { Text(text = stringResource(id = R.string.settings)) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
@@ -148,7 +160,17 @@ private fun SettingsScreen(
         )
     }) { paddingValues ->
         Box {
-            ArtisticBackground(Modifier.fillMaxSize())
+            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)) {
+                ArtisticBackground(Modifier.fillMaxSize())
+            }
+
+            val shaderTime by produceState(0f) {
+                while (true) {
+                    withInfiniteAnimationFrameMillis {
+                        value = it / 1000f * SPEED
+                    }
+                }
+            }
 
 
             Column(Modifier.padding(paddingValues)) {
@@ -157,7 +179,16 @@ private fun SettingsScreen(
                     visibleState = visibleState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(4f),
+                        .weight(4f)
+                        .drawWithCache {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                drawShader(shaderTime)
+                            } else {
+                                onDrawWithContent {
+                                    drawContent()
+                                }
+                            }
+                        },
                     onLogin = onLogin
                 )
 
@@ -186,6 +217,31 @@ private fun SettingsScreen(
             onDismiss = { onEvent(SettingUiEvent.DynamicColorMenu) }) { active ->
             onEvent(SettingUiEvent.DynamicColor(active))
         }
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+private fun CacheDrawScope.drawShader(
+    shaderTime: Float,
+): DrawResult {
+    val runtimeShader = RuntimeShader(LavaBallsShader)
+    val shaderBrush = ShaderBrush(runtimeShader)
+
+    return onDrawWithContent {
+        runtimeShader.setFloatUniform(
+            "resolution",
+            size.width,
+            size.height
+        )
+        runtimeShader.setFloatUniform(
+            "time",
+            shaderTime
+        )
+
+        drawRect(shaderBrush)
+
+        drawContent()
     }
 }
 
@@ -412,18 +468,24 @@ internal fun ProfileWrapper(
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+//            modifier = Modifier
+//                .background(MaterialTheme.colorScheme.background.copy(alpha = .5f), MaterialTheme.shapes.small)
+//                .padding(MaterialTheme.dimen.small)
+        ) {
             ProfileUi(
                 username = userState.username,
                 imageUrl = userState.avatarPath,
-                modifier = Modifier.size(110.dp),
+                modifier = Modifier
+                    .size(110.dp),
                 visibleState = visibleState,
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
             if (userState.isEmpty) {
-                TextButton(onClick = onLogin) {
+                Button(onClick = onLogin) {
                     Text(text = stringResource(id = R.string.login))
                 }
             }
