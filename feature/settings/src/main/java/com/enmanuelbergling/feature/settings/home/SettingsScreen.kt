@@ -171,6 +171,7 @@ private fun SettingsScreen(
                     }
                 }
             }
+            val backgroundColor = MaterialTheme.colorScheme.background
 
 
             Column(Modifier.padding(paddingValues)) {
@@ -182,7 +183,7 @@ private fun SettingsScreen(
                         .weight(4f)
                         .drawWithCache {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                drawShader(shaderTime)
+                                drawShader(shaderTime, backgroundColor)
                             } else {
                                 onDrawWithContent {
                                     drawContent()
@@ -224,9 +225,20 @@ private fun SettingsScreen(
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun CacheDrawScope.drawShader(
     shaderTime: Float,
+    backgroundColor: Color,
 ): DrawResult {
     val runtimeShader = RuntimeShader(LavaBallsShader)
     val shaderBrush = ShaderBrush(runtimeShader)
+
+    runtimeShader.setColorUniform(
+        "backgroundColor",
+        android.graphics.Color.valueOf(
+            backgroundColor.red,
+            backgroundColor.green,
+            backgroundColor.blue,
+            backgroundColor.alpha
+        )
+    )
 
     return onDrawWithContent {
         runtimeShader.setFloatUniform(
@@ -265,7 +277,8 @@ private fun SettingOptions(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = MaterialTheme.shapes.medium
                 )
 
         ) {
@@ -470,9 +483,6 @@ internal fun ProfileWrapper(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-//            modifier = Modifier
-//                .background(MaterialTheme.colorScheme.background.copy(alpha = .5f), MaterialTheme.shapes.small)
-//                .padding(MaterialTheme.dimen.small)
         ) {
             ProfileUi(
                 username = userState.username,

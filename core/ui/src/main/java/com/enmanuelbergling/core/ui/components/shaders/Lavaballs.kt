@@ -6,6 +6,7 @@ import org.intellij.lang.annotations.Language
 val LavaBallsShader = """
     uniform float2 resolution;
     uniform float time;
+    layout(color) uniform half4 backgroundColor;
     
     float GetBallValue(float3 ball, float2 uv) {
         return ball.z/((ball.x-uv.x)*(ball.x-uv.x) + ((ball.y-uv.y)*(ball.y-uv.y)));
@@ -24,6 +25,12 @@ val LavaBallsShader = """
         float4 fragColor = float4(0.1, 0.1, 0.1, 1);
         fragColor += smoothstep(0.95, 1.0, ball) * 1.4 * float4(0.5 + 0.5*cos(0.5*time+uv.xyx+float3(0.0,2.0,4.0)), 0);
     
-        return fragColor;
+        //value doesn't change
+        if( fragColor == float4(0.1, 0.1, 0.1, 1) ){
+            return float4(backgroundColor.rgb, 1.0);
+        } else{
+            return fragColor;
+        }
+      
     }
 """.trimIndent()
