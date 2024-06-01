@@ -79,6 +79,7 @@ import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
 import com.enmanuelbergling.core.ui.components.shaders.BubbleGum
 import com.enmanuelbergling.core.ui.components.shaders.LavaBallsShader
+import com.enmanuelbergling.core.ui.components.shaders.OldSchoolMetaballShader
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.DarkThemeUi
@@ -161,9 +162,9 @@ private fun SettingsScreen(
         )
     }) { paddingValues ->
         Box {
-            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)) {
+//            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)) {
                 ArtisticBackground(Modifier.fillMaxSize())
-            }
+//            }
 
             val shaderTime by produceState(0f) {
                 while (true) {
@@ -182,15 +183,16 @@ private fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(4f)
-                        .drawWithCache {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                drawShader(shaderTime, backgroundColor)
-                            } else {
-                                onDrawWithContent {
-                                    drawContent()
-                                }
-                            }
-                        },
+//                        .drawWithCache {
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//                                drawShader(shaderTime, backgroundColor)
+//                            } else {
+//                                onDrawWithContent {
+//                                    drawContent()
+//                                }
+//                            }
+//                        }
+                    ,
                     onLogin = onLogin
                 )
 
@@ -228,7 +230,7 @@ private fun CacheDrawScope.drawShader(
     shaderTime: Float,
     backgroundColor: Color,
 ): DrawResult {
-    val runtimeShader = RuntimeShader(LavaBallsShader)
+    val runtimeShader = RuntimeShader(OldSchoolMetaballShader)
     val shaderBrush = ShaderBrush(runtimeShader)
 
     runtimeShader.setColorUniform(
