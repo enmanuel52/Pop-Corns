@@ -8,4 +8,6 @@ data class LoginForm(
     val isPasswordVisible: Boolean = false,
 ){
     fun toLoginChain() = LoginChain(username, password)
+
+    val hasAnyError: Boolean get() = usernameError != null || passwordError != null
 }

@@ -2,7 +2,6 @@ package com.enmanuelbergling.core.ui.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -15,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.theme.DimensionTokens
 
 /**
  * Crete a [VectorPainter] with the given [ImageVector] and [Color]*/
@@ -34,7 +33,7 @@ fun rememberVectorPainter(image: ImageVector, color: Color): VectorPainter =
     )
 
 @Composable
-fun UserImage(avatarPath: String, modifier: Modifier = Modifier) {
+fun UserImage(avatarPath: String?, modifier: Modifier = Modifier) {
     AsyncImage(
         model = "$BASE_IMAGE_URL$avatarPath",
         contentDescription = "user image",
@@ -45,7 +44,7 @@ fun UserImage(avatarPath: String, modifier: Modifier = Modifier) {
             id = R.drawable.mr_bean
         ),
         modifier = modifier
-            .size(MaterialTheme.dimen.almostGiant)
+            .size(DimensionTokens.ProfileImageSize)
             .clip(CircleShape),
         contentScale = ContentScale.Crop
     )

@@ -13,8 +13,7 @@ import com.enmanuelbergling.core.ui.core.dimen
 fun LinearLoading(modifier: Modifier = Modifier) {
     LinearProgressIndicator(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = MaterialTheme.dimen.superSmall),
+            .fillMaxWidth(),
         strokeCap = StrokeCap.Round
     )
 }

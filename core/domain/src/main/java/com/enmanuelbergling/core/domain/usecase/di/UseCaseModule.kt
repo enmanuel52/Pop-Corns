@@ -14,11 +14,17 @@ import com.enmanuelbergling.core.domain.usecase.movie.GetNowPlayingMoviesUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetPopularMoviesUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetTopRatedMoviesUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetUpcomingMoviesUC
+import com.enmanuelbergling.core.domain.usecase.movie.search.AddSearchSuggestionUC
+import com.enmanuelbergling.core.domain.usecase.movie.search.ClearSearchSuggestionsUC
+import com.enmanuelbergling.core.domain.usecase.movie.search.DeleteSearchSuggestionUC
+import com.enmanuelbergling.core.domain.usecase.movie.search.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
-import com.enmanuelbergling.core.domain.usecase.user.UserLogoutUC
+import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CreateListUC
@@ -32,7 +38,7 @@ val authUcModule = module {
     singleOf(::CreateSessionFromLoginUC)
     singleOf(::CreateSessionIdUC)
     singleOf(::GetSavedSessionIdUC)
-    singleOf(::UserLogoutUC)
+    singleOf(::LogoutUC)
 }
 
 val formValidationUcModule = module {
@@ -48,9 +54,14 @@ val moviesUcModule = module {
     singleOf(::GetMoviesByActorUC)
     singleOf(::GetTopRatedMoviesUC)
     singleOf(::GetPopularMoviesUC)
+    singleOf(::GetMovieGenresUC)
+}
+
+val settingModule = module {
     singleOf(::SetDarkThemeUC)
     singleOf(::GetDarkThemeUC)
-    singleOf(::GetMovieGenresUC)
+    singleOf(::SetDynamicColorUC)
+    singleOf(::GetDynamicColorUC)
 }
 
 val userUcModule = module {
@@ -66,6 +77,19 @@ val listsUcModule = module {
     singleOf(::CheckItemStatusUC)
 }
 
+val searchSuggestionUcModule = module {
+    singleOf(::AddSearchSuggestionUC)
+    singleOf(::ClearSearchSuggestionsUC)
+    singleOf(::DeleteSearchSuggestionUC)
+    singleOf(::GetSearchSuggestionsUC)
+}
+
 val ucModule = listOf(
-    authUcModule, formValidationUcModule, moviesUcModule, userUcModule, listsUcModule
+    authUcModule,
+    formValidationUcModule,
+    moviesUcModule,
+    userUcModule,
+    listsUcModule,
+    searchSuggestionUcModule,
+    settingModule
 )

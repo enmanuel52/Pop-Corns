@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridItemScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.runtime.Composable
 import androidx.paging.PagingData
-import androidx.paging.PagingDataDiffer
 import androidx.paging.compose.LazyPagingItems
 import kotlinx.coroutines.flow.Flow
 
@@ -48,6 +47,7 @@ fun <T : Any> LazyStaggeredGridScope.items(
         itemContent(items[index])
     }
 }
+
 /**
  * Adds the [LazyPagingItems] and their content to the scope. The range from 0 (inclusive) to
  * [LazyPagingItems.itemCount] (exclusive) always represents the full range of presentable items,

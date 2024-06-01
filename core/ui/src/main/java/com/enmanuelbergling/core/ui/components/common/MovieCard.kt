@@ -58,7 +58,7 @@ fun MovieCard(
             onClick = onClick, modifier = Modifier
                 .animateContentSize(
                     spring(Spring.DampingRatioLowBouncy, Spring.StiffnessMediumLow)
-                )
+                ),
         ) {
             AsyncImage(
                 model = BASE_POSTER_IMAGE_URL + imageUrl,

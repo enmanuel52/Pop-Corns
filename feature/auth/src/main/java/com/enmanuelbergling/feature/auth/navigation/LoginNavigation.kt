@@ -14,8 +14,8 @@ fun NavHostController.navigateToLoginScreen(navOptions: NavOptions? = null) {
     navigate(LoginDestination, navOptions)
 }
 
-fun NavGraphBuilder.loginScreen(onLoginSucceed: () -> Unit) {
+fun NavGraphBuilder.loginScreen(onLoginSucceed: () -> Unit, onBack: ()->Unit) {
     composable<LoginDestination> {
-        LoginRoute(onLoginSucceed)
+        LoginRoute(onLoginSucceed,onBack)
     }
 }

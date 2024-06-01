@@ -71,7 +71,9 @@ fun MoviesScreen(
     HandleUiState(uiState, snackState = snackBarHostState, onRetry = viewModel::loadUi)
 
     Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(modifier = Modifier
+            .padding(paddingValues)
+        ) {
 
             MoviesGrid(
                 upcoming = upcomingMovies,

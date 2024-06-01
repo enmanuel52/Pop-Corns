@@ -18,9 +18,6 @@ import com.enmanuelbergling.feature.movies.list.UpcomingMoviesScreen
 import com.enmanuelbergling.feature.movies.search.MovieSearchScreen
 import kotlinx.serialization.Serializable
 
-const val MOVIES_GRAPH_ROUTE = "movies_graph_route"
-
-const val MOVIES_SCREEN_ROUTE = "movies_screen_route"
 
 @Serializable
 data object MoviesGraphDestination

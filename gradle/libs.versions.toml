@@ -1,76 +1,77 @@
 [versions]
-androidx-activity = "1.8.2"
-androidxComposeBom = "2024.03.00"
-androidx-compose-foundation = "1.6.1"
-androidx-datastore = "1.0.0"
-androidx-lifecycle = "2.7.0"
+androidx-activity = "1.9.0"
+androidx-compose-foundation = "1.7.0-beta01"
+androidx-datastore = "1.1.1"
+androidx-lifecycle = "2.8.0"
 androidx-test-espresso = "3.5.1"
-animation = "1.7.0-alpha08"
-core-ktx = "1.12.0"
+androidxComposeBom = "2024.05.00"
+animation = "1.7.0-beta01"
+appcompat = "1.6.1"
+#plugings
+application = "8.2.2"
+ben-manes-versions = "0.51.0"
+core-ktx = "1.13.1"
 core-splashscreen = "1.0.1"
 de-jensklingenberg-ktorfit = "1.12.0"
-io-coil-kt = "2.4.0"
-io-insert-koin = "1.1.2"
-io-ktor = "2.3.5"
+haze = "0.7.1"
+io-coil-kt = "2.6.0"
+io-insert-koin = "1.1.5"
+io-ktor = "2.3.9"
+junit-bom = "+"
 koin-core = "3.5.6"
 koin-test = "3.5.6"
-kotestExtensionsKoin = "1.3.0"
 kotestRunnerJunit5 = "5.9.0"
-kotlinx-coroutines = "1.8.0"
-kotlinSerialization = "1.9.0"
-kotlinxSerializationJson = "1.6.0"
-material-icons-extended = "1.5.2"
-navigationCompose = "2.8.0-alpha08"
-orbital = "0.3.4"
-paging-runtime = "3.1.1"
-
-#plugings
-application = "8.2.1"
-library = "8.2.1"
-ben-manes-versions = "0.50.0"
-ksp = "1.9.22-1.0.17"
-protobuf = "0.9.1"
-ktorfit = "1.12.0"
-ui = "1.7.0-alpha08"
-version-catalog-update = "0.8.3"
 kotlin = "1.9.22"
-pagingCommonKtx = "3.2.1"
-junit-bom = "5.9.3"
-appcompat = "1.6.1"
-material = "1.10.0"
+kotlinx-coroutines = "1.8.0"
+kotlinSerialization = "1.9.22"
+kotlinxSerializationJson = "1.6.3"
+ksp = "1.9.22-1.0.18"
+ktorfit = "1.12.0"
+library = "8.2.2"
+material-icons-extended = "1.6.7"
+navigationCompose = "2.8.0-beta01"
+orbital = "0.3.4"
+paging-runtime = "3.3.0"
+pagingCommonKtx = "3.3.0"
+protobuf = "0.9.4"
+ui = "1.7.0-beta01"
+version-catalog-update = "0.8.4"
 
 [libraries]
 androidx-activity-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose-foundation" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "core-splashscreen" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
 androidx-datastore-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 androidx-lifecycle-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
-androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
-androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-lifecycle-runtime-ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.8.0-rc01"
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-androidx-paging-paging-compose = "androidx.paging:paging-compose:1.0.0-alpha16"
+androidx-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "pagingCommonKtx" }
+androidx-paging-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-runtime" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging-runtime" }
 androidx-test-espresso-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-test-espresso" }
 androidx-test-ext-junit = "androidx.test.ext:junit:1.1.5"
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 com-github-a914-gowtham-compose-ratingbar = "com.github.a914-gowtham:compose-ratingbar:1.3.4"
-com-google-protobuf-javalite = "com.google.protobuf:protobuf-javalite:3.24.4"
-com-valentinilk-shimmer-compose-shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.5"
+com-google-protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.26.0"
+com-valentinilk-shimmer-compose-shimmer = "com.valentinilk.shimmer:compose-shimmer:1.2.0"
 de-jensklingenberg-ktorfit-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "de-jensklingenberg-ktorfit" }
 de-jensklingenberg-ktorfit-ktorfit-lib-light = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "de-jensklingenberg-ktorfit" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 io-coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "io-coil-kt" }
 io-insert-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "io-insert-koin" }
 io-ktor-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "io-ktor" }
@@ -81,23 +82,18 @@ io-ktor-ktor-client-resources = { module = "io.ktor:ktor-client-resources", vers
 io-ktor-ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "io-ktor" }
 io-ktor-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "io-ktor" }
 junit = "junit:junit:4.13.2"
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+junit-jupiter-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
 koin-compose-androidx = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-core" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-test" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-test" }
-kotest-extensions-koin = { module = "io.kotest.extensions:kotest-extensions-koin", version.ref = "kotestExtensionsKoin" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotestRunnerJunit5" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "pagingCommonKtx" }
-junit-jupiter-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }

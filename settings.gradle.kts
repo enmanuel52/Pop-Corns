@@ -13,7 +13,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url= uri("https://jitpack.io") }
-        maven { url = uri("https://androidx.dev/snapshots/builds/11670047/artifacts/repository/") }
         maven(url = "https://plugins.gradle.org/m2/")
         maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
@@ -35,3 +34,4 @@ include(":feature:movies")
 include(":feature:series")
 include(":feature:watchlists")
 include(":core:testing")
+include(":feature:settings")

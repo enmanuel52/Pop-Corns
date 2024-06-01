@@ -9,7 +9,8 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
-    implementation(project(":core:common:util"))
+    api(project(":core:common:android-util"))
+    api(project(":core:common:util"))
 
     api(libs.androidx.activity.activity.compose)
 
@@ -47,6 +48,7 @@ dependencies {
     api(libs.com.github.a914.gowtham.compose.ratingbar)
 
     api(libs.orbital)
+    api(libs.haze)
 
     api(libs.androidx.animation)
     api(libs.androidx.ui)

@@ -3,35 +3,28 @@ package com.enmanuelbergling.ktormovies.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
-import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
+import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
-import com.enmanuelbergling.core.domain.usecase.user.UserLogoutUC
-import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.model.user.UserDetails
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class CornTimeVM(
     getDarkThemeUC: GetDarkThemeUC,
-    private val setDarkThemeUC: SetDarkThemeUC,
+    getDynamicColorUC: GetDynamicColorUC,
     private val getSavedUserUC: GetSavedUserUC,
-    private val userLogoutUC: UserLogoutUC,
 ) : ViewModel() {
 
     val darkTheme = getDarkThemeUC()
 
-    val userDetails = getSavedUserUC().stateIn(
+    val dynamicColor = getDynamicColorUC()
+
+    val userDetails = getSavedUserUC()
+        .filter { !it.isEmpty }
+        .stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        UserDetails()
+        SharingStarted.WhileSubscribed(5_000),
+        null,
     )
-
-    fun setDarkTheme(darkTheme: DarkTheme) = viewModelScope.launch {
-        setDarkThemeUC(darkTheme)
-    }
-
-    fun logout() = viewModelScope.launch {
-        userLogoutUC()
-    }
 }

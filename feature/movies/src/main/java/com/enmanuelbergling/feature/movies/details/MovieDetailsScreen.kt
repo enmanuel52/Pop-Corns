@@ -27,10 +27,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -38,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -79,6 +80,10 @@ import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -165,81 +170,105 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         }
     }
 
+    val hazeState = remember { HazeState() }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
-        ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-
-                details?.let {
-                    detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
-
-                    information(
-                        details.title,
-                        details.releaseYear,
-                        details.voteAverage.toFloat(),
-                        details.formattedGenres,
-                        details.duration
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.details),
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            contentDescription = "back icon"
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .hazeChild(hazeState, style = HazeStyle(MaterialTheme.colorScheme.background.copy(alpha = .5f)))
+                    .fillMaxWidth(),
+                // Need to make app bar transparent to see the content behind
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    Color.Transparent,
+                    scrolledContainerColor = Color.Transparent
+                ),
+            )
+        }
+    ) { paddingValues ->
 
-                    if (hasWatchList) {
-                        addToListButton {
-                            scope.launch {
-                                isSheetOpen.value = true
-                            }
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+            modifier = Modifier
+                .haze(hazeState)
+                .fillMaxSize(),
+            contentPadding = paddingValues
+        ) {
+
+            details?.let {
+                detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
+
+                information(
+                    details.title,
+                    details.releaseYear,
+                    details.voteAverage.toFloat(),
+                    details.formattedGenres,
+                    details.duration
+                )
+
+                if (hasWatchList) {
+                    addToListButton {
+                        scope.launch {
+                            isSheetOpen.value = true
                         }
                     }
-
-
-                    overview(details.overview)
-
-                    persons(
-                        title = context.getString(R.string.cast),
-                        persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
-                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                        animatedContentScope = this@MovieDetailsScreen,
-                        onActor = onActor
-                    )
-
-                    persons(
-                        title = context.getString(R.string.crew),
-                        persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
-                        isLoading = uiState == SimplerUi.Loading && creditsState == null,
-                        animatedContentScope = this@MovieDetailsScreen,
-                        onActor = onActor
-                    )
                 }
 
+
+                overview(details.overview)
+
+                persons(
+                    title = context.getString(R.string.cast),
+                    persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
+                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    animatedContentScope = this@MovieDetailsScreen,
+                    onActor = onActor
+                )
+
+                persons(
+                    title = context.getString(R.string.crew),
+                    persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
+                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    animatedContentScope = this@MovieDetailsScreen,
+                    onActor = onActor
+                )
             }
 
-
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier
-                    .align(Alignment.TopStart),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Transparent.copy(
-                        alpha = .8f
-                    )
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.ArrowBackIosNew,
-                    contentDescription = stringResource(id = R.string.back_icon),
-                    tint = Color.White
-                )
-            }
         }
     }
+}
 
+@Composable
+private fun ArrowBack(onBack: () -> Unit, modifier: Modifier = Modifier) {
+    IconButton(
+        onClick = onBack,
+        modifier = modifier,
+//        colors = IconButtonDefaults.iconButtonColors(
+//            containerColor = Color.Transparent.copy(
+//                alpha = .8f
+//            )
+//        )
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.ArrowBackIosNew,
+            contentDescription = stringResource(id = R.string.back_icon),
+            tint = Color.White
+        )
+    }
 }
 
 @Composable

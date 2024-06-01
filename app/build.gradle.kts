@@ -12,7 +12,7 @@ android {
         applicationId = "com.enmanuelbergling.ktormovies"
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -31,6 +31,10 @@ android {
             it.useJUnitPlatform()
         }
     }
+
+    lint{
+        checkReleaseBuilds = false
+    }
 }
 
 dependencies {
@@ -44,6 +48,7 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:movies"))
     implementation(project(":feature:series"))
+    implementation(project(":feature:settings"))
     implementation(project(":feature:watchlists"))
 
     testImplementation(project(":core:testing"))
