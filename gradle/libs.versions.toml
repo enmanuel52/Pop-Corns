@@ -24,6 +24,7 @@ kotestRunnerJunit5 = "5.9.0"
 kotlin = "1.9.22"
 kotlinx-coroutines = "1.8.0"
 kotlinSerialization = "1.9.22"
+kotlinxCollectionsImmutable = "0.3.7"
 kotlinxSerializationJson = "1.6.3"
 ksp = "1.9.22-1.0.18"
 ktorfit = "1.12.0"
@@ -89,6 +90,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-test" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-test" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotestRunnerJunit5" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
