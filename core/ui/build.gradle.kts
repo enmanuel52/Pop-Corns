@@ -57,4 +57,6 @@ dependencies {
     api(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.paging.paging.compose)
+
+    api(libs.kotlinx.collections.immutable)
 }
