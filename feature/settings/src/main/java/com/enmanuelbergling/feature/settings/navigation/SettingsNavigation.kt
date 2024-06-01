@@ -15,7 +15,7 @@ data object SettingsGraphDestination
 @Serializable
 data object SettingsDestination
 
-fun NavHostController.navigateToSettingsGraph(navOptions: NavOptions) {
+fun NavHostController.navigateToSettingsGraph(navOptions: NavOptions?=null) {
     navigate(SettingsGraphDestination, navOptions)
 }
 
