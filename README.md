@@ -11,7 +11,7 @@ Can you guess the best way to eat them? Of course watching a movie :).
 * **Navigation and ViewModel Management:**
   1.  🎨 [Precompose](https://github.com/Tlaster/PreCompose "precompose repo"): third-parties branch.
   2.  🚀🚀 Jetpack Libraries. 
-* **🎉  Cool animations:** it can't be missed 😅. Shared element transitions and shaders.
+* **🎉  Cool animations:** it can't be missed 😅. Shared element transitions everywhere.
 * **🔗🔗 Chain of command(design pattern)** applied to sort api calls in Home Screen.
 * **🛠   Modularization**
 * **🧪 Testing:** Behaviour Driven Development using [Kotest](https://github.com/kotest/kotest "kotest repo")
