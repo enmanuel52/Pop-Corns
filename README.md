@@ -66,31 +66,26 @@ Can you guess the best way to eat them? Of course watching a movie :).
 
 
 
-https://github.com/enmanuel52/Pop-Corns/assets/102194318/0f53a885-8569-41a8-8724-74ca5972fa6f
+https://github.com/enmanuel52/Pop-Corns/assets/102194318/c76b5e89-0e59-4207-8c58-f374b8b462c5
 
 
 
+https://github.com/enmanuel52/Pop-Corns/assets/102194318/0031c284-e207-4a34-99d5-62efb8124d41
 
-https://github.com/enmanuel52/Pop-Corns/assets/102194318/eb498787-579f-41f4-8528-0ff0c819bc8a
-
-
-### Shaders
-
-
-
-https://github.com/enmanuel52/Pop-Corns/assets/102194318/f68b76a8-2c06-49fb-b6ee-dfcd1e5daddb
 
 
 ### Shared elements transitions
 
 
 
-https://github.com/enmanuel52/Pop-Corns/assets/102194318/50d7dad2-cbba-4ac3-952d-936b44299aa0
+https://github.com/enmanuel52/Pop-Corns/assets/102194318/28650503-9817-4394-9f62-3bbde4999ea3
 
 
 
 
-https://github.com/enmanuel52/Pop-Corns/assets/102194318/e3ea8f82-b069-4fc1-8ebc-3014d24f6624
+https://github.com/enmanuel52/Pop-Corns/assets/102194318/a861613e-1fa6-47d7-ac84-de16294fd042
+
+
 
 
 
