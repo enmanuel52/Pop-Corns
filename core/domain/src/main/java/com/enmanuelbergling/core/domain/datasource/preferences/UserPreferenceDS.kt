@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserPreferenceDS {
 
-    fun getCurrentUser() : Flow<UserDetails>
+    fun getCurrentUser() : Flow<UserDetails?>
 
     suspend fun updateUser(userDetails: UserDetails)
 

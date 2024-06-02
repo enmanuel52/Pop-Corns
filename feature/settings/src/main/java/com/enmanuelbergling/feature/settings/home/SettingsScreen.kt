@@ -96,7 +96,7 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
 
     val darkMode by viewModel.darkThemeState.collectAsStateWithLifecycle(initialValue = DarkThemeUi.System)
     val dynamicColor by viewModel.dynamicColorState.collectAsStateWithLifecycle(initialValue = false)
-    val userState by viewModel.userState.collectAsStateWithLifecycle(initialValue = UserUi())
+    val userState by viewModel.userState.collectAsStateWithLifecycle(initialValue = null)
     val menuState by viewModel.menuVisibleState.collectAsStateWithLifecycle()
 
     SettingsScreen(
@@ -145,7 +145,7 @@ private fun SettingsScreen(
                 }
             },
             actions = {
-                if (!uiState.userDetails.isEmpty) {
+                if (uiState.userDetails != null) {
                     IconButton(onClick = {
                         onEvent(SettingUiEvent.Logout)
                         context.removeAllDynamicShortCuts()
@@ -476,7 +476,7 @@ private fun SettingItemUiPrev() {
 
 @Composable
 internal fun ProfileWrapper(
-    userState: UserUi,
+    userState: UserUi?,
     visibleState: Boolean,
     modifier: Modifier = Modifier,
     onLogin: () -> Unit,
@@ -488,8 +488,7 @@ internal fun ProfileWrapper(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ProfileUi(
-                username = userState.username,
-                imageUrl = userState.avatarPath,
+                userUi = userState,
                 modifier = Modifier
                     .size(110.dp),
                 visibleState = visibleState,
@@ -497,7 +496,7 @@ internal fun ProfileWrapper(
 
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-            if (userState.isEmpty) {
+            if (userState == null) {
                 Button(onClick = onLogin) {
                     Text(text = stringResource(id = R.string.login))
                 }
@@ -507,9 +506,8 @@ internal fun ProfileWrapper(
 }
 
 @Composable
-fun ProfileUi(
-    username: String,
-    imageUrl: String?,
+internal fun ProfileUi(
+    userUi: UserUi?,
     modifier: Modifier = Modifier,
     visibleState: Boolean = true,
 ) {
@@ -524,12 +522,12 @@ fun ProfileUi(
             ), modifier = Modifier.clip(CircleShape)
         ) {
 
-            ProfileImage(imageUrl, modifier)
+            ProfileImage(userUi?.avatarPath, modifier)
         }
 
-        if (username.isNotBlank()) {
+        if (userUi != null) {
             Text(
-                text = username,
+                text = userUi.username,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -542,7 +540,7 @@ fun ProfileUi(
 private fun ProfileUiPrev() {
     CornTimeTheme {
 
-        ProfileUi(username = "Tim", imageUrl = "", modifier = Modifier.size(80.dp))
+        ProfileUi(UserUi(username = "Tim", avatarPath = ""), modifier = Modifier.size(80.dp))
     }
 }
 

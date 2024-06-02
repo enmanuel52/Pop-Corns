@@ -25,7 +25,7 @@ internal class SettingsVM(
     getDynamicColorUC: GetDynamicColorUC,
     private val setDynamicColorUC: SetDynamicColorUC,
 ) : ViewModel() {
-    val userState = getSavedUserUC().map { it.toSettingsUi() }
+    val userState = getSavedUserUC().map { it?.toSettingsUi() }
 
     val darkThemeState = getDarkThemeUC().map { it.toSettingsUi() }
 

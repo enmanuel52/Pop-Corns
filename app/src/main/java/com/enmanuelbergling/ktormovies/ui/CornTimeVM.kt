@@ -21,7 +21,6 @@ class CornTimeVM(
     val dynamicColor = getDynamicColorUC()
 
     val userDetails = getSavedUserUC()
-        .filter { !it.isEmpty }
         .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
