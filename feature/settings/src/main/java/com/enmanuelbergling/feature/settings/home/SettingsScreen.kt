@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
@@ -77,9 +79,7 @@ import com.enmanuelbergling.core.common.android_util.removeAllDynamicShortCuts
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
-import com.enmanuelbergling.core.ui.components.shaders.BubbleGum
-import com.enmanuelbergling.core.ui.components.shaders.LavaBallsShader
-import com.enmanuelbergling.core.ui.components.shaders.OldSchoolMetaballShader
+import com.enmanuelbergling.core.ui.components.shaders.Waves
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.DarkThemeUi
@@ -162,9 +162,9 @@ private fun SettingsScreen(
         )
     }) { paddingValues ->
         Box {
-//            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)) {
+            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)) {
                 ArtisticBackground(Modifier.fillMaxSize())
-//            }
+            }
 
             val shaderTime by produceState(0f) {
                 while (true) {
@@ -174,25 +174,28 @@ private fun SettingsScreen(
                 }
             }
             val backgroundColor = MaterialTheme.colorScheme.background
+            val waveColor = MaterialTheme.colorScheme.secondary
 
-
-            Column(Modifier.padding(paddingValues)) {
+            Box(
+                Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
                 ProfileWrapper(
                     userState = uiState.userDetails,
                     visibleState = visibleState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(4f)
-//                        .drawWithCache {
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//                                drawShader(shaderTime, backgroundColor)
-//                            } else {
-//                                onDrawWithContent {
-//                                    drawContent()
-//                                }
-//                            }
-//                        }
-                    ,
+                        .fillMaxHeight(.5f)
+                        .drawWithCache {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                drawWaveShader(shaderTime, backgroundColor, waveColor)
+                            } else {
+                                onDrawWithContent {
+                                    drawContent()
+                                }
+                            }
+                        },
                     onLogin = onLogin
                 )
 
@@ -200,7 +203,9 @@ private fun SettingsScreen(
                     darkTheme = uiState.darkTheme,
                     dynamicColor = uiState.dynamicColor,
                     visibleState = visibleState,
-                    modifier = Modifier.weight(6f),
+                    modifier = Modifier
+                        .fillMaxHeight(.6f)
+                        .align(Alignment.BottomCenter),
                     onEvent = onEvent
                 )
             }
@@ -226,11 +231,12 @@ private fun SettingsScreen(
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private fun CacheDrawScope.drawShader(
+private fun CacheDrawScope.drawWaveShader(
     shaderTime: Float,
     backgroundColor: Color,
+    waveColor: Color,
 ): DrawResult {
-    val runtimeShader = RuntimeShader(OldSchoolMetaballShader)
+    val runtimeShader = RuntimeShader(Waves)
     val shaderBrush = ShaderBrush(runtimeShader)
 
     runtimeShader.setColorUniform(
@@ -240,6 +246,16 @@ private fun CacheDrawScope.drawShader(
             backgroundColor.green,
             backgroundColor.blue,
             backgroundColor.alpha
+        )
+    )
+
+    runtimeShader.setColorUniform(
+        "primaryColor",
+        android.graphics.Color.valueOf(
+            waveColor.red,
+            waveColor.green,
+            waveColor.blue,
+            waveColor.alpha
         )
     )
 
@@ -281,7 +297,10 @@ private fun SettingOptions(
                 .fillMaxSize()
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainer,
-                    shape = MaterialTheme.shapes.medium
+                    shape = MaterialTheme.shapes.medium.copy(
+                        bottomStart = CornerSize(0),
+                        bottomEnd = CornerSize(0)
+                    )
                 )
 
         ) {
