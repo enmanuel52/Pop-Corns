@@ -14,6 +14,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,9 +53,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -133,6 +136,13 @@ private fun SettingsScreen(
 
     val context = LocalContext.current
 
+    val systemInDarkTheme = isSystemInDarkTheme()
+    val isDarkMode by remember(uiState.darkTheme) {
+        derivedStateOf {
+            uiState.darkTheme == DarkThemeUi.Yes || (uiState.darkTheme == DarkThemeUi.System && systemInDarkTheme)
+        }
+    }
+
     Scaffold(topBar = {
         TopAppBar(
             title = { Text(text = stringResource(id = R.string.settings)) },
@@ -162,7 +172,7 @@ private fun SettingsScreen(
         )
     }) { paddingValues ->
         Box {
-            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)) {
+            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) || !isDarkMode) {
                 ArtisticBackground(Modifier.fillMaxSize())
             }
 
@@ -188,7 +198,7 @@ private fun SettingsScreen(
                         .fillMaxWidth()
                         .fillMaxHeight(.5f)
                         .drawWithCache {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isDarkMode) {
                                 drawWaveShader(shaderTime, backgroundColor, waveColor)
                             } else {
                                 onDrawWithContent {
@@ -240,34 +250,23 @@ private fun CacheDrawScope.drawWaveShader(
     val shaderBrush = ShaderBrush(runtimeShader)
 
     runtimeShader.setColorUniform(
-        "backgroundColor",
-        android.graphics.Color.valueOf(
-            backgroundColor.red,
-            backgroundColor.green,
-            backgroundColor.blue,
-            backgroundColor.alpha
+        "backgroundColor", android.graphics.Color.valueOf(
+            backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha
         )
     )
 
     runtimeShader.setColorUniform(
-        "primaryColor",
-        android.graphics.Color.valueOf(
-            waveColor.red,
-            waveColor.green,
-            waveColor.blue,
-            waveColor.alpha
+        "primaryColor", android.graphics.Color.valueOf(
+            waveColor.red, waveColor.green, waveColor.blue, waveColor.alpha
         )
     )
 
     return onDrawWithContent {
         runtimeShader.setFloatUniform(
-            "resolution",
-            size.width,
-            size.height
+            "resolution", size.width, size.height
         )
         runtimeShader.setFloatUniform(
-            "time",
-            shaderTime
+            "time", shaderTime
         )
 
         drawRect(shaderBrush)
@@ -298,8 +297,7 @@ private fun SettingOptions(
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainer,
                     shape = MaterialTheme.shapes.medium.copy(
-                        bottomStart = CornerSize(0),
-                        bottomEnd = CornerSize(0)
+                        bottomStart = CornerSize(0), bottomEnd = CornerSize(0)
                     )
                 )
 
@@ -508,8 +506,7 @@ internal fun ProfileWrapper(
         ) {
             ProfileUi(
                 userUi = userState,
-                modifier = Modifier
-                    .size(110.dp),
+                modifier = Modifier.size(110.dp),
                 visibleState = visibleState,
             )
 
