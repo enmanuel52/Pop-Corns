@@ -82,7 +82,7 @@ import com.enmanuelbergling.core.common.android_util.removeAllDynamicShortCuts
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
-import com.enmanuelbergling.core.ui.components.shaders.Waves
+import com.enmanuelbergling.core.ui.components.shaders.TileableWaterCaustic
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.DarkThemeUi
@@ -183,8 +183,7 @@ private fun SettingsScreen(
                     }
                 }
             }
-            val backgroundColor = MaterialTheme.colorScheme.background
-            val waveColor = MaterialTheme.colorScheme.secondary
+            val waveColor = MaterialTheme.colorScheme.primaryContainer
 
             Box(
                 Modifier
@@ -199,7 +198,7 @@ private fun SettingsScreen(
                         .fillMaxHeight(.5f)
                         .drawWithCache {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isDarkMode) {
-                                drawWaveShader(shaderTime, backgroundColor, waveColor)
+                                drawWaveShader(shaderTime, waveColor)
                             } else {
                                 onDrawWithContent {
                                     drawContent()
@@ -243,20 +242,13 @@ private fun SettingsScreen(
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun CacheDrawScope.drawWaveShader(
     shaderTime: Float,
-    backgroundColor: Color,
     waveColor: Color,
 ): DrawResult {
-    val runtimeShader = RuntimeShader(Waves)
+    val runtimeShader = RuntimeShader(TileableWaterCaustic)
     val shaderBrush = ShaderBrush(runtimeShader)
 
     runtimeShader.setColorUniform(
         "backgroundColor", android.graphics.Color.valueOf(
-            backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha
-        )
-    )
-
-    runtimeShader.setColorUniform(
-        "primaryColor", android.graphics.Color.valueOf(
             waveColor.red, waveColor.green, waveColor.blue, waveColor.alpha
         )
     )
