@@ -12,4 +12,20 @@ interface ChainHandler<T> {
     }
 }
 
+/**
+ * This way is more flexible:
+ * request goes through every handler, and next handler is mutable
+ * */
+interface NewChainHandler<T> {
+
+    var nextChainHandler: NewChainHandler<T>?
+
+    suspend fun handle(request: T): T
+
+    suspend operator fun invoke(request: T) {
+        val updatedRequest = handle(request)
+        nextChainHandler?.invoke(updatedRequest)
+    }
+}
+
 class CannotHandleException(val msg: String) : Exception(msg)
