@@ -21,12 +21,12 @@ junit-bom = "+"
 koin-core = "3.5.6"
 koin-test = "3.5.6"
 kotestRunnerJunit5 = "5.9.0"
-kotlin = "1.9.22"
+kotlin = "2.0.0"
 kotlinx-coroutines = "1.8.0"
-kotlinSerialization = "1.9.22"
+kotlinSerialization = "2.0.0"
 kotlinxCollectionsImmutable = "0.3.7"
 kotlinxSerializationJson = "1.6.3"
-ksp = "1.9.22-1.0.18"
+ksp = "2.0.0-1.0.22"
 ktorfit = "1.12.0"
 library = "8.2.2"
 material-icons-extended = "1.6.7"
@@ -107,6 +107,7 @@ de-jensklingenberg-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = 
 nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 # Plugins defined by this project
 corntime-android-application = { id = "corntime.android.application", version = "unspecified" }
