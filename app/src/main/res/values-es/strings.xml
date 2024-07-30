@@ -60,4 +60,24 @@
     <string name="net_time_out_exception_message">El tiempo de espera por la respuesta ha terminado, compruebe su conexión e inténtelo de nuevo</string>
     <string name="search_movie_short_label">Busque una peli</string>
     <string name="search_movie_disable_label">Desactivar buscar una peli</string>
+
+    <!--    Onboarding-->
+    <string name="title_explore_movies">Explora Películas Actuales y Próximas</string>
+    <string name="title_filter_movies">Filtra Películas por Género</string>
+    <string name="title_search">Busca Películas por Título</string>
+    <string name="title_watchlist">Crea Listas de Reproducción Personalizadas</string>
+    <string name="title_shortcut">Añade accesos directos a tus listas</string>
+    <string name="title_actors">Descubre Actores y sus Películas</string>
+
+    <string name="step_explore_movies">Descubre una selección de películas en cartelera, próximas a estrenarse y populares</string>
+    <string name="step_filter_movies">Encuentra fácilmente películas que se adapten a tus gustos</string>
+    <string name="step_search">Localiza rápidamente cualquier película buscando su título</string>
+    <string name="step_watchlist">Organiza tus películas favoritas en listas de reproducción</string>
+    <string name="step_shortcut">Accede a tus listas personalizadas con accesos directos convenientes</string>
+    <string name="step_actors">Conoce más sobre los actores y las películas en las que han participado</string>
+
+
+    <string name="skip">Omitir</string>
+    <string name="get_started">Comenzar</string>
+    <string name="next">Siguiente</string>
 </resources>

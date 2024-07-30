@@ -59,4 +59,22 @@
     <string name="net_time_out_exception_message">Waiting time for response has ended, check your internet connection and try again</string>
     <string name="search_movie_short_label">Search a movie</string>
     <string name="search_movie_disable_label">Disable search a movie</string>
+
+    <!--    Onboarding-->
+    <string name="title_explore_movies">Explore Current and Upcoming Movies</string>
+    <string name="title_filter_movies">Filter Movies by Genre</string>
+    <string name="title_search">Search Movies by Title</string>
+    <string name="title_watchlist">Create Personalized Watchlists</string>
+    <string name="title_shortcut">Add Shortcuts to your Watchlists</string>
+    <string name="title_actors">Learn About Actors and Their Films</string>
+
+    <string name="step_explore_movies">View a curated selection of movies currently playing, coming soon and trending</string>
+    <string name="step_filter_movies">Easily find movies that suit to your taste by selecting from various genres</string>
+    <string name="step_search">Quickly locate any movie by searching its title</string>
+    <string name="step_watchlist">Organize your favorite films into custom watchlists</string>
+    <string name="step_shortcut">Access your personalized watchlists with convenient shortcuts</string>
+    <string name="step_actors">Discover more about actors and the movies they have starred in</string>
+    <string name="skip">Skip</string>
+    <string name="get_started">Get started</string>
+    <string name="next">Next</string>
 </resources>
