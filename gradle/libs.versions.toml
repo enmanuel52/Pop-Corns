@@ -37,6 +37,7 @@ pagingCommonKtx = "3.3.0"
 protobuf = "0.9.4"
 ui = "1.7.0-beta01"
 version-catalog-update = "0.8.4"
+walkthrough = "1.1.0"
 
 [libraries]
 androidx-activity-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -96,6 +97,7 @@ kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", v
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+walkthrough = { module = "io.github.enmanuel52:walkthrough", version.ref = "walkthrough" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }
