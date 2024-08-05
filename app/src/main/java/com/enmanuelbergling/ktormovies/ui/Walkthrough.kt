@@ -19,10 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.enmanuelbergling.core.ui.components.walkthrough.WalkThrough
+import com.enmanuelbergling.core.ui.components.walkthrough.model.IndicatorStyle
+import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkScrollStyle
+import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkStep
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.walkthrough.model.WalkScrollStyle
-import com.enmanuelbergling.walkthrough.model.WalkStep
-import com.enmanuelbergling.walkthrough.ui.WalkThrough
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,7 +75,8 @@ fun OnboardingScreen(
                     Text(text = stringResource(R.string.skip))
                 }
             },
-            scrollStyle = WalkScrollStyle.Instagram
+            scrollStyle = WalkScrollStyle.Normal,
+            indicatorStyle = IndicatorStyle.Shift
         )
     }
 }
@@ -83,12 +85,12 @@ val ONBOARDING_STEPS = listOf(
     OnboardingRes(
         R.string.title_explore_movies,
         R.string.step_explore_movies,
-        R.drawable.undraw_mobile_search,
+        R.drawable.undraw_netflix,
     ),
     OnboardingRes(
         R.string.title_filter_movies,
         R.string.step_filter_movies,
-        R.drawable.undraw_mobile_search,
+        R.drawable.undraw_searching,
     ),
     OnboardingRes(
         R.string.title_search,
@@ -98,17 +100,17 @@ val ONBOARDING_STEPS = listOf(
     OnboardingRes(
         R.string.title_watchlist,
         R.string.step_watchlist,
-        R.drawable.undraw_mobile_search,
+        R.drawable.undraw_online_video,
     ),
     OnboardingRes(
         R.string.title_shortcut,
         R.string.step_shortcut,
-        R.drawable.undraw_mobile_search,
+        R.drawable.undraw_to_the_stars,
     ),
     OnboardingRes(
         R.string.title_actors,
         R.string.step_actors,
-        R.drawable.undraw_mobile_search,
+        R.drawable.undraw_awards,
     ),
 )
 
@@ -121,8 +123,8 @@ data class OnboardingRes(
     @DrawableRes val image: Int,
 ) {
     fun toWalkStep(context: Context) = WalkStep(
-        imageResource = image,
-        titleResource = context.getString(title),
-        descriptionResource = context.getString(description),
+        image,
+        context.getString(title),
+        context.getString(description),
     )
 }

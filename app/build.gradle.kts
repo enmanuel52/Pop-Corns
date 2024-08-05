@@ -62,5 +62,5 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
 
-    implementation(libs.walkthrough)
+//    implementation(libs.walkthrough)
 }
