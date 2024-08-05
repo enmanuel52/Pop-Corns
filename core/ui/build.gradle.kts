@@ -23,6 +23,8 @@ dependencies {
 
     api(libs.androidx.compose.foundation)
 
+    api(libs.androidx.constraintlayout.compose)
+
     androidTestApi(composeBom)
     androidTestApi(libs.androidx.compose.ui.test.junit4)
     debugApi(libs.androidx.compose.ui.tooling)
@@ -50,8 +52,8 @@ dependencies {
     api(libs.orbital)
     api(libs.haze)
 
+    //shared element transition
     api(libs.androidx.animation)
-    api(libs.androidx.ui)
 
     api(libs.androidx.navigation.compose)
     api(libs.kotlinx.serialization.json)
