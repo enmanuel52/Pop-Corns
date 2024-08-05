@@ -68,9 +68,6 @@ class CornTimeAppState(
             TopDestination.Series -> navController.navigateToSeriesGraph(
                 navOptions {
                     launchSingleTop = true
-                    popUpTo(MoviesGraphDestination) {
-                        inclusive = false
-                    }
                 }
             )
         }
