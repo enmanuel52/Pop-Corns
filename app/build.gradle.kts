@@ -61,4 +61,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.espresso.core)
 
     implementation(libs.androidx.core.splashscreen)
+
+//    implementation(libs.walkthrough)
 }

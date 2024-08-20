@@ -21,7 +21,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.applyPlugins() = apply() {
+    private fun Project.applyPlugins() = apply {
         plugin("com.android.application")
         plugin("org.jetbrains.kotlin.android")
     }

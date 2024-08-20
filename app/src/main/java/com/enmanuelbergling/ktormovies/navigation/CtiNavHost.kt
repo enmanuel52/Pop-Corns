@@ -33,7 +33,7 @@ fun CtiNavHost(
     NavHost(navController, startDestination = state.startDestination) {
 
         moviesGraph(
-            onBack = navController::popBackStack,
+            onBack = navController::navigateUp,
             onMovie = navController::navigateToMoviesDetails,
             onActor = { action ->
                 navController.navigateToActorsDetails(
@@ -46,7 +46,7 @@ fun CtiNavHost(
         seriesGraph()
 
         actorsGraph(
-            onBack = navController::popBackStack,
+            onBack = navController::navigateUp,
             onDetails = { action ->
                 navController.navigateToActorsDetails(
                     action.id, action.imageUrl, action.name
@@ -65,23 +65,28 @@ fun CtiNavHost(
                     }
                 )
             },
-            onBack = navController::popBackStack
+            onBack = navController::navigateUp
         )
 
         listGraph(
             onDetails = navController::navigateToListDetailsScreen,
             onMovieDetails = navController::navigateToMoviesDetails,
             onAddShortcut = { watchlist -> state.addWatchlistShortcut(context, watchlist) },
-            onDeleteShortcut = { watchlistId -> state.deleteWatchlistShortcut(context, watchlistId)},
-            onBack = navController::popBackStack
+            onDeleteShortcut = { watchlistId ->
+                state.deleteWatchlistShortcut(
+                    context,
+                    watchlistId
+                )
+            },
+            onBack = navController::navigateUp
         )
 
-        movieSearchScreen(navController::navigateToMoviesDetails, navController::popBackStack)
+        movieSearchScreen(navController::navigateToMoviesDetails, navController::navigateUp)
 
-        moviesFilterScreen(navController::navigateToMoviesDetails, navController::popBackStack)
+        moviesFilterScreen(navController::navigateToMoviesDetails, navController::navigateUp)
 
         settingsGraph(
-            onBack = navController::popBackStack,
+            onBack = navController::navigateUp,
             onLogin = navController::navigateToLoginScreen
         )
     }

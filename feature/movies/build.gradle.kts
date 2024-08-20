@@ -26,6 +26,8 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
 
+//    implementation(libs.walkthrough)
+
     testImplementation(project(":core:testing"))
 
     testImplementation("junit:junit:4.13.2")

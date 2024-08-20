@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.core.common.android_util.isOnline
-import com.enmanuelbergling.core.common.android_util.removeAllDynamicShortCuts
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
@@ -47,6 +46,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
             val dynamicColor by viewModel.dynamicColor.collectAsStateWithLifecycle(initialValue = false)
 
             val userDetails by viewModel.userDetails.collectAsStateWithLifecycle()
+            val isOnboarding by viewModel.isOnboarding.collectAsStateWithLifecycle(initialValue = false)
 
             CornTimeTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
                 // A surface container using the 'background' color from the theme
@@ -57,10 +57,15 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                     val appState = rememberCornTimeAppState(
                         isOnline = isOnlineState,
                     )
+
                     CornsTimeApp(
                         state = appState,
                         userDetails = userDetails,
                     )
+
+                    if (isOnboarding){
+                        OnboardingScreen(viewModel::finishOnboarding)
+                    }
 
                     LaunchedEffect(key1 = Unit) {
                         if (searchMovieShortCutClicked) {

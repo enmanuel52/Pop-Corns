@@ -11,6 +11,7 @@ buildscript {
 plugins {
     alias(libs.plugins.com.android.application) apply false
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.com.google.devtools.ksp) apply false
     alias(libs.plugins.com.github.ben.manes.versions)

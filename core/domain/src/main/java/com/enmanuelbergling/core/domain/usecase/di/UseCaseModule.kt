@@ -18,6 +18,8 @@ import com.enmanuelbergling.core.domain.usecase.movie.search.AddSearchSuggestion
 import com.enmanuelbergling.core.domain.usecase.movie.search.ClearSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.movie.search.DeleteSearchSuggestionUC
 import com.enmanuelbergling.core.domain.usecase.movie.search.GetSearchSuggestionsUC
+import com.enmanuelbergling.core.domain.usecase.onboarding.FinishOnboardingUC
+import com.enmanuelbergling.core.domain.usecase.onboarding.IsOnboardingUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
@@ -69,6 +71,11 @@ val userUcModule = module {
     singleOf(::GetSavedUserUC)
 }
 
+val onboardingUcModule = module {
+    singleOf(::IsOnboardingUC)
+    singleOf(::FinishOnboardingUC)
+}
+
 val listsUcModule = module {
     singleOf(::CreateListUC)
     singleOf(::DeleteMovieFromListUC)
@@ -89,6 +96,7 @@ val ucModule = listOf(
     formValidationUcModule,
     moviesUcModule,
     userUcModule,
+    onboardingUcModule,
     listsUcModule,
     searchSuggestionUcModule,
     settingModule

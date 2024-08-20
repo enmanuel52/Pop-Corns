@@ -1,6 +1,5 @@
 package com.enmanuelbergling.feature.movies.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FastForward
@@ -47,6 +45,8 @@ import com.enmanuelbergling.core.ui.components.common.HeaderMoviePlaceholder
 import com.enmanuelbergling.core.ui.components.common.MovieCard
 import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.enmanuelbergling.core.ui.components.listItemWindAnimation
+import com.enmanuelbergling.core.ui.components.walkthrough.components.InstagramPager
+import com.enmanuelbergling.core.ui.components.walkthrough.components.ShiftIndicator
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isScrollingForward
 import com.valentinilk.shimmer.shimmer
@@ -71,12 +71,13 @@ fun MoviesScreen(
     HandleUiState(uiState, snackState = snackBarHostState, onRetry = viewModel::loadUi)
 
     Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
-        Column(modifier = Modifier
-            .padding(paddingValues)
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
         ) {
 
             MoviesGrid(
-                upcoming = upcomingMovies,
+                upcoming = upcomingMovies.take(8),
                 topRated = topRatedMovies,
                 nowPlaying = nowPlayingMovies,
                 popular = popularMovies,
@@ -189,7 +190,6 @@ fun LazyListScope.moviesSection(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.headersMovies(
     upcoming: List<Movie>,
     onDetails: (id: Int) -> Unit,
@@ -212,19 +212,30 @@ private fun LazyListScope.headersMovies(
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                HorizontalPager(
+                InstagramPager(
                     state = pagerState,
-                    pageSpacing = MaterialTheme.dimen.verySmall
-                ) { page ->
+                    pageSpacing = MaterialTheme.dimen.verySmall,
+                    boxAngle = 20
+                ) { page, pageModifier ->
                     val movie = upcoming.getOrNull(page)
                     movie?.let {
                         HeaderMovieCard(
-                            movie.backdropPath.orEmpty(), movie.title, movie.voteAverage
+                            imageUrl = movie.backdropPath.orEmpty(),
+                            title = movie.title,
+                            rating = movie.voteAverage, modifier = pageModifier
                         ) {
                             onDetails(movie.id)
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(MaterialTheme.dimen.verySmall))
+
+                ShiftIndicator(
+                    pagerState = pagerState,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    stepSize = 6.dp,
+                    spaceBetween = 2.dp
+                )
             }
         }
 

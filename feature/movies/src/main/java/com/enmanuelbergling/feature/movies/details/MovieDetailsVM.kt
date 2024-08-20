@@ -14,10 +14,10 @@ import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
-import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
+import com.enmanuelbergling.feature.movies.paging.watchlist.GetUserWatchListsUC
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,9 +30,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MovieDetailsVM(
+internal class MovieDetailsVM(
     private val detailsChainHandler: MovieDetailsChainHandler,
-    getPaginatedLists: GetFilteredPagingFlowUC<WatchList, AccountListsFilter>,
+    getWatchLists: GetUserWatchListsUC,
     getSessionId: GetSavedSessionIdUC,
     private val addMovieToListUC: AddMovieToListUC,
     private val checkItemStatusUC: CheckItemStatusUC,
@@ -49,7 +49,7 @@ class MovieDetailsVM(
     val watchlists: Flow<PagingData<WatchList>> =
         sessionId.filter { it.isNotBlank() }
             .flatMapLatest {
-                getPaginatedLists(
+                getWatchLists(
                     AccountListsFilter(
                         sessionId = sessionId.value
                     )

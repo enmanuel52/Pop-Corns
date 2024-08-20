@@ -12,10 +12,10 @@ import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
-import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
 import com.enmanuelbergling.feature.watchlists.model.CreateListForm
+import com.enmanuelbergling.feature.watchlists.paging.GetUserWatchListsUC
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class WatchListVM(
-    getPaginatedLists: GetFilteredPagingFlowUC<WatchList, AccountListsFilter>,
+internal class WatchListVM(
+    getPaginatedLists: GetUserWatchListsUC,
     getSessionId: GetSavedSessionIdUC,
     private val createListUC: CreateListUC,
     private val deleteListUC: DeleteListUC,

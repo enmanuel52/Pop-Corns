@@ -2,14 +2,14 @@
 androidx-activity = "1.9.0"
 androidx-compose-foundation = "1.7.0-beta01"
 androidx-datastore = "1.1.1"
-androidx-lifecycle = "2.8.0"
+androidx-lifecycle = "2.8.4"
 androidx-test-espresso = "3.5.1"
 androidxComposeBom = "2024.05.00"
 animation = "1.7.0-beta01"
-appcompat = "1.6.1"
 #plugings
 application = "8.2.2"
 ben-manes-versions = "0.51.0"
+constraintlayoutCompose = "1.0.1"
 core-ktx = "1.13.1"
 core-splashscreen = "1.0.1"
 de-jensklingenberg-ktorfit = "1.12.0"
@@ -21,12 +21,12 @@ junit-bom = "+"
 koin-core = "3.5.6"
 koin-test = "3.5.6"
 kotestRunnerJunit5 = "5.9.0"
-kotlin = "1.9.22"
+kotlin = "2.0.0"
 kotlinx-coroutines = "1.8.0"
-kotlinSerialization = "1.9.22"
+kotlinSerialization = "2.0.0"
 kotlinxCollectionsImmutable = "0.3.7"
 kotlinxSerializationJson = "1.6.3"
-ksp = "1.9.22-1.0.18"
+ksp = "2.0.0-1.0.22"
 ktorfit = "1.12.0"
 library = "8.2.2"
 material-icons-extended = "1.6.7"
@@ -37,13 +37,13 @@ pagingCommonKtx = "3.3.0"
 protobuf = "0.9.4"
 ui = "1.7.0-beta01"
 version-catalog-update = "0.8.4"
+walkthrough = "1.1.4"
 
 [libraries]
 androidx-activity-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
-androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose-foundation" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
@@ -52,6 +52,7 @@ androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "core-splashscreen" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
@@ -96,6 +97,7 @@ kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", v
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+walkthrough = { module = "io.github.enmanuel52:walkthrough", version.ref = "walkthrough" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }
@@ -107,6 +109,7 @@ de-jensklingenberg-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = 
 nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 # Plugins defined by this project
 corntime-android-application = { id = "corntime.android.application", version = "unspecified" }

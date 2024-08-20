@@ -63,10 +63,6 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
-    //paging
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.paging.common.ktx)
-
     //Ktorfit
     implementation(libs.de.jensklingenberg.ktorfit.ktorfit.lib.light)
     ksp(libs.de.jensklingenberg.ktorfit.ktorfit.ksp)

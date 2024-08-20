@@ -87,10 +87,7 @@ fun AnimatedContentScope.ActorCard(
     val sharedTransitionScope = LocalSharedTransitionScope.current!!
 
     Column(modifier) {
-        ElevatedCard(
-            onCLick,
-            Modifier.animateContentSize()
-        ) {
+        ElevatedCard(onCLick) {
 
             AsyncImage(
                 model = BASE_POSTER_IMAGE_URL + imageUrl,

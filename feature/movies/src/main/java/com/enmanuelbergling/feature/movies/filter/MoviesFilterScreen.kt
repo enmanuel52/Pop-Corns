@@ -3,28 +3,29 @@ package com.enmanuelbergling.feature.movies.filter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ContextualFlowRow
+import androidx.compose.foundation.layout.ContextualFlowRowOverflow
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRowOverflowScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.VerticalAlignTop
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ElevatedAssistChip
+import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,8 +37,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -83,7 +86,7 @@ fun MoviesFilterRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun MoviesFilterScreen(
     onBack: () -> Unit,
@@ -151,7 +154,7 @@ private fun MoviesFilterScreen(
 
                                 LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
                                     items(SortCriteria.entries) {
-                                        FilterChip(
+                                        ElevatedFilterChip(
                                             selected = it == filter.sortBy,
                                             onClick = {
                                                 onFilter(
@@ -177,47 +180,11 @@ private fun MoviesFilterScreen(
                     }
 
                     item {
-                        ShowUpFrom(
-                            visible = availableGenres.isNotEmpty(),
-                            fromDirection = FromDirection.Top
-                        ) {
-                            Column {
-                                Text(
-                                    text = stringResource(R.string.genres),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-
-                                Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-                                LazyHorizontalStaggeredGrid(
-                                    rows = StaggeredGridCells.Fixed(2),
-                                    horizontalItemSpacing = MaterialTheme.dimen.small,
-                                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-                                    modifier = Modifier.heightIn(
-                                        max = FilterChipDefaults.Height.times(
-                                            2
-                                        ).plus(MaterialTheme.dimen.small)
-                                    )
-                                ) {
-                                    items(availableGenres) {
-                                        FilterChip(
-                                            selected = it in filter.genres,
-                                            onClick = { onFilter(MovieFilterEvent.PickGenre(it)) },
-                                            label = { Text(text = it.name) },
-                                            leadingIcon = {
-                                                if (it in filter.genres) {
-                                                    Icon(
-                                                        imageVector = Icons.Rounded.Check,
-                                                        contentDescription = stringResource(id = R.string.filter_checked_icon)
-                                                    )
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        GenresUi(
+                            availableGenres = availableGenres,
+                            filter = filter,
+                            onFilter = onFilter
+                        )
                     }
 
                     items(movies.itemCount) {
@@ -260,6 +227,82 @@ private fun MoviesFilterScreen(
     }
 }
 
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun GenresUi(
+    availableGenres: List<Genre>,
+    filter: MovieFilter,
+    onFilter: (MovieFilterEvent) -> Unit,
+) {
+    ShowUpFrom(
+        visible = availableGenres.isNotEmpty(),
+        fromDirection = FromDirection.Top
+    ) {
+        Column {
+            Text(
+                text = stringResource(R.string.genres),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+            var maxLines by remember {
+                mutableIntStateOf(2)
+            }
+
+            ContextualFlowRow(
+                itemCount = availableGenres.size,
+                maxLines = maxLines,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                overflow = ContextualFlowRowOverflow.expandOrCollapseIndicator(
+                    expandIndicator = {
+                        ElevatedAssistChip(
+                            onClick = { maxLines++ },
+                            label = {
+                                Text(text = "${this@expandOrCollapseIndicator.itemsLeft} more")
+                            },
+                            colors = AssistChipDefaults.elevatedAssistChipColors(
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                            )
+                        )
+                    },
+                    collapseIndicator = {
+                        ElevatedAssistChip(
+                            onClick = { maxLines = 2 },
+                            label = {
+                                Text(text = stringResource(id = R.string.hide))
+                            },
+                            colors = AssistChipDefaults.elevatedAssistChipColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                labelColor = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        )
+                    }
+                )
+            ) { index ->
+                val currentGenre = availableGenres[index]
+
+                ElevatedFilterChip(
+                    selected = currentGenre in filter.genres,
+                    onClick = { onFilter(MovieFilterEvent.PickGenre(currentGenre)) },
+                    label = { Text(text = currentGenre.name) },
+                    leadingIcon = {
+                        if (currentGenre in filter.genres) {
+                            Icon(
+                                imageVector = Icons.Rounded.Check,
+                                contentDescription = stringResource(id = R.string.filter_checked_icon)
+                            )
+                        }
+                    }
+                )
+            }
+
+        }
+    }
+}
+
 val SortCriteria.labelResource: Int
     get() = when (this) {
         SortCriteria.Popularity -> R.string.popularity
@@ -267,3 +310,7 @@ val SortCriteria.labelResource: Int
         SortCriteria.VoteCount -> R.string.vote_count
         SortCriteria.Revenue -> R.string.revenue
     }
+
+@OptIn(ExperimentalLayoutApi::class)
+val FlowRowOverflowScope.itemsLeft
+    get() = totalItemCount - shownItemCount
