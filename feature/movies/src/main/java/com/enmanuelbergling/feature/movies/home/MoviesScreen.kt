@@ -1,11 +1,15 @@
 package com.enmanuelbergling.feature.movies.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +22,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FastForward
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,17 +35,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
 import com.enmanuelbergling.core.model.MovieSection
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
-import com.enmanuelbergling.core.ui.components.common.HeaderMovieCard
+import com.enmanuelbergling.core.ui.components.common.HeaderMovieInfo
 import com.enmanuelbergling.core.ui.components.common.HeaderMoviePlaceholder
 import com.enmanuelbergling.core.ui.components.common.MovieCard
 import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
@@ -219,22 +228,46 @@ private fun LazyListScope.headersMovies(
                 ) { page, pageModifier ->
                     val movie = upcoming.getOrNull(page)
                     movie?.let {
-                        HeaderMovieCard(
-                            imageUrl = movie.backdropPath.orEmpty(),
-                            title = movie.title,
-                            rating = movie.voteAverage, modifier = pageModifier
-                        ) {
-                            onDetails(movie.id)
+                        ElevatedCard(onClick = { onDetails(movie.id) }, modifier = pageModifier) {
+                            AsyncImage(
+                                model = BASE_BACKDROP_IMAGE_URL + movie.backdropPath.orEmpty(),
+                                contentDescription = "header image",
+                                placeholder = painterResource(
+                                    id = R.drawable.pop_corn_and_cinema_backdrop
+                                ),
+                                error = painterResource(
+                                    id = R.drawable.pop_corn_and_cinema_backdrop
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1.78f),
+                                contentScale = ContentScale.FillWidth
+                            )
                         }
                     }
                 }
+
+                AnimatedContent(
+                    targetState = pagerState.currentPage,
+                    transitionSpec = {
+                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up) togetherWith
+                                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
+                    },
+                    label = "movie info animation",
+                    modifier = Modifier.padding(MaterialTheme.dimen.small)
+                ) { page ->
+                    val movie = upcoming.getOrNull(page)
+
+                    HeaderMovieInfo(title = movie?.title.orEmpty(), rating = movie?.voteAverage ?: .0)
+                }
+
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.verySmall))
 
                 ShiftIndicator(
                     pagerState = pagerState,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    stepSize = 6.dp,
-                    spaceBetween = 8.dp
+                    stepSize = MaterialTheme.dimen.small,
+                    spaceBetween = MaterialTheme.dimen.small
                 )
             }
         }

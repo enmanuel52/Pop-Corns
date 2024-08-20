@@ -115,7 +115,6 @@ fun MovieCardPlaceholder(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderMovieCard(
     imageUrl: String,
@@ -153,7 +152,7 @@ fun HeaderMovieCard(
 }
 
 @Composable
-private fun HeaderMovieInfo(
+fun HeaderMovieInfo(
     title: String,
     rating: Double,
     modifier: Modifier = Modifier,
