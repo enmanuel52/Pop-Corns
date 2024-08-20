@@ -1,4 +1,4 @@
-package com.enmanuelbergling.core.network.paging.source
+package com.enmanuelbergling.feature.watchlists.paging
 
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.model.core.PageModel

@@ -10,14 +10,15 @@ import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.ui.components.messageResource
+import com.enmanuelbergling.feature.watchlists.paging.GetMovieListUC
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class WatchListDetailsVM(
-    getWatchListMovies: GetFilteredPagingFlowUC<Movie, Int>,
+internal class WatchListDetailsVM(
+    getWatchListMovies: GetMovieListUC,
     private val getSessionId: GetSavedSessionIdUC,
     private val deleteMovieFromListUC: DeleteMovieFromListUC,
     private val listId: Int,
