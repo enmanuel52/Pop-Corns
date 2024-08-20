@@ -76,7 +76,7 @@ fun OnboardingScreen(
                 }
             },
             scrollStyle = WalkScrollStyle.Normal,
-            indicatorStyle = IndicatorStyle.Shift
+            indicatorStyle = IndicatorStyle.Shift()
         )
     }
 }

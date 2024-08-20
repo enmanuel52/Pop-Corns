@@ -77,7 +77,7 @@ fun MoviesScreen(
         ) {
 
             MoviesGrid(
-                upcoming = upcomingMovies.take(8),
+                upcoming = upcomingMovies.take(5),
                 topRated = topRatedMovies,
                 nowPlaying = nowPlayingMovies,
                 popular = popularMovies,
@@ -234,7 +234,7 @@ private fun LazyListScope.headersMovies(
                     pagerState = pagerState,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     stepSize = 6.dp,
-                    spaceBetween = 2.dp
+                    spaceBetween = 8.dp
                 )
             }
         }
