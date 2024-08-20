@@ -5,7 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.network.paging.usecase.core.GetPagingFlowUC
+import com.enmanuelbergling.feature.movies.paging.usecase.GetSectionMoviesUC
 
-class TopRatedMoviesVM(getNowPlayingMovies: GetPagingFlowUC<Movie>) : ViewModel() {
-    val movies = getNowPlayingMovies().cachedIn(viewModelScope)
+internal class TopRatedMoviesVM(getSectionMoviesUC: GetSectionMoviesUC) : ViewModel() {
+    val movies = getSectionMoviesUC.getTopRated().cachedIn(viewModelScope)
 }

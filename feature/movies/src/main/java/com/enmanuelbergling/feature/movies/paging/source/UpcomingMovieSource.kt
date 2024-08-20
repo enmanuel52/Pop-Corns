@@ -1,4 +1,4 @@
-package com.enmanuelbergling.core.network.paging.source
+package com.enmanuelbergling.feature.movies.paging.source
 
 import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 import com.enmanuelbergling.core.model.core.PageModel
