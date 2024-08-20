@@ -1,4 +1,4 @@
-package com.enmanuelbergling.core.network.paging.source.core
+package com.enmanuelbergling.core.ui.core
 
 import android.util.Log
 import androidx.paging.PagingSource

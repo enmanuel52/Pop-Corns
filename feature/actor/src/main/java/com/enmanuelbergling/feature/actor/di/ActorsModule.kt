@@ -18,9 +18,8 @@ internal val actorDetailsScreenModule = module {
 
 val actorsModule = module {
     includes(actorDetailsScreenModule)
+    singleOf(::GetPopularActorsUC)
 
     viewModelOf(::ActorsVM)
     viewModelOf(::ActorDetailsVM)
-
-    singleOf(::GetPopularActorsUC)
 }

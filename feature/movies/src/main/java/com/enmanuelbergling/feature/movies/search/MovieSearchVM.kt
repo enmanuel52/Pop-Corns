@@ -10,7 +10,7 @@ import com.enmanuelbergling.core.domain.usecase.movie.search.DeleteSearchSuggest
 import com.enmanuelbergling.core.domain.usecase.movie.search.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.QueryString
-import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
+import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -22,8 +22,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MovieSearchVM(
-    getMovies: GetFilteredPagingFlowUC<Movie, QueryString>,
+internal class MovieSearchVM(
+    getMovies: GetFilteredMoviesUC,
     private val addSearchSuggestionUC: AddSearchSuggestionUC,
     private val clearSearchSuggestionsUC: ClearSearchSuggestionsUC,
     private val deleteSearchSuggestionUC: DeleteSearchSuggestionUC,

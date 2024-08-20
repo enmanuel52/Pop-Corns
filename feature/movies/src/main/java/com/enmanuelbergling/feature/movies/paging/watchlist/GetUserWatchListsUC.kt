@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.watchlists.paging
+package com.enmanuelbergling.feature.movies.paging.watchlist
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

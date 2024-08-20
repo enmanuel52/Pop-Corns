@@ -5,7 +5,7 @@ import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.QueryString
-import com.enmanuelbergling.core.network.paging.source.core.GenericPagingSource
+import com.enmanuelbergling.core.ui.core.GenericPagingSource
 
 internal class SearchMovieSource(service: MovieRemoteDS, query: QueryString) :
     GenericPagingSource<Movie>(

@@ -6,7 +6,7 @@ import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.MovieFilter
 import com.enmanuelbergling.core.model.movie.SortCriteria
-import com.enmanuelbergling.core.network.paging.source.core.GenericPagingSource
+import com.enmanuelbergling.core.ui.core.GenericPagingSource
 
 internal class MoviesByFilterSource(remoteDS: MovieRemoteDS, filter: MovieFilter) :
     GenericPagingSource<Movie>(

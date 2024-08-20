@@ -7,11 +7,10 @@ import com.enmanuelbergling.core.domain.usecase.movie.GetMovieGenresUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Genre
-import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.MovieFilter
-import com.enmanuelbergling.core.network.paging.usecase.core.GetFilteredPagingFlowUC
 import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.movies.filter.model.MovieFilterEvent
+import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +20,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MoviesFilterVM(
-    getMovies: GetFilteredPagingFlowUC<Movie, MovieFilter>,
+internal class MoviesFilterVM(
+    getMovies: GetFilteredMoviesUC,
     private val getMovieGenresUC: GetMovieGenresUC,
 ) : ViewModel() {
 

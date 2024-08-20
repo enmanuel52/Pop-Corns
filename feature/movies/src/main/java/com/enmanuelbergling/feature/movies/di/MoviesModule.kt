@@ -17,6 +17,7 @@ import com.enmanuelbergling.feature.movies.list.viewmodel.TopRatedMoviesVM
 import com.enmanuelbergling.feature.movies.list.viewmodel.UpcomingMoviesVM
 import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
 import com.enmanuelbergling.feature.movies.paging.usecase.GetSectionMoviesUC
+import com.enmanuelbergling.feature.movies.paging.watchlist.GetUserWatchListsUC
 import com.enmanuelbergling.feature.movies.search.MovieSearchVM
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
@@ -36,7 +37,14 @@ internal val movieDetailsScreenModule = module {
     singleOf(::CreditsChainHandler)
 }
 
+private val pagingModule = module {
+    singleOf(::GetSectionMoviesUC)
+    singleOf(::GetFilteredMoviesUC)
+    singleOf(::GetUserWatchListsUC)
+}
+
 val moviesModule = module {
+    includes(pagingModule)
     includes(movieScreenModule, movieDetailsScreenModule)
 
     viewModelOf(::MovieDetailsVM)
@@ -49,11 +57,4 @@ val moviesModule = module {
 
     viewModelOf(::MovieSearchVM)
     viewModelOf(::MoviesFilterVM)
-
-    includes(pagingModule)
-}
-
-private val pagingModule = module {
-    singleOf(::GetSectionMoviesUC)
-    singleOf(::GetFilteredMoviesUC)
 }
