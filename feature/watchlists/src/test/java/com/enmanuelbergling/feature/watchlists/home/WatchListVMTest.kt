@@ -4,8 +4,6 @@ import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.core.network.di.pagingSourceModule
-import com.enmanuelbergling.core.network.di.pagingUCModule
 import com.enmanuelbergling.core.testing.test.BaseBehaviorTest
 import com.enmanuelbergling.feature.watchlists.di.watchlistModule
 import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
@@ -19,7 +17,7 @@ import org.koin.core.component.inject
 
 
 class WatchListVMTest : BaseBehaviorTest(
-    watchlistModule + pagingSourceModule + pagingUCModule
+    listOf(watchlistModule)
 ) {
     private val watchListVM: WatchListVM by inject()
 

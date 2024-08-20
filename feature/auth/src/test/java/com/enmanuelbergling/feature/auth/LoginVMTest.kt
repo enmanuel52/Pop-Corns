@@ -1,8 +1,6 @@
 package com.enmanuelbergling.feature.auth
 
 import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.core.network.di.pagingSourceModule
-import com.enmanuelbergling.core.network.di.pagingUCModule
 import com.enmanuelbergling.core.testing.test.BaseBehaviorTest
 import com.enmanuelbergling.feature.auth.di.loginModule
 import com.enmanuelbergling.feature.auth.model.LoginEvent
@@ -12,7 +10,7 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.koin.test.inject
 
 class LoginVMTest : BaseBehaviorTest(
-    loginModule + pagingSourceModule + pagingUCModule
+    loginModule
 ) {
     private val loginVM: LoginVM by inject()
 

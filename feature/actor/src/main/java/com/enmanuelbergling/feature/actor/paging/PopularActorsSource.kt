@@ -1,4 +1,4 @@
-package com.enmanuelbergling.core.network.paging.source
+package com.enmanuelbergling.feature.actor.paging
 
 import com.enmanuelbergling.core.domain.datasource.remote.ActorRemoteDS
 import com.enmanuelbergling.core.model.actor.Actor
