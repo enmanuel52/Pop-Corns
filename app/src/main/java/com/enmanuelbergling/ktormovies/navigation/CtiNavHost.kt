@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
@@ -27,13 +28,14 @@ import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
 @Composable
 fun CtiNavHost(
     state: CornTimeAppState,
+    modifier: Modifier = Modifier,
     onOpenDrawer: () -> Unit,
 ) {
     val navController = state.navController
 
     val context = LocalContext.current
 
-    NavHost(navController, startDestination = state.startDestination) {
+    NavHost(navController, startDestination = state.startDestination, modifier = modifier) {
 
         moviesGraph(
             onBack = navController::navigateUp,
