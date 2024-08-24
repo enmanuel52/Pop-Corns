@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,7 +63,10 @@ import org.koin.androidx.compose.koinViewModel
 private const val NO_LIST = -1
 
 @Composable
-fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: () -> Unit) {
+fun WatchListRoute(
+    onDetails: (listId: Int, listName: String) -> Unit,
+    onOpenDrawer: () -> Unit,
+) {
     val viewModel = koinViewModel<WatchListVM>()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -84,7 +87,7 @@ fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: (
         viewModel::onCreateForm,
         viewModel::deleteList,
         onDetails,
-        onBack
+        onOpenDrawer = onOpenDrawer,
     )
 }
 
@@ -96,7 +99,7 @@ private fun WatchListScreen(
     onCreateFormEvent: (CreateListEvent) -> Unit,
     onDeleteList: (listId: Int) -> Unit,
     onDetails: (listId: Int, listName: String) -> Unit,
-    onBack: () -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -119,10 +122,10 @@ private fun WatchListScreen(
     Scaffold(Modifier.fillMaxSize(), topBar = {
         CenterAlignedTopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) },
             navigationIcon = {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = onOpenDrawer) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
-                        contentDescription = stringResource(id = R.string.back_icon)
+                        imageVector = Icons.Rounded.Menu,
+                        contentDescription = "Sandwich menu icon"
                     )
                 }
             },

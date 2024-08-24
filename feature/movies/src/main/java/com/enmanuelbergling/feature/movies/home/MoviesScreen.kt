@@ -22,7 +22,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FastForward
+import androidx.compose.material.icons.rounded.FilterList
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +34,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -61,10 +68,14 @@ import com.enmanuelbergling.core.ui.core.isScrollingForward
 import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesScreen(
     onDetails: (id: Int) -> Unit,
     onMore: (MovieSection) -> Unit,
+    onSearch: () -> Unit,
+    onFilter: () -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
 
     val viewModel = koinViewModel<MoviesVM>()
@@ -77,9 +88,21 @@ fun MoviesScreen(
         SnackbarHostState()
     }
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     HandleUiState(uiState, snackState = snackBarHostState, onRetry = viewModel::loadUi)
 
-    Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
+        topBar = {
+            MoviesTopBar(
+                scrollBehavior = scrollBehavior,
+                onOpenDrawer = onOpenDrawer,
+                onSearch = onSearch,
+                onFilter = onFilter,
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -96,6 +119,46 @@ fun MoviesScreen(
             )
         }
     }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun MoviesTopBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    onOpenDrawer: () -> Unit,
+    onSearch: () -> Unit,
+    onFilter: () -> Unit,
+) {
+    TopAppBar(
+        title = { Text(text = stringResource(id = R.string.movies)) },
+        navigationIcon = {
+
+            IconButton(
+                onClick = onOpenDrawer
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Menu,
+                    contentDescription = stringResource(R.string.drawer_icon)
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onFilter) {
+                Icon(
+                    imageVector = Icons.Rounded.FilterList,
+                    contentDescription = stringResource(R.string.filter_icon)
+                )
+            }
+
+            IconButton(onClick = onSearch) {
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = stringResource(R.string.search_icon)
+                )
+            }
+        },
+        scrollBehavior = scrollBehavior
+    )
 }
 
 @Composable

@@ -12,6 +12,8 @@ import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.movieSearchScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesFilterScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesGraph
+import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
+import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
@@ -25,6 +27,7 @@ import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
 @Composable
 fun CtiNavHost(
     state: CornTimeAppState,
+    onOpenDrawer: () -> Unit,
 ) {
     val navController = state.navController
 
@@ -40,10 +43,13 @@ fun CtiNavHost(
                     action.id, action.imageUrl, action.name
                 )
             },
-            onMore = navController::navigateToMoviesSection
+            onMore = navController::navigateToMoviesSection,
+            onSearch = state.navController::navigateToMovieSearch,
+            onFilter = state.navController::navigateToMovieFilter,
+            onOpenDrawer = onOpenDrawer,
         )
 
-        seriesGraph()
+        seriesGraph(onOpenDrawer = onOpenDrawer)
 
         actorsGraph(
             onBack = navController::navigateUp,
@@ -52,7 +58,8 @@ fun CtiNavHost(
                     action.id, action.imageUrl, action.name
                 )
             },
-            onMovie = navController::navigateToMoviesDetails
+            onMovie = navController::navigateToMoviesDetails,
+            onOpenDrawer = onOpenDrawer,
         )
 
         loginScreen(
@@ -74,11 +81,12 @@ fun CtiNavHost(
             onAddShortcut = { watchlist -> state.addWatchlistShortcut(context, watchlist) },
             onDeleteShortcut = { watchlistId ->
                 state.deleteWatchlistShortcut(
-                    context,
-                    watchlistId
+                    context = context,
+                    watchlistId = watchlistId
                 )
             },
-            onBack = navController::navigateUp
+            onBack = navController::navigateUp,
+            onOpenDrawer = onOpenDrawer,
         )
 
         movieSearchScreen(navController::navigateToMoviesDetails, navController::navigateUp)

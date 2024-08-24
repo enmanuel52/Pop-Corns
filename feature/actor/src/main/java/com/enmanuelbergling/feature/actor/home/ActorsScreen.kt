@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,7 +42,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AnimatedContentScope.ActorsScreen(
     onDetails: (ActorDetailNavAction) -> Unit,
-    onBack: () -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     val viewModel = koinViewModel<ActorsVM>()
 
@@ -56,10 +56,10 @@ fun AnimatedContentScope.ActorsScreen(
             CenterAlignedTopAppBar(title = {
                 Text(text = stringResource(R.string.actors))
             }, navigationIcon = {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = onOpenDrawer) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
-                        contentDescription = stringResource(id = R.string.back_icon)
+                        imageVector = Icons.Rounded.Menu,
+                        contentDescription = "Sandwich menu icon"
                     )
                 }
             }, scrollBehavior = scrollBehavior)

@@ -19,10 +19,12 @@ fun NavHostController.navigateToSeriesGraph(navOptions: NavOptions) {
     navigate(SeriesGraphDestination, navOptions)
 }
 
-fun NavGraphBuilder.seriesGraph() {
+fun NavGraphBuilder.seriesGraph(
+    onOpenDrawer: () -> Unit,
+) {
     navigation<SeriesGraphDestination>(startDestination = SeriesDestination) {
         composable<SeriesDestination> {
-            SeriesScreen()
+            SeriesScreen(onOpenDrawer)
         }
     }
 }

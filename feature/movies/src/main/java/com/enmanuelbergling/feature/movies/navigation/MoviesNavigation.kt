@@ -51,10 +51,19 @@ fun NavGraphBuilder.moviesGraph(
     onMovie: (id: Int) -> Unit,
     onActor: (ActorDetailNavAction) -> Unit,
     onMore: (MovieSection) -> Unit,
+    onSearch: () -> Unit,
+    onFilter: () -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     navigation<MoviesGraphDestination>(startDestination = MoviesDestination) {
         composable<MoviesDestination> {
-            MoviesScreen(onDetails = onMovie, onMore)
+            MoviesScreen(
+                onDetails = onMovie,
+                onMore = onMore,
+                onSearch = onSearch,
+                onFilter = onFilter,
+                onOpenDrawer = onOpenDrawer
+            )
         }
 
         composable<MoviesDetailsDestination> { backStackEntry ->

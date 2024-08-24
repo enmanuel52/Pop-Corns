@@ -46,11 +46,12 @@ fun NavGraphBuilder.actorsGraph(
     onBack: () -> Unit,
     onDetails: (ActorDetailNavAction) -> Unit,
     onMovie: (movieId: Int) -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     navigation<ActorsGraphDestination>(ActorsDestination) {
         composable<ActorsDestination> {
             ActorsScreen(
-                onDetails = onDetails, onBack = onBack
+                onDetails = onDetails, onOpenDrawer
             )
         }
 

@@ -33,6 +33,9 @@ class MoviesVM(
         }.onFailure { _ ->
             _uiState.update { SimplerUi.Error(NetworkException.ReadTimeOutException.messageResource) }
         }.onSuccess {
+            _uiDataState.update {
+                it.copy(upcoming = it.upcoming.shuffled())
+            }
             _uiState.update { SimplerUi.Idle }
         }
     }
