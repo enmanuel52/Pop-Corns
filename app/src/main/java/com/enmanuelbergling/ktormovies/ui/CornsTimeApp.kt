@@ -24,8 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
@@ -56,9 +54,7 @@ import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
 import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
-import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
-import com.enmanuelbergling.ktormovies.navigation.loginRequired
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -85,12 +81,12 @@ fun CornsTimeApp(
                             state.navigateToDrawerDestination(drawerDestination)
                         }
                     },
-                    isSelected = { it.any { route -> state.matchRoute(route = route) } },
+                    isSelected = { route -> state.matchRoute(route = route) },
                     userDetails = userDetails,
                     onSettings = {
                         scope.launch {
                             drawerState.close()
-                            state.navigateToDrawerDestination(DrawerDestination.Settings)
+                            state.navigateToDrawerDestination(TopDestination.Settings)
                         }
                     }
                 )
@@ -100,14 +96,6 @@ fun CornsTimeApp(
         drawerState = drawerState,
     ) {
         Scaffold(
-            bottomBar = {
-                if (state.shouldShowMainBottomNav) {
-                    CornBottomNav(
-                        onDestination = state::navigateToTopDestination,
-                        isSelected = { route -> state.matchRoute(route) }
-                    )
-                }
-            },
             snackbarHost = { SnackbarHost(snackBarHostState) },
             topBar = {
                 if (state.isTopDestination) {
@@ -196,8 +184,8 @@ private fun AppTopBar(
 
 @Composable
 fun DrawerContent(
-    onDrawerDestination: (DrawerDestination) -> Unit,
-    isSelected: @Composable (List<Any>) -> Boolean,
+    onDrawerDestination: (TopDestination) -> Unit,
+    isSelected: @Composable (route: Any) -> Boolean,
     userDetails: UserDetails?,
     onSettings: () -> Unit,
 ) {
@@ -229,16 +217,17 @@ fun DrawerContent(
             )
         }
 
-        DrawerDestination.entries
+        TopDestination.entries
             .filterNot { it.loginRequired && userDetails == null }
             .forEach { destination ->
                 NavigationDrawerItem(
                     label = { Text(text = stringResource(destination.label)) },
-                    selected = isSelected(destination.routes),
+                    selected = isSelected(destination.route),
                     onClick = { onDrawerDestination(destination) },
                     icon = {
                         Icon(
-                            imageVector = if (isSelected(destination.routes)) destination.icon else destination.unselectedIcon,
+                            imageVector = if (isSelected(destination.route)) destination.icon
+                            else destination.unselectedIcon,
                             contentDescription = "nav icon"
                         )
                     },
@@ -271,30 +260,5 @@ fun UserDetailsUi(
         Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
         Text(text = userDetails?.username.orEmpty().ifBlank { stringResource(R.string.nosey) })
-    }
-}
-
-@Composable
-fun CornBottomNav(
-    onDestination: (TopDestination) -> Unit,
-    isSelected: @Composable (Any) -> Boolean,
-) {
-    NavigationBar {
-        TopDestination.entries.forEach { cinemaContent ->
-
-            NavigationBarItem(
-                selected = isSelected(cinemaContent.route),
-                onClick = { onDestination(cinemaContent) },
-                icon = {
-                    Icon(
-                        imageVector = if (isSelected(cinemaContent.route)) cinemaContent.icon
-                        else cinemaContent.unselectedIcon,
-                        contentDescription = stringResource(R.string.nav_bar_icon)
-                    )
-                },
-                label = { Text(text = stringResource(cinemaContent.label)) }
-            )
-        }
-
     }
 }

@@ -23,7 +23,6 @@ import com.enmanuelbergling.feature.series.navigation.navigateToSeriesGraph
 import com.enmanuelbergling.feature.settings.navigation.navigateToSettingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListGraph
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 
 @Composable
@@ -51,17 +50,11 @@ class CornTimeAppState(
     @Composable
     fun matchRoute(route: Any) = currentDestination?.hasRoute(route::class) == true
 
-    val shouldShowMainBottomNav: Boolean
-        @Composable get() = isTopDestination
-
-    fun navigateToTopDestination(destination: TopDestination) {
+    fun navigateToDrawerDestination(destination: TopDestination) {
         when (destination) {
             TopDestination.Movies -> navController.navigateToMoviesGraph(
                 navOptions {
                     launchSingleTop = true
-                    popUpTo(MoviesGraphDestination) {
-                        inclusive = true
-                    }
                 }
             )
 
@@ -70,34 +63,26 @@ class CornTimeAppState(
                     launchSingleTop = true
                 }
             )
-        }
-    }
 
-    fun navigateToDrawerDestination(destination: DrawerDestination) {
-        when (destination) {
-            DrawerDestination.Home -> navController.navigateToMoviesGraph(
+
+            TopDestination.Actors -> navController.navigateToActorsGraph(
                 navOptions {
                     launchSingleTop = true
                 }
             )
 
-            DrawerDestination.Actors -> navController.navigateToActorsGraph(
+            TopDestination.Lists -> navController.navigateToListGraph(
                 navOptions {
                     launchSingleTop = true
                 }
             )
 
-            DrawerDestination.Lists -> navController.navigateToListGraph(
+            TopDestination.Settings -> navController.navigateToSettingsGraph(
                 navOptions {
                     launchSingleTop = true
                 }
             )
 
-            DrawerDestination.Settings -> navController.navigateToSettingsGraph(
-                navOptions {
-                    launchSingleTop = true
-                }
-            )
         }
     }
 
