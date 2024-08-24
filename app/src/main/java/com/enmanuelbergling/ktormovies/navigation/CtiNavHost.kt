@@ -35,7 +35,11 @@ fun CtiNavHost(
 
     val context = LocalContext.current
 
-    NavHost(navController, startDestination = state.startDestination, modifier = modifier) {
+    NavHost(
+        navController,
+        startDestination = state.startDestination,
+        modifier = modifier,
+        ) {
 
         moviesGraph(
             onBack = navController::navigateUp,
@@ -96,7 +100,9 @@ fun CtiNavHost(
         moviesFilterScreen(navController::navigateToMoviesDetails, navController::navigateUp)
 
         settingsGraph(
-            onBack = navController::navigateUp,
+            onBack = {
+                state.navigateToDrawerDestination(TopDestination.Movies)
+            },
             onLogin = navController::navigateToLoginScreen
         )
     }

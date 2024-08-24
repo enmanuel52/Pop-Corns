@@ -3,8 +3,8 @@ package com.enmanuelbergling.feature.series.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.enmanuelbergling.core.ui.components.topComposable
 import com.enmanuelbergling.feature.series.home.SeriesScreen
 import kotlinx.serialization.Serializable
 
@@ -23,7 +23,7 @@ fun NavGraphBuilder.seriesGraph(
     onOpenDrawer: () -> Unit,
 ) {
     navigation<SeriesGraphDestination>(startDestination = SeriesDestination) {
-        composable<SeriesDestination> {
+        topComposable<SeriesDestination> {
             SeriesScreen(onOpenDrawer)
         }
     }

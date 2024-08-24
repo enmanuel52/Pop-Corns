@@ -17,6 +17,7 @@ import com.enmanuelbergling.core.common.android_util.removeDynamicShortCut
 import com.enmanuelbergling.core.ui.model.WatchlistShortcut
 import com.enmanuelbergling.core.ui.util.watchlistShortcutId
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
+import com.enmanuelbergling.feature.movies.navigation.MoviesDestination
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.series.navigation.navigateToSeriesGraph
@@ -44,8 +45,10 @@ class CornTimeAppState(
     val startDestination = MoviesGraphDestination
 
     val isTopDestination: Boolean
-        @Composable get() = TopDestination.entries.map { it.route }
-            .any { route -> currentDestination?.hasRoute(route::class) == true }
+        @Composable get() = currentDestination?.let { destination ->
+            TopDestination.entries.map { it.route }
+                .any { route -> destination.hasRoute(route::class) }
+        } ?: false
 
     @Composable
     fun matchRoute(route: Any) = currentDestination?.hasRoute(route::class) == true
@@ -54,32 +57,34 @@ class CornTimeAppState(
         when (destination) {
             TopDestination.Movies -> navController.navigateToMoviesGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination> {
+                        inclusive = true
+                    }
                 }
             )
 
             TopDestination.Series -> navController.navigateToSeriesGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
 
 
             TopDestination.Actors -> navController.navigateToActorsGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
 
             TopDestination.Lists -> navController.navigateToListGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
 
             TopDestination.Settings -> navController.navigateToSettingsGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
 

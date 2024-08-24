@@ -106,7 +106,7 @@ fun CornsTimeApp(
             positionalThreshold = { distance: Float -> distance * 0.6f },
             velocityThreshold = { with(density) { 80.dp.toPx() } },
             decayAnimationSpec = decayAnimationSpec,
-            snapAnimationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow),
+            snapAnimationSpec = spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
             anchors = draggableAnchors
         )
     }
@@ -128,38 +128,30 @@ fun CornsTimeApp(
                 .background(containerColor)
                 .padding(paddingValues)
         ) {
-            if (state.isTopDestination) {
-                DrawerContent(
-                    onDrawerDestination = { drawerDestination ->
-                        scope.launch {
-                            draggableState.animateTo(NewDrawerState.Closed)
-                        }
-                        state.navigateToDrawerDestination(drawerDestination)
-                    },
-                    isSelected = { route -> state.matchRoute(route = route) },
-                    userDetails = userDetails,
-                    onCloseDrawer = {
-                        scope.launch {
-                            draggableState.animateTo(NewDrawerState.Closed)
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(NewDrawerWidth)
-                        .padding(MaterialTheme.dimen.medium),
-                    containerColor = containerColor
-                )
-            }
+            DrawerContent(
+                onDrawerDestination = { drawerDestination ->
+                    state.navigateToDrawerDestination(drawerDestination)
+                    scope.launch {
+                        draggableState.animateTo(NewDrawerState.Closed)
+                    }
+                },
+                isSelected = { route -> state.matchRoute(route = route) },
+                userDetails = userDetails,
+                onCloseDrawer = {
+                    scope.launch {
+                        draggableState.animateTo(NewDrawerState.Closed)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(NewDrawerWidth)
+                    .padding(MaterialTheme.dimen.medium),
+                containerColor = containerColor
+            )
 
             SharedTransitionLayout {
                 CompositionLocalProvider(value = LocalSharedTransitionScope provides this) {
-                    CtiNavHost(
-                        state = state,
-                        onOpenDrawer = {
-                            scope.launch {
-                                draggableState.animateTo(NewDrawerState.Open)
-                            }
-                        },
+                    Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .graphicsLayer {
@@ -179,8 +171,32 @@ fun CornsTimeApp(
                                 shape = RoundedCornerShape(percent)
                                 clip = true
                             }
-                            .anchoredDraggable(draggableState, Orientation.Horizontal)
-                    )
+                            .anchoredDraggable(
+                                state = draggableState,
+                                orientation = Orientation.Horizontal,
+                                enabled = state.isTopDestination
+                            )
+                    ) {
+                        CtiNavHost(
+                            state = state,
+                            onOpenDrawer = {
+                                scope.launch {
+                                    draggableState.animateTo(NewDrawerState.Open)
+                                }
+                            },
+                        )
+
+                        if (draggableState.settledValue == NewDrawerState.Open) {
+                            Box(modifier = Modifier
+                                .fillMaxSize()
+                                .clickable(null, null) {
+                                    scope.launch {
+                                        draggableState.animateTo(NewDrawerState.Closed)
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -270,7 +286,11 @@ fun NavDrawerItem(
     )
 
     Row(
-        modifier = modifier.clickable { onClick() },
+        modifier = modifier.clickable(
+            interactionSource = null,
+            indication = null,
+            onClick = onClick,
+        ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(

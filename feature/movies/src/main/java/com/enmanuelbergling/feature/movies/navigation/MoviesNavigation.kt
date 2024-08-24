@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.enmanuelbergling.core.model.MovieSection
+import com.enmanuelbergling.core.ui.components.topComposable
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.movies.details.MovieDetailsScreen
 import com.enmanuelbergling.feature.movies.filter.MoviesFilterRoute
@@ -56,7 +57,8 @@ fun NavGraphBuilder.moviesGraph(
     onOpenDrawer: () -> Unit,
 ) {
     navigation<MoviesGraphDestination>(startDestination = MoviesDestination) {
-        composable<MoviesDestination> {
+
+        topComposable<MoviesDestination> {
             MoviesScreen(
                 onDetails = onMovie,
                 onMore = onMore,

@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.enmanuelbergling.core.ui.components.topComposable
 import com.enmanuelbergling.core.ui.model.WatchlistShortcut
 import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsRoute
 import com.enmanuelbergling.feature.watchlists.home.WatchListRoute
@@ -44,7 +45,7 @@ fun NavGraphBuilder.listGraph(
     onOpenDrawer: () -> Unit,
 ) {
     navigation<ListGraphDestination>(startDestination = WatchListDestination) {
-        composable<WatchListDestination> {
+        topComposable<WatchListDestination> {
             WatchListRoute(
                 onDetails = onDetails,
                 onOpenDrawer = onOpenDrawer,
