@@ -2,13 +2,11 @@ package com.enmanuelbergling.ktormovies.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.core.common.android_util.isOnline
@@ -48,41 +46,36 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
             val userDetails by viewModel.userDetails.collectAsStateWithLifecycle()
             val isOnboarding by viewModel.isOnboarding.collectAsStateWithLifecycle(initialValue = false)
 
+            val appState = rememberCornTimeAppState(
+                isOnline = isOnlineState,
+            )
+
             CornTimeTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val appState = rememberCornTimeAppState(
-                        isOnline = isOnlineState,
-                    )
+                CornsTimeApp(
+                    state = appState,
+                    userDetails = userDetails,
+                )
 
-                    CornsTimeApp(
-                        state = appState,
-                        userDetails = userDetails,
-                    )
+                if (isOnboarding) {
+                    OnboardingScreen(viewModel::finishOnboarding)
+                }
 
-                    if (isOnboarding){
-                        OnboardingScreen(viewModel::finishOnboarding)
-                    }
+            }
 
-                    LaunchedEffect(key1 = Unit) {
-                        if (searchMovieShortCutClicked) {
-                            appState.navController.navigateToMovieSearch()
-                        }
-                    }
+            LaunchedEffect(key1 = Unit) {
+                if (searchMovieShortCutClicked) {
+                    appState.navController.navigateToMovieSearch()
+                }
+            }
 
-                    LaunchedEffect(key1 = userDetails?.isEmpty) {
-                        //we collected at least once
-                        if (userDetails != null) {
-                            if (watchlistShortCutId != NO_WATCHLIST) {
-                                appState.navController.navigateToListDetailsScreen(
-                                    listId = watchlistShortCutId,
-                                    listName = watchListShortCutName
-                                )
-                            }
-                        }
+            LaunchedEffect(key1 = userDetails?.isEmpty) {
+                //we collected at least once
+                if (userDetails != null) {
+                    if (watchlistShortCutId != NO_WATCHLIST) {
+                        appState.navController.navigateToListDetailsScreen(
+                            listId = watchlistShortCutId,
+                            listName = watchListShortCutName
+                        )
                     }
                 }
             }
