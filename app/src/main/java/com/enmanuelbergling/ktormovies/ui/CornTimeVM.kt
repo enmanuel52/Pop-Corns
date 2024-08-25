@@ -7,6 +7,7 @@ import com.enmanuelbergling.core.domain.usecase.onboarding.IsOnboardingUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
+import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ class CornTimeVM(
     private val getSavedUserUC: GetSavedUserUC,
     isOnboardingUC: IsOnboardingUC,
     private val finishOnboardingUC: FinishOnboardingUC,
+    private val logoutUC: LogoutUC,
 ) : ViewModel() {
 
     val darkTheme = getDarkThemeUC()
@@ -34,5 +36,9 @@ class CornTimeVM(
 
     fun finishOnboarding() = viewModelScope.launch {
         finishOnboardingUC()
+    }
+
+    fun logout() = viewModelScope.launch {
+        logoutUC()
     }
 }

@@ -84,6 +84,7 @@ val NewDrawerWidth = 200.dp
 fun CornsTimeApp(
     state: CornTimeAppState = rememberCornTimeAppState(),
     userDetails: UserDetails?,
+    onLogout: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -146,7 +147,8 @@ fun CornsTimeApp(
                     .fillMaxHeight()
                     .width(NewDrawerWidth)
                     .padding(MaterialTheme.dimen.medium),
-                containerColor = containerColor
+                containerColor = containerColor,
+                onLogout = onLogout
             )
 
             SharedTransitionLayout {
@@ -225,6 +227,7 @@ fun DrawerContent(
     onCloseDrawer: () -> Unit,
     isSelected: @Composable (route: Any) -> Boolean,
     userDetails: UserDetails?,
+    onLogout: () -> Unit,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
 ) {
@@ -263,10 +266,12 @@ fun DrawerContent(
                 label = stringResource(id = R.string.logout),
                 selected = false,
                 imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
-                modifier = Modifier.scale(.85f)
-            ) {
-                TODO("log out from here")
-            }
+                modifier = Modifier.scale(.85f),
+                onClick = {
+                    onLogout()
+                    onCloseDrawer()
+                },
+            )
         }
     }
 }
@@ -324,6 +329,7 @@ private fun DrawerContentPrev() {
                 .width(NewDrawerWidth)
                 .padding(12.dp),
             onCloseDrawer = {},
+            onLogout = {}
         )
     }
 }

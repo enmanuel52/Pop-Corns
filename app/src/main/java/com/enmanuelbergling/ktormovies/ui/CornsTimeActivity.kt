@@ -2,9 +2,7 @@ package com.enmanuelbergling.ktormovies.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -54,6 +52,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                 CornsTimeApp(
                     state = appState,
                     userDetails = userDetails,
+                    onLogout = viewModel::logout
                 )
 
                 if (isOnboarding) {
