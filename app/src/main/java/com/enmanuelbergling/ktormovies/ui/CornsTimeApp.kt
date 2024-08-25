@@ -39,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -115,7 +116,7 @@ fun CornsTimeApp(
     val containerColor by animateColorAsState(
         targetValue = lerp(
             start = MaterialTheme.colorScheme.surface,
-            stop = MaterialTheme.colorScheme.tertiaryContainer,
+            stop = MaterialTheme.colorScheme.primaryContainer,
             fraction = draggableState.requireOffset() / drawerWidthPx
         ),
         label = "container color animation",
@@ -179,14 +180,16 @@ fun CornsTimeApp(
                                 enabled = state.isTopDestination
                             )
                     ) {
-                        CtiNavHost(
-                            state = state,
-                            onOpenDrawer = {
-                                scope.launch {
-                                    draggableState.animateTo(NewDrawerState.Open)
-                                }
-                            },
-                        )
+                        Surface {
+                            CtiNavHost(
+                                state = state,
+                                onOpenDrawer = {
+                                    scope.launch {
+                                        draggableState.animateTo(NewDrawerState.Open)
+                                    }
+                                },
+                            )
+                        }
 
                         if (draggableState.settledValue == NewDrawerState.Open) {
                             Box(modifier = Modifier

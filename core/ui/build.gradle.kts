@@ -13,6 +13,7 @@ dependencies {
     api(project(":core:common:util"))
 
     api(libs.androidx.activity.activity.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
 
     val composeBom = platform(libs.androidx.compose.bom)
     api(composeBom)

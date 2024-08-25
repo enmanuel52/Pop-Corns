@@ -13,7 +13,6 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +23,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -74,8 +74,7 @@ fun WatchListRoute(
     val createListForm by viewModel.createListFormState.collectAsStateWithLifecycle()
 
     HandleUiState(
-        uiState = uiState,
-        onIdle = viewModel::onIdle
+        uiState = uiState, onIdle = viewModel::onIdle
     ) {
         lists.refresh()
         viewModel.onIdle()
@@ -110,35 +109,29 @@ private fun WatchListScreen(
     }
 
     if (pickedList != NO_LIST) {
-        DeleteMovieConfirmationDialog(
-            onDismiss = { pickedList = NO_LIST },
-            onDelete = {
-                val tempListId = pickedList
-                pickedList = NO_LIST
-                onDeleteList(tempListId)
-            })
+        DeleteMovieConfirmationDialog(onDismiss = { pickedList = NO_LIST }, onDelete = {
+            val tempListId = pickedList
+            pickedList = NO_LIST
+            onDeleteList(tempListId)
+        })
     }
 
     Scaffold(Modifier.fillMaxSize(), topBar = {
-        CenterAlignedTopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) },
-            navigationIcon = {
-                IconButton(onClick = onOpenDrawer) {
+        TopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) }, navigationIcon = {
+            IconButton(onClick = onOpenDrawer) {
+                Icon(
+                    imageVector = Icons.Rounded.Menu, contentDescription = "Sandwich menu icon"
+                )
+            }
+        }, actions = {
+            if (!lists.isRefreshing) {
+                IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
                     Icon(
-                        imageVector = Icons.Rounded.Menu,
-                        contentDescription = "Sandwich menu icon"
+                        imageVector = Icons.Rounded.Add, contentDescription = stringResource(R.string.add_icon)
                     )
                 }
-            },
-            actions = {
-                if (!lists.isRefreshing) {
-                    IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = stringResource(R.string.add_icon)
-                        )
-                    }
-                }
-            })
+            }
+        })
     }, snackbarHost = {
         SnackbarHost(snackbarHostState)
     }) {
@@ -150,8 +143,7 @@ private fun WatchListScreen(
             PullToRefreshContainer(
                 refreshing = false,
                 onRefresh = lists::refresh,
-                modifier = Modifier
-                    .shimmerIf { lists.isRefreshing },
+                modifier = Modifier.shimmerIf { lists.isRefreshing },
                 verticalArrangement = Arrangement.spacedBy(
                     MaterialTheme.dimen.small,
                 ),
@@ -176,8 +168,7 @@ private fun WatchListScreen(
 
                                         IconButton(
                                             onClick = { pickedList = it.id },
-                                            modifier = Modifier
-                                                .padding(horizontal = MaterialTheme.dimen.small)
+                                            modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small)
 
                                         ) {
                                             Icon(
@@ -188,14 +179,11 @@ private fun WatchListScreen(
                                     }
                                 },
                                 modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.surfaceVariant,
-                                    CardDefaults.elevatedShape
+                                    MaterialTheme.colorScheme.surfaceVariant, CardDefaults.elevatedShape
                                 ),
                             ) {
                                 WatchListCard(
-                                    name = list.name,
-                                    description = list.description,
-                                    Modifier.fillMaxWidth()
+                                    name = list.name, description = list.description, Modifier.fillMaxWidth()
                                 ) {
                                     onDetails(list.id, list.name)
                                 }
@@ -220,8 +208,7 @@ private fun WatchListScreen(
     }
 
     if (createListForm.isVisible) {
-        CtiContentDialog(
-            onDismiss = { onCreateFormEvent(CreateListEvent.ToggleVisibility) },
+        CtiContentDialog(onDismiss = { onCreateFormEvent(CreateListEvent.ToggleVisibility) },
             title = { Text("New List") },
             confirmButton = {
                 TextButton(onClick = { onCreateFormEvent(CreateListEvent.Submit) }) {
