@@ -191,7 +191,7 @@ fun CornsTimeApp(
                             )
                         }
 
-                        if (draggableState.settledValue == NewDrawerState.Open) {
+                        if (draggableState.currentValue == NewDrawerState.Open) {
                             Box(modifier = Modifier
                                 .fillMaxSize()
                                 .clickable(null, null) {
