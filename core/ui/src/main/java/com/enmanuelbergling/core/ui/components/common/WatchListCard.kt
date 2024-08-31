@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -45,7 +46,7 @@ fun WatchListCard(
             Modifier.padding(MaterialTheme.dimen.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Rounded.PlaylistPlay, contentDescription = "play list icon")
+            Icon(imageVector = Icons.AutoMirrored.Rounded.PlaylistPlay, contentDescription = "play list icon")
 
             Spacer(modifier = Modifier.width(MaterialTheme.dimen.medium))
 
