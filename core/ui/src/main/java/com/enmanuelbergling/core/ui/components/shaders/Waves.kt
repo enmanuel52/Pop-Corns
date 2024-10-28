@@ -57,7 +57,7 @@ val TileableWaterCaustic = """
 """.trimIndent()
 
 @Language("AGSL")
-val Waves = """
+val WavesShader = """
     uniform float2 resolution;
     uniform float time;
     layout(color) uniform half4 backgroundColor;
