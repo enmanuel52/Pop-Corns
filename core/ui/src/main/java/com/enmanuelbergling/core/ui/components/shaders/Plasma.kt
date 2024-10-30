@@ -37,7 +37,13 @@ val HSLColorSpaceShader = """
     	//float3 hsl_standard = HSLtoRGB(float3(h*3./PI,1.,l));
     	float3 hsl_cubic = HSL2RGB_CubicSmooth(float3(h*3.0/PI,1.,l));
     	float4 fragColor = float4(hsl_cubic,1.0);
-        return fragColor;
+    
+        //value doesn't change
+        if( fragColor == float4(0., 0., 0., 1.) ){
+            return float4(backgroundColor.rgb, 1.0);
+        } else{
+            return fragColor;
+        }
     }
 """.trimIndent()
 
@@ -78,7 +84,13 @@ val ColorWarpShader = """ //the one that comes towards to you
         fragColor += float4(float3(dist * .35 / length(uv - p * ORB_SIZE) * c), 1.0);
       }
       fragColor.xyz = pow(fragColor.xyz, float3(CONTRAST));
-      return fragColor;
+      
+      //value doesn't change
+        if( fragColor == float4(0.) ){
+            return float4(backgroundColor.rgb, 1.0);
+        } else{
+            return fragColor;
+        }
     }
 """.trimIndent()
 

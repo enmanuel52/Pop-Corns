@@ -55,6 +55,7 @@ internal class SettingsVM(
             SettingUiEvent.Logout -> {
                 logoutUC()
             }
+            else -> Unit
         }
     }
 }

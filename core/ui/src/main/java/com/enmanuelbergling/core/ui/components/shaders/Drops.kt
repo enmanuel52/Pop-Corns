@@ -41,6 +41,12 @@ val VDropTunnel = """
         col += float3(0.55,0.75,1.225) * vDrop(p,t+0.33);	// blue
         col += float3(0.45,1.15,0.425) * vDrop(p,t+0.66);	// green
     	float4 fragColor = float4(col*(d*d), 1.0);
-        return fragColor;
+    
+        //value doesn't change
+        if( fragColor == float4(0., 0., 0., 1.) ){
+            return float4(backgroundColor.rgb, 1.0);
+        } else{
+            return fragColor;
+        }
     }
 """.trimIndent()

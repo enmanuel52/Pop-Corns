@@ -10,10 +10,12 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,13 +40,13 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -82,7 +84,10 @@ import com.enmanuelbergling.core.common.android_util.removeAllDynamicShortCuts
 import com.enmanuelbergling.core.common.util.BASE_IMAGE_URL
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
+import com.enmanuelbergling.core.ui.components.shaders.ColorWarpShader
+import com.enmanuelbergling.core.ui.components.shaders.HSLColorSpaceShader
 import com.enmanuelbergling.core.ui.components.shaders.TileableWaterCaustic
+import com.enmanuelbergling.core.ui.components.shaders.VDropTunnel
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.settings.model.DarkThemeUi
@@ -119,7 +124,7 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
 const val SPEED = 1f
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 private fun SettingsScreen(
     onBack: () -> Unit,
     onLogin: () -> Unit,
@@ -183,7 +188,12 @@ private fun SettingsScreen(
                     }
                 }
             }
-            val waveColor = MaterialTheme.colorScheme.primaryContainer
+            val contentColor = MaterialTheme.colorScheme.primary
+            val backgroundColor = MaterialTheme.colorScheme.background
+
+            var profileShader by remember {
+                mutableStateOf(ProfileShader.entries.first())
+            }
 
             Box(
                 Modifier
@@ -196,26 +206,43 @@ private fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(.5f)
+                        .combinedClickable(onLongClick = {
+                            val last = ProfileShader.entries.last()
+                            if (profileShader == last) {
+                                profileShader = ProfileShader.entries.first()
+                            } else {
+                                val index = ProfileShader.entries.indexOf(profileShader)
+                                profileShader = ProfileShader.entries[index + 1]
+                            }
+                        }) { }
                         .drawWithCache {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isDarkMode) {
-                                drawWaveShader(shaderTime, waveColor)
+                                drawShader(
+                                    profileShader = profileShader,
+                                    shaderTime = shaderTime,
+                                    contentColor = contentColor,
+                                    backgroundColor = backgroundColor
+                                )
                             } else {
                                 onDrawWithContent {
                                     drawContent()
                                 }
                             }
                         },
-                    onLogin = onLogin
                 )
 
                 SettingOptions(
+                    uiState.userDetails,
                     darkTheme = uiState.darkTheme,
                     dynamicColor = uiState.dynamicColor,
                     visibleState = visibleState,
                     modifier = Modifier
                         .fillMaxHeight(.6f)
                         .align(Alignment.BottomCenter),
-                    onEvent = onEvent
+                    onEvent = { event ->
+                        if (event == SettingUiEvent.Login) onLogin()
+                        else onEvent(event)
+                    }
                 )
             }
         }
@@ -238,20 +265,33 @@ private fun SettingsScreen(
     }
 }
 
+enum class ProfileShader(val shader: String) {
+    Omelette(HSLColorSpaceShader), AwesomeHole(ColorWarpShader), DropTunnel(VDropTunnel), Sea(TileableWaterCaustic)
+}
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private fun CacheDrawScope.drawWaveShader(
+private fun CacheDrawScope.drawShader(
+    profileShader: ProfileShader,
     shaderTime: Float,
-    waveColor: Color,
+    contentColor: Color,
+    backgroundColor: Color,
 ): DrawResult {
-    val runtimeShader = RuntimeShader(TileableWaterCaustic)
+    val runtimeShader = RuntimeShader(profileShader.shader)
     val shaderBrush = ShaderBrush(runtimeShader)
 
     runtimeShader.setColorUniform(
         "backgroundColor", android.graphics.Color.valueOf(
-            waveColor.red, waveColor.green, waveColor.blue, waveColor.alpha
+            backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha
         )
     )
+
+    if (profileShader == ProfileShader.Sea) {
+        runtimeShader.setColorUniform(
+            "primaryColor", android.graphics.Color.valueOf(
+                contentColor.red, contentColor.green, contentColor.blue, contentColor.alpha
+            )
+        )
+    }
 
     return onDrawWithContent {
         runtimeShader.setFloatUniform(
@@ -269,6 +309,7 @@ private fun CacheDrawScope.drawWaveShader(
 
 @Composable
 private fun SettingOptions(
+    userState: UserUi?,
     darkTheme: DarkThemeUi,
     dynamicColor: Boolean,
     visibleState: Boolean,
@@ -294,6 +335,26 @@ private fun SettingOptions(
                 )
 
         ) {
+            item {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+
+                    if (userState == null) {
+                        OutlinedButton(
+                            onClick = { onEvent(SettingUiEvent.Login) },
+                            modifier = Modifier
+                                .fillMaxWidth(.8f)
+                        ) {
+                            Text(text = stringResource(id = R.string.login).uppercase())
+                        }
+                    } else {
+                        Text(
+                            text = "Hello " + userState.username,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
             item {
                 SettingItemUi(
                     item = SettingItem.DarkMode,
@@ -488,58 +549,31 @@ internal fun ProfileWrapper(
     userState: UserUi?,
     visibleState: Boolean,
     modifier: Modifier = Modifier,
-    onLogin: () -> Unit,
 ) {
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            ProfileUi(
-                userUi = userState,
-                modifier = Modifier.size(110.dp),
-                visibleState = visibleState,
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-            if (userState == null) {
-                Button(onClick = onLogin) {
-                    Text(text = stringResource(id = R.string.login))
-                }
-            }
-        }
+        ProfileImageUi(
+            userUi = userState,
+            modifier = Modifier.size(110.dp),
+            visibleState = visibleState,
+        )
     }
 }
 
 @Composable
-internal fun ProfileUi(
+internal fun ProfileImageUi(
     userUi: UserUi?,
     modifier: Modifier = Modifier,
     visibleState: Boolean = true,
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
+    AnimatedVisibility(
+        visible = visibleState, enter = expandIn(
+            spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
+            expandFrom = Alignment.Center
+        ), modifier = Modifier.clip(CircleShape)
     ) {
-        AnimatedVisibility(
-            visible = visibleState, enter = expandIn(
-                spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
-                expandFrom = Alignment.Center
-            ), modifier = Modifier.clip(CircleShape)
-        ) {
 
-            ProfileImage(userUi?.avatarPath, modifier)
-        }
-
-        if (userUi != null) {
-            Text(
-                text = userUi.username,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+        ProfileImage(userUi?.avatarPath, modifier)
     }
 }
 
@@ -548,7 +582,7 @@ internal fun ProfileUi(
 private fun ProfileUiPrev() {
     CornTimeTheme {
 
-        ProfileUi(UserUi(username = "Tim", avatarPath = ""), modifier = Modifier.size(80.dp))
+        ProfileImageUi(UserUi(username = "Tim", avatarPath = ""), modifier = Modifier.size(80.dp))
     }
 }
 

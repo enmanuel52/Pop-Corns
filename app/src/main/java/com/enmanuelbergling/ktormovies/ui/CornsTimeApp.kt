@@ -1,15 +1,18 @@
 package com.enmanuelbergling.ktormovies.ui
 
 import android.content.res.Configuration
+import android.graphics.RuntimeShader
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
@@ -21,7 +24,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,9 +32,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,17 +41,20 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.CacheDrawScope
+import androidx.compose.ui.draw.DrawResult
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -64,10 +67,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.user.UserDetails
+import com.enmanuelbergling.core.ui.components.shaders.HotPlasmaShader
+import com.enmanuelbergling.core.ui.components.shaders.LavavaLampaShader
 import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.movies.navigation.MoviesDestination
+import com.enmanuelbergling.feature.settings.home.SPEED
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
@@ -122,12 +128,29 @@ fun CornsTimeApp(
         label = "container color animation",
     )
 
+    val shaderTime by produceState(0f) {
+        while (true) {
+            withInfiniteAnimationFrameMillis {
+                value = it / 1000f * SPEED
+            }
+        }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { paddingValues ->
         Box(
             modifier = Modifier
-                .background(containerColor)
+                .drawWithCache {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        drawShader(HotPlasmaShader, shaderTime)
+                    } else {
+                        onDrawWithContent {
+                            drawRect(containerColor)
+                            drawContent()
+                        }
+                    }
+                }
                 .padding(paddingValues)
         ) {
             DrawerContent(
@@ -145,10 +168,9 @@ fun CornsTimeApp(
                     }
                 },
                 modifier = Modifier
-                    .fillMaxHeight()
+                    .align(Alignment.CenterStart)
                     .width(NewDrawerWidth)
                     .padding(MaterialTheme.dimen.medium),
-                containerColor = containerColor,
                 onLogout = onLogout
             )
 
@@ -223,6 +245,7 @@ fun CornsTimeApp(
     }
 }
 
+val OnSurfaceLight = Color(0xFF231918)
 
 @Composable
 fun DrawerContent(
@@ -232,44 +255,37 @@ fun DrawerContent(
     userDetails: UserDetails?,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
 ) {
     Column(
-        modifier = Modifier
-            .background(containerColor) then modifier,
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.medium)
     ) {
-        CompositionLocalProvider(value = LocalContentColor provides contentColorFor(containerColor)) {
-            IconButton(onClick = onCloseDrawer) {
-                Icon(imageVector = Icons.Rounded.Clear, contentDescription = "close drawer icon")
-            }
+        CompositionLocalProvider(value = LocalContentColor provides OnSurfaceLight) {
 
-            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.medium)) {
-                Text(
-                    text = stringResource(R.string.menu), style = MaterialTheme.typography.displayMedium,
-                    color = LocalContentColor.current.copy(alpha = .6f)
-                )
+            Text(
+                text = stringResource(R.string.menu), style = MaterialTheme.typography.displayMedium,
+                color = LocalContentColor.current.copy(alpha = .8f)
+            )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.dimen.mediumSmall))
+            Spacer(modifier = Modifier.height(MaterialTheme.dimen.mediumSmall))
 
-                TopDestination.entries
-                    .filterNot { it.loginRequired && userDetails == null }
-                    .forEach { destination ->
-                        NavDrawerItem(
-                            label = stringResource(destination.label),
-                            selected = isSelected(destination.route),
-                            onClick = { onDrawerDestination(destination) },
-                            imageVector = destination.icon,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-            }
+            TopDestination.entries
+                .filterNot { it.loginRequired && userDetails == null }
+                .forEach { destination ->
+                    NavDrawerItem(
+                        label = stringResource(destination.label),
+                        selected = isSelected(destination.route),
+                        onClick = { onDrawerDestination(destination) },
+                        imageVector = destination.icon,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
             NavDrawerItem(
                 label = stringResource(id = R.string.logout),
                 selected = false,
                 imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
-                modifier = Modifier.scale(.85f),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     onLogout()
                     onCloseDrawer()
@@ -289,7 +305,7 @@ fun NavDrawerItem(
 ) {
     val colorAnimation by animateColorAsState(
         targetValue = if (selected) LocalContentColor.current
-        else LocalContentColor.current.copy(alpha = .5f),
+        else LocalContentColor.current.copy(alpha = .7f),
         label = "color animation",
     )
 
@@ -328,11 +344,33 @@ private fun DrawerContentPrev() {
             isSelected = { it == MoviesDestination },
             userDetails = null,
             modifier = Modifier
-                .height(700.dp)
                 .width(NewDrawerWidth)
                 .padding(12.dp),
             onCloseDrawer = {},
-            onLogout = {}
+            onLogout = {},
         )
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+private fun CacheDrawScope.drawShader(
+    backgroundShader: String,
+    shaderTime: Float,
+): DrawResult {
+    val runtimeShader = RuntimeShader(backgroundShader)
+    val shaderBrush = ShaderBrush(runtimeShader)
+
+    return onDrawWithContent {
+        runtimeShader.setFloatUniform(
+            "resolution", size.width, size.height
+        )
+        runtimeShader.setFloatUniform(
+            "time", shaderTime
+        )
+
+        drawRect(shaderBrush)
+
+        drawContent()
     }
 }
