@@ -14,6 +14,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.enmanuelbergling.core.ui.R
 
@@ -29,8 +30,7 @@ fun SeriesScreen(
                 navigationIcon = {
                     IconButton(onClick = onOpenDrawer) {
                         Icon(
-                            imageVector = Icons.Rounded.Menu,
-                            contentDescription = "Sandwich menu icon"
+                            painter = painterResource(R.drawable.bars_bottom_left), contentDescription = "Sandwich menu icon"
                         )
                     }
                 },

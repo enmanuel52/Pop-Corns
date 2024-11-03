@@ -226,14 +226,7 @@ private fun SectionFilterUi(
                         )
                     },
                     label = { Text(text = stringResource(id = it.labelResource)) },
-                    leadingIcon = {
-                        if (it == filter.sortBy) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                contentDescription = stringResource(R.string.filter_checked_icon)
-                            )
-                        }
-                    }
+                    shape = CircleShape,
                 )
             }
         }
@@ -278,7 +271,7 @@ private fun GenresUi(
                             colors = AssistChipDefaults.elevatedAssistChipColors(
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                                 labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                            )
+                            ), shape = CircleShape,
                         )
                     },
                     collapseIndicator = {
@@ -290,7 +283,7 @@ private fun GenresUi(
                             colors = AssistChipDefaults.elevatedAssistChipColors(
                                 containerColor = MaterialTheme.colorScheme.errorContainer,
                                 labelColor = MaterialTheme.colorScheme.onErrorContainer
-                            )
+                            ), shape = CircleShape
                         )
                     }
                 ),
@@ -304,14 +297,7 @@ private fun GenresUi(
                     selected = currentGenre in filter.genres,
                     onClick = { onFilter(MovieFilterEvent.PickGenre(currentGenre)) },
                     label = { Text(text = currentGenre.name) },
-                    leadingIcon = {
-                        if (currentGenre in filter.genres) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                contentDescription = stringResource(id = R.string.filter_checked_icon)
-                            )
-                        }
-                    }
+                    shape = CircleShape,
                 )
             }
 

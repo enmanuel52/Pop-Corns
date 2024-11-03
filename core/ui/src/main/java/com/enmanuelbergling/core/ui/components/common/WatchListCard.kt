@@ -23,10 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.enmanuelbergling.core.ui.core.dimen
+import com.enmanuelbergling.core.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +48,7 @@ fun WatchListCard(
             Modifier.padding(MaterialTheme.dimen.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.AutoMirrored.Rounded.PlaylistPlay, contentDescription = "play list icon")
+            Icon(painter = painterResource(R.drawable.play), contentDescription = "play list icon")
 
             Spacer(modifier = Modifier.width(MaterialTheme.dimen.medium))
 

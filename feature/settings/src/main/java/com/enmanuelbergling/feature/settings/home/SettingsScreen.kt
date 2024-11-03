@@ -37,7 +37,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
-import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +51,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -121,7 +119,7 @@ fun SettingsRoute(onBack: () -> Unit, onLogin: () -> Unit) {
     )
 }
 
-const val SPEED = 1f
+const val SPEED = 1.1f
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -166,7 +164,7 @@ private fun SettingsScreen(
                         context.removeAllDynamicShortCuts()
                     }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
+                            painter = painterResource(R.drawable.power_outline),
                             contentDescription = "logout icon"
                         )
                     }
@@ -188,7 +186,7 @@ private fun SettingsScreen(
                     }
                 }
             }
-            val contentColor = MaterialTheme.colorScheme.primary
+            val contentColor = MaterialTheme.colorScheme.secondary
             val backgroundColor = MaterialTheme.colorScheme.background
 
             var profileShader by remember {
@@ -462,7 +460,7 @@ fun SelectionText(
             tint = dotColor
         )
 
-        Spacer(modifier = Modifier.width(MaterialTheme.dimen.small))
+        Spacer(modifier = Modifier.width(MaterialTheme.dimen.superSmall))
 
         Text(
             text = text,
@@ -494,7 +492,6 @@ internal fun SettingItemUi(
     textValue: String = "",
     onClick: () -> Unit,
 ) {
-    val iconContainerColor = MaterialTheme.colorScheme.tertiaryContainer
 
     Row(
         modifier
@@ -504,13 +501,11 @@ internal fun SettingItemUi(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
         Box(
             modifier = Modifier
-                .background(iconContainerColor, MaterialTheme.shapes.small)
                 .padding(MaterialTheme.dimen.small),
         ) {
             Icon(
-                imageVector = item.icon,
+               painter = painterResource(item.iconRes),
                 contentDescription = "setting icon",
-                tint = contentColorFor(iconContainerColor)
             )
         }
 

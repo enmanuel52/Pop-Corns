@@ -21,8 +21,8 @@ fun CtiTextField(
     onTextChange: (String) -> Unit,
     hint: String,
     modifier: Modifier = Modifier,
-    leadingIcon: ImageVector? = null,
     errorText: String? = null,
+    leadingIcon: @Composable () -> Unit = {},
     trailingIcon: @Composable () -> Unit = {},
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
@@ -43,11 +43,7 @@ fun CtiTextField(
                 )
             }
         } else null,
-        leadingIcon = {
-            if (leadingIcon != null) {
-                Icon(imageVector = leadingIcon, contentDescription = "$hint icon")
-            }
-        },
+        leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         visualTransformation = visualTransformation,
         shape = CircleShape,

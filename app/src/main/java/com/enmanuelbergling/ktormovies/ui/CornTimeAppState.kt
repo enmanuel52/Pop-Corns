@@ -50,6 +50,13 @@ class CornTimeAppState(
                 .any { route -> destination.hasRoute(route::class) }
         } ?: false
 
+    val mainDrawerEnabled: Boolean
+        @Composable get() = currentDestination?.let { destination ->
+            listOf(TopDestination.Movies, TopDestination.Series, TopDestination.Actors)
+                .map { it.route }
+                .any { route -> destination.hasRoute(route::class) }
+        } ?: false
+
     @Composable
     fun matchRoute(route: Any) = currentDestination?.hasRoute(route::class) == true
 

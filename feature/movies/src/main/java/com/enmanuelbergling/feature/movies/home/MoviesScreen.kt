@@ -21,9 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FastForward
-import androidx.compose.material.icons.rounded.FilterList
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -137,15 +134,14 @@ fun MoviesTopBar(
                 onClick = onOpenDrawer
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Menu,
-                    contentDescription = stringResource(R.string.drawer_icon)
+                    painter = painterResource(R.drawable.bars_bottom_left), contentDescription = "Sandwich menu icon"
                 )
             }
         },
         actions = {
             IconButton(onClick = onFilter) {
                 Icon(
-                    imageVector = Icons.Rounded.FilterList,
+                    painter = painterResource(R.drawable.funnel),
                     contentDescription = stringResource(R.string.filter_icon)
                 )
             }
@@ -352,7 +348,7 @@ private fun SectionHeader(title: String, modifier: Modifier = Modifier, onMore: 
         )
         IconButton(onClick = onMore) {
             Icon(
-                imageVector = Icons.Rounded.FastForward,
+                painter = painterResource(R.drawable.double_right),
                 contentDescription = stringResource(R.string.more_icon)
             )
         }

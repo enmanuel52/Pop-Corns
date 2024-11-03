@@ -4,11 +4,13 @@ import android.content.res.Configuration
 import android.graphics.RuntimeShader
 import android.os.Build
 import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.animation.rememberSplineBasedDecay
@@ -28,10 +30,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -57,9 +59,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,17 +70,17 @@ import androidx.compose.ui.util.lerp
 import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.ui.components.shaders.HotPlasmaShader
-import com.enmanuelbergling.core.ui.components.shaders.LavavaLampaShader
 import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import com.enmanuelbergling.feature.movies.navigation.MoviesDestination
+import com.enmanuelbergling.feature.series.navigation.SeriesDestination
 import com.enmanuelbergling.feature.settings.home.SPEED
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import com.enmanuelbergling.core.ui.R as RCore
 
 enum class NewDrawerState {
     Open, Closed
@@ -199,7 +201,7 @@ fun CornsTimeApp(
                             .anchoredDraggable(
                                 state = draggableState,
                                 orientation = Orientation.Horizontal,
-                                enabled = state.isTopDestination
+                                enabled = state.mainDrawerEnabled
                             )
                     ) {
                         Surface {
@@ -272,11 +274,12 @@ fun DrawerContent(
             TopDestination.entries
                 .filterNot { it.loginRequired && userDetails == null }
                 .forEach { destination ->
+                    val selected = isSelected(destination.route)
                     NavDrawerItem(
                         label = stringResource(destination.label),
-                        selected = isSelected(destination.route),
+                        selected = selected,
                         onClick = { onDrawerDestination(destination) },
-                        imageVector = destination.icon,
+                        iconRes = if (selected) destination.selectedIconRes else destination.unselectedIconRes,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -284,7 +287,7 @@ fun DrawerContent(
             NavDrawerItem(
                 label = stringResource(id = R.string.logout),
                 selected = false,
-                imageVector = Icons.AutoMirrored.Rounded.ExitToApp,
+                iconRes = RCore.drawable.power_outline,
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     onLogout()
@@ -299,13 +302,29 @@ fun DrawerContent(
 fun NavDrawerItem(
     label: String,
     selected: Boolean,
-    imageVector: ImageVector,
+    @DrawableRes iconRes: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
+    val titleLarge = MaterialTheme.typography.titleLarge
+    val titleMedium = MaterialTheme.typography.titleMedium
+
+    val typography by remember(selected) {
+        derivedStateOf {
+            if (selected) titleLarge else titleMedium
+        }
+    }
+
+    val density = LocalDensity.current
+
+    val iconSize by animateDpAsState(
+        targetValue = with(density) { typography.fontSize.toDp() },
+        label = "icon size animation",
+    )
+
     val colorAnimation by animateColorAsState(
         targetValue = if (selected) LocalContentColor.current
-        else LocalContentColor.current.copy(alpha = .7f),
+        else LocalContentColor.current.copy(alpha = .6f),
         label = "color animation",
     )
 
@@ -318,9 +337,10 @@ fun NavDrawerItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = imageVector,
-            contentDescription = imageVector.toString(),
+            painter = painterResource(iconRes),
+            contentDescription = label,
             tint = colorAnimation,
+            modifier = Modifier.size(iconSize)
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.dimen.mediumSmall))
@@ -329,19 +349,18 @@ fun NavDrawerItem(
             text = label,
             fontWeight = FontWeight.SemiBold,
             color = colorAnimation,
-            style = MaterialTheme.typography.titleLarge
+            style = typography
         )
     }
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DrawerContentPrev() {
     CornTimeTheme {
         DrawerContent(
             onDrawerDestination = {},
-            isSelected = { it == MoviesDestination },
+            isSelected = { it == SeriesDestination },
             userDetails = null,
             modifier = Modifier
                 .width(NewDrawerWidth)

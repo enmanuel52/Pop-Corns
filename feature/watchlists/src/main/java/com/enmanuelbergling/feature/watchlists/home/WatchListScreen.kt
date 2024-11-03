@@ -7,11 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -120,14 +116,14 @@ private fun WatchListScreen(
         TopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) }, navigationIcon = {
             IconButton(onClick = onOpenDrawer) {
                 Icon(
-                    imageVector = Icons.Rounded.Menu, contentDescription = "Sandwich menu icon"
+                    painter = painterResource(R.drawable.bars_bottom_left), contentDescription = "Sandwich menu icon"
                 )
             }
         }, actions = {
             if (!lists.isRefreshing) {
                 IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
                     Icon(
-                        imageVector = Icons.Rounded.Add, contentDescription = stringResource(R.string.add_icon)
+                        painter = painterResource(R.drawable.add), contentDescription = stringResource(R.string.add_icon)
                     )
                 }
             }
@@ -172,7 +168,7 @@ private fun WatchListScreen(
 
                                         ) {
                                             Icon(
-                                                imageVector = Icons.Rounded.Delete,
+                                                painter = painterResource(R.drawable.trash),
                                                 contentDescription = stringResource(id = R.string.delete_icon)
                                             )
                                         }
@@ -222,7 +218,9 @@ private fun WatchListScreen(
                     text = createListForm.name,
                     onTextChange = { onCreateFormEvent(CreateListEvent.Name(it)) },
                     hint = "List name*",
-                    leadingIcon = Icons.Rounded.Info,
+                    leadingIcon = {
+                        Icon( painter = painterResource(R.drawable.info_circle), null)
+                    },
                     errorText = createListForm.nameError,
                 )
             }
@@ -232,7 +230,9 @@ private fun WatchListScreen(
                     text = createListForm.description,
                     onTextChange = { onCreateFormEvent(CreateListEvent.Description(it)) },
                     hint = "List description*",
-                    leadingIcon = Icons.Rounded.Info,
+                    leadingIcon = {
+                        Icon( painter = painterResource(R.drawable.info_circle), null)
+                    },
                     errorText = createListForm.descriptionError
                 )
             }
