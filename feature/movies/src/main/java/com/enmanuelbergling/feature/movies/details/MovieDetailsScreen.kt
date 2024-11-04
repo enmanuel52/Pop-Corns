@@ -253,25 +253,6 @@ private fun AnimatedContentScope.MovieDetailsScreen(
 }
 
 @Composable
-private fun ArrowBack(onBack: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(
-        onClick = onBack,
-        modifier = modifier,
-//        colors = IconButtonDefaults.iconButtonColors(
-//            containerColor = Color.Transparent.copy(
-//                alpha = .8f
-//            )
-//        )
-    ) {
-        Icon(
-            imageVector = Icons.Rounded.ArrowBackIosNew,
-            contentDescription = stringResource(id = R.string.back_icon),
-            tint = Color.White
-        )
-    }
-}
-
-@Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 private fun SheetContent(
     watchList: LazyPagingItems<WatchList>,

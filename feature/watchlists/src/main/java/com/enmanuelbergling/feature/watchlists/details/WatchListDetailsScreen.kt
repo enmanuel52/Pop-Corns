@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Bookmark
-import androidx.compose.material.icons.rounded.BookmarkBorder
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -152,7 +150,7 @@ fun WatchListDetailsScreen(
                         }
                     ) {
                         Icon(
-                            imageVector = if (isPinned) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
+                            painter = painterResource(if (isPinned) R.drawable.bookmark_solid else R.drawable.bookmark_outline),
                             contentDescription = "bookmark icon"
                         )
                     }
@@ -200,7 +198,7 @@ fun WatchListDetailsScreen(
 
                                         ) {
                                             Icon(
-                                                imageVector = Icons.Rounded.Delete,
+                                                painter = painterResource(R.drawable.trash),
                                                 contentDescription = stringResource(R.string.delete_icon)
                                             )
                                         }

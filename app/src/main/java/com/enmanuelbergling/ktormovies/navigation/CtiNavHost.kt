@@ -1,6 +1,7 @@
 package com.enmanuelbergling.ktormovies.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
@@ -12,6 +13,8 @@ import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.movieSearchScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesFilterScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesGraph
+import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
+import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
@@ -25,12 +28,18 @@ import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
 @Composable
 fun CtiNavHost(
     state: CornTimeAppState,
+    modifier: Modifier = Modifier,
+    onOpenDrawer: () -> Unit,
 ) {
     val navController = state.navController
 
     val context = LocalContext.current
 
-    NavHost(navController, startDestination = state.startDestination) {
+    NavHost(
+        navController,
+        startDestination = state.startDestination,
+        modifier = modifier,
+        ) {
 
         moviesGraph(
             onBack = navController::navigateUp,
@@ -40,10 +49,13 @@ fun CtiNavHost(
                     action.id, action.imageUrl, action.name
                 )
             },
-            onMore = navController::navigateToMoviesSection
+            onMore = navController::navigateToMoviesSection,
+            onSearch = state.navController::navigateToMovieSearch,
+            onFilter = state.navController::navigateToMovieFilter,
+            onOpenDrawer = onOpenDrawer,
         )
 
-        seriesGraph()
+        seriesGraph(onOpenDrawer = onOpenDrawer)
 
         actorsGraph(
             onBack = navController::navigateUp,
@@ -52,7 +64,8 @@ fun CtiNavHost(
                     action.id, action.imageUrl, action.name
                 )
             },
-            onMovie = navController::navigateToMoviesDetails
+            onMovie = navController::navigateToMoviesDetails,
+            onOpenDrawer = onOpenDrawer,
         )
 
         loginScreen(
@@ -74,11 +87,12 @@ fun CtiNavHost(
             onAddShortcut = { watchlist -> state.addWatchlistShortcut(context, watchlist) },
             onDeleteShortcut = { watchlistId ->
                 state.deleteWatchlistShortcut(
-                    context,
-                    watchlistId
+                    context = context,
+                    watchlistId = watchlistId
                 )
             },
-            onBack = navController::navigateUp
+            onBack = navController::navigateUp,
+            onOpenDrawer = onOpenDrawer,
         )
 
         movieSearchScreen(navController::navigateToMoviesDetails, navController::navigateUp)
@@ -86,7 +100,9 @@ fun CtiNavHost(
         moviesFilterScreen(navController::navigateToMoviesDetails, navController::navigateUp)
 
         settingsGraph(
-            onBack = navController::navigateUp,
+            onBack = {
+                state.navigateToDrawerDestination(TopDestination.Movies)
+            },
             onLogin = navController::navigateToLoginScreen
         )
     }

@@ -17,13 +17,13 @@ import com.enmanuelbergling.core.common.android_util.removeDynamicShortCut
 import com.enmanuelbergling.core.ui.model.WatchlistShortcut
 import com.enmanuelbergling.core.ui.util.watchlistShortcutId
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
+import com.enmanuelbergling.feature.movies.navigation.MoviesDestination
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.series.navigation.navigateToSeriesGraph
 import com.enmanuelbergling.feature.settings.navigation.navigateToSettingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListGraph
 import com.enmanuelbergling.ktormovies.R
-import com.enmanuelbergling.ktormovies.navigation.DrawerDestination
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 
 @Composable
@@ -45,21 +45,26 @@ class CornTimeAppState(
     val startDestination = MoviesGraphDestination
 
     val isTopDestination: Boolean
-        @Composable get() = TopDestination.entries.map { it.route }
-            .any { route -> currentDestination?.hasRoute(route::class) == true }
+        @Composable get() = currentDestination?.let { destination ->
+            TopDestination.entries.map { it.route }
+                .any { route -> destination.hasRoute(route::class) }
+        } ?: false
+
+    val mainDrawerEnabled: Boolean
+        @Composable get() = currentDestination?.let { destination ->
+            listOf(TopDestination.Movies, TopDestination.Series, TopDestination.Actors)
+                .map { it.route }
+                .any { route -> destination.hasRoute(route::class) }
+        } ?: false
 
     @Composable
     fun matchRoute(route: Any) = currentDestination?.hasRoute(route::class) == true
 
-    val shouldShowMainBottomNav: Boolean
-        @Composable get() = isTopDestination
-
-    fun navigateToTopDestination(destination: TopDestination) {
+    fun navigateToDrawerDestination(destination: TopDestination) {
         when (destination) {
             TopDestination.Movies -> navController.navigateToMoviesGraph(
                 navOptions {
-                    launchSingleTop = true
-                    popUpTo(MoviesGraphDestination) {
+                    popUpTo<MoviesDestination> {
                         inclusive = true
                     }
                 }
@@ -67,37 +72,29 @@ class CornTimeAppState(
 
             TopDestination.Series -> navController.navigateToSeriesGraph(
                 navOptions {
-                    launchSingleTop = true
-                }
-            )
-        }
-    }
-
-    fun navigateToDrawerDestination(destination: DrawerDestination) {
-        when (destination) {
-            DrawerDestination.Home -> navController.navigateToMoviesGraph(
-                navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
 
-            DrawerDestination.Actors -> navController.navigateToActorsGraph(
+
+            TopDestination.Actors -> navController.navigateToActorsGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
 
-            DrawerDestination.Lists -> navController.navigateToListGraph(
+            TopDestination.Lists -> navController.navigateToListGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
 
-            DrawerDestination.Settings -> navController.navigateToSettingsGraph(
+            TopDestination.Settings -> navController.navigateToSettingsGraph(
                 navOptions {
-                    launchSingleTop = true
+                    popUpTo<MoviesDestination>()
                 }
             )
+
         }
     }
 

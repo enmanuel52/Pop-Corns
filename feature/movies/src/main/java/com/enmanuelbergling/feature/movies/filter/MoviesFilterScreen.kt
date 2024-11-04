@@ -1,5 +1,8 @@
 package com.enmanuelbergling.feature.movies.filter
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -142,41 +145,10 @@ private fun MoviesFilterScreen(
                     state = lazyListState
                 ) {
                     item {
-                        Column {
-                            Column {
-                                Text(
-                                    text = stringResource(R.string.order_by),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-
-                                Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-                                LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
-                                    items(SortCriteria.entries) {
-                                        ElevatedFilterChip(
-                                            selected = it == filter.sortBy,
-                                            onClick = {
-                                                onFilter(
-                                                    MovieFilterEvent.PickOrderCriteria(
-                                                        it
-                                                    )
-                                                )
-                                            },
-                                            label = { Text(text = stringResource(id = it.labelResource)) },
-                                            leadingIcon = {
-                                                if (it == filter.sortBy) {
-                                                    Icon(
-                                                        imageVector = Icons.Rounded.Check,
-                                                        contentDescription = stringResource(R.string.filter_checked_icon)
-                                                    )
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        SectionFilterUi(
+                            filter = filter,
+                            onFilter = onFilter,
+                        )
                     }
 
                     item {
@@ -228,6 +200,40 @@ private fun MoviesFilterScreen(
 }
 
 @Composable
+private fun SectionFilterUi(
+    filter: MovieFilter,
+    modifier: Modifier = Modifier,
+    onFilter: (MovieFilterEvent) -> Unit,
+) {
+    Column(modifier) {
+        Text(
+            text = stringResource(R.string.order_by),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)) {
+            items(SortCriteria.entries) {
+                ElevatedFilterChip(
+                    selected = it == filter.sortBy,
+                    onClick = {
+                        onFilter(
+                            MovieFilterEvent.PickOrderCriteria(
+                                it
+                            )
+                        )
+                    },
+                    label = { Text(text = stringResource(id = it.labelResource)) },
+                    shape = CircleShape,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 @OptIn(ExperimentalLayoutApi::class)
 private fun GenresUi(
     availableGenres: List<Genre>,
@@ -258,14 +264,14 @@ private fun GenresUi(
                 overflow = ContextualFlowRowOverflow.expandOrCollapseIndicator(
                     expandIndicator = {
                         ElevatedAssistChip(
-                            onClick = { maxLines++ },
+                            onClick = { maxLines += 2 },
                             label = {
                                 Text(text = "${this@expandOrCollapseIndicator.itemsLeft} more")
                             },
                             colors = AssistChipDefaults.elevatedAssistChipColors(
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                                 labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                            )
+                            ), shape = CircleShape,
                         )
                     },
                     collapseIndicator = {
@@ -277,9 +283,12 @@ private fun GenresUi(
                             colors = AssistChipDefaults.elevatedAssistChipColors(
                                 containerColor = MaterialTheme.colorScheme.errorContainer,
                                 labelColor = MaterialTheme.colorScheme.onErrorContainer
-                            )
+                            ), shape = CircleShape
                         )
                     }
+                ),
+                modifier = Modifier.animateContentSize(
+                    spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)
                 )
             ) { index ->
                 val currentGenre = availableGenres[index]
@@ -288,14 +297,7 @@ private fun GenresUi(
                     selected = currentGenre in filter.genres,
                     onClick = { onFilter(MovieFilterEvent.PickGenre(currentGenre)) },
                     label = { Text(text = currentGenre.name) },
-                    leadingIcon = {
-                        if (currentGenre in filter.genres) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                contentDescription = stringResource(id = R.string.filter_checked_icon)
-                            )
-                        }
-                    }
+                    shape = CircleShape,
                 )
             }
 

@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.enmanuelbergling.core.ui.components.topComposable
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.actor.details.ActorDetailsRoute
 import com.enmanuelbergling.feature.actor.home.ActorsScreen
@@ -46,11 +47,12 @@ fun NavGraphBuilder.actorsGraph(
     onBack: () -> Unit,
     onDetails: (ActorDetailNavAction) -> Unit,
     onMovie: (movieId: Int) -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     navigation<ActorsGraphDestination>(ActorsDestination) {
-        composable<ActorsDestination> {
+        topComposable<ActorsDestination> {
             ActorsScreen(
-                onDetails = onDetails, onBack = onBack
+                onDetails = onDetails, onOpenDrawer
             )
         }
 

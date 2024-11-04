@@ -11,18 +11,19 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -42,7 +43,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AnimatedContentScope.ActorsScreen(
     onDetails: (ActorDetailNavAction) -> Unit,
-    onBack: () -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     val viewModel = koinViewModel<ActorsVM>()
 
@@ -53,13 +54,12 @@ fun AnimatedContentScope.ActorsScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = {
+            TopAppBar(title = {
                 Text(text = stringResource(R.string.actors))
             }, navigationIcon = {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = onOpenDrawer) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
-                        contentDescription = stringResource(id = R.string.back_icon)
+                        painter = painterResource(R.drawable.bars_bottom_left), contentDescription = "Sandwich menu icon"
                     )
                 }
             }, scrollBehavior = scrollBehavior)

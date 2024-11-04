@@ -1,4 +1,3 @@
-
 package com.enmanuelbergling.core.ui.components.walkthrough
 
 import androidx.compose.animation.AnimatedVisibility
@@ -17,12 +16,12 @@ import com.enmanuelbergling.core.ui.components.walkthrough.components.Indicator
 import com.enmanuelbergling.core.ui.components.walkthrough.components.InstagramPager
 import com.enmanuelbergling.core.ui.components.walkthrough.components.WalkStepUi
 import com.enmanuelbergling.core.ui.components.walkthrough.model.DimenTokens
-import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkThroughColors
-import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkThroughDefaults
 import com.enmanuelbergling.core.ui.components.walkthrough.model.IndicatorStyle
 import com.enmanuelbergling.core.ui.components.walkthrough.model.StepStyle
 import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkScrollStyle
 import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkStep
+import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkThroughColors
+import com.enmanuelbergling.core.ui.components.walkthrough.model.WalkThroughDefaults
 
 /**
  * @param steps for every single page
@@ -41,7 +40,7 @@ fun WalkThrough(
     skipButton: @Composable () -> Unit = { },
     bottomButton: @Composable () -> Unit = {},
     stepStyle: StepStyle = StepStyle.ImageUp,
-    indicatorStyle: IndicatorStyle = IndicatorStyle.Step,
+    indicatorStyle: IndicatorStyle = IndicatorStyle.Step(),
     scrollStyle: WalkScrollStyle = WalkScrollStyle.Normal,
     colors: WalkThroughColors = WalkThroughDefaults.colors(),
 ) {
@@ -149,7 +148,7 @@ internal fun FilledWalkStepUi(
     bottomButton: @Composable () -> Unit = {},
     colors: WalkThroughColors = WalkThroughDefaults.colors(),
     stepStyle: StepStyle = StepStyle.ImageUp,
-    indicatorStyle: IndicatorStyle = IndicatorStyle.Shift,
+    indicatorStyle: IndicatorStyle = IndicatorStyle.Shift(),
 ) {
     ConstraintLayout(
         modifier = modifier

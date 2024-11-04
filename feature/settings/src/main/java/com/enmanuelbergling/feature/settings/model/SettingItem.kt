@@ -1,5 +1,6 @@
 package com.enmanuelbergling.feature.settings.model
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Forest
@@ -8,17 +9,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.enmanuelbergling.core.ui.R
 
 internal data class SettingItem(
-    val icon: ImageVector,
+   @DrawableRes val iconRes: Int,
     @StringRes val label: Int,
 ) {
     companion object {
         val DarkMode = SettingItem(
-            icon = Icons.Rounded.NightsStay,
+           R.drawable.moon,
             label = R.string.dark_mode
         )
 
         val DynamicColor = SettingItem(
-            icon = Icons.Rounded.Forest,
+            iconRes = R.drawable.paint_brush,
             label = R.string.dynamic_color
         )
     }

@@ -1,13 +1,31 @@
 package com.enmanuelbergling.core.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.googlefonts.Font
 import com.enmanuelbergling.core.ui.R
 
-val bodyFontFamily = FontFamily(Font(R.raw.sarabun_regular))
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
 
-val displayFontFamily = FontFamily(Font(R.raw.sarabun_regular))
+val bodyFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Nunito Sans"),
+        fontProvider = provider,
+    )
+)
+
+val displayFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Signika Negative"),
+        fontProvider = provider,
+    )
+)
 
 // Default Material 3 typography values
 val baseline = Typography()

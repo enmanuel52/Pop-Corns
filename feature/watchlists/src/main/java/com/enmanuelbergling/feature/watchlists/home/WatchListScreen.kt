@@ -7,13 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +18,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,7 +59,10 @@ import org.koin.androidx.compose.koinViewModel
 private const val NO_LIST = -1
 
 @Composable
-fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: () -> Unit) {
+fun WatchListRoute(
+    onDetails: (listId: Int, listName: String) -> Unit,
+    onOpenDrawer: () -> Unit,
+) {
     val viewModel = koinViewModel<WatchListVM>()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -71,8 +70,7 @@ fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: (
     val createListForm by viewModel.createListFormState.collectAsStateWithLifecycle()
 
     HandleUiState(
-        uiState = uiState,
-        onIdle = viewModel::onIdle
+        uiState = uiState, onIdle = viewModel::onIdle
     ) {
         lists.refresh()
         viewModel.onIdle()
@@ -84,7 +82,7 @@ fun WatchListRoute(onDetails: (listId: Int, listName: String) -> Unit, onBack: (
         viewModel::onCreateForm,
         viewModel::deleteList,
         onDetails,
-        onBack
+        onOpenDrawer = onOpenDrawer,
     )
 }
 
@@ -96,7 +94,7 @@ private fun WatchListScreen(
     onCreateFormEvent: (CreateListEvent) -> Unit,
     onDeleteList: (listId: Int) -> Unit,
     onDetails: (listId: Int, listName: String) -> Unit,
-    onBack: () -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -107,35 +105,29 @@ private fun WatchListScreen(
     }
 
     if (pickedList != NO_LIST) {
-        DeleteMovieConfirmationDialog(
-            onDismiss = { pickedList = NO_LIST },
-            onDelete = {
-                val tempListId = pickedList
-                pickedList = NO_LIST
-                onDeleteList(tempListId)
-            })
+        DeleteMovieConfirmationDialog(onDismiss = { pickedList = NO_LIST }, onDelete = {
+            val tempListId = pickedList
+            pickedList = NO_LIST
+            onDeleteList(tempListId)
+        })
     }
 
     Scaffold(Modifier.fillMaxSize(), topBar = {
-        CenterAlignedTopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
+        TopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) }, navigationIcon = {
+            IconButton(onClick = onOpenDrawer) {
+                Icon(
+                    painter = painterResource(R.drawable.bars_bottom_left), contentDescription = "Sandwich menu icon"
+                )
+            }
+        }, actions = {
+            if (!lists.isRefreshing) {
+                IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
-                        contentDescription = stringResource(id = R.string.back_icon)
+                        painter = painterResource(R.drawable.add), contentDescription = stringResource(R.string.add_icon)
                     )
                 }
-            },
-            actions = {
-                if (!lists.isRefreshing) {
-                    IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = stringResource(R.string.add_icon)
-                        )
-                    }
-                }
-            })
+            }
+        })
     }, snackbarHost = {
         SnackbarHost(snackbarHostState)
     }) {
@@ -147,8 +139,7 @@ private fun WatchListScreen(
             PullToRefreshContainer(
                 refreshing = false,
                 onRefresh = lists::refresh,
-                modifier = Modifier
-                    .shimmerIf { lists.isRefreshing },
+                modifier = Modifier.shimmerIf { lists.isRefreshing },
                 verticalArrangement = Arrangement.spacedBy(
                     MaterialTheme.dimen.small,
                 ),
@@ -173,26 +164,22 @@ private fun WatchListScreen(
 
                                         IconButton(
                                             onClick = { pickedList = it.id },
-                                            modifier = Modifier
-                                                .padding(horizontal = MaterialTheme.dimen.small)
+                                            modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small)
 
                                         ) {
                                             Icon(
-                                                imageVector = Icons.Rounded.Delete,
+                                                painter = painterResource(R.drawable.trash),
                                                 contentDescription = stringResource(id = R.string.delete_icon)
                                             )
                                         }
                                     }
                                 },
                                 modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.surfaceVariant,
-                                    CardDefaults.elevatedShape
+                                    MaterialTheme.colorScheme.surfaceVariant, CardDefaults.elevatedShape
                                 ),
                             ) {
                                 WatchListCard(
-                                    name = list.name,
-                                    description = list.description,
-                                    Modifier.fillMaxWidth()
+                                    name = list.name, description = list.description, Modifier.fillMaxWidth()
                                 ) {
                                     onDetails(list.id, list.name)
                                 }
@@ -217,8 +204,7 @@ private fun WatchListScreen(
     }
 
     if (createListForm.isVisible) {
-        CtiContentDialog(
-            onDismiss = { onCreateFormEvent(CreateListEvent.ToggleVisibility) },
+        CtiContentDialog(onDismiss = { onCreateFormEvent(CreateListEvent.ToggleVisibility) },
             title = { Text("New List") },
             confirmButton = {
                 TextButton(onClick = { onCreateFormEvent(CreateListEvent.Submit) }) {
@@ -232,7 +218,9 @@ private fun WatchListScreen(
                     text = createListForm.name,
                     onTextChange = { onCreateFormEvent(CreateListEvent.Name(it)) },
                     hint = "List name*",
-                    leadingIcon = Icons.Rounded.Info,
+                    leadingIcon = {
+                        Icon( painter = painterResource(R.drawable.info_circle), null)
+                    },
                     errorText = createListForm.nameError,
                 )
             }
@@ -242,7 +230,9 @@ private fun WatchListScreen(
                     text = createListForm.description,
                     onTextChange = { onCreateFormEvent(CreateListEvent.Description(it)) },
                     hint = "List description*",
-                    leadingIcon = Icons.Rounded.Info,
+                    leadingIcon = {
+                        Icon( painter = painterResource(R.drawable.info_circle), null)
+                    },
                     errorText = createListForm.descriptionError
                 )
             }

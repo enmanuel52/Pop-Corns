@@ -6,13 +6,11 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.enmanuelbergling.core.model.user.WatchList
+import com.enmanuelbergling.core.ui.components.topComposable
 import com.enmanuelbergling.core.ui.model.WatchlistShortcut
 import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsRoute
 import com.enmanuelbergling.feature.watchlists.home.WatchListRoute
 import kotlinx.serialization.Serializable
-
-const val LIST_SCREEN_ROUTE = "list_screen_route"
 
 @Serializable
 data object ListGraphDestination
@@ -44,10 +42,14 @@ fun NavGraphBuilder.listGraph(
     onAddShortcut: (WatchlistShortcut) -> Unit,
     onDeleteShortcut: (watchlistId: Int) -> Unit,
     onBack: () -> Unit,
+    onOpenDrawer: () -> Unit,
 ) {
     navigation<ListGraphDestination>(startDestination = WatchListDestination) {
-        composable<WatchListDestination> {
-            WatchListRoute(onDetails = onDetails, onBack = onBack)
+        topComposable<WatchListDestination> {
+            WatchListRoute(
+                onDetails = onDetails,
+                onOpenDrawer = onOpenDrawer,
+            )
         }
 
         composable<ListDetailsDestination> { backStackEntry ->
