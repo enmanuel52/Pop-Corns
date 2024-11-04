@@ -407,7 +407,7 @@ private fun CacheDrawScope.drawShader(
                     size = rectSize,
                     topLeft = Offset(
                         x = size.width * column / COLUMNS,
-                        y = size.height * row / ROWS - 8f,
+                        y = size.height * row / ROWS,
                     ),
                 )
             }
