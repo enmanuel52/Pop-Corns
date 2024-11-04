@@ -55,6 +55,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.DrawResult
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.graphicsLayer
@@ -79,6 +81,7 @@ import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 import com.enmanuelbergling.core.ui.R as RCore
 
@@ -371,6 +374,8 @@ private fun DrawerContentPrev() {
     }
 }
 
+const val ROWS = 3.2f
+const val COLUMNS = 2.4f
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun CacheDrawScope.drawShader(
@@ -380,15 +385,33 @@ private fun CacheDrawScope.drawShader(
     val runtimeShader = RuntimeShader(backgroundShader)
     val shaderBrush = ShaderBrush(runtimeShader)
 
+    runtimeShader.setFloatUniform(
+        "resolution", size.width / COLUMNS, size.height / ROWS
+    )
+
+    //the sum is to make sure of filling the entire space
+    val rectSize = Size(
+        width = size.width / COLUMNS + 2f,
+        height = size.height / ROWS + 2f,
+    )
+
     return onDrawWithContent {
-        runtimeShader.setFloatUniform(
-            "resolution", size.width, size.height
-        )
         runtimeShader.setFloatUniform(
             "time", shaderTime
         )
 
-        drawRect(shaderBrush)
+        repeat(ceil(ROWS).toInt()) { row ->
+            repeat(ceil(COLUMNS).toInt()) { column ->
+                drawRect(
+                    brush = shaderBrush,
+                    size = rectSize,
+                    topLeft = Offset(
+                        x = size.width * column / COLUMNS,
+                        y = size.height * row / ROWS - 8f,
+                    ),
+                )
+            }
+        }
 
         drawContent()
     }
