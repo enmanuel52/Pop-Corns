@@ -1,8 +1,10 @@
 package com.enmanuelbergling.feature.series.home
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +37,8 @@ fun SeriesScreen(
                     }
                 },
             )
-        }
+        },
+        contentWindowInsets = WindowInsets.statusBars,
     ) {
         Box(
             modifier = Modifier

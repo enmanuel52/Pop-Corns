@@ -14,11 +14,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -162,11 +166,10 @@ private fun AnimatedContentScope.MovieDetailsScreen(
     if (isSheetOpen.value) {
         ModalBottomSheet(
             onDismissRequest = { isSheetOpen.value = false },
-            sheetState = sheetState
+            sheetState = sheetState,
+            windowInsets = WindowInsets(0)
         ) {
-            Box(modifier = Modifier.navigationBarsPadding()) {
-                watchListsSheet()
-            }
+            watchListsSheet()
         }
     }
 
@@ -198,17 +201,18 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     scrolledContainerColor = Color.Transparent
                 ),
             )
-        }
+        },
+        contentWindowInsets = WindowInsets.statusBars,
     ) { paddingValues ->
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
             modifier = Modifier
                 .haze(hazeState)
-                .fillMaxSize(),
-            contentPadding = paddingValues
-        ) {
-
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+            ) {
             details?.let {
                 detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
 
@@ -260,7 +264,10 @@ private fun SheetContent(
     details: MovieDetails?,
     onAddToMovieList: (movieId: Int, WatchList) -> Unit,
 ) {
-    LazyColumn(contentPadding = PaddingValues(MaterialTheme.dimen.small)) {
+    LazyColumn(
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+        modifier = Modifier.padding(horizontal = MaterialTheme.dimen.verySmall),
+    ) {
         stickyHeader {
             Column(
                 modifier = Modifier

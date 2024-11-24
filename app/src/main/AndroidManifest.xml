@@ -20,7 +20,8 @@
             android:name=".ui.CornsTimeActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

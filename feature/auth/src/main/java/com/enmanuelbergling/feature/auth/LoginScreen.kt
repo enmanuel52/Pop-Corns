@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
@@ -100,7 +102,7 @@ fun LoginScreen(
         SignIn(
             Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = MaterialTheme.dimen.medium)
+                .navigationBarsPadding()
         ) {
             uriHandler.openUri("https://www.themoviedb.org/signup")
         }
@@ -109,7 +111,7 @@ fun LoginScreen(
 
 @Composable
 private fun TopBar(onBack: () -> Unit) {
-    Column(modifier = Modifier.padding(top = MaterialTheme.dimen.medium)) {
+    Column(modifier = Modifier.statusBarsPadding()) {
         IconButton(onClick = onBack) {
             Icon(imageVector = Icons.Rounded.ArrowBackIosNew, contentDescription = "arrow back")
         }

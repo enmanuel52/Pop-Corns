@@ -4,9 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.CardDefaults
@@ -157,7 +161,8 @@ fun WatchListDetailsScreen(
                 },
                 scrollBehavior = scrollBehaviour
             )
-        }
+        },
+        contentWindowInsets = WindowInsets.statusBars,
     ) {
         Box(
             modifier = Modifier
@@ -169,9 +174,10 @@ fun WatchListDetailsScreen(
                 verticalArrangement = Arrangement.spacedBy(
                     MaterialTheme.dimen.small,
                 ),
-                contentPadding = PaddingValues(MaterialTheme.dimen.small),
+                contentPadding = WindowInsets.navigationBars.asPaddingValues(),
                 modifier = Modifier
-                    .shimmerIf { movies.isRefreshing },
+                    .shimmerIf { movies.isRefreshing }
+                    .padding(horizontal = MaterialTheme.dimen.verySmall),
                 scrollBehavior = scrollBehaviour
             ) {
                 if (movies.isRefreshing) {

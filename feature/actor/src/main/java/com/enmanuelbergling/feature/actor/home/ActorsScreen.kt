@@ -4,9 +4,13 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
@@ -64,6 +68,7 @@ fun AnimatedContentScope.ActorsScreen(
                 }
             }, scrollBehavior = scrollBehavior)
         },
+        contentWindowInsets = WindowInsets.statusBars,
 
         ) { paddingValues ->
         Box(
@@ -92,10 +97,11 @@ fun AnimatedContentScope.ActorsGrid(
     LazyVerticalStaggeredGrid(
         modifier = modifier
             .fillMaxWidth()
+            .padding(horizontal = MaterialTheme.dimen.verySmall)
             .shimmerIf { actors.itemCount <= 0 },
         state = listState,
         columns = StaggeredGridCells.Adaptive(110.dp),
-        contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
         verticalItemSpacing = MaterialTheme.dimen.small,
         userScrollEnabled = actors.itemCount > 0
