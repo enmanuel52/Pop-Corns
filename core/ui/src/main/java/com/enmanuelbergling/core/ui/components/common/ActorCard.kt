@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -88,7 +89,6 @@ fun AnimatedContentScope.ActorCard(
 
     Column(modifier) {
         ElevatedCard(onCLick) {
-
             AsyncImage(
                 model = BASE_POSTER_IMAGE_URL + imageUrl,
                 contentDescription = "movie image",
@@ -102,6 +102,7 @@ fun AnimatedContentScope.ActorCard(
                         animatedVisibilityScope = this@ActorCard,
                         boundsTransform = BoundsTransition
                     )
+                        .clip(CardDefaults.elevatedShape)
                 },
                 contentScale = ContentScale.Crop
             )
