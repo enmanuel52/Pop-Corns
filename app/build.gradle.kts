@@ -10,7 +10,7 @@ android {
     defaultConfig {
 
         applicationId = "com.enmanuelbergling.ktormovies"
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "2.0"
 

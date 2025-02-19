@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.ContextualFlowRow
 import androidx.compose.foundation.layout.ContextualFlowRowOverflow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRowOverflowScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -23,7 +27,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.VerticalAlignTop
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ElevatedAssistChip
@@ -116,7 +119,8 @@ private fun MoviesFilterScreen(
                 },
                 scrollBehavior = scrollBehavior
             )
-        }
+        },
+        contentWindowInsets = WindowInsets.statusBars,
     ) { paddingValues ->
         Column(
             Modifier
@@ -141,8 +145,10 @@ private fun MoviesFilterScreen(
             Box {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-                    contentPadding = PaddingValues(MaterialTheme.dimen.verySmall),
-                    state = lazyListState
+                    contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+                    state = lazyListState,
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.dimen.verySmall),
                 ) {
                     item {
                         SectionFilterUi(
@@ -177,7 +183,9 @@ private fun MoviesFilterScreen(
                 ShowUpFrom(
                     !start,
                     FromDirection.Bottom,
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding(),
                 ) {
                     SmallFloatingActionButton(
                         onClick = {
@@ -185,7 +193,6 @@ private fun MoviesFilterScreen(
                                 lazyListState.animateScrollToItem(0)
                             }
                         },
-                        modifier = Modifier.padding(bottom = MaterialTheme.dimen.small),
                         shape = CircleShape
                     ) {
                         Icon(
@@ -271,7 +278,8 @@ private fun GenresUi(
                             colors = AssistChipDefaults.elevatedAssistChipColors(
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                                 labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                            ), shape = CircleShape,
+                            ),
+                            shape = CircleShape,
                         )
                     },
                     collapseIndicator = {

@@ -3,6 +3,7 @@ package com.enmanuelbergling.ktormovies.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -26,6 +27,8 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
+
+        enableEdgeToEdge()
 
         val searchMovieShortCutClicked = intent.getStringExtra("search_movie_extra") != null
 

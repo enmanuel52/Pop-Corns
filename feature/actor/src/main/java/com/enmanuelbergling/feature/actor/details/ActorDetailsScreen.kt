@@ -280,13 +280,13 @@ private fun AnimatedVisibilityScope.DetailsHeader(
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),
                 modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(all = MaterialTheme.dimen.verySmall)
                     .sharedElement(
                         state = rememberSharedContentState(key = imagePath.orEmpty()),
                         animatedVisibilityScope = this@DetailsHeader,
                         boundsTransform = BoundsTransition
                     )
-                    .fillMaxHeight()
-                    .padding(all = MaterialTheme.dimen.verySmall)
                     .clip(MaterialTheme.shapes.medium)
             )
         }
