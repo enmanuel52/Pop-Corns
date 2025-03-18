@@ -167,7 +167,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         ModalBottomSheet(
             onDismissRequest = { isSheetOpen.value = false },
             sheetState = sheetState,
-            windowInsets = WindowInsets(0)
+            contentWindowInsets = { WindowInsets(0) }
         ) {
             watchListsSheet()
         }
@@ -193,7 +193,10 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
                 },
                 modifier = Modifier
-                    .hazeChild(hazeState, style = HazeStyle(MaterialTheme.colorScheme.background.copy(alpha = .5f)))
+                    .hazeChild(
+                        hazeState,
+                        style = HazeStyle(MaterialTheme.colorScheme.background.copy(alpha = .5f))
+                    )
                     .fillMaxWidth(),
                 // Need to make app bar transparent to see the content behind
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
