@@ -27,8 +27,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -169,6 +173,7 @@ private fun SignIn(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
 @Composable
 fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifier: Modifier) {
 
+    val autofillManager = LocalAutofillManager.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -181,6 +186,9 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
             onTextChange = { onLoginEvent(LoginEvent.Username(it)) },
             hint = stringResource(R.string.username),
             errorText = formState.usernameError,
+            modifier = Modifier.semantics {
+                contentType = ContentType.Username + ContentType.NewUsername
+            }
         )
 
         CtiTextField(
@@ -197,6 +205,9 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
                 }
             },
             visualTransformation = if (formState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            modifier = Modifier.semantics {
+                contentType = ContentType.Password + ContentType.NewPassword
+            },
         )
 
         val errorFound by remember {
@@ -206,7 +217,10 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
         }
 
         Button(
-            onClick = { onLoginEvent(LoginEvent.Submit) },
+            onClick = {
+                autofillManager?.commit()
+                onLoginEvent(LoginEvent.Submit)
+                      },
             enabled = !errorFound,
         ) {
             Text(
