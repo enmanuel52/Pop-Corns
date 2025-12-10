@@ -42,10 +42,10 @@ import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.auth.model.LoginEvent
 import com.enmanuelbergling.feature.auth.model.LoginForm
+import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -89,11 +89,11 @@ fun LoginScreen(
             onLoginEvent = onLoginEvent,
             modifier = Modifier
                 .align(Alignment.Center)
-                .hazeChild(
+                .hazeEffect(
                     hazeState,
-                    shape = MaterialTheme.shapes.small,
-                    style = HazeStyle(blurRadius = 16.dp)
-                )
+                    block = fun HazeEffectScope.() {
+                        blurRadius = 16.dp
+                    })
                 .padding(MaterialTheme.dimen.medium, MaterialTheme.dimen.lessLarge)
         )
 
