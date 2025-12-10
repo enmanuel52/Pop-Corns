@@ -98,7 +98,7 @@ fun AnimatedContentScope.ActorCard(
                     .aspectRatio(.65f)
                         then with(sharedTransitionScope) {
                     Modifier.sharedElement(
-                        state = rememberSharedContentState(key = imageUrl.orEmpty()),
+                         rememberSharedContentState(key = imageUrl.orEmpty()),
                         animatedVisibilityScope = this@ActorCard,
                         boundsTransform = BoundsTransition
                     )

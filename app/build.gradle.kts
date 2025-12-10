@@ -1,7 +1,8 @@
+import util.libs
 
 plugins {
-   alias(libs.plugins.corntime.android.application)
-   alias(libs.plugins.corntime.android.compose)
+    alias(libs.plugins.corntime.android.application)
+    alias(libs.plugins.corntime.android.compose)
 }
 
 android {
@@ -10,7 +11,7 @@ android {
     defaultConfig {
 
         applicationId = "com.enmanuelbergling.ktormovies"
-        targetSdk = 35
+        targetSdk = libs.findVersion("android-targetSdk").get().toString().toInt()
         versionCode = 1
         versionName = "2.0"
 
@@ -32,7 +33,7 @@ android {
         }
     }
 
-    lint{
+    lint {
         checkReleaseBuilds = false
     }
 }
@@ -53,14 +54,14 @@ dependencies {
 
     testImplementation(project(":core:testing"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.espresso.core)
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
-    implementation(libs.androidx.core.splashscreen)
+    implementation("androidx.core:core-splashscreen:1.2.0")
 
 //    implementation(libs.walkthrough)
 }
