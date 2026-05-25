@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *>,
+    commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
     commonExtension.apply {
         compileSdk = libs.findVersion("android-compileSdk").get().toString().toInt()
@@ -44,9 +44,8 @@ internal fun Project.configureKotlinJvm() {
  */
 private fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            // Set JVM target to 17
-            jvmTarget = JavaVersion.VERSION_17.toString()
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
 }
