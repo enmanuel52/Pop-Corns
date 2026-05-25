@@ -26,10 +26,10 @@ dependencies {
 
     api(libs.androidx.constraintlayout.compose)
 
-    androidTestApi(composeBom)
-    androidTestApi(libs.androidx.compose.ui.test.junit4)
-    debugApi(libs.androidx.compose.ui.tooling)
-    debugApi(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     //for collect
     api(libs.androidx.lifecycle.lifecycle.runtime.compose)

@@ -1,4 +1,4 @@
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -23,7 +23,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
     private fun Project.applyPlugins() = apply {
         plugin("com.android.library")
-        plugin("org.jetbrains.kotlin.android")
         plugin("org.jetbrains.kotlin.plugin.serialization")
     }
 

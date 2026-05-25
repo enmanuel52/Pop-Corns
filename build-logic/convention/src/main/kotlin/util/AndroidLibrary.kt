@@ -1,6 +1,6 @@
 package util
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 
 fun LibraryExtension.buildTypes() {
     buildTypes {

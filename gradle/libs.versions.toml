@@ -1,7 +1,7 @@
 [versions]
-android-compileSdk = "36"
+android-compileSdk = "37"
 android-minSdk = "24"
-android-targetSdk = "36"
+android-targetSdk = "37"
 androidx-activity = "1.13.0"
 androidx-datastore = "1.2.1"
 androidx-lifecycle = "2.10.0"
@@ -9,12 +9,13 @@ androidx-test-espresso = "3.7.0"
 androidxComposeBom = "2026.05.01"
 animation = "1.11.2"
 #plugings
-application = "8.13.1"
+application = "9.2.1"
 ben-manes-versions = "0.54.0"
 constraintlayoutCompose = "1.1.1"
 core-ktx = "1.18.0"
 core-splashscreen = "1.2.0"
 de-jensklingenberg-ktorfit = "2.7.3"
+gradle = "9.2.1"
 haze = "1.7.2"
 io-coil-kt = "2.7.0"
 io-ktor = "3.5.0"
@@ -22,13 +23,15 @@ koin-core = "4.2.1"
 koin-test = "4.2.1"
 kotestRunnerJunit5 = "6.1.11"
 kotlin = "2.3.21"
+kotlinGradlePlugin = "2.3.21"
 kotlinSerialization = "2.3.21"
 kotlinx-coroutines = "1.11.0"
 kotlinxCollectionsImmutable = "0.4.0"
 kotlinxSerializationJson = "1.11.0"
 ksp = "2.3.8"
 ktorfit = "2.7.3"
-library = "8.13.1"
+library = "9.2.1"
+material3 = "1.5.0-alpha20"
 material-icons-extended = "1.7.8"
 navigationCompose = "2.9.8"
 orbital = "0.4.0"
@@ -44,7 +47,7 @@ androidx-animation = { module = "androidx.compose.animation:animation", version.
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
@@ -72,6 +75,7 @@ com-google-protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.35.0"
 com-valentinilk-shimmer-compose-shimmer = "com.valentinilk.shimmer:compose-shimmer:1.4.0"
 de-jensklingenberg-ktorfit-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "de-jensklingenberg-ktorfit" }
 de-jensklingenberg-ktorfit-ktorfit-lib-light = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "de-jensklingenberg-ktorfit" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 io-coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "io-coil-kt" }
 io-ktor-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "io-ktor" }
@@ -87,6 +91,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-test" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-core" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotestRunnerJunit5" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }

@@ -5,8 +5,8 @@ plugins {
 }
 
 dependencies {
-    compileOnly("com.android.tools.build:gradle:8.13.1")
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.21")
+    compileOnly(libs.gradle)
+    compileOnly(libs.kotlin.gradle.plugin)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

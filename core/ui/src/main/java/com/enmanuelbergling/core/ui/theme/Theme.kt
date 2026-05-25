@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -300,6 +301,7 @@ fun CornTimeTheme(
             colorScheme = colorScheme,
             typography = AppTypography,
             shapes = Shape,
+            motionScheme = MotionScheme.expressive(),
             content = content
         )
     }
