@@ -70,10 +70,10 @@ private fun SnackBarError(
     errorMessage: String,
     onRetry: () -> Unit,
 ) {
-    val context = LocalContext.current
+    val actionLabel = stringResource(R.string.retry)
     LaunchedEffect(key1 = Unit) {
         val snackResult = snackState.showSnackbar(
-            message = errorMessage, actionLabel = context.getString(R.string.retry),
+            message = errorMessage, actionLabel = actionLabel,
             withDismissAction = true,
             duration = SnackbarDuration.Indefinite
         )

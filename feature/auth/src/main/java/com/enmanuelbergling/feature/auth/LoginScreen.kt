@@ -120,7 +120,7 @@ private fun TopBar(onBack: () -> Unit) {
             Icon(imageVector = Icons.Rounded.ArrowBackIosNew, contentDescription = "arrow back")
         }
 
-        Spacer(modifier = Modifier.height(MaterialTheme.dimen.almostGiant))
+        Spacer(modifier = Modifier.height(MaterialTheme.dimen.medium))
 
         Text(
             text = stringResource(id = R.string.welcome_back).let {

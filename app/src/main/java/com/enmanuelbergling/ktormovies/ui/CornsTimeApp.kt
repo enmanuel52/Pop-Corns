@@ -290,7 +290,7 @@ fun DrawerContent(
                     )
                 }
 
-            NavDrawerItem(
+            if (userDetails != null) NavDrawerItem(
                 label = stringResource(id = R.string.logout),
                 selected = false,
                 iconRes = RCore.drawable.power_outline,
