@@ -5,13 +5,14 @@ plugins {
 }
 
 dependencies {
-    compileOnly("com.android.tools.build:gradle:8.1.0")
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10")
+    compileOnly(libs.gradle)
+    compileOnly(libs.kotlin.gradle.plugin)
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "17"
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }
 
 tasks {

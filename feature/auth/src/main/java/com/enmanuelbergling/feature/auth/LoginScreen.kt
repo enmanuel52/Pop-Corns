@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
@@ -25,8 +27,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,10 +46,10 @@ import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 import com.enmanuelbergling.feature.auth.model.LoginEvent
 import com.enmanuelbergling.feature.auth.model.LoginForm
+import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -87,11 +93,11 @@ fun LoginScreen(
             onLoginEvent = onLoginEvent,
             modifier = Modifier
                 .align(Alignment.Center)
-                .hazeChild(
+                .hazeEffect(
                     hazeState,
-                    shape = MaterialTheme.shapes.small,
-                    style = HazeStyle(blurRadius = 16.dp)
-                )
+                    block = fun HazeEffectScope.() {
+                        blurRadius = 16.dp
+                    })
                 .padding(MaterialTheme.dimen.medium, MaterialTheme.dimen.lessLarge)
         )
 
@@ -100,7 +106,7 @@ fun LoginScreen(
         SignIn(
             Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = MaterialTheme.dimen.medium)
+                .navigationBarsPadding()
         ) {
             uriHandler.openUri("https://www.themoviedb.org/signup")
         }
@@ -109,12 +115,12 @@ fun LoginScreen(
 
 @Composable
 private fun TopBar(onBack: () -> Unit) {
-    Column(modifier = Modifier.padding(top = MaterialTheme.dimen.medium)) {
+    Column(modifier = Modifier.statusBarsPadding()) {
         IconButton(onClick = onBack) {
             Icon(imageVector = Icons.Rounded.ArrowBackIosNew, contentDescription = "arrow back")
         }
 
-        Spacer(modifier = Modifier.height(MaterialTheme.dimen.almostGiant))
+        Spacer(modifier = Modifier.height(MaterialTheme.dimen.medium))
 
         Text(
             text = stringResource(id = R.string.welcome_back).let {
@@ -167,6 +173,7 @@ private fun SignIn(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
 @Composable
 fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifier: Modifier) {
 
+    val autofillManager = LocalAutofillManager.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,6 +186,9 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
             onTextChange = { onLoginEvent(LoginEvent.Username(it)) },
             hint = stringResource(R.string.username),
             errorText = formState.usernameError,
+            modifier = Modifier.semantics {
+                contentType = ContentType.Username + ContentType.NewUsername
+            }
         )
 
         CtiTextField(
@@ -195,6 +205,9 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
                 }
             },
             visualTransformation = if (formState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            modifier = Modifier.semantics {
+                contentType = ContentType.Password + ContentType.NewPassword
+            },
         )
 
         val errorFound by remember {
@@ -204,7 +217,10 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
         }
 
         Button(
-            onClick = { onLoginEvent(LoginEvent.Submit) },
+            onClick = {
+                autofillManager?.commit()
+                onLoginEvent(LoginEvent.Submit)
+                      },
             enabled = !errorFound,
         ) {
             Text(

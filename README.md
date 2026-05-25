@@ -17,6 +17,7 @@ Can you guess the best way to eat them? Of course watching a movie :).
 * **🧪 Testing:** Behaviour Driven Development using [Kotest](https://github.com/kotest/kotest "kotest repo")
 * 🌛 **Dark theme and dynamic color support**.
 * 📌 **Shortcuts:** Static and dynamic.
+* 🔐 **Autofill support:** Faster sign-in with saved credentials.
 
 ## 📸Screenshoots📸
 

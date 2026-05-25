@@ -20,17 +20,20 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -146,34 +149,37 @@ private fun SettingsScreen(
         }
     }
 
-    Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(text = stringResource(id = R.string.settings)) },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowBackIosNew,
-                        contentDescription = "icon back"
-                    )
-                }
-            },
-            actions = {
-                if (uiState.userDetails != null) {
-                    IconButton(onClick = {
-                        onEvent(SettingUiEvent.Logout)
-                        context.removeAllDynamicShortCuts()
-                    }) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.settings)) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.power_outline),
-                            contentDescription = "logout icon"
+                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            contentDescription = "icon back"
                         )
                     }
+                },
+                actions = {
+                    if (uiState.userDetails != null) {
+                        IconButton(onClick = {
+                            onEvent(SettingUiEvent.Logout)
+                            context.removeAllDynamicShortCuts()
+                        }) {
+                            Icon(
+                                painter = painterResource(R.drawable.power_outline),
+                                contentDescription = "logout icon"
+                            )
+                        }
 
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent, Color.Transparent)
-        )
-    }) { paddingValues ->
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent, Color.Transparent)
+            )
+        },
+        contentWindowInsets = WindowInsets.statusBars,
+    ) { paddingValues ->
         Box {
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) || !isDarkMode) {
                 ArtisticBackground(Modifier.fillMaxSize())
@@ -320,9 +326,8 @@ private fun SettingOptions(
         enter = slideInVertically(spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)) { it },
         modifier = modifier,
     ) {
-
         LazyColumn(
-            contentPadding = PaddingValues(vertical = MaterialTheme.dimen.mediumSmall),
+            contentPadding = WindowInsets.navigationBars.asPaddingValues(),
             modifier = Modifier
                 .fillMaxSize()
                 .background(
@@ -504,7 +509,7 @@ internal fun SettingItemUi(
                 .padding(MaterialTheme.dimen.small),
         ) {
             Icon(
-               painter = painterResource(item.iconRes),
+                painter = painterResource(item.iconRes),
                 contentDescription = "setting icon",
             )
         }

@@ -11,9 +11,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.util.InternalAPI
 
-@OptIn(InternalAPI::class)
 internal class AuthService(private val httpClient: KtorClient) {
     /**
      * Create an intermediate request token that can be used to validate a user login

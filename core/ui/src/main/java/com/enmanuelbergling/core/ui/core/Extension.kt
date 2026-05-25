@@ -25,7 +25,8 @@ val Material3.dimen: Dimen
     get() = LocalDimen.current
 
 @Stable
-fun Modifier.shimmerIf(condition: () -> Boolean) = if (condition()) this then shimmer() else this
+@Composable
+fun Modifier.shimmerIf(condition: () -> Boolean) = if (condition())  shimmer() else this
 
 val LazyPagingItems<*>.isRefreshing: Boolean
     get() = loadState.refresh == LoadState.Loading

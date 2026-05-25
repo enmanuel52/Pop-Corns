@@ -62,10 +62,10 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
 import com.valentinilk.shimmer.shimmer
+import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -140,10 +140,11 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
                     }
                 },
                 modifier = Modifier
-                    .hazeChild(
+                    .hazeEffect(
                         hazeState,
-                        style = HazeStyle(MaterialTheme.colorScheme.background.copy(alpha = .5f))
-                    )
+                        block = fun HazeEffectScope.() {
+                            blurRadius = 16.dp
+                        })
                     .fillMaxWidth(),
                 // Need to make app bar transparent to see the content behind
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -280,13 +281,13 @@ private fun AnimatedVisibilityScope.DetailsHeader(
                 error = painterResource(id = R.drawable.mr_bean),
                 placeholder = painterResource(id = R.drawable.mr_bean),
                 modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(all = MaterialTheme.dimen.verySmall)
                     .sharedElement(
-                        state = rememberSharedContentState(key = imagePath.orEmpty()),
+                        rememberSharedContentState(key = imagePath.orEmpty()),
                         animatedVisibilityScope = this@DetailsHeader,
                         boundsTransform = BoundsTransition
                     )
-                    .fillMaxHeight()
-                    .padding(all = MaterialTheme.dimen.verySmall)
                     .clip(MaterialTheme.shapes.medium)
             )
         }

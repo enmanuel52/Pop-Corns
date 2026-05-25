@@ -4,9 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -130,7 +134,8 @@ private fun WatchListScreen(
         })
     }, snackbarHost = {
         SnackbarHost(snackbarHostState)
-    }) {
+    },
+        contentWindowInsets = WindowInsets.statusBars,) {
         Box(
             modifier = Modifier
                 .padding(it)
@@ -139,12 +144,13 @@ private fun WatchListScreen(
             PullToRefreshContainer(
                 refreshing = false,
                 onRefresh = lists::refresh,
-                modifier = Modifier.shimmerIf { lists.isRefreshing },
+                modifier = Modifier.shimmerIf { lists.isRefreshing }
+                    .padding(horizontal = MaterialTheme.dimen.verySmall),
                 verticalArrangement = Arrangement.spacedBy(
                     MaterialTheme.dimen.small,
                 ),
-                contentPadding = PaddingValues(MaterialTheme.dimen.small)
-            ) {
+                contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+                ) {
                 if (lists.isRefreshing) {
                     items(12) {
                         WatchListCardPlaceholder()
