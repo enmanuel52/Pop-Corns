@@ -20,8 +20,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -43,13 +46,13 @@ class MoviesVM(
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val moviesSearch: Flow<PagingData<Movie>> = uiDataState.map { it.searchQuery }
-        .filter { it.isNotBlank() }
-        .onEach {
-            println(it)
+        .debounce { query ->
+            if (query.isNotBlank()) 1.seconds else 0.seconds
         }
-        .debounce(1.seconds)
         .flatMapLatest { query ->
-            getFilteredMoviesUC(QueryString(query))
+            if (query.isBlank()) flow {
+                emit(PagingData.from(listOf()))
+            } else getFilteredMoviesUC(QueryString(query))
         }
         .cachedIn(viewModelScope)
 

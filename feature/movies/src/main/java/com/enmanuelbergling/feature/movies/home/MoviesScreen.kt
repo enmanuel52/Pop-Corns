@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -40,10 +39,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarState
-import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,11 +51,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -76,6 +78,7 @@ import com.enmanuelbergling.core.ui.components.walkthrough.components.InstagramP
 import com.enmanuelbergling.core.ui.components.walkthrough.components.ShiftIndicator
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isScrollingForward
+import com.enmanuelbergling.feature.movies.home.model.SuggestionEvent
 import com.enmanuelbergling.feature.movies.search.ExpandedSearchBarContent
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
@@ -114,19 +117,11 @@ fun MoviesScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
-            SearchBar(
-                searchBarState,
-                inputField = {
-                    SearchBarInputField(
-                        textFieldState = textFieldState,
-                        searchBarState = searchBarState,
-                        onFilter = onFilter,
-                        onOpenDrawer = onOpenDrawer,
-                    )
-                },
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(horizontal = MaterialTheme.dimen.small)
+            MoviesTopAppBar(
+                onOpenDrawer = onOpenDrawer,
+                searchBarState = searchBarState,
+                textFieldState = textFieldState,
+                onFilter = onFilter
             )
         },
         contentWindowInsets = WindowInsets.statusBars,
@@ -135,12 +130,21 @@ fun MoviesScreen(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
-            ExpandedFullScreenSearchBar(searchBarState, inputField = {
-                ExpandedSearchBarInputField(
-                    textFieldState = textFieldState,
-                    searchBarState = searchBarState
+            ExpandedFullScreenSearchBar(
+                state = searchBarState,
+                inputField = {
+                    ExpandedSearchBarInputField(
+                        textFieldState = textFieldState,
+                        searchBarState = searchBarState,
+                        onAddSuggestion = {
+                            viewModel.onSuggestionEvent(SuggestionEvent.Add(it))
+                        }
+                    )
+                },
+                colors = SearchBarDefaults.colors(
+                    dividerColor = Color.Transparent,
                 )
-            }) {
+            ) {
                 ExpandedSearchBarContent(
                     movies = moviesSearch,
                     searchSuggestions = uiData.searchSuggestions,
@@ -163,20 +167,16 @@ fun MoviesScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBarInputField(
-    textFieldState: TextFieldState,
-    searchBarState: SearchBarState,
-    onFilter: () -> Unit,
+@OptIn(ExperimentalMaterial3Api::class)
+private fun MoviesTopAppBar(
     onOpenDrawer: () -> Unit,
+    searchBarState: SearchBarState,
+    textFieldState: TextFieldState,
+    onFilter: () -> Unit
 ) {
-
-    SearchBarDefaults.InputField(
-        textFieldState = textFieldState,
-        searchBarState = searchBarState,
-        onSearch = {},
-        leadingIcon = {
+    TopAppBar(
+        navigationIcon = {
             IconButton(
                 onClick = onOpenDrawer
             ) {
@@ -186,16 +186,44 @@ fun SearchBarInputField(
                 )
             }
         },
-        trailingIcon = {
+        title = {
+            SearchBar(
+                searchBarState,
+                inputField = {
+                    SearchBarInputField(
+                        textFieldState = textFieldState,
+                        searchBarState = searchBarState,
+                    )
+                },
+            )
+        },
+        actions = {
             IconButton(onClick = onFilter) {
                 Icon(
                     painter = painterResource(R.drawable.funnel),
                     contentDescription = stringResource(R.string.filter_icon)
                 )
             }
-        },
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBarInputField(
+    textFieldState: TextFieldState,
+    searchBarState: SearchBarState,
+) {
+    SearchBarDefaults.InputField(
+        textFieldState = textFieldState,
+        searchBarState = searchBarState,
+        onSearch = {},
         placeholder = {
-            Text(text = stringResource(R.string.movies))
+            Text(
+                text = stringResource(R.string.movies),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         },
     )
 }
@@ -205,14 +233,17 @@ fun SearchBarInputField(
 fun ExpandedSearchBarInputField(
     textFieldState: TextFieldState,
     searchBarState: SearchBarState,
+    onAddSuggestion: (String) -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
 
     SearchBarDefaults.InputField(
         textFieldState = textFieldState,
         searchBarState = searchBarState,
-        onSearch = {
-            scope.launch { searchBarState.animateToCollapsed() }
+        onSearch = { query ->
+            keyboardController?.hide()
+            onAddSuggestion(query)
         },
         leadingIcon = {
             IconButton(onClick = {

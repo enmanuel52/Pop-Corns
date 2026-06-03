@@ -210,16 +210,14 @@ fun WatchListDetailsScreen(
                                         }
                                     }
                                 },
-                                modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.surfaceVariant,
-                                    CardDefaults.elevatedShape
-                                ),
+                                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant),
                             ) {
 
                                 MovieLandCard(
                                     movie = movie,
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .background(MaterialTheme.colorScheme.surface),
                                 ) {
                                     onMovieDetails(movie.id)
                                 }

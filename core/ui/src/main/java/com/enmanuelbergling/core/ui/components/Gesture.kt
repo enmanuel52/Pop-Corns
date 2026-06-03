@@ -37,14 +37,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.enmanuelbergling.core.ui.core.dimen
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 enum class DragState {
     Open, Closed
@@ -81,11 +79,12 @@ fun NewerDragListItem(
     Box(modifier) {
         bottomContent()
 
-        Box(modifier = Modifier
-            .graphicsLayer {
-                translationX = state.requireOffset()
-            }
-            .anchoredDraggable(state, Orientation.Horizontal)
+        Box(
+            modifier = Modifier
+                .graphicsLayer {
+                    translationX = state.requireOffset()
+                }
+                .anchoredDraggable(state, Orientation.Horizontal)
         ) {
             topContent()
         }
@@ -99,7 +98,6 @@ fun SwipeToDismissContainer(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     animationDuration: Int = 600,
-    shape: Shape = RectangleShape,
     content: @Composable RowScope.() -> Unit,
 ) {
     var isOut by remember {
@@ -108,7 +106,7 @@ fun SwipeToDismissContainer(
 
     LaunchedEffect(key1 = isOut) {
         if (isOut) {
-            delay(animationDuration.toLong())
+            delay(animationDuration.toLong().milliseconds)
             onDelete()
         }
     }
@@ -119,9 +117,7 @@ fun SwipeToDismissContainer(
             tween(animationDuration),
             Alignment.Top
         ),
-        modifier = Modifier
-            .clip(shape)
-            .then(modifier)
+        modifier = modifier
     ) {
         val swipeToDismissState = rememberSwipeToDismissBoxState(
             initialValue = SwipeToDismissBoxValue.Settled,
