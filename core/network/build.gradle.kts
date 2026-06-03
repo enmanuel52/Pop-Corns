@@ -53,6 +53,7 @@ dependencies {
 
     //Engines
     implementation(libs.io.ktor.ktor.client.cio)
+    implementation(libs.io.ktor.ktor.client.okhttp)
 
     //Plugins
     implementation(libs.io.ktor.ktor.client.resources)

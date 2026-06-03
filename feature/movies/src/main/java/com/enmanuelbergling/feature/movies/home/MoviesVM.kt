@@ -2,18 +2,37 @@ package com.enmanuelbergling.feature.movies.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.enmanuelbergling.core.domain.usecase.movie.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.QueryString
 import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.movies.home.model.MoviesChainStart
 import com.enmanuelbergling.feature.movies.home.model.MoviesUiData
+import com.enmanuelbergling.feature.movies.home.model.SuggestionEvent
+import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class MoviesVM(
     private val homeMoviesHandler: MoviesChainStart,
+    private val getSearchSuggestionsUC: GetSearchSuggestionsUC,
+    getFilteredMoviesUC: GetFilteredMoviesUC,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
@@ -22,8 +41,27 @@ class MoviesVM(
     private val _uiDataState = MutableStateFlow(MoviesUiData())
     val uiDataState get() = _uiDataState.asStateFlow()
 
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val moviesSearch: Flow<PagingData<Movie>> = uiDataState.map { it.searchQuery }
+        .filter { it.isNotBlank() }
+        .onEach {
+            println(it)
+        }
+        .debounce(1.seconds)
+        .flatMapLatest { query ->
+            getFilteredMoviesUC(QueryString(query))
+        }
+        .cachedIn(viewModelScope)
+
+
     init {
         loadUi()
+
+        getSearchSuggestionsUC()
+            .onEach { suggestions ->
+                _uiDataState.update { it.copy(searchSuggestions = suggestions) }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun loadUi() = viewModelScope.launch {
@@ -37,4 +75,15 @@ class MoviesVM(
         }
     }
 
+    fun onSuggestionEvent(event: SuggestionEvent) = viewModelScope.launch {
+        when (event) {
+            is SuggestionEvent.Add -> getSearchSuggestionsUC.add(event.query)
+            SuggestionEvent.Clear -> getSearchSuggestionsUC.clear()
+            is SuggestionEvent.Delete -> getSearchSuggestionsUC.delete(event.query)
+        }
+    }
+
+    fun onQueryChange(query: String) = _uiDataState.update {
+        it.copy(searchQuery = query)
+    }
 }

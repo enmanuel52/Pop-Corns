@@ -12,12 +12,9 @@ import com.enmanuelbergling.core.domain.usecase.movie.GetMovieGenresUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetMoviesByActorUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetNowPlayingMoviesUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetPopularMoviesUC
+import com.enmanuelbergling.core.domain.usecase.movie.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetTopRatedMoviesUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetUpcomingMoviesUC
-import com.enmanuelbergling.core.domain.usecase.movie.search.AddSearchSuggestionUC
-import com.enmanuelbergling.core.domain.usecase.movie.search.ClearSearchSuggestionsUC
-import com.enmanuelbergling.core.domain.usecase.movie.search.DeleteSearchSuggestionUC
-import com.enmanuelbergling.core.domain.usecase.movie.search.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.onboarding.FinishOnboardingUC
 import com.enmanuelbergling.core.domain.usecase.onboarding.IsOnboardingUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
@@ -85,9 +82,6 @@ val listsUcModule = module {
 }
 
 val searchSuggestionUcModule = module {
-    singleOf(::AddSearchSuggestionUC)
-    singleOf(::ClearSearchSuggestionsUC)
-    singleOf(::DeleteSearchSuggestionUC)
     singleOf(::GetSearchSuggestionsUC)
 }
 

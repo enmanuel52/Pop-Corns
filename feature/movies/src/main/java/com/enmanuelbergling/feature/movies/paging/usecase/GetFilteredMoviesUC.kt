@@ -11,7 +11,7 @@ import com.enmanuelbergling.feature.movies.paging.source.MoviesByFilterSource
 import com.enmanuelbergling.feature.movies.paging.source.SearchMovieSource
 import kotlinx.coroutines.flow.Flow
 
-internal class GetFilteredMoviesUC(
+class GetFilteredMoviesUC(
     private val remoteDS: MovieRemoteDS,
     private val moviesFilterService: MovieRemoteDS,
 ) {

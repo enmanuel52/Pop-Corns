@@ -10,11 +10,9 @@ import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.feature.auth.navigation.loginScreen
 import com.enmanuelbergling.feature.auth.navigation.navigateToLoginScreen
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
-import com.enmanuelbergling.feature.movies.navigation.movieSearchScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesFilterScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
-import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
@@ -50,7 +48,6 @@ fun CtiNavHost(
                 )
             },
             onMore = navController::navigateToMoviesSection,
-            onSearch = state.navController::navigateToMovieSearch,
             onFilter = state.navController::navigateToMovieFilter,
             onOpenDrawer = onOpenDrawer,
         )
@@ -94,8 +91,6 @@ fun CtiNavHost(
             onBack = navController::navigateUp,
             onOpenDrawer = onOpenDrawer,
         )
-
-        movieSearchScreen(navController::navigateToMoviesDetails, navController::navigateUp)
 
         moviesFilterScreen(navController::navigateToMoviesDetails, navController::navigateUp)
 

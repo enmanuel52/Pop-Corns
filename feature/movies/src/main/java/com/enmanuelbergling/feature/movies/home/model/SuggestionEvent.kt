@@ -1,6 +1,4 @@
-package com.enmanuelbergling.feature.movies.search
-
-import com.enmanuelbergling.core.domain.datasource.preferences.StringQuery
+package com.enmanuelbergling.feature.movies.home.model
 
 sealed interface SuggestionEvent {
     data class Add(val query: String): SuggestionEvent

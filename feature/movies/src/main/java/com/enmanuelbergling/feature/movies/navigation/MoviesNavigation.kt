@@ -16,7 +16,6 @@ import com.enmanuelbergling.feature.movies.list.NowPlayingMoviesScreen
 import com.enmanuelbergling.feature.movies.list.PopularMoviesScreen
 import com.enmanuelbergling.feature.movies.list.TopRatedMoviesScreen
 import com.enmanuelbergling.feature.movies.list.UpcomingMoviesScreen
-import com.enmanuelbergling.feature.movies.search.MovieSearchScreen
 import kotlinx.serialization.Serializable
 
 
@@ -52,7 +51,6 @@ fun NavGraphBuilder.moviesGraph(
     onMovie: (id: Int) -> Unit,
     onActor: (ActorDetailNavAction) -> Unit,
     onMore: (MovieSection) -> Unit,
-    onSearch: () -> Unit,
     onFilter: () -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
@@ -62,7 +60,6 @@ fun NavGraphBuilder.moviesGraph(
             MoviesScreen(
                 onDetails = onMovie,
                 onMore = onMore,
-                onSearch = onSearch,
                 onFilter = onFilter,
                 onOpenDrawer = onOpenDrawer
             )
@@ -114,24 +111,5 @@ fun NavGraphBuilder.moviesFilterScreen(
 ) {
     composable<MoviesFilterDestination> {
         MoviesFilterRoute(onBack = onBack, onMovie = onMovie)
-    }
-}
-
-
-fun NavHostController.navigateToMovieSearch(
-    navOptions: NavOptions? = null,
-) {
-    navigate(MovieSearchDestination, navOptions)
-}
-
-@Serializable
-data object MovieSearchDestination
-
-fun NavGraphBuilder.movieSearchScreen(
-    onMovie: (id: Int) -> Unit,
-    onBack: () -> Unit,
-) {
-    composable<MovieSearchDestination> {
-        MovieSearchScreen(onMovieDetails = onMovie, onBack)
     }
 }

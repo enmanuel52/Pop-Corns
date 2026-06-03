@@ -7,7 +7,7 @@ import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.network.BASE_URL
 import com.enmanuelbergling.core.network.BuildConfig
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -24,7 +24,7 @@ import kotlinx.serialization.json.Json
 typealias KtorClient = HttpClient
 
 @OptIn(ExperimentalSerializationApi::class)
-val ktorClient = HttpClient(CIO) {
+val ktorClient = HttpClient(OkHttp) {
     defaultRequest {
         url(BASE_URL)
         url {

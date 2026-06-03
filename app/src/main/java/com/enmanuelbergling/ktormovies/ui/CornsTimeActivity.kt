@@ -11,7 +11,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.core.common.android_util.isOnline
 import com.enmanuelbergling.core.model.settings.DarkTheme
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import com.enmanuelbergling.feature.movies.navigation.navigateToMovieSearch
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
 import com.enmanuelbergling.ktormovies.R
 import org.koin.android.ext.android.inject
@@ -66,7 +65,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
 
             LaunchedEffect(key1 = Unit) {
                 if (searchMovieShortCutClicked) {
-                    appState.navController.navigateToMovieSearch()
+                    TODO("trigger searching")
                 }
             }
 

@@ -18,7 +18,6 @@ import com.enmanuelbergling.feature.movies.list.viewmodel.UpcomingMoviesVM
 import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
 import com.enmanuelbergling.feature.movies.paging.usecase.GetSectionMoviesUC
 import com.enmanuelbergling.feature.movies.paging.watchlist.GetUserWatchListsUC
-import com.enmanuelbergling.feature.movies.search.MovieSearchVM
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -55,6 +54,5 @@ val moviesModule = module {
     viewModelOf(::UpcomingMoviesVM)
     viewModelOf(::PopularMoviesVM)
 
-    viewModelOf(::MovieSearchVM)
     viewModelOf(::MoviesFilterVM)
 }
