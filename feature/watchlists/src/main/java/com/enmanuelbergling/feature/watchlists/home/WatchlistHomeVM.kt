@@ -47,8 +47,8 @@ internal class WatchlistHomeVM(
     fun removeFromWatchlist(movieId: Int) = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
         when (val result = removeMovieFromAccountWatchlistUC(movieId, sessionId.value)) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
-            is ResultHandler.Success -> _uiState.update { SimplerUi.Success }
+            is ResultHandler.Error<*> -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
+            is ResultHandler.Success<*> -> _uiState.update { SimplerUi.Success }
         }
     }
 

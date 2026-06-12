@@ -30,6 +30,7 @@ import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CreateListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteMovieFromListUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -81,6 +82,7 @@ val listsUcModule = module {
     singleOf(::AddMovieToListUC)
     singleOf(::DeleteListUC)
     singleOf(::CheckItemStatusUC)
+    singleOf(::RemoveMovieFromAccountWatchlistUC)
 }
 
 val searchSuggestionUcModule = module {
