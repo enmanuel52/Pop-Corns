@@ -6,10 +6,13 @@ import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieCreditsUC
 import kotlinx.coroutines.flow.update
 
-class CreditsChainHandler(private val getMovieCreditsUC: GetMovieCreditsUC) :
+class CreditsChainHandler(
+    private val getMovieCreditsUC: GetMovieCreditsUC,
+    private val nextHandler: MovieAccountStatesChainHandler?,
+) :
     ChainHandler<MovieDetailsUiState> {
     override val nextChainHandler: ChainHandler<MovieDetailsUiState>?
-        get() = null
+        get() = nextHandler
 
     override suspend fun handle(request: MovieDetailsUiState) =
         if (request.value.skipCredits) Unit

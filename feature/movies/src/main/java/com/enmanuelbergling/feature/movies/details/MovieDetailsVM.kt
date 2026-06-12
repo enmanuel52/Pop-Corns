@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
+import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
@@ -17,6 +18,7 @@ import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.ui.components.messageResource
+import com.enmanuelbergling.feature.movies.details.model.MovieAccountStatesChainHandler
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.paging.watchlist.GetUserWatchListsUC
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
 
 internal class MovieDetailsVM(
     private val detailsChainHandler: MovieDetailsChainHandler,
+    private val getMovieAccountStatesUC: GetMovieAccountStatesUC,
     getWatchLists: GetUserWatchListsUC,
     getSessionId: GetSavedSessionIdUC,
     private val addMovieToListUC: AddMovieToListUC,
@@ -84,6 +87,14 @@ internal class MovieDetailsVM(
         _uiState.update { SimplerUi.Loading }
         runCatching {
             detailsChainHandler.invoke(_uiDataState)
+
+            val accountStatesHandler = MovieAccountStatesChainHandler(
+                getMovieAccountStatesUC,
+                sessionId.value
+            )
+            accountStatesHandler.invoke(_uiDataState)
+
+            _isMovieInWatchlist.update { uiDataState.value.accountStates?.watchlist ?: false }
         }.onFailure { throwable ->
             _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
         }.onSuccess {

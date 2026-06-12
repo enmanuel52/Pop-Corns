@@ -1,5 +1,6 @@
 package com.enmanuelbergling.feature.movies.di
 
+import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
 import com.enmanuelbergling.feature.movies.details.MovieDetailsVM
 import com.enmanuelbergling.feature.movies.details.model.CreditsChainHandler
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler

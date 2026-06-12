@@ -8,7 +8,9 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -130,7 +132,7 @@ fun AnimatedContentScope.MovieDetailsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun AnimatedContentScope.MovieDetailsScreen(
     uiData: MovieDetailsUiData,
@@ -194,6 +196,30 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                         )
                     }
                 },
+                actions = {
+                    Box(
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = onWatchlistClick,
+                                onLongClick = {
+                                    scope.launch {
+                                        isSheetOpen.value = true
+                                    }
+                                }
+                            )
+                            .padding(MaterialTheme.dimen.small)
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                if (isMovieInWatchlist) R.drawable.bookmark_solid
+                                else R.drawable.bookmark_outline
+                            ),
+                            contentDescription = stringResource(R.string.watchlist),
+                            tint = if (isMovieInWatchlist) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
                 modifier = Modifier
                     .hazeEffect(
                         hazeState,
@@ -229,41 +255,6 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     details.formattedGenres,
                     details.duration
                 )
-
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.dimen.small),
-                        horizontalArrangement = Arrangement.spacedBy(
-                            MaterialTheme.dimen.small,
-                            Alignment.CenterHorizontally
-                        ),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (hasWatchList) {
-                            OutlinedButton(onClick = {
-                                scope.launch {
-                                    isSheetOpen.value = true
-                                }
-                            }) {
-                                Text(text = stringResource(R.string.add_to_watch_list))
-                            }
-                        }
-
-                        IconButton(onClick = onWatchlistClick) {
-                            Icon(
-                                painter = painterResource(
-                                    if (isMovieInWatchlist) R.drawable.bookmark_solid
-                                    else R.drawable.bookmark_outline
-                                ),
-                                contentDescription = stringResource(R.string.watchlist),
-                                tint = if (isMovieInWatchlist) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.outline
-                            )
-                        }
-                    }
-                }
 
                 overview(details.overview)
 
@@ -313,7 +304,7 @@ private fun SheetContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = stringResource(R.string.watch_lists),
+                    text = stringResource(R.string.created_lists),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
