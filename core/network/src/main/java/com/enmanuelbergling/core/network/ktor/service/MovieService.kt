@@ -1,6 +1,7 @@
 package com.enmanuelbergling.core.network.ktor.service
 
 import com.enmanuelbergling.core.network.dto.movie.GenreListDTO
+import com.enmanuelbergling.core.network.dto.movie.MovieAccountStatesDTO
 import com.enmanuelbergling.core.network.dto.movie.MovieCreditsDTO
 import com.enmanuelbergling.core.network.dto.movie.MovieDetailsDTO
 import com.enmanuelbergling.core.network.dto.movie.MoviePageDTO
@@ -54,4 +55,11 @@ internal class MovieService(private val httpClient: KtorClient) {
     suspend fun getMovieGenres(): GenreListDTO = httpClient
         .get("genre/movie/list") {}
         .body()
+
+    suspend fun getMovieAccountStates(movieId: Int, sessionId: String): MovieAccountStatesDTO =
+        httpClient.get("movie/$movieId/account_states") {
+            url {
+                parameters.append("session_id", sessionId)
+            }
+        }.body()
 }

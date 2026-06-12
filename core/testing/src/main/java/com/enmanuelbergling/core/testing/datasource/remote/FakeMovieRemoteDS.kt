@@ -5,6 +5,7 @@ import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.asPage
 import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.MovieAccountStates
 import com.enmanuelbergling.core.testing.data.FakeMovieData
 
 class FakeMovieRemoteDS : MovieRemoteDS {
@@ -36,4 +37,10 @@ class FakeMovieRemoteDS : MovieRemoteDS {
 
     override suspend fun searchMovie(query: String, page: Int): ResultHandler<PageModel<Movie>> =
         ResultHandler.Success(FakeMovieData.MOVIES.asPage())
+
+    override suspend fun getMovieAccountStates(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<MovieAccountStates> =
+        ResultHandler.Success(MovieAccountStates(id = movieId, favorite = false, watchlist = false))
 }

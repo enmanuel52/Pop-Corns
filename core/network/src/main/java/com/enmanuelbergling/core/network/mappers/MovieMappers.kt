@@ -4,6 +4,7 @@ import com.enmanuelbergling.core.network.dto.movie.BelongsToCollectionDTO
 import com.enmanuelbergling.core.network.dto.movie.CastDTO
 import com.enmanuelbergling.core.network.dto.movie.CrewDTO
 import com.enmanuelbergling.core.network.dto.movie.GenreDTO
+import com.enmanuelbergling.core.network.dto.movie.MovieAccountStatesDTO
 import com.enmanuelbergling.core.network.dto.movie.MovieCreditsDTO
 import com.enmanuelbergling.core.network.dto.movie.MovieDTO
 import com.enmanuelbergling.core.network.dto.movie.MovieDetailsDTO
@@ -15,6 +16,7 @@ import com.enmanuelbergling.core.model.movie.Cast
 import com.enmanuelbergling.core.model.movie.Crew
 import com.enmanuelbergling.core.model.movie.Genre
 import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.MovieAccountStates
 import com.enmanuelbergling.core.model.movie.MovieCredits
 import com.enmanuelbergling.core.model.movie.MovieDetails
 import com.enmanuelbergling.core.model.movie.ProductionCompany
@@ -121,3 +123,9 @@ internal fun CrewDTO.toModel() = Crew(
 
 internal fun MovieCreditsDTO.toModel() =
     MovieCredits(id = id, cast = cast.map { it.toModel() }, crew = crew.map { it.toModel() })
+
+internal fun MovieAccountStatesDTO.toModel() = MovieAccountStates(
+    id = id,
+    favorite = favorite,
+    watchlist = watchlist
+)

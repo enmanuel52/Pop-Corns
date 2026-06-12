@@ -4,6 +4,7 @@ import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.movie.Genre
 import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.MovieAccountStates
 import com.enmanuelbergling.core.model.movie.MovieCredits
 import com.enmanuelbergling.core.model.movie.MovieDetails
 
@@ -33,4 +34,6 @@ interface MovieRemoteDS : RemoteDataSource {
         query: String,
         page: Int,
     ): ResultHandler<PageModel<Movie>>
+
+    suspend fun getMovieAccountStates(movieId: Int, sessionId: String): ResultHandler<MovieAccountStates>
 }

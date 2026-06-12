@@ -5,6 +5,7 @@ import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.movie.Genre
 import com.enmanuelbergling.core.model.movie.Movie
+import com.enmanuelbergling.core.model.movie.MovieAccountStates
 import com.enmanuelbergling.core.model.movie.MovieCredits
 import com.enmanuelbergling.core.model.movie.MovieDetails
 import com.enmanuelbergling.core.network.ktor.service.MovieService
@@ -79,5 +80,12 @@ internal class MovieRemoteDSImpl(
         val movies = result.results.map { it.toModel() }
 
         PageModel(movies, result.totalPages)
+    }
+
+    override suspend fun getMovieAccountStates(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<MovieAccountStates> = safeKtorCall {
+        service.getMovieAccountStates(movieId, sessionId).toModel()
     }
 }
