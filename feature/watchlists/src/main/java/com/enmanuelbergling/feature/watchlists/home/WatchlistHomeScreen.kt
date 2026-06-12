@@ -24,6 +24,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -52,6 +53,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun WatchlistHomeRoute(
     onMovieDetails: (movieId: Int) -> Unit,
+    onNavigateToLists: () -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
     val viewModel = koinViewModel<WatchlistHomeVM>()
@@ -70,6 +72,7 @@ fun WatchlistHomeRoute(
         watchlist = watchlist,
         onMovieDetails = onMovieDetails,
         onRemoveFromWatchlist = viewModel::removeFromWatchlist,
+        onNavigateToLists = onNavigateToLists,
         onOpenDrawer = onOpenDrawer
     )
 }
@@ -80,6 +83,7 @@ private fun WatchlistHomeScreen(
     watchlist: LazyPagingItems<Movie>,
     onMovieDetails: (movieId: Int) -> Unit,
     onRemoveFromWatchlist: (movieId: Int) -> Unit,
+    onNavigateToLists: () -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
     val snackbarHostState = remember {
@@ -112,6 +116,14 @@ private fun WatchlistHomeScreen(
                             contentDescription = "Sandwich menu icon"
                         )
                     }
+                },
+                actions = {
+                    IconButton(onClick = onNavigateToLists) {
+                        Icon(
+                            painter = painterResource(R.drawable.paint_brush),
+                            contentDescription = "Customization icon"
+                        )
+                    }
                 }
             )
         },
@@ -139,8 +151,11 @@ private fun WatchlistHomeScreen(
                     items(watchlist.itemCount) { index ->
                         val movie = watchlist[index]
                         movie?.let {
+                            val bottomWith = remember {
+                                (-80).dp
+                            }
                             NewerDragListItem(
-                                bottomContentWidth = with(LocalDensity.current) { 80.dp.toPx() },
+                                bottomContentWidth = with(LocalDensity.current) { bottomWith.toPx() },
                                 bottomContent = {
                                     Box(Modifier.align(Alignment.CenterEnd)) {
                                         IconButton(
@@ -161,6 +176,7 @@ private fun WatchlistHomeScreen(
                                 MovieLandCard(
                                     movie = movie,
                                     modifier = Modifier.fillMaxWidth()
+                                        .background(MaterialTheme.colorScheme.surface),
                                 ) {
                                     onMovieDetails(movie.id)
                                 }

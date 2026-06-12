@@ -3,30 +3,25 @@ name: git-commit-workflow
 description: >-
   Manage the git branch-and-commit lifecycle for the Pop-Corns / CornsTime /
   "Ktor Movies" Android project. Use this skill whenever you START work on a new
-  feature, fix, or refactor (create a branch off `dev`), whenever you FINISH a
-  self-contained working chunk of code (commit it), and whenever the feature is
-  DONE (merge the branch back into `dev`). Also use it when the user says
-  anything like "commit this", "commit the changes", "save this work", "start a
-  new feature", "merge this in", or "wrap this up". The skill creates a feature
+  feature, fix, or refactor (create a branch off `dev`), or whenever you FINISH a
+  self-contained working chunk of code (commit it). The skill creates a feature
   branch from `dev`, verifies the app actually builds and its tests pass before
   every commit (./gradlew assembleDebug test), fixes the build if it breaks,
-  splits unrelated changes into separate logical commits using the project's
-  `type: meaningful description` message format, and at the end merges the
-  branch into `dev` — pausing for the user to resolve any merge conflicts.
-  Reach for it even when the user doesn't say the exact words, as long as a
-  piece of work is being started, completed, or wrapped up.
+  and splits unrelated changes into separate logical commits using the project's
+  `type: meaningful description` message format. NEVER merge any branch to the dev branch.
 ---
 
 # Git branch & commit workflow
 
 This project keeps a clean, trustworthy history. Each feature lives on its own
-branch off `dev`; every commit builds and its tests pass; every message says
-plainly what changed; and finished work merges back into `dev`. The payoff:
-anyone scanning `git log` understands how the app evolved, `git bisect` always
-lands on a working revision, and `dev` stays integrable.
+branch off `dev`; every commit builds and its tests pass; and every message says
+plainly what changed. The payoff: anyone scanning `git log` understands how the
+app evolved, and `git bisect` always lands on a working revision.
 
-The lifecycle has three stages: **start a feature → commit chunks → finish and
-merge**. Follow whichever stage applies to the current moment.
+The lifecycle has two stages: **start a feature → commit chunks**. 
+
+**IMPORTANT**: Never merge your feature branch into `dev`. Leave merging and 
+branch cleanup to the user.
 
 ## Stage 1 — Start a feature (branch off `dev`)
 
@@ -133,25 +128,3 @@ EOF
 ```
 
 **Do not push** — committing is local; leave pushing to the user.
-
-## Stage 3 — Finish the feature (merge into `dev`)
-
-When the feature is done — fully working, all chunks committed, the build and
-tests green — merge the branch back into `dev`.
-
-```bash
-git checkout dev
-git merge feat-<short-kebab-description>
-```
-
-**If the merge reports conflicts:** stop. Do not guess at a resolution — show
-the user which files conflict (`git status`) and ask them to resolve the
-conflicts, since they know which side of each change should win. Wait for their
-direction before completing the merge. Once they've resolved everything, finish
-the merge as they direct (e.g. `git add` the resolved files and
-`git commit`/`git merge --continue`).
-
-**If the merge is clean,** confirm it landed (`git log --oneline -5`) and tell
-the user the feature is merged into `dev`. Offer to delete the now-merged
-feature branch, but don't delete it unless they agree. As always, **don't
-push** — leave that to the user.

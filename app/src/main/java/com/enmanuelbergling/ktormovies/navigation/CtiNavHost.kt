@@ -20,6 +20,7 @@ import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.settings.navigation.settingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
+import com.enmanuelbergling.feature.watchlists.navigation.navigateToListsScreen
 import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
 
 
@@ -80,6 +81,7 @@ fun CtiNavHost(
 
         listGraph(
             onDetails = navController::navigateToListDetailsScreen,
+            onNavigateToLists = navController::navigateToListsScreen,
             onMovieDetails = navController::navigateToMoviesDetails,
             onAddShortcut = { watchlist -> state.addWatchlistShortcut(context, watchlist) },
             onDeleteShortcut = { watchlistId ->
