@@ -5,19 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
-import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler
-import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,80 +22,98 @@ internal class MovieDetailsVM(
     private val detailsChainHandler: MovieDetailsChainHandler,
     private val getMovieAccountStatesUC: GetMovieAccountStatesUC,
     getSessionId: GetSavedSessionIdUC,
-    private val addMovieToListUC: AddMovieToListUC,
     private val addMovieToAccountWatchlistUC: AddMovieToAccountWatchlistUC,
     private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
     private val movieId: Int,
 ) : ViewModel() {
 
-    private val sessionId = getSessionId().stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        ""
-    )
-
-    private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
+    private val _uiState = MutableStateFlow(MovieDetailsState(movieId = movieId))
     val uiState = _uiState.asStateFlow()
 
-    private val _uiDataState = MutableStateFlow(MovieDetailsUiData(movieId = movieId))
-    val uiDataState get() = _uiDataState.asStateFlow()
+    private val _uiEvents = Channel<MovieDetailsEvent>()
+    val uiEvents = _uiEvents.receiveAsFlow()
 
     init {
         loadPage()
-        getAccountStates()
-    }
-
-    fun loadPage() = viewModelScope.launch {
-        _uiState.update { SimplerUi.Loading }
-        runCatching {
-            detailsChainHandler.invoke(_uiDataState)
-        }.onFailure { throwable ->
-            _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
-        }.onSuccess {
-            _uiState.update { SimplerUi.Idle }
-        }
-    }
-
-    private fun getAccountStates() = viewModelScope.launch {
-        sessionId.collect { session ->
-            if (session.isNotBlank()) {
-                when (val result = getMovieAccountStatesUC(movieId, session)) {
-                    is ResultHandler.Error -> {}
-                    is ResultHandler.Success -> {
-                        _uiDataState.update { it.copy(accountStates = result.data) }
-                    }
+        viewModelScope.launch {
+            getSessionId().collect { session ->
+                _uiState.update { it.copy(sessionId = session) }
+                if (session.isNotBlank()) {
+                    getAccountStates()
                 }
             }
         }
     }
 
-    fun addMovieToList(movieId: Int, list: WatchList) = viewModelScope.launch {
-        _uiState.update { SimplerUi.Loading }
-        when (val result = addMovieToListUC(
-            movieId = movieId,
-            listId = list.id,
-            sessionId = sessionId.value
-        )
-        ) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
-            is ResultHandler.Success -> {
-                _uiState.update { SimplerUi.Success }
+    fun onAction(action: MovieDetailsAction) {
+        when (action) {
+            MovieDetailsAction.OnBack -> viewModelScope.launch {
+                _uiEvents.send(MovieDetailsEvent.NavigateBack)
+            }
+
+            MovieDetailsAction.OnRetry -> loadPage()
+            MovieDetailsAction.OnWatchlistClick -> addOrRemoveFromWatchlist()
+            is MovieDetailsAction.OnActorClick -> viewModelScope.launch {
+                _uiEvents.send(MovieDetailsEvent.NavigateToActor(action.action))
             }
         }
     }
 
-    fun toggleWatchlist(inWatchlist: Boolean) = viewModelScope.launch {
-        _uiState.update { SimplerUi.Loading }
-        val result = if (inWatchlist) {
-            removeMovieFromAccountWatchlistUC(movieId, sessionId.value)
+    private fun loadPage() = viewModelScope.launch {
+        _uiState.update { it.copy(uiState = SimplerUi.Loading) }
+        runCatching {
+            val request = _uiState.value.toChainRequest()
+            detailsChainHandler.invoke(request)
+            _uiState.update {
+                it.copy(
+                    details = request.details,
+                    credits = request.credits,
+                    accountStates = request.accountStates
+                )
+            }
+        }.onFailure { throwable ->
+            _uiState.update { it.copy(uiState = SimplerUi.Error(NetworkException.DefaultException.messageResource)) }
+        }.onSuccess {
+            _uiState.update { it.copy(uiState = SimplerUi.Idle) }
+        }
+    }
+
+    private fun getAccountStates() = viewModelScope.launch {
+        val session = _uiState.value.sessionId
+        if (session.isNotBlank()) {
+            when (val result = getMovieAccountStatesUC(movieId, session)) {
+                is ResultHandler.Error -> {}
+                is ResultHandler.Success -> {
+                    _uiState.update { it.copy(accountStates = result.data) }
+                }
+            }
+        }
+    }
+
+    private fun addOrRemoveFromWatchlist() = viewModelScope.launch {
+        val session = _uiState.value.sessionId
+        val isMovieInWatchlist = _uiState.value.accountStates?.watchlist ?: false
+
+        _uiState.update { it.copy(isWatchlistLoading = true) }
+
+        val result = if (isMovieInWatchlist) {
+            removeMovieFromAccountWatchlistUC(movieId, session)
         } else {
-            addMovieToAccountWatchlistUC(movieId, sessionId.value)
+            addMovieToAccountWatchlistUC(movieId, session)
         }
 
         when (result) {
-            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
+            is ResultHandler.Error -> {
+                _uiState.update {
+                    it.copy(
+                        isWatchlistLoading = false,
+                        uiState = SimplerUi.Error(result.exception.messageResource)
+                    )
+                }
+            }
+
             is ResultHandler.Success -> {
-                _uiState.update { SimplerUi.Success }
+                _uiState.update { it.copy(isWatchlistLoading = false) }
                 getAccountStates()
             }
         }

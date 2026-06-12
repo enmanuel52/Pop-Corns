@@ -2,23 +2,20 @@ package com.enmanuelbergling.feature.movies.details.model
 
 import com.enmanuelbergling.core.domain.design.CannotHandleException
 import com.enmanuelbergling.core.domain.design.ChainHandler
-import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieDetailsUC
-import kotlinx.coroutines.flow.update
+import com.enmanuelbergling.core.model.core.ResultHandler
 
 class MovieDetailsChainHandler(
     private val getMovieDetailsUC: GetMovieDetailsUC,
     private val nextHandler: CreditsChainHandler,
-) : ChainHandler<MovieDetailsUiState> {
-    override val nextChainHandler: ChainHandler<MovieDetailsUiState>
+) : ChainHandler<MovieDetailsChainRequest> {
+    override val nextChainHandler: ChainHandler<MovieDetailsChainRequest>
         get() = nextHandler
 
-    override suspend fun handle(request: MovieDetailsUiState) =
-        if (request.value.skipDetails) Unit
-        else when (val result = getMovieDetailsUC(request.value.movieId)) {
+    override suspend fun handle(request: MovieDetailsChainRequest) =
+        if (request.skipDetails) Unit
+        else when (val result = getMovieDetailsUC(request.movieId)) {
             is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
-            is ResultHandler.Success -> request.update {
-                it.copy(details = result.data)
-            }
+            is ResultHandler.Success -> request.details = result.data
         }
 }

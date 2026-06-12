@@ -7,6 +7,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +28,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,9 +63,9 @@ import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.components.common.ActorCard
 import com.enmanuelbergling.core.ui.components.common.ActorsRowPlaceholder
+import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
-import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
 import dev.chrisbanes.haze.HazeEffectScope
@@ -81,32 +84,30 @@ fun AnimatedContentScope.MovieDetailsScreen(
 
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
+    ObserveAsEvents(viewModel.uiEvents) { event ->
+        when (event) {
+            MovieDetailsEvent.NavigateBack -> onBack()
+            is MovieDetailsEvent.NavigateToActor -> onActor(event.action)
+        }
+    }
 
     MovieDetailsScreen(
-        uiData = uiData,
-        uiState = uiState,
-        onActor = onActor,
-        onBack = onBack,
-        onRetry = viewModel::loadPage,
-        onWatchlistClick = viewModel::toggleWatchlist
+        state = state,
+        onAction = viewModel::onAction
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun AnimatedContentScope.MovieDetailsScreen(
-    uiData: MovieDetailsUiData,
-    uiState: SimplerUi,
-    onActor: (ActorDetailNavAction) -> Unit,
-    onBack: () -> Unit,
-    onRetry: () -> Unit,
-    onWatchlistClick: (Boolean) -> Unit,
+    state: MovieDetailsState,
+    onAction: (MovieDetailsAction) -> Unit,
 ) {
 
-    val (details, creditsState) = uiData
+    val details = state.details
+    val creditsState = state.credits
 
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -115,9 +116,9 @@ private fun AnimatedContentScope.MovieDetailsScreen(
     val context = LocalContext.current
 
     HandleUiState(
-        uiState = uiState,
+        uiState = state.uiState,
         snackState = snackbarHostState,
-        onRetry,
+        onRetry = { onAction(MovieDetailsAction.OnRetry) },
         getFocus = details == null
     )
 
@@ -133,7 +134,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { onAction(MovieDetailsAction.OnBack) }) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBackIosNew,
                             contentDescription = "back icon"
@@ -141,17 +142,26 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
                 },
                 actions = {
-                    uiData.accountStates?.let {
-                        IconButton(onClick = { onWatchlistClick(it.watchlist) }) {
-                            Icon(
-                                painter = painterResource(
-                                    if (it.watchlist) R.drawable.bookmark_solid
-                                    else R.drawable.bookmark_outline
-                                ),
-                                contentDescription = stringResource(R.string.watchlist),
-                                tint = if (it.watchlist) MaterialTheme.colorScheme.primary
-                                else LocalContentColor.current
-                            )
+                    if (state.isWatchlistLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(horizontal = MaterialTheme.dimen.small)
+                                .size(24.dp),
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        state.accountStates?.let {
+                            IconButton(onClick = { onAction(MovieDetailsAction.OnWatchlistClick) }) {
+                                Icon(
+                                    painter = painterResource(
+                                        if (it.watchlist) R.drawable.bookmark_solid
+                                        else R.drawable.bookmark_outline
+                                    ),
+                                    contentDescription = stringResource(R.string.watchlist),
+                                    tint = if (it.watchlist) MaterialTheme.colorScheme.primary
+                                    else LocalContentColor.current
+                                )
+                            }
                         }
                     }
                 },
@@ -179,7 +189,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
             contentPadding = WindowInsets.navigationBars.asPaddingValues(),
-            ) {
+        ) {
             details?.let {
                 detailsImage(backdropUrl = BASE_BACKDROP_IMAGE_URL + details.backdropPath)
 
@@ -196,17 +206,17 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                 persons(
                     title = context.getString(R.string.cast),
                     persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
-                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    isLoading = state.uiState == SimplerUi.Loading && creditsState == null,
                     animatedContentScope = this@MovieDetailsScreen,
-                    onActor = onActor
+                    onActor = { onAction(MovieDetailsAction.OnActorClick(it)) }
                 )
 
                 persons(
                     title = context.getString(R.string.crew),
                     persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
-                    isLoading = uiState == SimplerUi.Loading && creditsState == null,
+                    isLoading = state.uiState == SimplerUi.Loading && creditsState == null,
                     animatedContentScope = this@MovieDetailsScreen,
-                    onActor = onActor
+                    onActor = { onAction(MovieDetailsAction.OnActorClick(it)) }
                 )
             }
 
