@@ -10,7 +10,7 @@ import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler
+import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChain
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class MovieDetailsVM(
-    private val detailsChainHandler: MovieDetailsChainHandler,
+    private val movieDetailsChain: MovieDetailsChain,
     private val getSessionId: GetSavedSessionIdUC,
     private val addMovieToAccountWatchlistUC: AddMovieToAccountWatchlistUC,
     private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
@@ -55,7 +55,14 @@ internal class MovieDetailsVM(
         _uiState.update { it.copy(uiState = SimplerUi.Loading) }
         runCatching {
             val request = _uiState.value.toChainRequest()
-            detailsChainHandler.invoke(request)
+
+            val detailsChain = movieDetailsChain.detailsHandler.apply {
+                nextChainHandler = movieDetailsChain.creditsHandler.apply {
+                    nextChainHandler = movieDetailsChain.accountStatesHandler
+                }
+            }
+
+            detailsChain.invoke(request)
 
             _uiState.update {
                 it.copy(

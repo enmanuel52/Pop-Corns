@@ -1,11 +1,10 @@
 package com.enmanuelbergling.feature.movies.di
 
-import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
 import com.enmanuelbergling.feature.movies.details.MovieDetailsVM
 import com.enmanuelbergling.feature.movies.details.model.AccountStatesChainHandler
 import com.enmanuelbergling.feature.movies.details.model.CreditsChainHandler
+import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChain
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler
-import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainStart
 import com.enmanuelbergling.feature.movies.filter.MoviesFilterVM
 import com.enmanuelbergling.feature.movies.home.MoviesVM
 import com.enmanuelbergling.feature.movies.home.model.MoviesChainStart
@@ -32,10 +31,10 @@ internal val movieScreenModule = module {
 }
 
 internal val movieDetailsScreenModule = module {
-    singleOf(::MovieDetailsChainStart)
     singleOf(::MovieDetailsChainHandler)
     singleOf(::CreditsChainHandler)
     singleOf(::AccountStatesChainHandler)
+    singleOf(::MovieDetailsChain)
 }
 
 private val pagingModule = module {
