@@ -149,13 +149,18 @@ fun CtiContentDialog(
 }
 
 @Composable
-fun DeleteMovieConfirmationDialog(onDismiss: () -> Unit, onDelete: () -> Unit) {
+fun DeleteMovieConfirmationDialog(
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit,
+    title: String = stringResource(R.string.confirmation),
+    text: String = stringResource(R.string.are_you_sure_of_this),
+) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = stringResource(R.string.confirmation)) },
+        title = { Text(text = title) },
         text = {
             Text(
-                text = stringResource(R.string.are_you_sure_of_this)
+                text = text
             )
         },
         confirmButton = {

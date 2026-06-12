@@ -13,7 +13,9 @@
     <string name="crew">Equipo</string>
     <string name="watch_lists">Listas de seguimiento</string>
     <string name="list_background_animation">animación de fondo de la lista</string>
-    <string name="add_to_watch_list">Agregar a la lista de seguimiento</string>
+    <string name="add_to_watch_list">Agregar a la lista personalizada</string>
+    <string name="watchlist">Lista de seguimiento</string>
+    <string name="remove_movie_from_watchlist_title">¿Quitar película de la lista de seguimiento?</string>
     <string name="poster_image">imagen del póster</string>
     <string name="advanced_movie_filter">Filtro avanzado de películas</string>
     <string name="order_by">Ordenar por</string>
