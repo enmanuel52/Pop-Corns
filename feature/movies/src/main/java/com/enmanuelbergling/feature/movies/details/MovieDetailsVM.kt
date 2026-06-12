@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.common.util.TAG
-import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
-import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -38,8 +38,8 @@ internal class MovieDetailsVM(
     getSessionId: GetSavedSessionIdUC,
     private val addMovieToListUC: AddMovieToListUC,
     private val checkItemStatusUC: CheckItemStatusUC,
-    private val getMovieAccountStatesUC: GetMovieAccountStatesUC,
-    private val userRemoteDS: UserRemoteDS,
+    private val addMovieToAccountWatchlistUC: AddMovieToAccountWatchlistUC,
+    private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
     private val movieId: Int,
 ) : ViewModel() {
 
@@ -88,18 +88,6 @@ internal class MovieDetailsVM(
             _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
         }.onSuccess {
             _uiState.update { SimplerUi.Idle }
-            checkWatchlistStatus()
-        }
-    }
-
-    private fun checkWatchlistStatus() = viewModelScope.launch {
-        sessionId.filter { it.isNotBlank() }.collect {
-            when (val result = getMovieAccountStatesUC(movieId, it)) {
-                is ResultHandler.Error -> {}
-                is ResultHandler.Success -> {
-                    _isMovieInWatchlist.update { result.data?.watchlist ?: false }
-                }
-            }
         }
     }
 
@@ -124,9 +112,9 @@ internal class MovieDetailsVM(
     fun addOrRemoveFromWatchlist() = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
         val result = if (_isMovieInWatchlist.value) {
-            userRemoteDS.removeMovieFromAccountWatchlist(movieId, sessionId.value)
+            removeMovieFromAccountWatchlistUC(movieId, sessionId.value)
         } else {
-            userRemoteDS.addMovieToAccountWatchlist(movieId, sessionId.value)
+            addMovieToAccountWatchlistUC(movieId, sessionId.value)
         }
 
         when (result) {

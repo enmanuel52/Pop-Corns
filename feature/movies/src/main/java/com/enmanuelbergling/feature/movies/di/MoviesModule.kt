@@ -18,8 +18,8 @@ import com.enmanuelbergling.feature.movies.list.viewmodel.UpcomingMoviesVM
 import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
 import com.enmanuelbergling.feature.movies.paging.usecase.GetSectionMoviesUC
 import com.enmanuelbergling.feature.movies.paging.watchlist.GetUserWatchListsUC
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal val movieScreenModule = module {
