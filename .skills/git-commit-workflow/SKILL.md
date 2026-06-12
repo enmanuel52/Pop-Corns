@@ -67,7 +67,7 @@ concern.
 
 ### 2b. Verify it builds and tests pass
 
-Before committing, confirm the app actually works:
+**CRITICAL**: You MUST verify the project builds and tests pass before EVERY commit. Do not skip this step even for small changes.
 
 ```bash
 ./gradlew assembleDebug test
