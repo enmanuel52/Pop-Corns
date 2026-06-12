@@ -7,10 +7,11 @@ import com.enmanuelbergling.core.model.core.ResultHandler
 
 class CreditsChainHandler(
     private val getMovieCreditsUC: GetMovieCreditsUC,
+    private val nextHandler: AccountStatesChainHandler,
 ) :
     ChainHandler<MovieDetailsChainRequest> {
     override val nextChainHandler: ChainHandler<MovieDetailsChainRequest>?
-        get() = null
+        get() = nextHandler
 
     override suspend fun handle(request: MovieDetailsChainRequest) =
         if (request.skipCredits) Unit
