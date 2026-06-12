@@ -8,7 +8,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +27,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -157,7 +157,6 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         SnackbarHostState()
     }
 
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     HandleUiState(
@@ -197,18 +196,18 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
                 },
                 actions = {
-                    Box(
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = onWatchlistClick,
-                                onLongClick = {
-                                    scope.launch {
-                                        isSheetOpen.value = true
-                                    }
-                                }
-                            )
-                            .padding(MaterialTheme.dimen.small)
+                    IconButton(
+                        onClick = {
+                            isSheetOpen.value = true
+                        }
                     ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.PlaylistAdd,
+                            contentDescription = stringResource(R.string.add_to_watch_list)
+                        )
+                    }
+
+                    IconButton(onClick = onWatchlistClick) {
                         Icon(
                             painter = painterResource(
                                 if (isMovieInWatchlist) R.drawable.bookmark_solid
