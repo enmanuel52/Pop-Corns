@@ -6,6 +6,7 @@ import com.enmanuelbergling.core.domain.usecase.auth.CreateSessionIdUC
 import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.core.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetActorDetailsUC
+import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieCreditsUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieDetailsUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieGenresUC
@@ -24,14 +25,11 @@ import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
-import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CreateListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteMovieFromListUC
-import com.enmanuelbergling.core.domain.usecase.user.watchlist.GetAccountWatchlistMoviesUC
-import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -57,6 +55,7 @@ val moviesUcModule = module {
     singleOf(::GetTopRatedMoviesUC)
     singleOf(::GetPopularMoviesUC)
     singleOf(::GetMovieGenresUC)
+    singleOf(::GetMovieAccountStatesUC)
 }
 
 val settingModule = module {
@@ -82,9 +81,6 @@ val listsUcModule = module {
     singleOf(::AddMovieToListUC)
     singleOf(::DeleteListUC)
     singleOf(::CheckItemStatusUC)
-    singleOf(::GetAccountWatchlistMoviesUC)
-    singleOf(::AddMovieToAccountWatchlistUC)
-    singleOf(::RemoveMovieFromAccountWatchlistUC)
 }
 
 val searchSuggestionUcModule = module {
