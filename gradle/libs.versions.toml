@@ -10,7 +10,6 @@ androidxComposeBom = "2026.05.01"
 animation = "1.11.2"
 #plugings
 application = "9.2.1"
-ben-manes-versions = "0.54.0"
 constraintlayoutCompose = "1.1.1"
 core-ktx = "1.18.0"
 core-splashscreen = "1.2.0"
@@ -39,7 +38,6 @@ paging-runtime = "3.5.0"
 protobuf = "0.10.0"
 ui = "1.11.2"
 uiTextGoogleFonts = "1.11.2"
-version-catalog-update = "1.1.0"
 
 [libraries]
 androidx-activity-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -103,12 +101,10 @@ org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-cor
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "application" }
 com-android-library = { id = "com.android.library", version.ref = "library" }
-com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "ben-manes-versions" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 com-google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
 de-jensklingenberg-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
