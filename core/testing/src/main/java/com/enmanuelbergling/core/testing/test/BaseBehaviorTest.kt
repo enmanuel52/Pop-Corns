@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
@@ -31,6 +32,7 @@ open class BaseBehaviorTest(
 
     init {
         beforeSpec {
+            stopKoin()
             startKoin {
                 modules(featureModulesToLoad + modules)
             }
