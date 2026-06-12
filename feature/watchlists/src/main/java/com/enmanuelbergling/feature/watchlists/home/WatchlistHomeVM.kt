@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
-import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 internal class WatchlistHomeVM(
     getPaginatedAccountWatchlist: GetPaginatedAccountWatchlistUC,
     getSessionId: GetSavedSessionIdUC,
-    private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
+    private val userRemoteDS: UserRemoteDS,
 ) : ViewModel() {
 
     private val sessionId = getSessionId().stateIn(
@@ -46,7 +46,7 @@ internal class WatchlistHomeVM(
 
     fun removeFromWatchlist(movieId: Int) = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
-        when (val result = removeMovieFromAccountWatchlistUC(movieId, sessionId.value)) {
+        when (val result = userRemoteDS.removeMovieFromAccountWatchlist(movieId, sessionId.value)) {
             is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> _uiState.update { SimplerUi.Success }
         }
