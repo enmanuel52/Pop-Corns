@@ -35,7 +35,7 @@ internal val movieDetailsScreenModule = module {
     singleOf(::MovieDetailsChainStart)
     singleOf(::MovieDetailsChainHandler)
     singleOf(::CreditsChainHandler)
-    single { (sessionId: String) -> AccountStatesChainHandler(get(), sessionId) }
+    singleOf(::AccountStatesChainHandler)
 }
 
 private val pagingModule = module {

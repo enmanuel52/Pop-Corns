@@ -10,25 +10,22 @@ import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.feature.movies.details.model.AccountStatesChainHandler
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
 
 internal class MovieDetailsVM(
     private val detailsChainHandler: MovieDetailsChainHandler,
-    getSessionId: GetSavedSessionIdUC,
+    private val getSessionId: GetSavedSessionIdUC,
     private val addMovieToAccountWatchlistUC: AddMovieToAccountWatchlistUC,
     private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
     private val movieId: Int,
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailsState(movieId = movieId))
     val uiState = _uiState.asStateFlow()
@@ -37,12 +34,7 @@ internal class MovieDetailsVM(
     val uiEvents = _uiEvents.receiveAsFlow()
 
     init {
-        viewModelScope.launch {
-            getSessionId().collect { session ->
-                _uiState.update { it.copy(sessionId = session) }
-                loadPage()
-            }
-        }
+        loadPage()
     }
 
     fun onAction(action: MovieDetailsAction) {
@@ -62,13 +54,8 @@ internal class MovieDetailsVM(
     private fun loadPage() = viewModelScope.launch {
         _uiState.update { it.copy(uiState = SimplerUi.Loading) }
         runCatching {
-            val session = _uiState.value.sessionId
-            val accountStatesHandler: AccountStatesChainHandler =
-                get { parametersOf(session) }
-
             val request = _uiState.value.toChainRequest()
             detailsChainHandler.invoke(request)
-            accountStatesHandler.handle(request)
 
             _uiState.update {
                 it.copy(
@@ -85,7 +72,7 @@ internal class MovieDetailsVM(
     }
 
     private fun addOrRemoveFromWatchlist() = viewModelScope.launch {
-        val session = _uiState.value.sessionId
+        val session = getSessionId().first()
         val isMovieInWatchlist = _uiState.value.accountStates?.watchlist ?: false
 
         _uiState.update { it.copy(isWatchlistLoading = true) }

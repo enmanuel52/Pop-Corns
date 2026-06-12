@@ -12,7 +12,6 @@ data class MovieDetailsState(
     val credits: MovieCredits? = null,
     val accountStates: MovieAccountStates? = null,
     val movieId: Int,
-    val sessionId: String = "",
     val isWatchlistLoading: Boolean = false,
     val uiState: SimplerUi = SimplerUi.Idle,
 )
