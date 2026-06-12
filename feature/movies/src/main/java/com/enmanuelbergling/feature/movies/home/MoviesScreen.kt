@@ -313,7 +313,7 @@ fun MoviesGrid(
             movies = popular,
             onDetails = onDetails,
             isLoading = isLoading
-        ) { onMore(MovieSection.Popular) }
+        ) { onMore(MovieSection.Popular)
     }
 }
 

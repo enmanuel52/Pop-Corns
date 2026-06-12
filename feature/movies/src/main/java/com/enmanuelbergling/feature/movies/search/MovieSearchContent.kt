@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,9 +79,11 @@ internal fun ExpandedSearchBarContent(
         }
     }
     val suggestions = searchSuggestions.filter {
-        it.contains(textFieldState.text)
+        it.contains(textFieldState.text) &&
+                !it.contentEquals(textFieldState.text)
     }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
 
     Box(modifier) {
@@ -113,7 +116,10 @@ internal fun ExpandedSearchBarContent(
                         onSuggestionEvent(SuggestionEvent.Delete(query))
                     },
                     shape = CircleShape
-                ) { textFieldState.setTextAndPlaceCursorAtEnd(query) }
+                ) {
+                    scope.launch { keyboardController?.hide() }
+                    textFieldState.setTextAndPlaceCursorAtEnd(query)
+                }
             }
 
             if (suggestions.isNotEmpty()) item {
@@ -164,6 +170,7 @@ internal fun ExpandedSearchBarContent(
                     }
                 },
                 modifier = Modifier.padding(bottom = MaterialTheme.dimen.small),
+                shape = CircleShape
             ) {
                 Icon(
                     imageVector = Icons.Rounded.VerticalAlignTop,
