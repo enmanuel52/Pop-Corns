@@ -40,8 +40,13 @@ fun NavHostController.navigateToListDetailsScreen(
     navigate(ListDetailsDestination(listId, listName), navOptions)
 }
 
+fun NavHostController.navigateToListsScreen(navOptions: NavOptions? = null) {
+    navigate(ListsDestination, navOptions)
+}
+
 fun NavGraphBuilder.listGraph(
     onDetails: (listId: Int, listName: String) -> Unit,
+    onNavigateToLists: () -> Unit,
     onMovieDetails: (movieId: Int) -> Unit,
     onAddShortcut: (WatchlistShortcut) -> Unit,
     onDeleteShortcut: (watchlistId: Int) -> Unit,
@@ -52,6 +57,7 @@ fun NavGraphBuilder.listGraph(
         topComposable<WatchListDestination> {
             WatchlistHomeRoute(
                 onMovieDetails = onMovieDetails,
+                onNavigateToLists = onNavigateToLists,
                 onOpenDrawer = onOpenDrawer
             )
         }
@@ -59,7 +65,7 @@ fun NavGraphBuilder.listGraph(
         topComposable<ListsDestination> {
             WatchListsRoute(
                 onDetails = onDetails,
-                onOpenDrawer = onOpenDrawer,
+                onBack = onBack,
             )
         }
 

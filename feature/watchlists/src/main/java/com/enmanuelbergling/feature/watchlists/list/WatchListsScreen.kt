@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -65,7 +67,7 @@ private const val NO_LIST = -1
 @Composable
 fun WatchListsRoute(
     onDetails: (listId: Int, listName: String) -> Unit,
-    onOpenDrawer: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val viewModel = koinViewModel<WatchListsVM>()
 
@@ -86,7 +88,7 @@ fun WatchListsRoute(
         viewModel::onCreateForm,
         viewModel::deleteList,
         onDetails,
-        onOpenDrawer = onOpenDrawer,
+        onBack = onBack,
     )
 }
 
@@ -98,7 +100,7 @@ private fun WatchListsScreen(
     onCreateFormEvent: (CreateListEvent) -> Unit,
     onDeleteList: (listId: Int) -> Unit,
     onDetails: (listId: Int, listName: String) -> Unit,
-    onOpenDrawer: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -118,9 +120,9 @@ private fun WatchListsScreen(
 
     Scaffold(Modifier.fillMaxSize(), topBar = {
         TopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) }, navigationIcon = {
-            IconButton(onClick = onOpenDrawer) {
+            IconButton(onClick = onBack) {
                 Icon(
-                    painter = painterResource(R.drawable.bars_bottom_left), contentDescription = "Sandwich menu icon"
+                    imageVector = Icons.Rounded.ArrowBackIosNew, contentDescription = stringResource(R.string.back_icon)
                 )
             }
         }, actions = {
