@@ -8,11 +8,10 @@ import kotlinx.coroutines.flow.update
 
 class CreditsChainHandler(
     private val getMovieCreditsUC: GetMovieCreditsUC,
-    private val nextHandler: MovieAccountStatesChainHandler?,
 ) :
     ChainHandler<MovieDetailsUiState> {
     override val nextChainHandler: ChainHandler<MovieDetailsUiState>?
-        get() = nextHandler
+        get() = null
 
     override suspend fun handle(request: MovieDetailsUiState) =
         if (request.value.skipCredits) Unit

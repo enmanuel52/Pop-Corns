@@ -1,15 +1,12 @@
 package com.enmanuelbergling.feature.movies.details
 
 import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,29 +24,21 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,8 +51,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -101,35 +88,19 @@ fun AnimatedContentScope.MovieDetailsScreen(
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val watchList = viewModel.watchlists.collectAsLazyPagingItems()
-    val withinListsState by viewModel.withinListsState.collectAsStateWithLifecycle()
     val isMovieInWatchlist by viewModel.isMovieInWatchlist.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(watchList.isEmpty) {
-        if (!watchList.isEmpty && !watchList.isAppending && !watchList.isRefreshing) {
-            viewModel.checkMovieOnLists(watchList.itemSnapshotList.items)
-        }
-    }
-
     MovieDetailsScreen(
         uiData = uiData,
         uiState = uiState,
-        hasWatchList = !watchList.isEmpty,
         isMovieInWatchlist = isMovieInWatchlist,
         onActor = onActor,
         onBack = onBack,
         onRetry = viewModel::loadPage,
         onWatchlistClick = viewModel::addOrRemoveFromWatchlist
-    ) {
-        SheetContent(
-            watchList = watchList,
-            withinListsState = withinListsState,
-            details = uiData.details,
-            onAddToMovieList = viewModel::addMovieToList
-        )
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -137,21 +108,14 @@ fun AnimatedContentScope.MovieDetailsScreen(
 private fun AnimatedContentScope.MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
-    hasWatchList: Boolean,
     isMovieInWatchlist: Boolean,
     onActor: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
     onWatchlistClick: () -> Unit,
-    watchListsSheet: @Composable () -> Unit,
 ) {
 
     val (details, creditsState) = uiData
-
-    val isSheetOpen = remember {
-        mutableStateOf(false)
-    }
-    val sheetState = rememberModalBottomSheetState()
 
     val snackbarHostState = remember {
         SnackbarHostState()
@@ -165,16 +129,6 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         onRetry,
         getFocus = details == null
     )
-
-    if (isSheetOpen.value) {
-        ModalBottomSheet(
-            onDismissRequest = { isSheetOpen.value = false },
-            sheetState = sheetState,
-            contentWindowInsets = { WindowInsets(0) }
-        ) {
-            watchListsSheet()
-        }
-    }
 
     val hazeState = remember { HazeState() }
 
@@ -196,17 +150,6 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            isSheetOpen.value = true
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.PlaylistAdd,
-                            contentDescription = stringResource(R.string.add_to_watch_list)
-                        )
-                    }
-
                     IconButton(onClick = onWatchlistClick) {
                         Icon(
                             painter = painterResource(
@@ -274,75 +217,6 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                 )
             }
 
-        }
-    }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-private fun SheetContent(
-    watchList: LazyPagingItems<WatchList>,
-    withinListsState: List<WatchList>,
-    details: MovieDetails?,
-    onAddToMovieList: (movieId: Int, WatchList) -> Unit,
-) {
-    LazyColumn(
-        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
-        modifier = Modifier.padding(horizontal = MaterialTheme.dimen.verySmall),
-    ) {
-        stickyHeader {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.surfaceColorAtElevation(
-                            BottomSheetDefaults.Elevation
-                        )
-                    )
-                    .padding(vertical = MaterialTheme.dimen.small),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.created_lists),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-
-        items(watchList.itemCount) {
-            val list = watchList[it]
-            list?.let {
-                val listContainerColor by animateColorAsState(
-                    targetValue = if (list in withinListsState)
-                        MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.surface,
-                    label = stringResource(R.string.list_background_animation),
-                )
-
-                WatchListCard(
-                    name = list.name,
-                    description = list.description,
-                    modifier = Modifier.fillMaxWidth(),
-                    containerColor = listContainerColor
-                ) {
-                    if (list !in withinListsState) {
-                        onAddToMovieList(details?.id ?: 0, list)
-                    }
-                }
-            }
-        }
-    }
-}
-
-private fun LazyListScope.addToListButton(
-    onClick: () -> Unit,
-) {
-    item {
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            OutlinedButton(onClick = onClick) {
-                Text(text = stringResource(R.string.add_to_watch_list))
-            }
         }
     }
 }
