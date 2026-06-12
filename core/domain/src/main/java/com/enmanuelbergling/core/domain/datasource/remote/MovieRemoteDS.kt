@@ -35,5 +35,5 @@ interface MovieRemoteDS : RemoteDataSource {
         page: Int,
     ): ResultHandler<PageModel<Movie>>
 
-    suspend fun getMovieAccountStates(movieId: Int, sessionId: String): ResultHandler<MovieAccountStates>
+    suspend fun getMovieAccountStates(movieId: Int): ResultHandler<MovieAccountStates>
 }

@@ -3,7 +3,6 @@ package com.enmanuelbergling.core.domain.usecase.di
 import com.enmanuelbergling.core.domain.usecase.auth.CreateRequestTokenUC
 import com.enmanuelbergling.core.domain.usecase.auth.CreateSessionFromLoginUC
 import com.enmanuelbergling.core.domain.usecase.auth.CreateSessionIdUC
-import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.core.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetActorDetailsUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
@@ -39,7 +38,6 @@ val authUcModule = module {
     singleOf(::CreateRequestTokenUC)
     singleOf(::CreateSessionFromLoginUC)
     singleOf(::CreateSessionIdUC)
-    singleOf(::GetSavedSessionIdUC)
     singleOf(::LogoutUC)
 }
 

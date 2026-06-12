@@ -6,9 +6,9 @@ import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.core.GenericPagingSource
 
-internal class AccountWatchlistSource(remoteDS: UserRemoteDS, sessionId: String) : GenericPagingSource<Movie>(
+internal class AccountWatchlistSource(remoteDS: UserRemoteDS) : GenericPagingSource<Movie>(
     request = { page ->
-        when (val result = remoteDS.getAccountWatchlistMovies(sessionId, page)) {
+        when (val result = remoteDS.getAccountWatchlistMovies(page)) {
             is ResultHandler.Error -> PageModel(emptyList(), 0)
             is ResultHandler.Success -> result.data ?: PageModel(emptyList(), 0)
         }

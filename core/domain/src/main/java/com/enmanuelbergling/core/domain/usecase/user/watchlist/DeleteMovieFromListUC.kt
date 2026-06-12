@@ -6,6 +6,5 @@ class DeleteMovieFromListUC(private val remoteDS: UserRemoteDS) {
     suspend operator fun invoke(
         movieId: Int,
         listId: Int,
-        sessionId: String,
-    ) = remoteDS.deleteMovieFromList(movieId = movieId, listId = listId, sessionId = sessionId)
+    ) = remoteDS.deleteMovieFromList(movieId = movieId, listId = listId)
 }

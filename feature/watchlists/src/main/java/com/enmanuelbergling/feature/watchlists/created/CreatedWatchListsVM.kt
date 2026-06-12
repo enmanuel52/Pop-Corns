@@ -4,55 +4,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.core.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CreateListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteListUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.core.model.user.AccountListsFilter
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
 import com.enmanuelbergling.feature.watchlists.model.CreateListForm
 import com.enmanuelbergling.feature.watchlists.paging.GetUserWatchListsUC
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class CreatedWatchListsVM(
     getPaginatedLists: GetUserWatchListsUC,
-    getSessionId: GetSavedSessionIdUC,
     private val createListUC: CreateListUC,
     private val deleteListUC: DeleteListUC,
     private val basicFormValidationUC: BasicFormValidationUC,
 ) : ViewModel() {
 
-    private val sessionId = getSessionId().stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        ""
-    )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     val lists: Flow<PagingData<WatchList>> =
-        sessionId.filter { it.isNotBlank() }
-            .flatMapLatest {
-                getPaginatedLists(
-                    AccountListsFilter(
-                        sessionId = sessionId.value
-                    )
-                ).cachedIn(
-                    viewModelScope
-                )
-            }
+        getPaginatedLists().cachedIn(viewModelScope)
 
     private val _createListFormState = MutableStateFlow(CreateListForm())
     val createListFormState get() = _createListFormState.asStateFlow()
@@ -91,7 +67,7 @@ internal class CreatedWatchListsVM(
     private fun createList() = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
         when (val result = createListUC(
-            listPost = createListFormState.value.toPost(), sessionId = sessionId.value
+            listPost = createListFormState.value.toPost()
         )) {
             is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> _uiState.update { SimplerUi.Success }.also {
@@ -102,7 +78,7 @@ internal class CreatedWatchListsVM(
 
     fun deleteList(listId: Int) = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
-        when (val result = deleteListUC(listId, sessionId.value)) {
+        when (val result = deleteListUC(listId)) {
             is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> _uiState.update { SimplerUi.Success }
         }

@@ -35,11 +35,11 @@ val remoteModule = module {
 }
 
 val remoteDsModule = module {
-    single<MovieRemoteDS> { MovieRemoteDSImpl(get(), get(), get()) }
+    single<MovieRemoteDS> { MovieRemoteDSImpl(get(), get(), get(), get()) }
 
     single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
 
     single<AuthRemoteDS> { AuthRemoteDSImpl(get()) }
 
-    single<UserRemoteDS> { UserRemoteDSImpl(get()) }
+    single<UserRemoteDS> { UserRemoteDSImpl(get(), get()) }
 }

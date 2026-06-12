@@ -1,5 +1,6 @@
 package com.enmanuelbergling.core.network.ktor.datasource
 
+import com.enmanuelbergling.core.domain.datasource.preferences.AuthPreferenceDS
 import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
@@ -12,12 +13,17 @@ import com.enmanuelbergling.core.network.ktor.service.MovieService
 import com.enmanuelbergling.core.network.ktorfit.service.MoviesFilterService
 import com.enmanuelbergling.core.network.ktorfit.service.MoviesSearchService
 import com.enmanuelbergling.core.network.mappers.toModel
+import kotlinx.coroutines.flow.first
 
 internal class MovieRemoteDSImpl(
     private val service: MovieService,
     private val moviesFilterService: MoviesFilterService,
     private val moviesSearchService: MoviesSearchService,
+    private val authPreferenceDS: AuthPreferenceDS,
 ) : MovieRemoteDS {
+
+    private suspend fun getSessionId() = authPreferenceDS.getSessionId().first()
+
     override suspend fun getMovieDetails(id: Int): ResultHandler<MovieDetails> = safeKtorCall {
         service.getMovieDetails(id).toModel()
     }
@@ -84,8 +90,7 @@ internal class MovieRemoteDSImpl(
 
     override suspend fun getMovieAccountStates(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<MovieAccountStates> = safeKtorCall {
-        service.getMovieAccountStates(movieId, sessionId).toModel()
+        service.getMovieAccountStates(movieId, getSessionId()).toModel()
     }
 }

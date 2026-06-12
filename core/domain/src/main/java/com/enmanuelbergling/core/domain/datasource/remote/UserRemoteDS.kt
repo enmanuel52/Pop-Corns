@@ -9,28 +9,24 @@ import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.model.user.WatchResponse
 
 interface UserRemoteDS : RemoteDataSource {
-    suspend fun getAccount(sessionId: String): ResultHandler<UserDetails>
+    suspend fun getAccount(): ResultHandler<UserDetails>
 
     suspend fun createWatchList(
         listPost: CreateListPost,
-        sessionId: String,
     ): ResultHandler<WatchResponse>
 
     suspend fun deleteMovieFromList(
         movieId: Int,
         listId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse>
 
     suspend fun addMovieToList(
         movieId: Int,
         listId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse>
 
     suspend fun deleteList(
         listId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse>
 
     suspend fun checkItemStatus(
@@ -45,22 +41,18 @@ interface UserRemoteDS : RemoteDataSource {
 
     suspend fun getWatchLists(
         accountId: String,
-        sessionId: String,
         page: Int,
     ): ResultHandler<PageModel<WatchList>>
 
     suspend fun getAccountWatchlistMovies(
-        sessionId: String,
         page: Int,
     ): ResultHandler<PageModel<Movie>>
 
     suspend fun addMovieToAccountWatchlist(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse>
 
     suspend fun removeMovieFromAccountWatchlist(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse>
 }

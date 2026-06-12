@@ -2,7 +2,6 @@ package com.enmanuelbergling.feature.movies.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
@@ -14,14 +13,12 @@ import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChain
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class MovieDetailsVM(
     private val movieDetailsChain: MovieDetailsChain,
-    private val getSessionId: GetSavedSessionIdUC,
     private val addMovieToAccountWatchlistUC: AddMovieToAccountWatchlistUC,
     private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
     private val movieId: Int,
@@ -79,15 +76,14 @@ internal class MovieDetailsVM(
     }
 
     private fun addOrRemoveFromWatchlist() = viewModelScope.launch {
-        val session = getSessionId().first()
         val isMovieInWatchlist = _uiState.value.accountStates?.watchlist ?: false
 
         _uiState.update { it.copy(isWatchlistLoading = true) }
 
         val result = if (isMovieInWatchlist) {
-            removeMovieFromAccountWatchlistUC(movieId, session)
+            removeMovieFromAccountWatchlistUC(movieId)
         } else {
-            addMovieToAccountWatchlistUC(movieId, session)
+            addMovieToAccountWatchlistUC(movieId)
         }
 
         when (result) {

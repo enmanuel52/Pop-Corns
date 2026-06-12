@@ -8,12 +8,11 @@ import com.enmanuelbergling.core.model.movie.Movie
 import kotlinx.coroutines.flow.Flow
 
 internal class GetPaginatedAccountWatchlistUC(private val userRemoteDS: UserRemoteDS) {
-    operator fun invoke(sessionId: String): Flow<PagingData<Movie>> = Pager(
+    operator fun invoke(): Flow<PagingData<Movie>> = Pager(
         config = PagingConfig(pageSize = 20, enablePlaceholders = false),
         pagingSourceFactory = {
             AccountWatchlistSource(
-                userRemoteDS,
-                sessionId
+                userRemoteDS
             )
         }
     ).flow

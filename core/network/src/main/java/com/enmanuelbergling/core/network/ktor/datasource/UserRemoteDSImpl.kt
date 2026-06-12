@@ -1,5 +1,6 @@
 package com.enmanuelbergling.core.network.ktor.datasource
 
+import com.enmanuelbergling.core.domain.datasource.preferences.AuthPreferenceDS
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
@@ -14,50 +15,52 @@ import com.enmanuelbergling.core.network.dto.user.watch.WatchlistBody
 import com.enmanuelbergling.core.network.ktor.service.UserService
 import com.enmanuelbergling.core.network.mappers.asBody
 import com.enmanuelbergling.core.network.mappers.toModel
+import kotlinx.coroutines.flow.first
 
-class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
+class UserRemoteDSImpl(
+    private val service: UserService,
+    private val authPreferenceDS: AuthPreferenceDS,
+) : UserRemoteDS {
 
-    override suspend fun getAccount(sessionId: String): ResultHandler<UserDetails> = safeKtorCall {
-        service.getAccount(sessionId).toModel()
+    private suspend fun getSessionId() = authPreferenceDS.getSessionId().first()
+
+    override suspend fun getAccount(): ResultHandler<UserDetails> = safeKtorCall {
+        service.getAccount(getSessionId()).toModel()
     }
 
     override suspend fun createWatchList(
         listPost: CreateListPost,
-        sessionId: String,
     ): ResultHandler<WatchResponse> =
-        safeKtorCall { service.createWatchList(listPost.asBody(), sessionId).toModel() }
+        safeKtorCall { service.createWatchList(listPost.asBody(), getSessionId()).toModel() }
 
     override suspend fun deleteMovieFromList(
         movieId: Int,
         listId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse> = safeKtorCall {
         service.deleteMovieFromList(
             mediaBody = MediaOnListBody(movieId),
             listId = listId,
-            sessionId = sessionId
+            sessionId = getSessionId()
         ).toModel()
     }
 
     override suspend fun addMovieToList(
         movieId: Int,
         listId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse> = safeKtorCall {
         service.addMovieToList(
             mediaBody = MediaOnListBody(movieId),
             listId = listId,
-            sessionId = sessionId
+            sessionId = getSessionId()
         ).toModel()
     }
 
     override suspend fun deleteList(
         listId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse> = safeKtorCall {
         service.deleteList(
             listId = listId,
-            sessionId = sessionId
+            sessionId = getSessionId()
         )
             .toModel()
     }
@@ -76,20 +79,18 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
 
     override suspend fun getWatchLists(
         accountId: String,
-        sessionId: String,
         page: Int,
     ): ResultHandler<PageModel<WatchList>> = safeKtorCall {
-        val result = service.getAccountLists(accountId, sessionId, page)
+        val result = service.getAccountLists(accountId, getSessionId(), page)
         val movies = result.results.map { it.toModel() }
 
         PageModel(movies, result.totalPages)
     }
 
     override suspend fun getAccountWatchlistMovies(
-        sessionId: String,
         page: Int,
     ): ResultHandler<PageModel<Movie>> = safeKtorCall {
-        val result = service.getWatchlistMovies(BuildConfig.ACCOUNT_ID, sessionId, page)
+        val result = service.getWatchlistMovies(BuildConfig.ACCOUNT_ID, getSessionId(), page)
         val movies = result.results.map { it.toModel() }
 
         PageModel(movies, result.totalPages)
@@ -97,22 +98,20 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
 
     override suspend fun addMovieToAccountWatchlist(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse> = safeKtorCall {
         service.addToWatchlist(
             accountId = BuildConfig.ACCOUNT_ID,
-            sessionId = sessionId,
+            sessionId = getSessionId(),
             watchlistBody = WatchlistBody(mediaId = movieId, watchlist = true)
         ).toModel()
     }
 
     override suspend fun removeMovieFromAccountWatchlist(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse> = safeKtorCall {
         service.addToWatchlist(
             accountId = BuildConfig.ACCOUNT_ID,
-            sessionId = sessionId,
+            sessionId = getSessionId(),
             watchlistBody = WatchlistBody(mediaId = movieId, watchlist = false)
         ).toModel()
     }

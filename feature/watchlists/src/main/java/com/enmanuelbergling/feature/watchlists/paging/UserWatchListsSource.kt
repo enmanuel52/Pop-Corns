@@ -11,7 +11,7 @@ import com.enmanuelbergling.core.ui.core.GenericPagingSource
 internal class UserWatchListsSource(service: UserRemoteDS, filter: AccountListsFilter) :
     GenericPagingSource<WatchList>(
         request = { page ->
-            val result = service.getWatchLists(BuildConfig.ACCOUNT_ID, filter.sessionId, page)
+            val result = service.getWatchLists(BuildConfig.ACCOUNT_ID, page)
             when (result) {
                 is ResultHandler.Error -> PageModel(emptyList(), 0)
                 is ResultHandler.Success -> result.data ?: PageModel(emptyList(), 0)

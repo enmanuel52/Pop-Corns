@@ -6,6 +6,5 @@ class AddMovieToListUC(private val remoteDS: UserRemoteDS) {
     suspend operator fun invoke(
         movieId: Int,
         listId: Int,
-        sessionId: String,
-    ) = remoteDS.addMovieToList(movieId = movieId, listId = listId, sessionId = sessionId)
+    ) = remoteDS.addMovieToList(movieId = movieId, listId = listId)
 }

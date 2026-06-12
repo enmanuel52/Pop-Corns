@@ -7,6 +7,5 @@ class CreateListUC(private val remoteDS: UserRemoteDS) {
 
     suspend operator fun invoke(
         listPost: CreateListPost,
-        sessionId: String,
-    ) = remoteDS.createWatchList(listPost, sessionId)
+    ) = remoteDS.createWatchList(listPost)
 }
