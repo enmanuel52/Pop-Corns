@@ -7,8 +7,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.common.util.TAG
 import com.enmanuelbergling.core.domain.usecase.auth.GetSavedSessionIdUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -36,6 +38,8 @@ internal class MovieDetailsVM(
     getSessionId: GetSavedSessionIdUC,
     private val addMovieToListUC: AddMovieToListUC,
     private val checkItemStatusUC: CheckItemStatusUC,
+    private val addMovieToAccountWatchlistUC: AddMovieToAccountWatchlistUC,
+    private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
     private val movieId: Int,
 ) : ViewModel() {
 
@@ -69,6 +73,9 @@ internal class MovieDetailsVM(
     private val _uiDataState = MutableStateFlow(MovieDetailsUiData(movieId = movieId))
     val uiDataState get() = _uiDataState.asStateFlow()
 
+    private val _isMovieInWatchlist = MutableStateFlow(false)
+    val isMovieInWatchlist get() = _isMovieInWatchlist.asStateFlow()
+
     init {
         loadPage()
     }
@@ -98,6 +105,23 @@ internal class MovieDetailsVM(
                 _withinListsState.update {
                     (it + list).distinct()
                 }
+            }
+        }
+    }
+
+    fun addOrRemoveFromWatchlist() = viewModelScope.launch {
+        _uiState.update { SimplerUi.Loading }
+        val result = if (_isMovieInWatchlist.value) {
+            removeMovieFromAccountWatchlistUC(movieId, sessionId.value)
+        } else {
+            addMovieToAccountWatchlistUC(movieId, sessionId.value)
+        }
+
+        when (result) {
+            is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
+            is ResultHandler.Success -> {
+                _uiState.update { SimplerUi.Success }
+                _isMovieInWatchlist.update { !it }
             }
         }
     }

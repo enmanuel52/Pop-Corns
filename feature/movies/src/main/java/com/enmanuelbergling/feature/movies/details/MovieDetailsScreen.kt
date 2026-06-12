@@ -101,6 +101,7 @@ fun AnimatedContentScope.MovieDetailsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val watchList = viewModel.watchlists.collectAsLazyPagingItems()
     val withinListsState by viewModel.withinListsState.collectAsStateWithLifecycle()
+    val isMovieInWatchlist by viewModel.isMovieInWatchlist.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
@@ -114,9 +115,11 @@ fun AnimatedContentScope.MovieDetailsScreen(
         uiData = uiData,
         uiState = uiState,
         hasWatchList = !watchList.isEmpty,
+        isMovieInWatchlist = isMovieInWatchlist,
         onActor = onActor,
         onBack = onBack,
-        onRetry = viewModel::loadPage
+        onRetry = viewModel::loadPage,
+        onWatchlistClick = viewModel::addOrRemoveFromWatchlist
     ) {
         SheetContent(
             watchList = watchList,
@@ -133,9 +136,11 @@ private fun AnimatedContentScope.MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
     hasWatchList: Boolean,
+    isMovieInWatchlist: Boolean,
     onActor: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
+    onWatchlistClick: () -> Unit,
     watchListsSheet: @Composable () -> Unit,
 ) {
 
@@ -225,14 +230,40 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     details.duration
                 )
 
-                if (hasWatchList) {
-                    addToListButton {
-                        scope.launch {
-                            isSheetOpen.value = true
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.dimen.small),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            MaterialTheme.dimen.small,
+                            Alignment.CenterHorizontally
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (hasWatchList) {
+                            OutlinedButton(onClick = {
+                                scope.launch {
+                                    isSheetOpen.value = true
+                                }
+                            }) {
+                                Text(text = stringResource(R.string.add_to_watch_list))
+                            }
+                        }
+
+                        IconButton(onClick = onWatchlistClick) {
+                            Icon(
+                                painter = painterResource(
+                                    if (isMovieInWatchlist) R.drawable.bookmark_solid
+                                    else R.drawable.bookmark_outline
+                                ),
+                                contentDescription = stringResource(R.string.watchlist),
+                                tint = if (isMovieInWatchlist) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.outline
+                            )
                         }
                     }
                 }
-
 
                 overview(details.overview)
 
