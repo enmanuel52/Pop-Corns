@@ -8,9 +8,9 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.enmanuelbergling.core.ui.components.topComposable
 import com.enmanuelbergling.core.ui.model.WatchlistShortcut
+import com.enmanuelbergling.feature.watchlists.created.CreatedWatchListsRoute
 import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsRoute
 import com.enmanuelbergling.feature.watchlists.home.WatchlistHomeRoute
-import com.enmanuelbergling.feature.watchlists.list.WatchListsRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -63,7 +63,7 @@ fun NavGraphBuilder.listGraph(
         }
 
         topComposable<ListsDestination> {
-            WatchListsRoute(
+            CreatedWatchListsRoute(
                 onDetails = onDetails,
                 onBack = onBack,
             )

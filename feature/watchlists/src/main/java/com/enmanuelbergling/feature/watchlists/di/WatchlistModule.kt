@@ -1,8 +1,8 @@
 package com.enmanuelbergling.feature.watchlists.di
 
+import com.enmanuelbergling.feature.watchlists.created.CreatedWatchListsVM
 import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsVM
 import com.enmanuelbergling.feature.watchlists.home.WatchlistHomeVM
-import com.enmanuelbergling.feature.watchlists.list.WatchListsVM
 import com.enmanuelbergling.feature.watchlists.paging.GetPaginatedAccountWatchlistUC
 import com.enmanuelbergling.feature.watchlists.paging.GetWatchListMoviesUC
 import com.enmanuelbergling.feature.watchlists.paging.GetUserWatchListsUC
@@ -15,7 +15,7 @@ val watchlistModule = module {
     singleOf(::GetUserWatchListsUC)
     singleOf(::GetPaginatedAccountWatchlistUC)
 
-    viewModelOf(::WatchListsVM)
+    viewModelOf(::CreatedWatchListsVM)
     viewModelOf(::WatchlistHomeVM)
     viewModelOf(::WatchListDetailsVM)
 }

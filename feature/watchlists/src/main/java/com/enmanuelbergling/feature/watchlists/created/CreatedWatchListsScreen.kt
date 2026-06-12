@@ -1,9 +1,8 @@
-package com.enmanuelbergling.feature.watchlists.list
+package com.enmanuelbergling.feature.watchlists.created
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +22,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,7 +44,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.components.CtiContentDialog
 import com.enmanuelbergling.core.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.NewerDragListItem
@@ -65,11 +62,11 @@ import org.koin.androidx.compose.koinViewModel
 private const val NO_LIST = -1
 
 @Composable
-fun WatchListsRoute(
+fun CreatedWatchListsRoute(
     onDetails: (listId: Int, listName: String) -> Unit,
     onBack: () -> Unit,
 ) {
-    val viewModel = koinViewModel<WatchListsVM>()
+    val viewModel = koinViewModel<CreatedWatchListsVM>()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lists = viewModel.lists.collectAsLazyPagingItems()
@@ -82,7 +79,7 @@ fun WatchListsRoute(
         viewModel.onIdle()
     }
 
-    WatchListsScreen(
+    CreatedWatchListsScreen(
         lists,
         createListForm,
         viewModel::onCreateForm,
@@ -94,7 +91,7 @@ fun WatchListsRoute(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun WatchListsScreen(
+private fun CreatedWatchListsScreen(
     lists: LazyPagingItems<WatchList>,
     createListForm: CreateListForm,
     onCreateFormEvent: (CreateListEvent) -> Unit,
@@ -158,11 +155,11 @@ private fun WatchListsScreen(
                         WatchListCardPlaceholder()
                     }
                 } else {
-                    items(lists.itemCount) {
-                        val list = lists[it]
+                    items(lists.itemCount) { index ->
+                        val list = lists[index]
                         list?.let {
-                            val bottomWith by remember {
-                                mutableStateOf((-80).dp)
+                            val bottomWith = remember {
+                                (-80).dp
                             }
 
                             NewerDragListItem(

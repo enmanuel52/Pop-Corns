@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.watchlists.list
+package com.enmanuelbergling.feature.watchlists.created
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal class WatchListsVM(
+internal class CreatedWatchListsVM(
     getPaginatedLists: GetUserWatchListsUC,
     getSessionId: GetSavedSessionIdUC,
     private val createListUC: CreateListUC,
