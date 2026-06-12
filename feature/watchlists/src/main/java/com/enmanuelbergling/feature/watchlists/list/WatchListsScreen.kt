@@ -54,7 +54,7 @@ import com.enmanuelbergling.core.ui.components.common.WatchListCardPlaceholder
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import com.enmanuelbergling.core.ui.design.CtiTextField
+import com.enmanuelbergling.feature.watchlists.components.CreateListDialog
 import com.enmanuelbergling.feature.watchlists.model.CreateListEvent
 import com.enmanuelbergling.feature.watchlists.model.CreateListForm
 import org.koin.androidx.compose.koinViewModel
@@ -210,38 +210,6 @@ private fun WatchListsScreen(
     }
 
     if (createListForm.isVisible) {
-        CtiContentDialog(onDismiss = { onCreateFormEvent(CreateListEvent.ToggleVisibility) },
-            title = { Text("New List") },
-            confirmButton = {
-                TextButton(onClick = { onCreateFormEvent(CreateListEvent.Submit) }) {
-                    Text(text = "Create")
-                }
-            },
-            verticalSpacing = MaterialTheme.dimen.medium
-        ) {
-            item {
-                CtiTextField(
-                    text = createListForm.name,
-                    onTextChange = { onCreateFormEvent(CreateListEvent.Name(it)) },
-                    hint = "List name*",
-                    leadingIcon = {
-                        Icon( painter = painterResource(R.drawable.info_circle), null)
-                    },
-                    errorText = createListForm.nameError,
-                )
-            }
-
-            item {
-                CtiTextField(
-                    text = createListForm.description,
-                    onTextChange = { onCreateFormEvent(CreateListEvent.Description(it)) },
-                    hint = "List description*",
-                    leadingIcon = {
-                        Icon( painter = painterResource(R.drawable.info_circle), null)
-                    },
-                    errorText = createListForm.descriptionError
-                )
-            }
-        }
+        CreateListDialog(form = createListForm, onEvent = onCreateFormEvent)
     }
 }

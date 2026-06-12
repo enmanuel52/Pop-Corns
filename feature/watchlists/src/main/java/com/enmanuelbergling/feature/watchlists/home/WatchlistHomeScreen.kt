@@ -38,15 +38,15 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.NewerDragListItem
 import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
-import com.enmanuelbergling.core.ui.components.common.MovieCard
-import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
+import com.enmanuelbergling.core.ui.components.common.MovieLandCard
+import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
+import com.enmanuelbergling.feature.watchlists.components.RemoveFromWatchlistDialog
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -91,13 +91,12 @@ private fun WatchlistHomeScreen(
     }
 
     if (pickedMovie != -1) {
-        DeleteMovieConfirmationDialog(
+        RemoveFromWatchlistDialog(
             onDismiss = { pickedMovie = -1 },
-            onDelete = {
+            onConfirm = {
                 onRemoveFromWatchlist(pickedMovie)
                 pickedMovie = -1
-            },
-            title = stringResource(R.string.remove_movie_from_watchlist_title)
+            }
         )
     }
 
@@ -134,7 +133,7 @@ private fun WatchlistHomeScreen(
             ) {
                 if (watchlist.isRefreshing) {
                     items(12) {
-                        MovieCardPlaceholder()
+                        MovieLandCardPlaceholder(Modifier.fillMaxWidth())
                     }
                 } else {
                     items(watchlist.itemCount) { index ->
@@ -159,10 +158,8 @@ private fun WatchlistHomeScreen(
                                     MaterialTheme.colorScheme.surfaceVariant, CardDefaults.elevatedShape
                                 ),
                             ) {
-                                MovieCard(
-                                    imageUrl = movie.posterPath,
-                                    title = movie.title,
-                                    rating = movie.voteAverage,
+                                MovieLandCard(
+                                    movie = movie,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     onMovieDetails(movie.id)
