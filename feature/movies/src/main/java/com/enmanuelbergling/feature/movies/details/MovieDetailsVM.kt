@@ -43,9 +43,6 @@ internal class MovieDetailsVM(
     private val _uiDataState = MutableStateFlow(MovieDetailsUiData(movieId = movieId))
     val uiDataState get() = _uiDataState.asStateFlow()
 
-    private val _isMovieInWatchlist = MutableStateFlow(false)
-    val isMovieInWatchlist get() = _isMovieInWatchlist.asStateFlow()
-
     init {
         loadPage()
         getAccountStates()
@@ -69,7 +66,6 @@ internal class MovieDetailsVM(
                     is ResultHandler.Error -> {}
                     is ResultHandler.Success -> {
                         _uiDataState.update { it.copy(accountStates = result.data) }
-                        _isMovieInWatchlist.update { result.data?.watchlist ?: false }
                     }
                 }
             }
@@ -91,9 +87,9 @@ internal class MovieDetailsVM(
         }
     }
 
-    fun addOrRemoveFromWatchlist() = viewModelScope.launch {
+    fun toggleWatchlist(inWatchlist: Boolean) = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
-        val result = if (_isMovieInWatchlist.value) {
+        val result = if (inWatchlist) {
             removeMovieFromAccountWatchlistUC(movieId, sessionId.value)
         } else {
             addMovieToAccountWatchlistUC(movieId, sessionId.value)
@@ -103,7 +99,7 @@ internal class MovieDetailsVM(
             is ResultHandler.Error -> _uiState.update { SimplerUi.Error(result.exception.messageResource) }
             is ResultHandler.Success -> {
                 _uiState.update { SimplerUi.Success }
-                _isMovieInWatchlist.update { !it }
+                getAccountStates()
             }
         }
     }

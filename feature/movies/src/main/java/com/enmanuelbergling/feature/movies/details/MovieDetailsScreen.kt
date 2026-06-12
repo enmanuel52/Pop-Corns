@@ -29,6 +29,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -54,18 +55,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
 import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.core.model.movie.MovieDetails
-import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.components.common.ActorCard
 import com.enmanuelbergling.core.ui.components.common.ActorsRowPlaceholder
-import com.enmanuelbergling.core.ui.components.common.WatchListCard
 import com.enmanuelbergling.core.ui.core.dimen
-import com.enmanuelbergling.core.ui.core.isAppending
-import com.enmanuelbergling.core.ui.core.isEmpty
-import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsUiData
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
@@ -74,7 +69,6 @@ import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeEffect
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -88,18 +82,16 @@ fun AnimatedContentScope.MovieDetailsScreen(
     val viewModel = koinViewModel<MovieDetailsVM> { parametersOf(id) }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val isMovieInWatchlist by viewModel.isMovieInWatchlist.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
 
     MovieDetailsScreen(
         uiData = uiData,
         uiState = uiState,
-        isMovieInWatchlist = isMovieInWatchlist,
         onActor = onActor,
         onBack = onBack,
         onRetry = viewModel::loadPage,
-        onWatchlistClick = viewModel::addOrRemoveFromWatchlist
+        onWatchlistClick = viewModel::toggleWatchlist
     )
 }
 
@@ -108,11 +100,10 @@ fun AnimatedContentScope.MovieDetailsScreen(
 private fun AnimatedContentScope.MovieDetailsScreen(
     uiData: MovieDetailsUiData,
     uiState: SimplerUi,
-    isMovieInWatchlist: Boolean,
     onActor: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
-    onWatchlistClick: () -> Unit,
+    onWatchlistClick: (Boolean) -> Unit,
 ) {
 
     val (details, creditsState) = uiData
@@ -150,16 +141,18 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onWatchlistClick) {
-                        Icon(
-                            painter = painterResource(
-                                if (isMovieInWatchlist) R.drawable.bookmark_solid
-                                else R.drawable.bookmark_outline
-                            ),
-                            contentDescription = stringResource(R.string.watchlist),
-                            tint = if (isMovieInWatchlist) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurface
-                        )
+                    uiData.accountStates?.let {
+                        IconButton(onClick = { onWatchlistClick(it.watchlist) }) {
+                            Icon(
+                                painter = painterResource(
+                                    if (it.watchlist) R.drawable.bookmark_solid
+                                    else R.drawable.bookmark_outline
+                                ),
+                                contentDescription = stringResource(R.string.watchlist),
+                                tint = if (it.watchlist) MaterialTheme.colorScheme.primary
+                                else LocalContentColor.current
+                            )
+                        }
                     }
                 },
                 modifier = Modifier
