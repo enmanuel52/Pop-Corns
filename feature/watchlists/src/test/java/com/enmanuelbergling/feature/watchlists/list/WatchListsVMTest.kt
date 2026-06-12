@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.watchlists.home
+package com.enmanuelbergling.feature.watchlists.list
 
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.model.core.PageModel
@@ -16,10 +16,10 @@ import io.kotest.matchers.shouldNotBe
 import org.koin.core.component.inject
 
 
-class WatchListVMTest : BaseBehaviorTest(
+class WatchListsVMTest : BaseBehaviorTest(
     listOf(watchlistModule)
 ) {
-    private val watchListVM: WatchListVM by inject()
+    private val watchListsVM: WatchListsVM by inject()
 
     private val userRemoteDS: UserRemoteDS by inject()
 
@@ -28,7 +28,7 @@ class WatchListVMTest : BaseBehaviorTest(
         Given("Screen is up") {
 
             Then("ui state is idle") {
-                watchListVM.uiState.value shouldBe SimplerUi.Idle
+                watchListsVM.uiState.value shouldBe SimplerUi.Idle
             }
 
             val listName = "Comedy"
@@ -38,15 +38,15 @@ class WatchListVMTest : BaseBehaviorTest(
                 val invalidDescription = "    "
                 val validDescription = "    typing something"
 
-                watchListVM.onCreateForm(CreateListEvent.ToggleVisibility)
+                watchListsVM.onCreateForm(CreateListEvent.ToggleVisibility)
 
-                watchListVM.onCreateForm(CreateListEvent.Name(listName))
-                watchListVM.onCreateForm(CreateListEvent.Description(invalidDescription))
+                watchListsVM.onCreateForm(CreateListEvent.Name(listName))
+                watchListsVM.onCreateForm(CreateListEvent.Description(invalidDescription))
 
-                watchListVM.onCreateForm(CreateListEvent.Submit)
+                watchListsVM.onCreateForm(CreateListEvent.Submit)
 
                 Then("validation fails(ui is not success), error msg appears and form remains up") {
-                    val form = watchListVM.createListFormState.value
+                    val form = watchListsVM.createListFormState.value
 
                     form.name shouldBeEqual listName
                     form.description shouldBeEqual invalidDescription
@@ -56,10 +56,10 @@ class WatchListVMTest : BaseBehaviorTest(
                 }
 
                 And("user fill in the blank") {
-                    watchListVM.onCreateForm(CreateListEvent.Description(validDescription))
+                    watchListsVM.onCreateForm(CreateListEvent.Description(validDescription))
 
                     Then("field error goes away") {
-                        val form = watchListVM.createListFormState.value
+                        val form = watchListsVM.createListFormState.value
 
                         form.description shouldBeEqual validDescription
                         form.descriptionError shouldBe null
@@ -67,10 +67,10 @@ class WatchListVMTest : BaseBehaviorTest(
                 }
 
                 And("user dismiss the form") {
-                    watchListVM.onCreateForm(CreateListEvent.ToggleVisibility)
+                    watchListsVM.onCreateForm(CreateListEvent.ToggleVisibility)
 
                     Then("form is reset and hide") {
-                        val form = watchListVM.createListFormState.value
+                        val form = watchListsVM.createListFormState.value
 
                         form shouldBe CreateListForm()
                         form.isVisible shouldBeEqual false
@@ -79,22 +79,22 @@ class WatchListVMTest : BaseBehaviorTest(
             }
 
             When("user open and fill in new list form") {
-                watchListVM.onCreateForm(CreateListEvent.ToggleVisibility)
+                watchListsVM.onCreateForm(CreateListEvent.ToggleVisibility)
 
-                watchListVM.onCreateForm(CreateListEvent.Name(listName))
-                watchListVM.onCreateForm(CreateListEvent.Description(listDescription))
+                watchListsVM.onCreateForm(CreateListEvent.Name(listName))
+                watchListsVM.onCreateForm(CreateListEvent.Description(listDescription))
 
                 And("submit") {
-                    watchListVM.onCreateForm(CreateListEvent.Submit)
+                    watchListsVM.onCreateForm(CreateListEvent.Submit)
 
                     Then("new form state is created, fields are reset") {
-                        val form = watchListVM.createListFormState.value
+                        val form = watchListsVM.createListFormState.value
 
                         form.name shouldBeEqual ""
                         form.description shouldBeEqual ""
                         form.isVisible shouldBeEqual false
 
-                        watchListVM.uiState.value shouldBe SimplerUi.Success
+                        watchListsVM.uiState.value shouldBe SimplerUi.Success
 
                         val watchLists = getRemoteFirstPage {
                             userRemoteDS.getWatchLists(
@@ -122,7 +122,7 @@ class WatchListVMTest : BaseBehaviorTest(
                     }
 
                     And("user delete the list") {
-                        watchListVM.deleteList(0)
+                        watchListsVM.deleteList(0)
 
                         Then("list and movies inside are deleted") {
                             val watchLists = getRemoteFirstPage {

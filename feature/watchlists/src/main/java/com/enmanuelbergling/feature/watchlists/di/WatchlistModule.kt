@@ -1,7 +1,9 @@
 package com.enmanuelbergling.feature.watchlists.di
 
 import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsVM
-import com.enmanuelbergling.feature.watchlists.home.WatchListVM
+import com.enmanuelbergling.feature.watchlists.home.WatchlistHomeVM
+import com.enmanuelbergling.feature.watchlists.list.WatchListsVM
+import com.enmanuelbergling.feature.watchlists.paging.GetPaginatedAccountWatchlistUC
 import com.enmanuelbergling.feature.watchlists.paging.GetWatchListMoviesUC
 import com.enmanuelbergling.feature.watchlists.paging.GetUserWatchListsUC
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -11,7 +13,9 @@ import org.koin.dsl.module
 val watchlistModule = module {
     singleOf(::GetWatchListMoviesUC)
     singleOf(::GetUserWatchListsUC)
+    singleOf(::GetPaginatedAccountWatchlistUC)
 
-    viewModelOf(::WatchListVM)
+    viewModelOf(::WatchListsVM)
+    viewModelOf(::WatchlistHomeVM)
     viewModelOf(::WatchListDetailsVM)
 }

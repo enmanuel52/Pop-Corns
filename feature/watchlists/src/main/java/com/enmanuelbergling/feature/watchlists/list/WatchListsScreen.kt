@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.watchlists.home
+package com.enmanuelbergling.feature.watchlists.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -63,11 +63,11 @@ import org.koin.androidx.compose.koinViewModel
 private const val NO_LIST = -1
 
 @Composable
-fun WatchListRoute(
+fun WatchListsRoute(
     onDetails: (listId: Int, listName: String) -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
-    val viewModel = koinViewModel<WatchListVM>()
+    val viewModel = koinViewModel<WatchListsVM>()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lists = viewModel.lists.collectAsLazyPagingItems()
@@ -80,7 +80,7 @@ fun WatchListRoute(
         viewModel.onIdle()
     }
 
-    WatchListScreen(
+    WatchListsScreen(
         lists,
         createListForm,
         viewModel::onCreateForm,
@@ -92,7 +92,7 @@ fun WatchListRoute(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun WatchListScreen(
+private fun WatchListsScreen(
     lists: LazyPagingItems<WatchList>,
     createListForm: CreateListForm,
     onCreateFormEvent: (CreateListEvent) -> Unit,
