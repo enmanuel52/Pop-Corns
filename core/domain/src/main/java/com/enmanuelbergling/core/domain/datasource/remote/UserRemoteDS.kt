@@ -48,4 +48,19 @@ interface UserRemoteDS : RemoteDataSource {
         sessionId: String,
         page: Int,
     ): ResultHandler<PageModel<WatchList>>
+
+    suspend fun getAccountWatchlistMovies(
+        sessionId: String,
+        page: Int,
+    ): ResultHandler<PageModel<Movie>>
+
+    suspend fun addMovieToAccountWatchlist(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse>
+
+    suspend fun removeMovieFromAccountWatchlist(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse>
 }

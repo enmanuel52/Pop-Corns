@@ -96,4 +96,18 @@ class FakeUserRemoteDS(
             ResultHandler.Success(emptyList<WatchList>().asPage())
         }
 
+    override suspend fun getAccountWatchlistMovies(
+        sessionId: String,
+        page: Int,
+    ): ResultHandler<PageModel<Movie>> = ResultHandler.Success(emptyList<Movie>().asPage())
+
+    override suspend fun addMovieToAccountWatchlist(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse> = ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+
+    override suspend fun removeMovieFromAccountWatchlist(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse> = ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 }

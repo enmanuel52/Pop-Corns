@@ -8,6 +8,7 @@ import com.enmanuelbergling.core.network.dto.user.watch.CreateListBody
 import com.enmanuelbergling.core.network.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.core.network.dto.user.watch.MovieListPageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.WatchResponseDTO
+import com.enmanuelbergling.core.network.dto.user.watch.WatchlistBody
 import com.enmanuelbergling.core.network.ktor.KtorClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -100,6 +101,33 @@ class UserService(private val httpClient: KtorClient) {
                 parameters.append(name = "page", value = "$page")
                 parameters.append("session_id", sessionId)
             }
+        }
+        .body()
+
+    internal suspend fun getWatchlistMovies(
+        accountId: String,
+        sessionId: String,
+        page: Int,
+    ): MovieListPageDTO = httpClient
+        .get("account/$accountId/watchlist/movies") {
+            url {
+                parameters.append(name = "page", value = "$page")
+                parameters.append("session_id", sessionId)
+            }
+        }
+        .body()
+
+    internal suspend fun addToWatchlist(
+        accountId: String,
+        sessionId: String,
+        watchlistBody: WatchlistBody,
+    ): WatchResponseDTO = httpClient
+        .post("account/$accountId/watchlist") {
+            url {
+                parameters.append("session_id", sessionId)
+            }
+            contentType(ContentType.Application.Json)
+            setBody(watchlistBody)
         }
         .body()
 

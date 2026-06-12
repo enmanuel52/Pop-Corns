@@ -3,11 +3,14 @@ package com.enmanuelbergling.core.network.ktor.datasource
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
+import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.user.CreateListPost
 import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.model.user.WatchResponse
+import com.enmanuelbergling.core.network.BuildConfig
 import com.enmanuelbergling.core.network.dto.user.watch.MediaOnListBody
+import com.enmanuelbergling.core.network.dto.user.watch.WatchlistBody
 import com.enmanuelbergling.core.network.ktor.service.UserService
 import com.enmanuelbergling.core.network.mappers.asBody
 import com.enmanuelbergling.core.network.mappers.toModel
@@ -80,5 +83,37 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
         val movies = result.results.map { it.toModel() }
 
         PageModel(movies, result.totalPages)
+    }
+
+    override suspend fun getAccountWatchlistMovies(
+        sessionId: String,
+        page: Int,
+    ): ResultHandler<PageModel<Movie>> = safeKtorCall {
+        val result = service.getWatchlistMovies(BuildConfig.ACCOUNT_ID, sessionId, page)
+        val movies = result.items.map { it.toModel() }
+
+        PageModel(movies, result.itemCount)
+    }
+
+    override suspend fun addMovieToAccountWatchlist(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse> = safeKtorCall {
+        service.addToWatchlist(
+            accountId = BuildConfig.ACCOUNT_ID,
+            sessionId = sessionId,
+            watchlistBody = WatchlistBody(mediaId = movieId, watchlist = true)
+        ).toModel()
+    }
+
+    override suspend fun removeMovieFromAccountWatchlist(
+        movieId: Int,
+        sessionId: String,
+    ): ResultHandler<WatchResponse> = safeKtorCall {
+        service.addToWatchlist(
+            accountId = BuildConfig.ACCOUNT_ID,
+            sessionId = sessionId,
+            watchlistBody = WatchlistBody(mediaId = movieId, watchlist = false)
+        ).toModel()
     }
 }
