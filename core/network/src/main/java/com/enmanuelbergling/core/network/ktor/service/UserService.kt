@@ -6,6 +6,7 @@ import com.enmanuelbergling.core.network.dto.user.watch.AccountListsPageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.CheckItemListDTO
 import com.enmanuelbergling.core.network.dto.user.watch.CreateListBody
 import com.enmanuelbergling.core.network.dto.user.watch.MediaOnListBody
+import com.enmanuelbergling.core.network.dto.movie.MoviePageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.MovieListPageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.WatchResponseDTO
 import com.enmanuelbergling.core.network.dto.user.watch.WatchlistBody
@@ -108,7 +109,7 @@ class UserService(private val httpClient: KtorClient) {
         accountId: String,
         sessionId: String,
         page: Int,
-    ): MovieListPageDTO = httpClient
+    ): MoviePageDTO = httpClient
         .get("account/$accountId/watchlist/movies") {
             url {
                 parameters.append(name = "page", value = "$page")

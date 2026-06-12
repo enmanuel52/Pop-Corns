@@ -90,9 +90,9 @@ class UserRemoteDSImpl(private val service: UserService) : UserRemoteDS {
         page: Int,
     ): ResultHandler<PageModel<Movie>> = safeKtorCall {
         val result = service.getWatchlistMovies(BuildConfig.ACCOUNT_ID, sessionId, page)
-        val movies = result.items.map { it.toModel() }
+        val movies = result.results.map { it.toModel() }
 
-        PageModel(movies, result.itemCount)
+        PageModel(movies, result.totalPages)
     }
 
     override suspend fun addMovieToAccountWatchlist(

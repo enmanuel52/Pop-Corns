@@ -25,6 +25,7 @@ import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CreateListUC
@@ -83,6 +84,7 @@ val listsUcModule = module {
     singleOf(::DeleteListUC)
     singleOf(::CheckItemStatusUC)
     singleOf(::RemoveMovieFromAccountWatchlistUC)
+    singleOf(::AddMovieToAccountWatchlistUC)
 }
 
 val searchSuggestionUcModule = module {
