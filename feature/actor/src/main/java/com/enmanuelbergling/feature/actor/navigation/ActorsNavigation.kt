@@ -8,7 +8,7 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.enmanuelbergling.core.ui.components.topComposable
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
-import com.enmanuelbergling.feature.actor.details.ActorDetailsRoute
+import com.enmanuelbergling.feature.actor.details.ActorDetailsRoot
 import com.enmanuelbergling.feature.actor.home.ActorsScreen
 import kotlinx.serialization.Serializable
 
@@ -59,7 +59,7 @@ fun NavGraphBuilder.actorsGraph(
         composable<ActorDetailsDestination> { backStackEntry ->
             val destination = backStackEntry.toRoute<ActorDetailsDestination>()
 
-            ActorDetailsRoute(
+            ActorDetailsRoot(
                 id = destination.id,
                 imagePath = destination.imageUrl,
                 name = destination.name,

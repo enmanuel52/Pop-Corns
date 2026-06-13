@@ -5,32 +5,63 @@ import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.feature.actor.details.model.ActorDetailsChainStart
-import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
+import com.enmanuelbergling.feature.actor.details.model.ActorDetailsChain
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ActorDetailsVM(
-    private val actorDetailsChainStart: ActorDetailsChainStart,
+    private val actorDetailsChain: ActorDetailsChain,
+    private val actorId: Int,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
+    private val _uiState = MutableStateFlow(ActorDetailsState(actorId = actorId))
     val uiState = _uiState.asStateFlow()
 
-    private val _uiDataState = MutableStateFlow(ActorDetailsUiData(actorId = 0))
-    val uiDataState get() = _uiDataState.asStateFlow()
+    private val _uiEvents = Channel<ActorDetailsEvent>()
+    val uiEvents = _uiEvents.receiveAsFlow()
 
-    fun loadPage(actorId: Int) = viewModelScope.launch {
-        _uiDataState.update { ActorDetailsUiData(actorId = actorId) }
-        _uiState.update { SimplerUi.Loading }
+    init {
+        loadPage()
+    }
+
+    fun onAction(action: ActorDetailsAction) {
+        when (action) {
+            ActorDetailsAction.OnBack -> viewModelScope.launch {
+                _uiEvents.send(ActorDetailsEvent.NavigateBack)
+            }
+
+            ActorDetailsAction.OnRetry -> loadPage()
+            is ActorDetailsAction.OnMovieClick -> viewModelScope.launch {
+                _uiEvents.send(ActorDetailsEvent.NavigateToMovie(action.movieId))
+            }
+        }
+    }
+
+    private fun loadPage() = viewModelScope.launch {
+        _uiState.update { it.copy(uiState = SimplerUi.Loading) }
         runCatching {
-            actorDetailsChainStart.invoke(_uiDataState)
-        }.onFailure { _ ->
-            _uiState.update { SimplerUi.Error(NetworkException.DefaultException.messageResource) }
+            val request = _uiState.value.toRequest()
+
+            val chain = actorDetailsChain.detailsHandler.apply {
+                nextChainHandler = actorDetailsChain.knownMoviesHandler
+            }
+
+            chain.invoke(request)
+
+            _uiState.update {
+                it.copy(
+                    details = request.details,
+                    knownMovies = request.knownMovies
+                )
+            }
+        }.onFailure {
+            _uiState.update { it.copy(uiState = SimplerUi.Error(NetworkException.DefaultException.messageResource)) }
         }.onSuccess {
-            _uiState.update { SimplerUi.Idle }
+            _uiState.update { it.copy(uiState = SimplerUi.Idle) }
         }
     }
 }

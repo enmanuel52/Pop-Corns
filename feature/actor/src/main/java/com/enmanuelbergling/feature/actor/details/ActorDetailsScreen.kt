@@ -28,11 +28,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,18 +58,19 @@ import com.enmanuelbergling.core.ui.components.common.MovieCard
 import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.enmanuelbergling.core.ui.core.BoundsTransition
 import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
+import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import com.enmanuelbergling.feature.actor.details.model.ActorDetailsUiData
 import com.valentinilk.shimmer.shimmer
 import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeEffect
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun AnimatedVisibilityScope.ActorDetailsRoute(
+fun AnimatedVisibilityScope.ActorDetailsRoot(
     id: Int,
     imagePath: String?,
     name: String,
@@ -77,61 +78,54 @@ fun AnimatedVisibilityScope.ActorDetailsRoute(
     onBack: () -> Unit,
 ) {
 
-    val viewModel = koinViewModel<ActorDetailsVM>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val viewModel = koinViewModel<ActorDetailsVM> { parametersOf(id) }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.loadPage(id)
+    ObserveAsEvents(viewModel.uiEvents) { event ->
+        when (event) {
+            ActorDetailsEvent.NavigateBack -> onBack()
+            is ActorDetailsEvent.NavigateToMovie -> onMovie(event.movieId)
+        }
     }
 
-    ActorDetailsRoute(
+    ActorDetailsScreen(
         imagePath = imagePath,
         name = name,
-        uiData = uiData,
-        uiState = uiState,
-        onMovie = onMovie,
-        onBack = onBack,
-        onRetry = { viewModel.loadPage(id) }
+        state = state,
+        onAction = viewModel::onAction
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AnimatedVisibilityScope.ActorDetailsRoute(
+private fun AnimatedVisibilityScope.ActorDetailsScreen(
     imagePath: String?,
     name: String,
-    uiData: ActorDetailsUiData,
-    uiState: SimplerUi,
-    onMovie: (movieId: Int) -> Unit,
-    onBack: () -> Unit,
-    onRetry: () -> Unit,
+    state: ActorDetailsState,
+    onAction: (ActorDetailsAction) -> Unit,
 ) {
-
-
-    val (details, knownMovies) = uiData
 
     val snackBarHostState = remember {
         SnackbarHostState()
     }
 
     HandleUiState(
-        uiState = uiState,
+        uiState = state.uiState,
         snackState = snackBarHostState,
-        onRetry,
+        onRetry = { onAction(ActorDetailsAction.OnRetry) },
         getFocus = false
     )
 
     val hazeState = remember { HazeState() }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = stringResource(R.string.details)) },
                 navigationIcon = {
                     IconButton(
-                        onClick = onBack,
+                        onClick = { onAction(ActorDetailsAction.OnBack) },
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
@@ -167,18 +161,18 @@ private fun AnimatedVisibilityScope.ActorDetailsRoute(
                 DetailsHeader(
                     imagePath = imagePath,
                     name = name,
-                    popularity = details?.popularity
+                    popularity = state.details?.popularity
                 )
             }
 
-            details?.let {
-                if (details.biography.isNotBlank()) {
-                    about(biography = details.biography)
+            state.details?.let {
+                if (state.details.biography.isNotBlank()) {
+                    about(biography = state.details.biography)
                 }
 
                 knownMovies(
-                    knownMovies = knownMovies,
-                    onMovie = onMovie
+                    knownMovies = state.knownMovies,
+                    onMovie = { onAction(ActorDetailsAction.OnMovieClick(it)) }
                 )
             } ?: run {
                 item(span = StaggeredGridItemSpan.FullLine) {
@@ -273,8 +267,27 @@ private fun AnimatedVisibilityScope.DetailsHeader(
             .heightIn(max = 250.dp)
             .fillMaxWidth()
     ) {
-        with(LocalSharedTransitionScope.current!!) {
+        val sharedTransitionScope = LocalSharedTransitionScope.current
+        if (sharedTransitionScope != null) {
+            with(sharedTransitionScope) {
 
+                AsyncImage(
+                    model = BASE_POSTER_IMAGE_URL + imagePath,
+                    contentDescription = stringResource(R.string.movie_image),
+                    error = painterResource(id = R.drawable.mr_bean),
+                    placeholder = painterResource(id = R.drawable.mr_bean),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(all = MaterialTheme.dimen.verySmall)
+                        .sharedElement(
+                            rememberSharedContentState(key = imagePath.orEmpty()),
+                            animatedVisibilityScope = this@DetailsHeader,
+                            boundsTransform = BoundsTransition
+                        )
+                        .clip(MaterialTheme.shapes.medium)
+                )
+            }
+        } else {
             AsyncImage(
                 model = BASE_POSTER_IMAGE_URL + imagePath,
                 contentDescription = stringResource(R.string.movie_image),
@@ -283,11 +296,6 @@ private fun AnimatedVisibilityScope.DetailsHeader(
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(all = MaterialTheme.dimen.verySmall)
-                    .sharedElement(
-                        rememberSharedContentState(key = imagePath.orEmpty()),
-                        animatedVisibilityScope = this@DetailsHeader,
-                        boundsTransform = BoundsTransition
-                    )
                     .clip(MaterialTheme.shapes.medium)
             )
         }
@@ -302,17 +310,25 @@ private fun AnimatedVisibilityScope.DetailsHeader(
                 Alignment.CenterVertically
             ),
         ) {
-            with(LocalSharedTransitionScope.current!!) {
+            if (sharedTransitionScope != null) {
+                with(sharedTransitionScope) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier
+                            .sharedBounds(
+                                rememberSharedContentState(key = name),
+                                animatedVisibilityScope = this@DetailsHeader,
+                                boundsTransform = BoundsTransition
+                            )
+                    )
+                }
+            } else {
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .sharedBounds(
-                            rememberSharedContentState(key = name),
-                            animatedVisibilityScope = this@DetailsHeader,
-                            boundsTransform = BoundsTransition
-                        )
                 )
             }
 
