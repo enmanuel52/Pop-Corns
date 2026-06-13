@@ -7,7 +7,7 @@ import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChain
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChainHandler
 import com.enmanuelbergling.feature.movies.filter.MoviesFilterVM
 import com.enmanuelbergling.feature.movies.home.MoviesVM
-import com.enmanuelbergling.feature.movies.home.model.MoviesChainStart
+import com.enmanuelbergling.feature.movies.home.model.MoviesChain
 import com.enmanuelbergling.feature.movies.home.model.NowPlayingMoviesChainHandler
 import com.enmanuelbergling.feature.movies.home.model.PopularMoviesChainHandler
 import com.enmanuelbergling.feature.movies.home.model.TopRatedMoviesChainHandler
@@ -23,11 +23,11 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 internal val movieScreenModule = module {
-    singleOf(::MoviesChainStart)
     singleOf(::UpcomingMoviesChainHandler)
     singleOf(::TopRatedMoviesChainHandler)
     singleOf(::NowPlayingMoviesChainHandler)
     singleOf(::PopularMoviesChainHandler)
+    singleOf(::MoviesChain)
 }
 
 internal val movieDetailsScreenModule = module {

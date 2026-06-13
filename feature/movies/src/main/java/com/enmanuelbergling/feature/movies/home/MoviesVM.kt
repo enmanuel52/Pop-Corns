@@ -10,7 +10,8 @@ import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.QueryString
 import com.enmanuelbergling.core.ui.components.messageResource
-import com.enmanuelbergling.feature.movies.home.model.MoviesChainStart
+import com.enmanuelbergling.feature.movies.home.model.MoviesChain
+import com.enmanuelbergling.feature.movies.home.model.MoviesRequest
 import com.enmanuelbergling.feature.movies.home.model.MoviesUiData
 import com.enmanuelbergling.feature.movies.home.model.SuggestionEvent
 import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
@@ -20,11 +21,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -33,7 +31,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class MoviesVM(
-    private val homeMoviesHandler: MoviesChainStart,
+    private val moviesChain: MoviesChain,
     private val getSearchSuggestionsUC: GetSearchSuggestionsUC,
     getFilteredMoviesUC: GetFilteredMoviesUC,
 ) : ViewModel() {
@@ -70,7 +68,31 @@ class MoviesVM(
     fun loadUi() = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
         runCatching {
-            homeMoviesHandler.invoke(_uiDataState)
+            val request = MoviesRequest(
+                upcoming = _uiDataState.value.upcoming,
+                topRated = _uiDataState.value.topRated,
+                nowPlaying = _uiDataState.value.nowPlaying,
+                popular = _uiDataState.value.popular,
+            )
+
+            val chain = moviesChain.upcomingHandler.apply {
+                nextChainHandler = moviesChain.topRatedHandler.apply {
+                    nextChainHandler = moviesChain.nowPlayingHandler.apply {
+                        nextChainHandler = moviesChain.popularHandler
+                    }
+                }
+            }
+
+            chain.invoke(request)
+
+            _uiDataState.update {
+                it.copy(
+                    upcoming = request.upcoming,
+                    topRated = request.topRated,
+                    nowPlaying = request.nowPlaying,
+                    popular = request.popular,
+                )
+            }
         }.onFailure { _ ->
             _uiState.update { SimplerUi.Error(NetworkException.ReadTimeOutException.messageResource) }
         }.onSuccess {
