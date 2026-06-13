@@ -68,9 +68,7 @@ class LoginVM(
 
             val chain = loginChain.createRequestTokenHandler.apply {
                 nextChainHandler = loginChain.createSessionFromLoginHandler.apply {
-                    nextChainHandler = loginChain.createSessionIdHandler.apply {
-                        nextChainHandler = loginChain.getUserDetailsHandler
-                    }
+                    nextChainHandler = loginChain.createSessionIdHandler
                 }
             }
 
