@@ -5,7 +5,7 @@ import com.enmanuelbergling.core.domain.datasource.preferences.UserPreferenceDS
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.user.UserDetails
 
-class GetUserDetailsUC(
+class SyncUserDetailsUC(
     private val remoteDS: UserRemoteDS,
     private val userPreferenceDS: UserPreferenceDS,
 ) {

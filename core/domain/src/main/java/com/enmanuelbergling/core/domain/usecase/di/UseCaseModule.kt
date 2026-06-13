@@ -22,7 +22,7 @@ import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
-import com.enmanuelbergling.core.domain.usecase.user.GetUserDetailsUC
+import com.enmanuelbergling.core.domain.usecase.user.SyncUserDetailsUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
@@ -66,7 +66,7 @@ val settingModule = module {
 }
 
 val userUcModule = module {
-    singleOf(::GetUserDetailsUC)
+    singleOf(::SyncUserDetailsUC)
     singleOf(::GetSavedUserUC)
 }
 

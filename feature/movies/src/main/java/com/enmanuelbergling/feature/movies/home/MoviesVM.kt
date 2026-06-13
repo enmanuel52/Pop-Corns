@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.domain.usecase.movie.GetSearchSuggestionsUC
+import com.enmanuelbergling.core.domain.usecase.user.SyncUserDetailsUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
@@ -19,6 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
@@ -26,6 +28,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
@@ -33,11 +37,18 @@ import kotlin.time.Duration.Companion.seconds
 class MoviesVM(
     private val moviesChain: MoviesChain,
     private val getSearchSuggestionsUC: GetSearchSuggestionsUC,
+    private val syncUserUC: SyncUserDetailsUC,
     getFilteredMoviesUC: GetFilteredMoviesUC,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState
+        .onStart {  syncUserUC() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = SimplerUi.Idle
+        )
 
     private val _uiDataState = MutableStateFlow(MoviesUiData())
     val uiDataState get() = _uiDataState.asStateFlow()
