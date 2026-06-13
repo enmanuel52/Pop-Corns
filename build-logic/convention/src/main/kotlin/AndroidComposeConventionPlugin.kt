@@ -1,5 +1,4 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -11,7 +10,7 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
             applyPlugins()
 
             runCatching {
-                extensions.configure<LibraryExtension> {
+                extensions.configure<com.android.build.api.dsl.LibraryExtension> {
                     configureAndroidCompose(this)
                 }
             }.onFailure {
