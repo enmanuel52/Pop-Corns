@@ -1,14 +1,14 @@
 package com.enmanuelbergling.feature.movies.home.model
 
 import com.enmanuelbergling.core.domain.design.CannotHandleException
-import com.enmanuelbergling.core.domain.design.NewChainHandler
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.domain.usecase.movie.GetPopularMoviesUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 
 class PopularMoviesChainHandler(
     private val getPopularMoviesUC: GetPopularMoviesUC,
-) : NewChainHandler<MoviesRequest> {
-    override var nextChainHandler: NewChainHandler<MoviesRequest>? = null
+) : ChainHandler<MoviesRequest> {
+    override var nextChainHandler: ChainHandler<MoviesRequest>? = null
 
     override suspend fun handle(request: MoviesRequest): MoviesRequest =
         if (request.popular.isNotEmpty()) request

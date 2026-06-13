@@ -1,14 +1,14 @@
 package com.enmanuelbergling.feature.movies.home.model
 
 import com.enmanuelbergling.core.domain.design.CannotHandleException
-import com.enmanuelbergling.core.domain.design.NewChainHandler
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.domain.usecase.movie.GetTopRatedMoviesUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 
 class TopRatedMoviesChainHandler(
     private val getTopRatedMoviesUC: GetTopRatedMoviesUC,
-) : NewChainHandler<MoviesRequest> {
-    override var nextChainHandler: NewChainHandler<MoviesRequest>? = null
+) : ChainHandler<MoviesRequest> {
+    override var nextChainHandler: ChainHandler<MoviesRequest>? = null
 
     override suspend fun handle(request: MoviesRequest): MoviesRequest =
         if (request.topRated.isNotEmpty()) request

@@ -36,12 +36,11 @@ class FakeUserRemoteDS(
 
     private val _watchListMovieIds = mutableListOf<MovieId>()
 
-    override suspend fun getAccount(sessionId: String): ResultHandler<UserDetails> =
+    override suspend fun getAccount(): ResultHandler<UserDetails> =
         ResultHandler.Success(userResponse)
 
     override suspend fun createWatchList(
         listPost: CreateListPost,
-        sessionId: String,
     ) = ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         _watchList = EMPTY_WATCH_LIST.copy(
             description = listPost.description,
@@ -52,7 +51,6 @@ class FakeUserRemoteDS(
     override suspend fun deleteMovieFromList(
         movieId: Int,
         listId: Int,
-        sessionId: String,
     ) = ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         if (_watchList != null) {
             _watchListMovieIds.remove(movieId)
@@ -62,14 +60,13 @@ class FakeUserRemoteDS(
     override suspend fun addMovieToList(
         movieId: Int,
         listId: Int,
-        sessionId: String,
     ) = ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         if (_watchList != null) {
             _watchListMovieIds.add(movieId)
         }
     }
 
-    override suspend fun deleteList(listId: Int, sessionId: String) =
+    override suspend fun deleteList(listId: Int) =
         ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
             _watchList = null
             _watchListMovieIds.clear()
@@ -87,7 +84,6 @@ class FakeUserRemoteDS(
 
     override suspend fun getWatchLists(
         accountId: String,
-        sessionId: String,
         page: Int,
     ): ResultHandler<PageModel<WatchList>> =
         if (_watchList != null) {
@@ -97,17 +93,14 @@ class FakeUserRemoteDS(
         }
 
     override suspend fun getAccountWatchlistMovies(
-        sessionId: String,
         page: Int,
     ): ResultHandler<PageModel<Movie>> = ResultHandler.Success(emptyList<Movie>().asPage())
 
     override suspend fun addMovieToAccountWatchlist(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse> = ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 
     override suspend fun removeMovieFromAccountWatchlist(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<WatchResponse> = ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 }

@@ -1,25 +1,12 @@
 package com.enmanuelbergling.core.domain.design
 
-@Deprecated("Use NewChainHandler instead")
-interface ChainHandler<T> {
-
-    val nextChainHandler: ChainHandler<T>?
-
-    suspend fun handle(request: T)
-
-    suspend operator fun invoke(request: T) {
-        handle(request)
-        nextChainHandler?.invoke(request)
-    }
-}
-
 /**
  * This way is more flexible:
  * request goes through every handler, and next handler is mutable
  * */
-interface NewChainHandler<T> {
+interface ChainHandler<T> {
 
-    var nextChainHandler: NewChainHandler<T>?
+    var nextChainHandler: ChainHandler<T>?
 
     suspend fun handle(request: T): T
 

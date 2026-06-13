@@ -11,4 +11,6 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.org.jetbrains.kotlinx.coroutines)
+
+    testImplementation(libs.junit)
 }

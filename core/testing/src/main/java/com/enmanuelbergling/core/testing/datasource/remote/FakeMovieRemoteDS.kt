@@ -40,7 +40,6 @@ class FakeMovieRemoteDS : MovieRemoteDS {
 
     override suspend fun getMovieAccountStates(
         movieId: Int,
-        sessionId: String,
     ): ResultHandler<MovieAccountStates> =
         ResultHandler.Success(MovieAccountStates(id = movieId, favorite = false, watchlist = false))
 }

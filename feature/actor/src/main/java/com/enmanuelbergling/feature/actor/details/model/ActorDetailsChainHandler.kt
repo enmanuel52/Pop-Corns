@@ -1,14 +1,14 @@
 package com.enmanuelbergling.feature.actor.details.model
 
 import com.enmanuelbergling.core.domain.design.CannotHandleException
-import com.enmanuelbergling.core.domain.design.NewChainHandler
+import com.enmanuelbergling.core.domain.design.ChainHandler
 import com.enmanuelbergling.core.domain.usecase.movie.GetActorDetailsUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 
 class ActorDetailsChainHandler(
     private val getActorDetailsUC: GetActorDetailsUC,
-) : NewChainHandler<ActorDetailsRequest> {
-    override var nextChainHandler: NewChainHandler<ActorDetailsRequest>? = null
+) : ChainHandler<ActorDetailsRequest> {
+    override var nextChainHandler: ChainHandler<ActorDetailsRequest>? = null
 
     override suspend fun handle(request: ActorDetailsRequest): ActorDetailsRequest =
         if (request.details != null) request
