@@ -1,5 +1,6 @@
 package com.enmanuelbergling.core.domain.design
 
+@Deprecated("Use NewChainHandler instead")
 interface ChainHandler<T> {
 
     val nextChainHandler: ChainHandler<T>?
