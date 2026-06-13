@@ -47,9 +47,6 @@ dependencies {
     //Shimmer
     api(libs.com.valentinilk.shimmer.compose.shimmer)
 
-    //Rating Bar
-    api(libs.com.github.a914.gowtham.compose.ratingbar)
-
     api(libs.orbital)
     api(libs.haze)
 
