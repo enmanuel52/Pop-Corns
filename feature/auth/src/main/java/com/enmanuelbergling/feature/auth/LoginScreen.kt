@@ -41,11 +41,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
 import com.enmanuelbergling.core.ui.components.HandleUiState
+import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import com.enmanuelbergling.feature.auth.model.LoginEvent
-import com.enmanuelbergling.feature.auth.model.LoginForm
 import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
@@ -58,21 +57,26 @@ fun LoginRoute(onLoginSucceed: () -> Unit, onBack: () -> Unit) {
     val viewModel = koinViewModel<LoginVM>()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val formState by viewModel.loginFormState.collectAsStateWithLifecycle()
 
-    HandleUiState(uiState = uiState, onIdle = viewModel::onIdle, onSuccess = onLoginSucceed)
+    ObserveAsEvents(viewModel.uiEvents) { event ->
+        when (event) {
+            LoginEvent.LoginSuccess -> onLoginSucceed()
+        }
+    }
+
+    HandleUiState(uiState = uiState.uiState, onIdle = viewModel::onIdle, onSuccess = onLoginSucceed)
 
     LoginScreen(
-        formState = formState,
-        onLoginEvent = viewModel::onLoginFormEvent,
-        onBack
+        state = uiState,
+        onAction = viewModel::onAction,
+        onBack = onBack
     )
 }
 
 @Composable
 fun LoginScreen(
-    formState: LoginForm,
-    onLoginEvent: (LoginEvent) -> Unit,
+    state: LoginState,
+    onAction: (LoginAction) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -89,8 +93,8 @@ fun LoginScreen(
         TopBar(onBack)
 
         LoginFormUi(
-            formState = formState,
-            onLoginEvent = onLoginEvent,
+            state = state,
+            onAction = onAction,
             modifier = Modifier
                 .align(Alignment.Center)
                 .hazeEffect(
@@ -146,7 +150,7 @@ private fun LoginScreenPrev() {
     CornTimeTheme {
 
         LoginScreen(
-            LoginForm(),
+            LoginState(),
             {}, {},
             Modifier.fillMaxSize(),
         )
@@ -171,7 +175,7 @@ private fun SignIn(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
 }
 
 @Composable
-fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifier: Modifier) {
+fun LoginFormUi(state: LoginState, onAction: (LoginAction) -> Unit, modifier: Modifier) {
 
     val autofillManager = LocalAutofillManager.current
 
@@ -182,29 +186,29 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
     ) {
 
         CtiTextField(
-            text = formState.username,
-            onTextChange = { onLoginEvent(LoginEvent.Username(it)) },
+            text = state.username,
+            onTextChange = { onAction(LoginAction.OnUsernameChange(it)) },
             hint = stringResource(R.string.username),
-            errorText = formState.usernameError,
+            errorText = state.usernameError,
             modifier = Modifier.semantics {
                 contentType = ContentType.Username + ContentType.NewUsername
             }
         )
 
         CtiTextField(
-            text = formState.password,
-            onTextChange = { onLoginEvent(LoginEvent.Password(it)) },
+            text = state.password,
+            onTextChange = { onAction(LoginAction.OnPasswordChange(it)) },
             hint = stringResource(R.string.password),
-            errorText = formState.passwordError,
+            errorText = state.passwordError,
             trailingIcon = {
-                IconButton(onClick = { onLoginEvent(LoginEvent.PasswordVisibility) }) {
+                IconButton(onClick = { onAction(LoginAction.OnPasswordVisibilityClick) }) {
                     Icon(
-                        imageVector = if (formState.isPasswordVisible) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
+                        imageVector = if (state.isPasswordVisible) Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
                         contentDescription = stringResource(R.string.password_visibility_icon)
                     )
                 }
             },
-            visualTransformation = if (formState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.semantics {
                 contentType = ContentType.Password + ContentType.NewPassword
             },
@@ -212,15 +216,15 @@ fun LoginFormUi(formState: LoginForm, onLoginEvent: (LoginEvent) -> Unit, modifi
 
         val errorFound by remember {
             derivedStateOf {
-                formState.usernameError != null || formState.passwordError != null
+                state.usernameError != null || state.passwordError != null
             }
         }
 
         Button(
             onClick = {
                 autofillManager?.commit()
-                onLoginEvent(LoginEvent.Submit)
-                      },
+                onAction(LoginAction.OnLoginClick)
+            },
             enabled = !errorFound,
         ) {
             Text(
