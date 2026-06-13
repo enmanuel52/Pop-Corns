@@ -12,7 +12,7 @@ class AccountStatesChainHandler(
 
     override suspend fun handle(request: MovieDetailsChainRequest): MovieDetailsChainRequest {
         when (val result = getMovieAccountStatesUC(request.movieId)) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> Unit
             is ResultHandler.Success -> request.accountStates = result.data
         }
 
