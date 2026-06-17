@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +34,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -49,11 +50,9 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -149,106 +148,65 @@ private fun SettingsScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.settings)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBackIosNew,
-                            contentDescription = "icon back"
-                        )
-                    }
-                },
-                actions = {
-                    if (uiState.userDetails != null) {
-                        IconButton(onClick = {
-                            onEvent(SettingUiEvent.Logout)
-                            context.removeAllDynamicShortCuts()
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.power_outline),
-                                contentDescription = "logout icon"
-                            )
-                        }
 
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent, Color.Transparent)
-            )
-        },
-        contentWindowInsets = WindowInsets.statusBars,
-    ) { paddingValues ->
-        Box {
-            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) || !isDarkMode) {
+    Surface {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) || !isDarkMode)
                 ArtisticBackground(Modifier.fillMaxSize())
+            else AnimatedBackground(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(.5f)
+            )
+
+            IconButton(onClick = onBack, modifier = Modifier.statusBarsPadding()) {
+                Icon(
+                    imageVector = Icons.Rounded.ArrowBackIosNew,
+                    contentDescription = "icon back"
+                )
             }
 
-            val shaderTime by produceState(0f) {
-                while (true) {
-                    withInfiniteAnimationFrameMillis {
-                        value = it / 1000f * SPEED
-                    }
-                }
+            if (uiState.userDetails != null) LogoutButton(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .align(Alignment.TopEnd)
+            ) {
+                onEvent(SettingUiEvent.Logout)
+                context.removeAllDynamicShortCuts()
             }
-            val contentColor = MaterialTheme.colorScheme.secondary
-            val backgroundColor = MaterialTheme.colorScheme.background
 
-            var profileShader by remember {
-                mutableStateOf(ProfileShader.entries.first())
-            }
 
             Box(
                 Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
+                    .fillMaxHeight(.4f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                ProfileWrapper(
-                    userState = uiState.userDetails,
+                ProfileImageUi(
+                    userUi = uiState.userDetails,
                     visibleState = visibleState,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(.5f)
-                        .combinedClickable(onLongClick = {
-                            val last = ProfileShader.entries.last()
-                            if (profileShader == last) {
-                                profileShader = ProfileShader.entries.first()
-                            } else {
-                                val index = ProfileShader.entries.indexOf(profileShader)
-                                profileShader = ProfileShader.entries[index + 1]
-                            }
-                        }) { }
-                        .drawWithCache {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isDarkMode) {
-                                drawShader(
-                                    profileShader = profileShader,
-                                    shaderTime = shaderTime,
-                                    contentColor = contentColor,
-                                    backgroundColor = backgroundColor
-                                )
-                            } else {
-                                onDrawWithContent {
-                                    drawContent()
-                                }
-                            }
-                        },
-                )
-
-                SettingOptions(
-                    uiState.userDetails,
-                    darkTheme = uiState.darkTheme,
-                    dynamicColor = uiState.dynamicColor,
-                    visibleState = visibleState,
-                    modifier = Modifier
-                        .fillMaxHeight(.6f)
-                        .align(Alignment.BottomCenter),
-                    onEvent = { event ->
-                        if (event == SettingUiEvent.Login) onLogin()
-                        else onEvent(event)
-                    }
+                        .size(100.dp)
                 )
             }
+
+            SettingOptions(
+                uiState.userDetails,
+                darkTheme = uiState.darkTheme,
+                dynamicColor = uiState.dynamicColor,
+                visibleState = visibleState,
+                modifier = Modifier
+                    .fillMaxHeight(.6f)
+                    .align(Alignment.BottomCenter),
+                onEvent = { event ->
+                    if (event == SettingUiEvent.Login) onLogin()
+                    else onEvent(event)
+                }
+            )
         }
     }
 
@@ -266,6 +224,54 @@ private fun SettingsScreen(
             onDismiss = { onEvent(SettingUiEvent.DynamicColorMenu) }) { active ->
             onEvent(SettingUiEvent.DynamicColor(active))
         }
+    }
+}
+
+@Composable
+private fun AnimatedBackground(modifier: Modifier) {
+    val shaderTime by produceState(0f) {
+        while (true) {
+            withInfiniteAnimationFrameMillis {
+                value = it / 1000f * SPEED
+            }
+        }
+    }
+    val contentColor = MaterialTheme.colorScheme.secondary
+    val backgroundColor = MaterialTheme.colorScheme.background
+
+    var profileShader by remember {
+        mutableStateOf(ProfileShader.entries.first())
+    }
+
+    Box(
+        modifier = modifier
+            .combinedClickable(onLongClick = {
+                val last = ProfileShader.entries.last()
+                if (profileShader == last) {
+                    profileShader = ProfileShader.entries.first()
+                } else {
+                    val index = ProfileShader.entries.indexOf(profileShader)
+                    profileShader = ProfileShader.entries[index + 1]
+                }
+            }) { }
+            .drawWithCache {
+                drawShader(
+                    profileShader = profileShader,
+                    shaderTime = shaderTime,
+                    contentColor = contentColor,
+                    backgroundColor = backgroundColor
+                )
+            },
+    )
+}
+
+@Composable
+private fun LogoutButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            painter = painterResource(R.drawable.power_outline),
+            contentDescription = "logout icon"
+        )
     }
 }
 
@@ -545,22 +551,6 @@ private fun SettingItemUiPrev() {
 }
 
 @Composable
-internal fun ProfileWrapper(
-    userState: UserUi?,
-    visibleState: Boolean,
-    modifier: Modifier = Modifier,
-) {
-
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        ProfileImageUi(
-            userUi = userState,
-            modifier = Modifier.size(110.dp),
-            visibleState = visibleState,
-        )
-    }
-}
-
-@Composable
 internal fun ProfileImageUi(
     userUi: UserUi?,
     modifier: Modifier = Modifier,
@@ -570,10 +560,10 @@ internal fun ProfileImageUi(
         visible = visibleState, enter = expandIn(
             spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
             expandFrom = Alignment.Center
-        ), modifier = Modifier.clip(CircleShape)
+        ), modifier = modifier
     ) {
 
-        ProfileImage(userUi?.avatarPath, modifier)
+        ProfileImage(userUi?.avatarPath)
     }
 }
 
@@ -590,14 +580,12 @@ private fun ProfileUiPrev() {
 fun ProfileImage(avatarPath: String?, modifier: Modifier = Modifier) {
     val isPreview = LocalInspectionMode.current
 
-    val imageModifier = Modifier
+    val imageModifier = modifier
         .border(
             MaterialTheme.dimen.verySmall, MaterialTheme.colorScheme.primary, CircleShape
         )
         .padding(MaterialTheme.dimen.small)
-        .sizeIn(60.dp, 60.dp)
         .clip(CircleShape)
-        .then(modifier)
     if (isPreview) {
         Image(
             painter = painterResource(id = R.drawable.mr_bean),

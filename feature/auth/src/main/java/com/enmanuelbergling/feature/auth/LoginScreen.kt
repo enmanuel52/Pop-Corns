@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Visibility
@@ -21,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -39,7 +38,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.ArtisticBackground
@@ -48,11 +46,6 @@ import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.blur.HazeBlurStyle
-import dev.chrisbanes.haze.blur.blurEffect
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
@@ -87,38 +80,44 @@ fun LoginScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    val liquidState = rememberLiquidState()
     val cardShape = CardDefaults.shape
+    val liquidState = rememberLiquidState()
 
-    Box(modifier = modifier.fillMaxSize()) {
-        ArtisticBackground(
-            Modifier
+    Surface {
+        Box(
+            modifier = modifier
                 .fillMaxSize()
-                .liquefiable(liquidState)
-        )
-
-        TopBar(onBack)
-
-        LoginFormUi(
-            state = state,
-            onAction = onAction,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .liquid(liquidState){
-                    shape = cardShape
-                }
-                .padding(MaterialTheme.dimen.medium, MaterialTheme.dimen.lessLarge)
-        )
-
-        val uriHandler = LocalUriHandler.current
-
-        SignIn(
-            Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
         ) {
-            uriHandler.openUri("https://www.themoviedb.org/signup")
+            ArtisticBackground(
+                Modifier
+                    .fillMaxSize()
+                    .liquefiable(liquidState)
+            )
+
+            TopBar(onBack)
+
+            LoginFormUi(
+                state = state,
+                onAction = onAction,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .liquid(liquidState) {
+                        shape = cardShape
+                        edge = .07f
+                        refraction = .2f
+                    }
+                    .padding(MaterialTheme.dimen.medium, MaterialTheme.dimen.lessLarge)
+            )
+
+            val uriHandler = LocalUriHandler.current
+
+            SignIn(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+            ) {
+                uriHandler.openUri("https://www.themoviedb.org/signup")
+            }
         }
     }
 }

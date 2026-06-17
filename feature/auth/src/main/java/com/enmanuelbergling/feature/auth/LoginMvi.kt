@@ -1,8 +1,10 @@
 package com.enmanuelbergling.feature.auth
 
+import androidx.compose.runtime.Stable
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.feature.auth.model.LoginRequest
 
+@Stable
 data class LoginState(
     val username: String = "",
     val password: String = "",
