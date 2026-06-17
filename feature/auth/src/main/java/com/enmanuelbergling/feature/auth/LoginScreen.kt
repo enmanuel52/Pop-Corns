@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -45,10 +47,11 @@ import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.design.CtiTextField
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.blur.HazeBlurStyle
+import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -87,7 +90,7 @@ fun LoginScreen(
         ArtisticBackground(
             Modifier
                 .fillMaxSize()
-                .haze(hazeState)
+                .hazeSource(hazeState)
         )
 
         TopBar(onBack)
@@ -97,11 +100,15 @@ fun LoginScreen(
             onAction = onAction,
             modifier = Modifier
                 .align(Alignment.Center)
-                .hazeEffect(
-                    hazeState,
-                    block = fun HazeEffectScope.() {
-                        blurRadius = 16.dp
-                    })
+                .clip(CardDefaults.shape)
+                .hazeEffect(state = hazeState) {
+                    blurEffect {
+                        style = HazeBlurStyle(
+                            blurRadius = 10.dp,
+                            colorEffect = null,
+                        )
+                    }
+                }
                 .padding(MaterialTheme.dimen.medium, MaterialTheme.dimen.lessLarge)
         )
 

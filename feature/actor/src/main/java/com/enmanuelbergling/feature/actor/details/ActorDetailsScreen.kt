@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,10 +62,11 @@ import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.valentinilk.shimmer.shimmer
-import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.blur.HazeBlurStyle
+import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -115,12 +117,13 @@ private fun AnimatedVisibilityScope.ActorDetailsScreen(
         getFocus = false
     )
 
-    val hazeState = remember { HazeState() }
+    val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
+                scrollBehavior = topBarScrollBehavior,
                 title = { Text(text = stringResource(R.string.details)) },
                 navigationIcon = {
                     IconButton(
@@ -133,17 +136,7 @@ private fun AnimatedVisibilityScope.ActorDetailsScreen(
                     }
                 },
                 modifier = Modifier
-                    .hazeEffect(
-                        hazeState,
-                        block = fun HazeEffectScope.() {
-                            blurRadius = 16.dp
-                        })
                     .fillMaxWidth(),
-                // Need to make app bar transparent to see the content behind
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    Color.Transparent,
-                    scrolledContainerColor = Color.Transparent
-                ),
             )
         }
     ) { paddingValues ->
@@ -152,7 +145,7 @@ private fun AnimatedVisibilityScope.ActorDetailsScreen(
             verticalItemSpacing = MaterialTheme.dimen.small,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
             modifier = Modifier
-                .haze(hazeState)
+                .nestedScroll(topBarScrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
             contentPadding = paddingValues
         ) {

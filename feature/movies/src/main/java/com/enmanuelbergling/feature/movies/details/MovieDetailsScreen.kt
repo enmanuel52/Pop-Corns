@@ -1,5 +1,6 @@
 package com.enmanuelbergling.feature.movies.details
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -7,7 +8,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,9 +46,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -68,10 +67,6 @@ import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
-import dev.chrisbanes.haze.HazeEffectScope
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeEffect
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -113,8 +108,6 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         SnackbarHostState()
     }
 
-    val context = LocalContext.current
-
     HandleUiState(
         uiState = state.uiState,
         snackState = snackbarHostState,
@@ -122,12 +115,13 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         getFocus = details == null
     )
 
-    val hazeState = remember { HazeState() }
+    val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
+                scrollBehavior = topBarScrollBehavior,
                 title = {
                     Text(
                         text = stringResource(id = R.string.details),
@@ -166,17 +160,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
                 },
                 modifier = Modifier
-                    .hazeEffect(
-                        hazeState,
-                        block = fun HazeEffectScope.() {
-                            blurRadius = 16.dp
-                        })
                     .fillMaxWidth(),
-                // Need to make app bar transparent to see the content behind
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    Color.Transparent,
-                    scrolledContainerColor = Color.Transparent
-                ),
             )
         },
         contentWindowInsets = WindowInsets.statusBars,
@@ -185,9 +169,9 @@ private fun AnimatedContentScope.MovieDetailsScreen(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
             modifier = Modifier
-                .haze(hazeState)
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
             contentPadding = WindowInsets.navigationBars.asPaddingValues(),
         ) {
             details?.let {
@@ -204,7 +188,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                 overview(details.overview)
 
                 persons(
-                    title = context.getString(R.string.cast),
+                    title = R.string.cast,
                     persons = creditsState?.cast.orEmpty().map { it.toPersonUi() }.distinct(),
                     isLoading = state.uiState == SimplerUi.Loading && creditsState == null,
                     animatedContentScope = this@MovieDetailsScreen,
@@ -212,7 +196,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                 )
 
                 persons(
-                    title = context.getString(R.string.crew),
+                    title = R.string.crew,
                     persons = creditsState?.crew.orEmpty().map { it.toPersonUi() }.distinct(),
                     isLoading = state.uiState == SimplerUi.Loading && creditsState == null,
                     animatedContentScope = this@MovieDetailsScreen,
@@ -225,7 +209,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
 }
 
 private fun LazyListScope.persons(
-    title: String,
+    @StringRes title: Int,
     persons: List<PersonUiItem>,
     isLoading: Boolean = false,
     animatedContentScope: AnimatedContentScope,
@@ -234,7 +218,7 @@ private fun LazyListScope.persons(
     item {
         Column(Modifier.padding(all = MaterialTheme.dimen.small)) {
             Text(
-                text = title,
+                text = stringResource(title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(start = MaterialTheme.dimen.small)

@@ -1,5 +1,6 @@
 package com.enmanuelbergling.feature.movies.home
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.togetherWith
@@ -53,7 +54,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -281,7 +281,6 @@ fun MoviesGrid(
     onMore: (MovieSection) -> Unit,
     isLoading: Boolean,
 ) {
-    val context = LocalContext.current
 
     LazyColumn(
         modifier = modifier
@@ -295,21 +294,21 @@ fun MoviesGrid(
         forYouText()
 
         moviesSection(
-            title = context.getString(R.string.top_rated),
+            title = R.string.top_rated,
             movies = topRated,
             onDetails = onDetails,
             isLoading = isLoading
         ) { onMore(MovieSection.TopRated) }
 
         moviesSection(
-            title = context.getString(R.string.now_playing),
+            title = R.string.now_playing,
             movies = nowPlaying,
             onDetails = onDetails,
             isLoading = isLoading
         ) { onMore(MovieSection.NowPlaying) }
 
         moviesSection(
-            title = context.getString(R.string.popular),
+            title = R.string.popular,
             movies = popular,
             onDetails = onDetails,
             isLoading = isLoading
@@ -319,7 +318,7 @@ fun MoviesGrid(
 
 
 fun LazyListScope.moviesSection(
-    title: String,
+    @StringRes title: Int,
     movies: List<Movie>,
     onDetails: (id: Int) -> Unit,
     isLoading: Boolean,
@@ -340,7 +339,7 @@ fun LazyListScope.moviesSection(
             Column {
 
                 SectionHeader(
-                    title = title,
+                    title = stringResource(title),
                     modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
                     onMore = onMore
                 )

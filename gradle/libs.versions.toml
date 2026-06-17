@@ -15,7 +15,7 @@ core-ktx = "1.18.0"
 core-splashscreen = "1.2.0"
 de-jensklingenberg-ktorfit = "2.7.3"
 gradle = "9.2.1"
-haze = "1.7.2"
+haze = "2.0.0-alpha03"
 io-coil-kt = "2.7.0"
 io-ktor = "3.5.0"
 koin-core = "4.2.1"
@@ -74,6 +74,7 @@ de-jensklingenberg-ktorfit-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:
 de-jensklingenberg-ktorfit-ktorfit-lib-light = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "de-jensklingenberg-ktorfit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
 io-coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "io-coil-kt" }
 io-ktor-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "io-ktor" }
 io-ktor-ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "io-ktor" }
