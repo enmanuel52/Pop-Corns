@@ -30,6 +30,7 @@ kotlinxSerializationJson = "1.11.0"
 ksp = "2.3.8"
 ktorfit = "2.7.3"
 library = "9.2.1"
+liquid = "1.1.1"
 material3 = "1.5.0-alpha20"
 material-icons-extended = "1.7.8"
 navigationCompose = "2.9.8"
@@ -95,6 +96,7 @@ kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", v
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+liquid = { module = "io.github.fletchmckee.liquid:liquid", version.ref = "liquid" }
 orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 org-jetbrains-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 

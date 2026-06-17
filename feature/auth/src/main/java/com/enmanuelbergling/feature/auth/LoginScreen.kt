@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Visibility
@@ -52,6 +53,9 @@ import dev.chrisbanes.haze.blur.HazeBlurStyle
 import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
+import io.github.fletchmckee.liquid.liquefiable
+import io.github.fletchmckee.liquid.liquid
+import io.github.fletchmckee.liquid.rememberLiquidState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -84,13 +88,14 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    val hazeState = remember { HazeState() }
+    val liquidState = rememberLiquidState()
+    val cardShape = CardDefaults.shape
 
     Box(modifier = modifier.fillMaxSize()) {
         ArtisticBackground(
             Modifier
                 .fillMaxSize()
-                .hazeSource(hazeState)
+                .liquefiable(liquidState)
         )
 
         TopBar(onBack)
@@ -100,14 +105,8 @@ fun LoginScreen(
             onAction = onAction,
             modifier = Modifier
                 .align(Alignment.Center)
-                .clip(CardDefaults.shape)
-                .hazeEffect(state = hazeState) {
-                    blurEffect {
-                        style = HazeBlurStyle(
-                            blurRadius = 10.dp,
-                            colorEffect = null,
-                        )
-                    }
+                .liquid(liquidState){
+                    shape = cardShape
                 }
                 .padding(MaterialTheme.dimen.medium, MaterialTheme.dimen.lessLarge)
         )

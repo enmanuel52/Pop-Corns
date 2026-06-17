@@ -50,6 +50,7 @@ dependencies {
     api(libs.orbital)
     api(libs.haze)
     api(libs.haze.blur)
+    api(libs.liquid)
 
     //shared element transition
     api(libs.androidx.animation)

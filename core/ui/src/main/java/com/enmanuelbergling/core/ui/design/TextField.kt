@@ -1,7 +1,10 @@
 package com.enmanuelbergling.core.ui.design
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -26,7 +29,7 @@ fun CtiTextField(
     trailingIcon: @Composable () -> Unit = {},
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
-    TextField(
+    OutlinedTextField(
         value = text,
         onValueChange = onTextChange,
         modifier = modifier,
@@ -46,13 +49,7 @@ fun CtiTextField(
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         visualTransformation = visualTransformation,
-        shape = CircleShape,
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            errorIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
-        )
+        shape = RoundedCornerShape(15)
     )
 }
 
