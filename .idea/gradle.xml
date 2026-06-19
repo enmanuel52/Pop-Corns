@@ -38,6 +38,7 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/actor" />
             <option value="$PROJECT_DIR$/feature/auth" />
+            <option value="$PROJECT_DIR$/feature/favorites" />
             <option value="$PROJECT_DIR$/feature/movies" />
             <option value="$PROJECT_DIR$/feature/series" />
             <option value="$PROJECT_DIR$/feature/settings" />
