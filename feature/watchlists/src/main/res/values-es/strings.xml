@@ -2,4 +2,6 @@
 <resources>
     <string name="the_movie_could_not_be_deleted_from_the_watchlist">Movie couldn\'t be removed from watchlist</string>
     <string name="movie_removed_from_watchlist">Movie removed from watchlist</string>
+    <string name="movie_added_to_favorites">Película añadida a favoritos</string>
+    <string name="movie_could_not_be_added_to_favorites">La película no pudo añadirse a favoritos</string>
 </resources>
