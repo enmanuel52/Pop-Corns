@@ -59,7 +59,7 @@ fun WatchlistHomeRoute(
     val scope = rememberCoroutineScope()
 
     val deleteMovieErrorMessage =
-        stringResource(com.enmanuelbergling.feature.watchlists.R.string.the_movie_couldn_t_be_deleted_from_the_watchlist)
+        stringResource(com.enmanuelbergling.feature.watchlists.R.string.the_movie_could_not_be_deleted_from_the_watchlist)
     val movieDeletedMessage =
         stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_removed_from_watchlist)
     val undoMessage = stringResource(R.string.undo)

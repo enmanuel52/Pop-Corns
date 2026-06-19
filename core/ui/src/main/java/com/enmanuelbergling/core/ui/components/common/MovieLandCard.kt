@@ -85,8 +85,8 @@ fun MovieLandCard(
             .drawBehind{
                 drawLine(
                     color = outline,
-                    start = Offset(size.width.times(.4f), size.height),
-                    end = Offset(size.width.times(.8f), size.height),
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
                     strokeWidth = 1.dp.toPx()
                 )
             },
@@ -110,6 +110,7 @@ fun MovieLandCardPlaceholder(
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
+                    .padding(horizontal = MaterialTheme.dimen.mediumSmall, vertical = MaterialTheme.dimen.small)
                     .aspectRatio(1.5f)
                     .background(
                         MaterialTheme.colorScheme.surfaceVariant,

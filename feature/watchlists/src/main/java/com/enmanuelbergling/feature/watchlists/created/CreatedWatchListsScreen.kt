@@ -27,13 +27,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -115,26 +113,35 @@ private fun CreatedWatchListsScreen(
         })
     }
 
-    Scaffold(Modifier.fillMaxSize(), topBar = {
-        TopAppBar(title = { Text(text = stringResource(id = R.string.watch_lists)) }, navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.Rounded.ArrowBackIosNew, contentDescription = stringResource(R.string.back_icon)
-                )
-            }
-        }, actions = {
-            if (!lists.isRefreshing) {
-                IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
-                    Icon(
-                        painter = painterResource(R.drawable.add), contentDescription = stringResource(R.string.add_icon)
-                    )
-                }
-            }
-        })
-    }, snackbarHost = {
-        SnackbarHost(snackbarHostState)
-    },
-        contentWindowInsets = WindowInsets.statusBars,) {
+    Scaffold(
+        Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.watch_lists)) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBackIosNew,
+                            contentDescription = stringResource(R.string.back_icon)
+                        )
+                    }
+                },
+                actions = {
+                    if (!lists.isRefreshing) {
+                        IconButton(onClick = { onCreateFormEvent(CreateListEvent.ToggleVisibility) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.add),
+                                contentDescription = stringResource(R.string.add_icon)
+                            )
+                        }
+                    }
+                })
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
+        contentWindowInsets = WindowInsets.statusBars,
+    ) {
         Box(
             modifier = Modifier
                 .padding(it)
@@ -143,13 +150,14 @@ private fun CreatedWatchListsScreen(
             PullToRefreshContainer(
                 refreshing = false,
                 onRefresh = lists::refresh,
-                modifier = Modifier.shimmerIf { lists.isRefreshing }
+                modifier = Modifier
+                    .shimmerIf { lists.isRefreshing }
                     .padding(horizontal = MaterialTheme.dimen.verySmall),
                 verticalArrangement = Arrangement.spacedBy(
                     MaterialTheme.dimen.small,
                 ),
                 contentPadding = WindowInsets.navigationBars.asPaddingValues(),
-                ) {
+            ) {
                 if (lists.isRefreshing) {
                     items(12) {
                         WatchListCardPlaceholder()
@@ -180,11 +188,14 @@ private fun CreatedWatchListsScreen(
                                     }
                                 },
                                 modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.surfaceVariant, CardDefaults.elevatedShape
+                                    MaterialTheme.colorScheme.surfaceVariant,
+                                    CardDefaults.elevatedShape
                                 ),
                             ) {
                                 WatchListCard(
-                                    name = list.name, description = list.description, Modifier.fillMaxWidth()
+                                    name = list.name,
+                                    description = list.description,
+                                    Modifier.fillMaxWidth()
                                 ) {
                                     onDetails(list.id, list.name)
                                 }
@@ -197,11 +208,11 @@ private fun CreatedWatchListsScreen(
     }
 
     if (lists.loadState.refresh is LoadState.Error) {
-        val context = LocalContext.current
+        val defaultMessage = stringResource(R.string.not_session_found_message)
         LaunchedEffect(key1 = Unit) {
             val listError = lists.loadState.refresh as? LoadState.Error
             snackbarHostState.showSnackbar(
-                listError?.error?.message ?: context.getString(R.string.not_session_found_message),
+                listError?.error?.message ?: defaultMessage,
                 withDismissAction = true,
                 duration = SnackbarDuration.Indefinite
             )
