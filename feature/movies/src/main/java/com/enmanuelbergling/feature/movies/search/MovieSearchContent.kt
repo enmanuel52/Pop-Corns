@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
@@ -25,7 +26,6 @@ import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.VerticalAlignTop
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearWavyProgressIndicator
@@ -40,8 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -115,7 +113,7 @@ internal fun ExpandedSearchBarContent(
                     onDelete = {
                         onSuggestionEvent(SuggestionEvent.Delete(query))
                     },
-                    shape = CircleShape
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     scope.launch { keyboardController?.hide() }
                     textFieldState.setTextAndPlaceCursorAtEnd(query)
@@ -195,14 +193,14 @@ fun SearchSuggestionUi(
     query: String,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit = {},
-    shape: Shape = MaterialTheme.shapes.medium,
+    shape: CornerBasedShape = MaterialTheme.shapes.medium,
     onClick: () -> Unit,
 ) {
     SwipeToDismissContainer(
-        onDelete = onDelete,
+        onDismissFromEndToStart = onDelete,
         modifier = modifier
-            .clip(shape)
             .clickable { onClick() },
+        shape = shape,
     ) {
         Card(shape = shape) {
             Row(
