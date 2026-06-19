@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -87,6 +90,10 @@ fun WatchListDetailsRoute(
         stringResource(com.enmanuelbergling.feature.watchlists.R.string.the_movie_could_not_be_deleted_from_the_watchlist)
     val movieDeletedMessage =
         stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_removed_from_watchlist)
+    val movieAddedToFavoritesMessage =
+        stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_added_to_favorites)
+    val addToFavoritesErrorMessage =
+        stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_could_not_be_added_to_favorites)
     val undoMessage = stringResource(R.string.undo)
     val retryMessage = stringResource(R.string.retry)
 
@@ -112,9 +119,7 @@ fun WatchListDetailsRoute(
                 )
                 when (result) {
                     SnackbarResult.Dismissed -> viewModel.onEvent(
-                        WatchlistDetailsEvent.DeleteMovie(
-                            it.movieId
-                        )
+                        WatchlistDetailsEvent.DeleteMovie(it.movieId)
                     )
 
                     SnackbarResult.ActionPerformed -> viewModel.onEvent(WatchlistDetailsEvent.UndoDelete)
@@ -135,6 +140,36 @@ fun WatchListDetailsRoute(
 
                     SnackbarResult.ActionPerformed -> viewModel.onEvent(
                         WatchlistDetailsEvent.DeleteMovie(it.movieId)
+                    )
+                }
+            }
+
+            is WatchlistDetailsSideEffect.UndoAddToFavoritesMovie -> scope.launch {
+                val result = snackBarState.showSnackbar(
+                    message = movieAddedToFavoritesMessage,
+                    actionLabel = undoMessage,
+                    duration = SnackbarDuration.Short,
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(WatchlistDetailsEvent.AddToFavorites(it.movieId))
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(WatchlistDetailsEvent.UndoAddToFavorites)
+                }
+            }
+
+            is WatchlistDetailsSideEffect.AddToFavoritesError -> scope.launch {
+                val result = snackBarState.showSnackbar(
+                    message = addToFavoritesErrorMessage,
+                    actionLabel = retryMessage,
+                    duration = SnackbarDuration.Indefinite,
+                    withDismissAction = true
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(
+                        WatchlistDetailsEvent.OnAddToFavoritesErrorDismissed(it.movieId)
+                    )
+
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(
+                        WatchlistDetailsEvent.AddToFavorites(it.movieId)
                     )
                 }
             }
@@ -236,9 +271,26 @@ internal fun WatchListDetailsScreen(
                         val movie = movies[index]
                         movie?.let {
                             SwipeToDismissContainer(
-                                visible = movie.id !in uiState.deletedMovieIds,
+                                visible = movie.id !in uiState.deletedMovieIds && movie.id !in uiState.favoritedMovieIds,
+                                onDismissFromStartToEnd = {
+                                    onEvent(WatchlistDetailsEvent.OnAddToFavorites(movie.id))
+                                },
                                 onDismissFromEndToStart = {
                                     onEvent(WatchlistDetailsEvent.OnDeleteMovie(movie.id))
+                                },
+                                containerColorDismissFromStart = MaterialTheme.colorScheme.primary,
+                                backgroundIcon = { direction ->
+                                    when (direction) {
+                                        SwipeToDismissBoxValue.StartToEnd -> Icon(
+                                            Icons.Rounded.Favorite,
+                                            contentDescription = "Add to favorites"
+                                        )
+                                        SwipeToDismissBoxValue.EndToStart -> Icon(
+                                            Icons.Rounded.Delete,
+                                            contentDescription = "Delete"
+                                        )
+                                        SwipeToDismissBoxValue.Settled -> Unit
+                                    }
                                 },
                             ) {
                                 MovieLandCard(
