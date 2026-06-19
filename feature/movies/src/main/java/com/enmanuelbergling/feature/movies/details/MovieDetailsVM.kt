@@ -3,6 +3,8 @@ package com.enmanuelbergling.feature.movies.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
+import com.enmanuelbergling.core.domain.usecase.user.favorite.AddMovieToFavoritesUC
+import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveMovieFromFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.NetworkException
@@ -21,6 +23,8 @@ internal class MovieDetailsVM(
     private val movieDetailsChain: MovieDetailsChain,
     private val addMovieToAccountWatchlistUC: AddMovieToAccountWatchlistUC,
     private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
+    private val addMovieToFavoritesUC: AddMovieToFavoritesUC,
+    private val removeMovieFromFavoritesUC: RemoveMovieFromFavoritesUC,
     private val movieId: Int,
 ) : ViewModel() {
 
@@ -42,6 +46,7 @@ internal class MovieDetailsVM(
 
             MovieDetailsAction.OnRetry -> loadPage()
             MovieDetailsAction.OnWatchlistClick -> addOrRemoveFromWatchlist()
+            MovieDetailsAction.OnFavoriteClick -> addOrRemoveFromFavorites()
             is MovieDetailsAction.OnActorClick -> viewModelScope.launch {
                 _uiEvents.send(MovieDetailsEvent.NavigateToActor(action.action))
             }
@@ -101,6 +106,38 @@ internal class MovieDetailsVM(
                     it.copy(
                         isWatchlistLoading = false,
                         accountStates = it.accountStates?.copy(watchlist = !isMovieInWatchlist)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun addOrRemoveFromFavorites() = viewModelScope.launch {
+        val isMovieFavorite = _uiState.value.accountStates?.favorite ?: false
+
+        _uiState.update { it.copy(isFavoriteLoading = true) }
+
+        val result = if (isMovieFavorite) {
+            removeMovieFromFavoritesUC(movieId)
+        } else {
+            addMovieToFavoritesUC(movieId)
+        }
+
+        when (result) {
+            is ResultHandler.Error -> {
+                _uiState.update {
+                    it.copy(
+                        isFavoriteLoading = false,
+                        uiState = SimplerUi.Error(result.exception.messageResource)
+                    )
+                }
+            }
+
+            is ResultHandler.Success -> {
+                _uiState.update {
+                    it.copy(
+                        isFavoriteLoading = false,
+                        accountStates = it.accountStates?.copy(favorite = !isMovieFavorite)
                     )
                 }
             }

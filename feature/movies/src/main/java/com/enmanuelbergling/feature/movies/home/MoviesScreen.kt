@@ -90,11 +90,13 @@ fun MoviesScreen(
     onDetails: (id: Int) -> Unit,
     onMore: (MovieSection) -> Unit,
     onFilter: () -> Unit,
+    onFavorites: () -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
 
     val viewModel = koinViewModel<MoviesVM>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
 
     val uiData by viewModel.uiDataState.collectAsStateWithLifecycle()
     val (upcomingMovies, topRatedMovies, nowPlayingMovies, popularMovies) = uiData
@@ -121,7 +123,9 @@ fun MoviesScreen(
                 onOpenDrawer = onOpenDrawer,
                 searchBarState = searchBarState,
                 textFieldState = textFieldState,
-                onFilter = onFilter
+                onFilter = onFilter,
+                onFavorites = onFavorites,
+                isLoggedIn = isLoggedIn,
             )
         },
         contentWindowInsets = WindowInsets.statusBars,
@@ -174,7 +178,9 @@ private fun MoviesTopAppBar(
     onOpenDrawer: () -> Unit,
     searchBarState: SearchBarState,
     textFieldState: TextFieldState,
-    onFilter: () -> Unit
+    onFilter: () -> Unit,
+    onFavorites: () -> Unit,
+    isLoggedIn: Boolean,
 ) {
     TopAppBar(
         navigationIcon = {
@@ -199,6 +205,14 @@ private fun MoviesTopAppBar(
             )
         },
         actions = {
+            if (isLoggedIn) {
+                IconButton(onClick = onFavorites) {
+                    Icon(
+                        painter = painterResource(R.drawable.heart_outline),
+                        contentDescription = stringResource(R.string.favorites)
+                    )
+                }
+            }
             IconButton(onClick = onFilter) {
                 Icon(
                     painter = painterResource(R.drawable.funnel),

@@ -55,4 +55,16 @@ interface UserRemoteDS : RemoteDataSource {
     suspend fun removeMovieFromAccountWatchlist(
         movieId: Int,
     ): ResultHandler<WatchResponse>
+
+    suspend fun getAccountFavoriteMovies(
+        page: Int,
+    ): ResultHandler<PageModel<Movie>>
+
+    suspend fun addMovieToFavorites(
+        movieId: Int,
+    ): ResultHandler<WatchResponse>
+
+    suspend fun removeMovieFromFavorites(
+        movieId: Int,
+    ): ResultHandler<WatchResponse>
 }

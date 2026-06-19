@@ -11,6 +11,7 @@ import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.model.user.WatchList
 import com.enmanuelbergling.core.model.user.WatchResponse
 import com.enmanuelbergling.core.network.BuildConfig
+import com.enmanuelbergling.core.network.dto.user.watch.FavoriteBody
 import com.enmanuelbergling.core.network.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.core.network.dto.user.watch.WatchlistBody
 import com.enmanuelbergling.core.network.ktor.service.UserService
@@ -174,6 +175,56 @@ class UserRemoteDSImpl(
                 accountId = BuildConfig.ACCOUNT_ID,
                 sessionId = sessionId,
                 watchlistBody = WatchlistBody(mediaId = movieId, watchlist = false)
+            ).toModel()
+        }
+    }
+
+    override suspend fun getAccountFavoriteMovies(
+        page: Int,
+    ): ResultHandler<PageModel<Movie>> {
+        val sessionId = getSessionId()
+        if (sessionId.isNullOrBlank()) {
+            return ResultHandler.Error(NetworkException.AuthorizationException)
+        }
+
+        return safeKtorCall {
+            val result = service.getFavoriteMovies(BuildConfig.ACCOUNT_ID, sessionId, page)
+            val movies = result.results.map { it.toModel() }
+
+            PageModel(movies, result.totalPages)
+        }
+    }
+
+    override suspend fun addMovieToFavorites(
+        movieId: Int,
+    ): ResultHandler<WatchResponse> {
+        val sessionId = getSessionId()
+        if (sessionId.isNullOrBlank()) {
+            return ResultHandler.Error(NetworkException.AuthorizationException)
+        }
+
+        return safeKtorCall {
+            service.addToFavorites(
+                accountId = BuildConfig.ACCOUNT_ID,
+                sessionId = sessionId,
+                favoriteBody = FavoriteBody(mediaId = movieId, favorite = true)
+            ).toModel()
+        }
+    }
+
+    override suspend fun removeMovieFromFavorites(
+        movieId: Int,
+    ): ResultHandler<WatchResponse> {
+        val sessionId = getSessionId()
+        if (sessionId.isNullOrBlank()) {
+            return ResultHandler.Error(NetworkException.AuthorizationException)
+        }
+
+        return safeKtorCall {
+            service.addToFavorites(
+                accountId = BuildConfig.ACCOUNT_ID,
+                sessionId = sessionId,
+                favoriteBody = FavoriteBody(mediaId = movieId, favorite = false)
             ).toModel()
         }
     }

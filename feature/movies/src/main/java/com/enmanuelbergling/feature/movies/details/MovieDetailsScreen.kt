@@ -136,6 +136,29 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
                 },
                 actions = {
+                    if (state.isFavoriteLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(horizontal = MaterialTheme.dimen.small)
+                                .size(24.dp),
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        state.accountStates?.let {
+                            IconButton(onClick = { onAction(MovieDetailsAction.OnFavoriteClick) }) {
+                                Icon(
+                                    painter = painterResource(
+                                        if (it.favorite) R.drawable.heart_solid
+                                        else R.drawable.heart_outline
+                                    ),
+                                    contentDescription = stringResource(R.string.favorites),
+                                    tint = if (it.favorite) MaterialTheme.colorScheme.primary
+                                    else LocalContentColor.current
+                                )
+                            }
+                        }
+                    }
+
                     if (state.isWatchlistLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier

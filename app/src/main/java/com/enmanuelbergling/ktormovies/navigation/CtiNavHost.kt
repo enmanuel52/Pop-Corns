@@ -9,6 +9,8 @@ import com.enmanuelbergling.feature.actor.navigation.actorsGraph
 import com.enmanuelbergling.feature.actor.navigation.navigateToActorsDetails
 import com.enmanuelbergling.feature.auth.navigation.loginScreen
 import com.enmanuelbergling.feature.auth.navigation.navigateToLoginScreen
+import com.enmanuelbergling.feature.favorites.navigation.favoritesGraph
+import com.enmanuelbergling.feature.favorites.navigation.navigateToFavorites
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.moviesFilterScreen
 import com.enmanuelbergling.feature.movies.navigation.moviesGraph
@@ -50,10 +52,16 @@ fun CtiNavHost(
             },
             onMore = navController::navigateToMoviesSection,
             onFilter = state.navController::navigateToMovieFilter,
+            onFavorites = navController::navigateToFavorites,
             onOpenDrawer = onOpenDrawer,
         )
 
         seriesGraph(onOpenDrawer = onOpenDrawer)
+
+        favoritesGraph(
+            onMovieDetails = navController::navigateToMoviesDetails,
+            onBack = navController::navigateUp,
+        )
 
         actorsGraph(
             onBack = navController::navigateUp,

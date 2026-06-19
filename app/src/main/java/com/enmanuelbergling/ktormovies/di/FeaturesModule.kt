@@ -2,6 +2,7 @@ package com.enmanuelbergling.ktormovies.di
 
 import com.enmanuelbergling.feature.actor.di.actorsModule
 import com.enmanuelbergling.feature.auth.di.loginModule
+import com.enmanuelbergling.feature.favorites.di.favoritesModule
 import com.enmanuelbergling.feature.movies.di.moviesModule
 import com.enmanuelbergling.feature.settings.di.settingsModule
 import com.enmanuelbergling.feature.watchlists.di.watchlistModule
@@ -15,6 +16,7 @@ val featuresModule = module {
             moviesModule,
             actorsModule,
             watchlistModule,
+            favoritesModule,
             settingsModule
         ) + loginModule
     )

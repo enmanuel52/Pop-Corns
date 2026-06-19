@@ -15,6 +15,7 @@
     <string name="list_background_animation">list background animation</string>
     <string name="add_to_watch_list">Add to custom list</string>
     <string name="watchlist">Watchlist</string>
+    <string name="favorites">Favorites</string>
     <string name="remove_movie_from_watchlist_title">Remove movie from watchlist?</string>
     <string name="poster_image">poster image</string>
     <string name="advanced_movie_filter">Advanced Movie Filter</string>

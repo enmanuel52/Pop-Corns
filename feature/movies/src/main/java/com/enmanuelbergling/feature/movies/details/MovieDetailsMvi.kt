@@ -15,6 +15,7 @@ data class MovieDetailsState(
     val accountStates: MovieAccountStates? = null,
     val movieId: Int,
     val isWatchlistLoading: Boolean = false,
+    val isFavoriteLoading: Boolean = false,
     val uiState: SimplerUi = SimplerUi.Idle,
 )
 
@@ -29,6 +30,7 @@ sealed interface MovieDetailsAction {
     data object OnBack : MovieDetailsAction
     data object OnRetry : MovieDetailsAction
     data object OnWatchlistClick : MovieDetailsAction
+    data object OnFavoriteClick : MovieDetailsAction
     data class OnActorClick(val action: ActorDetailNavAction) : MovieDetailsAction
 }
 

@@ -51,6 +51,7 @@ dependencies {
     implementation(project(":feature:series"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:watchlists"))
+    implementation(project(":feature:favorites"))
 
     testImplementation(project(":core:testing"))
 

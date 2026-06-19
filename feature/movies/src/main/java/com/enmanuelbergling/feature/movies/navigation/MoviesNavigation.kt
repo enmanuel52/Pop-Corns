@@ -52,6 +52,7 @@ fun NavGraphBuilder.moviesGraph(
     onActor: (ActorDetailNavAction) -> Unit,
     onMore: (MovieSection) -> Unit,
     onFilter: () -> Unit,
+    onFavorites: () -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
     navigation<MoviesGraphDestination>(startDestination = MoviesDestination) {
@@ -61,6 +62,7 @@ fun NavGraphBuilder.moviesGraph(
                 onDetails = onMovie,
                 onMore = onMore,
                 onFilter = onFilter,
+                onFavorites = onFavorites,
                 onOpenDrawer = onOpenDrawer
             )
         }

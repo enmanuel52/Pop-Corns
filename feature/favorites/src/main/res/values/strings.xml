@@ -1,0 +1,5 @@
+<resources>
+    <string name="favorites">Favorites</string>
+    <string name="movie_removed_from_favorites">Movie removed from favorites</string>
+    <string name="the_movie_could_not_be_removed_from_favorites">The movie could not be removed from favorites</string>
+</resources>

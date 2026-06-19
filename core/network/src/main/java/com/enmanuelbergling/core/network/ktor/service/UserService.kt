@@ -5,6 +5,7 @@ import com.enmanuelbergling.core.network.dto.user.UserDetailsDTO
 import com.enmanuelbergling.core.network.dto.user.watch.AccountListsPageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.CheckItemListDTO
 import com.enmanuelbergling.core.network.dto.user.watch.CreateListBody
+import com.enmanuelbergling.core.network.dto.user.watch.FavoriteBody
 import com.enmanuelbergling.core.network.dto.user.watch.MediaOnListBody
 import com.enmanuelbergling.core.network.dto.movie.MoviePageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.MovieListPageDTO
@@ -140,6 +141,33 @@ class UserService(private val httpClient: KtorClient) {
             url {
                 parameters.append(name = "movie_id", value = "$movieId")
             }
+        }
+        .body()
+
+    internal suspend fun getFavoriteMovies(
+        accountId: String,
+        sessionId: String,
+        page: Int,
+    ): MoviePageDTO = httpClient
+        .get("account/$accountId/favorite/movies") {
+            url {
+                parameters.append(name = "page", value = "$page")
+                parameters.append("session_id", sessionId)
+            }
+        }
+        .body()
+
+    internal suspend fun addToFavorites(
+        accountId: String,
+        sessionId: String,
+        favoriteBody: FavoriteBody,
+    ): WatchResponseDTO = httpClient
+        .post("account/$accountId/favorite") {
+            url {
+                parameters.append("session_id", sessionId)
+            }
+            contentType(ContentType.Application.Json)
+            setBody(favoriteBody)
         }
         .body()
 }

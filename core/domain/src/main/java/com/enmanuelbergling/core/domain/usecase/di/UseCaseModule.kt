@@ -22,6 +22,8 @@ import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
+import com.enmanuelbergling.core.domain.usecase.user.favorite.AddMovieToFavoritesUC
+import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveMovieFromFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.SyncUserDetailsUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
@@ -85,6 +87,11 @@ val listsUcModule = module {
     singleOf(::AddMovieToAccountWatchlistUC)
 }
 
+val favoritesUcModule = module {
+    singleOf(::AddMovieToFavoritesUC)
+    singleOf(::RemoveMovieFromFavoritesUC)
+}
+
 val searchSuggestionUcModule = module {
     singleOf(::GetSearchSuggestionsUC)
 }
@@ -96,6 +103,7 @@ val ucModule = listOf(
     userUcModule,
     onboardingUcModule,
     listsUcModule,
+    favoritesUcModule,
     searchSuggestionUcModule,
     settingModule
 )
