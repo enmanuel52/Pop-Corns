@@ -218,7 +218,7 @@ private fun WatchlistHomeScreen(
                                 onDismissFromEndToStart = {
                                     onEvent(WatchlistHomeEvent.OnDeleteMovie(movie.id))
                                 },
-                                containerColorDismissFromStart = MaterialTheme.colorScheme.primary,
+                                containerColorDismissFromStart = MaterialTheme.colorScheme.primaryContainer,
                                 backgroundIcon = { direction ->
                                     when (direction) {
                                         SwipeToDismissBoxValue.StartToEnd -> Icon(

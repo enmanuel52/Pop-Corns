@@ -1,13 +1,10 @@
 package com.enmanuelbergling.core.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.AnchoredDraggableState
@@ -33,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -42,15 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
-import kotlin.time.Duration.Companion.milliseconds
 
 enum class DragState {
     Open, Closed
@@ -133,7 +128,7 @@ fun SwipeToDismissContainer(
         }
     }
     LaunchedEffect(visible) {
-        if (visible) runCatching{
+        if (visible) runCatching {
             swipeToDismissState.snapTo(SwipeToDismissBoxValue.Settled)
         }
     }
@@ -151,14 +146,20 @@ fun SwipeToDismissContainer(
                     modifier = Modifier
                         .fillMaxSize()
                         .drawBehind {
-                            val topLeftX = size.width + spaceBetween.toPx() + swipeToDismissOffset
+                            val topLeftX =
+                                if (swipeToDismissOffset < 0) size.width + spaceBetween.toPx() + swipeToDismissOffset
+                                else 0f
+                            val offset = Offset(x = topLeftX.coerceIn(0f, size.width), y = 0f)
+                            val size = if (swipeToDismissOffset < 0) size.offsetSize(offset)
+                            else Size(swipeToDismissOffset - spaceBetween.toPx(), size.height)
                             drawRoundRect(
                                 color = when (swipeToDismissState.dismissDirection) {
                                     SwipeToDismissBoxValue.StartToEnd -> containerColorDismissFromStart
                                     SwipeToDismissBoxValue.EndToStart -> containerColorDismissFromEnd
                                     SwipeToDismissBoxValue.Settled -> Color.Transparent
                                 },
-                                topLeft = Offset(x = topLeftX.coerceIn(0f, size.width), y = 0f),
+                                topLeft = offset,
+                                size = size,
                                 cornerRadius = CornerRadius(
                                     x = shape.topStart.toPx(
                                         shapeSize = size,
@@ -194,6 +195,8 @@ fun SwipeToDismissContainer(
         )
     }
 }
+private fun Size.offsetSize(offset: Offset): Size =
+    Size(this.width - offset.x, this.height - offset.y)
 
 private fun swipeToDismissAlignment(swipeToDismissState: SwipeToDismissBoxState): Alignment =
     when (swipeToDismissState.dismissDirection) {
