@@ -211,7 +211,7 @@ private fun WatchlistHomeScreen(
                         val movie = watchlist[index]
                         movie?.let {
                             SwipeToDismissContainer(
-                                visible = movie.id !in uiState.deletedMovieIds && movie.id !in uiState.favoritedMovieIds,
+                                visible = movie.id !in uiState.removedItems,
                                 onDismissFromStartToEnd = {
                                     onEvent(WatchlistHomeEvent.OnAddToFavorites(movie.id))
                                 },

@@ -150,6 +150,9 @@ internal data class WatchlistDetailsState(
     val favoritedMovieIds: List<Int> = emptyList(),
 )
 
+internal val WatchlistDetailsState.removedItems: List<Int>
+    get() = deletedMovieIds + favoritedMovieIds
+
 internal sealed interface WatchlistDetailsSideEffect {
     data class NavigateToDetails(val movieId: Int) : WatchlistDetailsSideEffect
     data object NavigateBack : WatchlistDetailsSideEffect

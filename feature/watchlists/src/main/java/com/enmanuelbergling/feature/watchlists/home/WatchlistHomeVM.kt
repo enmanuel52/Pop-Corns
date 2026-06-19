@@ -132,6 +132,9 @@ internal data class WatchlistHomeState(
     val favoritedMovieIds: List<Int> = emptyList(),
 )
 
+internal val WatchlistHomeState.removedItems: List<Int>
+    get() = deletedMovieIds + favoritedMovieIds
+
 internal sealed interface WatchlistHomeSideEffect {
     data class NavigateToDetails(val movieId: Int) : WatchlistHomeSideEffect
     data class UndoDeleteMovie(val movieId: Int) : WatchlistHomeSideEffect
