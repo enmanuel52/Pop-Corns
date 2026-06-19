@@ -10,9 +10,5 @@ data class MoviesUiData(
     val popular: List<Movie> = emptyList(),
     val searchQuery: String = "",
     val searchSuggestions: List<StringQuery> = emptyList(),
-) {
-    val skipUpcoming get() = upcoming.isNotEmpty()
-    val skipTopRated get() = topRated.isNotEmpty()
-    val skipNowPlaying get() = nowPlaying.isNotEmpty()
-    val skipPopular get() = popular.isNotEmpty()
-}
+    val searchSuggestionsDeleted: List<StringQuery> = emptyList(),
+)

@@ -64,6 +64,7 @@ import java.util.UUID
 internal fun ExpandedSearchBarContent(
     movies: LazyPagingItems<Movie>,
     searchSuggestions: List<StringQuery>,
+    searchSuggestionsDeleted: List<StringQuery>,
     onSuggestionEvent: (SuggestionEvent) -> Unit,
     textFieldState: TextFieldState,
     onMovieDetails: (Int) -> Unit,
@@ -105,6 +106,7 @@ internal fun ExpandedSearchBarContent(
 
             items(suggestions, key = { UUID.randomUUID() }) { query ->
                 SearchSuggestionUi(
+                    visible = query !in searchSuggestionsDeleted,
                     query = query,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -190,6 +192,7 @@ private fun LoadingIndicator() {
 
 @Composable
 fun SearchSuggestionUi(
+    visible: Boolean,
     query: String,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit = {},
@@ -197,6 +200,7 @@ fun SearchSuggestionUi(
     onClick: () -> Unit,
 ) {
     SwipeToDismissContainer(
+        visible = visible,
         onDismissFromEndToStart = onDelete,
         modifier = modifier
             .clickable { onClick() },
@@ -231,6 +235,7 @@ fun SearchSuggestionUi(
 @Composable
 private fun SearchSuggestionUiPrev() {
     SearchSuggestionUi(
+        visible = true,
         "The shawtank redemtion", modifier = Modifier
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.large

@@ -18,6 +18,7 @@ import com.enmanuelbergling.feature.movies.home.model.SuggestionEvent
 import com.enmanuelbergling.feature.movies.paging.usecase.GetFilteredMoviesUC
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class MoviesVM(
@@ -43,7 +45,7 @@ class MoviesVM(
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
     val uiState = _uiState
-        .onStart {  syncUserUC() }
+        .onStart { syncUserUC() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -115,7 +117,19 @@ class MoviesVM(
         when (event) {
             is SuggestionEvent.Add -> getSearchSuggestionsUC.add(event.query)
             SuggestionEvent.Clear -> getSearchSuggestionsUC.clear()
-            is SuggestionEvent.Delete -> getSearchSuggestionsUC.delete(event.query)
+            is SuggestionEvent.Delete -> {
+                _uiDataState.update {
+                    it.copy(
+                        searchSuggestionsDeleted = it.searchSuggestionsDeleted + event.query
+                    )
+                }
+                delay(200.milliseconds) // for the animation sake
+                getSearchSuggestionsUC.delete(event.query)
+
+                _uiDataState.update {
+                    it.copy(searchSuggestionsDeleted = emptyList())
+                }
+            }
         }
     }
 

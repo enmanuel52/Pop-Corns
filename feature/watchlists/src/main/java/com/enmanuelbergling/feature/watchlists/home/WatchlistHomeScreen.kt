@@ -8,46 +8,40 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.components.HandleUiState
-import com.enmanuelbergling.core.ui.components.NewerDragListItem
+import com.enmanuelbergling.core.ui.components.LoadingDialog
 import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
+import com.enmanuelbergling.core.ui.components.SwipeToDismissContainer
 import com.enmanuelbergling.core.ui.components.common.MovieLandCard
 import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
+import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
-import com.enmanuelbergling.feature.watchlists.components.RemoveFromWatchlistDialog
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -61,19 +55,65 @@ fun WatchlistHomeRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val watchlist = viewModel.watchlist.collectAsLazyPagingItems()
 
-    HandleUiState(
-        uiState = uiState, onIdle = viewModel::onIdle
-    ) {
-        watchlist.refresh()
-        viewModel.onIdle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val deleteMovieErrorMessage =
+        stringResource(com.enmanuelbergling.feature.watchlists.R.string.the_movie_couldn_t_be_deleted_from_the_watchlist)
+    val movieDeletedMessage =
+        stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_removed_from_watchlist)
+    val undoMessage = stringResource(R.string.undo)
+    val retryMessage = stringResource(R.string.retry)
+    ObserveAsEvents(viewModel.sideEffectChannel) {
+        when (it) {
+            is WatchlistHomeSideEffect.NavigateToDetails -> onMovieDetails(it.movieId)
+            is WatchlistHomeSideEffect.UndoDeleteMovie -> scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = movieDeletedMessage,
+                    actionLabel = undoMessage,
+                    duration = SnackbarDuration.Short,
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(WatchlistHomeEvent.DeleteMovie(it.movieId))
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(WatchlistHomeEvent.UndoDelete)
+                }
+            }
+
+            is WatchlistHomeSideEffect.DeleteMovieError -> scope.launch {
+
+                val result = snackbarHostState.showSnackbar(
+                    message = deleteMovieErrorMessage,
+                    actionLabel = retryMessage,
+                    duration = SnackbarDuration.Indefinite,
+                    withDismissAction = true,
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(
+                        WatchlistHomeEvent.OnDeleteMovieErrorDismissed(it.movieId)
+                    )
+
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(
+                        WatchlistHomeEvent.DeleteMovie(it.movieId)
+                    )
+                }
+            }
+
+            WatchlistHomeSideEffect.NavigateToLists -> onNavigateToLists()
+            WatchlistHomeSideEffect.OpenDrawer -> onOpenDrawer()
+        }
+    }
+
+    when (uiState.uiState) {
+        is SimplerUi.Error, SimplerUi.Idle -> Unit
+        SimplerUi.Success -> watchlist.refresh()
+        SimplerUi.Loading -> LoadingDialog()
     }
 
     WatchlistHomeScreen(
         watchlist = watchlist,
-        onMovieDetails = onMovieDetails,
-        onRemoveFromWatchlist = viewModel::removeFromWatchlist,
-        onNavigateToLists = onNavigateToLists,
-        onOpenDrawer = onOpenDrawer
+        uiState = uiState,
+        snackbarHostState = snackbarHostState,
+        onEvent = viewModel::onEvent,
     )
 }
 
@@ -81,28 +121,10 @@ fun WatchlistHomeRoute(
 @Composable
 private fun WatchlistHomeScreen(
     watchlist: LazyPagingItems<Movie>,
-    onMovieDetails: (movieId: Int) -> Unit,
-    onRemoveFromWatchlist: (movieId: Int) -> Unit,
-    onNavigateToLists: () -> Unit,
-    onOpenDrawer: () -> Unit,
+    uiState: WatchlistHomeState,
+    snackbarHostState: SnackbarHostState,
+    onEvent: (WatchlistHomeEvent) -> Unit,
 ) {
-    val snackbarHostState = remember {
-        SnackbarHostState()
-    }
-
-    var pickedMovie by rememberSaveable {
-        mutableIntStateOf(-1)
-    }
-
-    if (pickedMovie != -1) {
-        RemoveFromWatchlistDialog(
-            onDismiss = { pickedMovie = -1 },
-            onConfirm = {
-                onRemoveFromWatchlist(pickedMovie)
-                pickedMovie = -1
-            }
-        )
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -110,7 +132,7 @@ private fun WatchlistHomeScreen(
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.watchlist)) },
                 navigationIcon = {
-                    IconButton(onClick = onOpenDrawer) {
+                    IconButton(onClick = { onEvent(WatchlistHomeEvent.OpenDrawer) }) {
                         Icon(
                             painter = painterResource(R.drawable.bars_bottom_left),
                             contentDescription = "Sandwich menu icon"
@@ -118,7 +140,7 @@ private fun WatchlistHomeScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onNavigateToLists) {
+                    IconButton(onClick = { onEvent(WatchlistHomeEvent.NavigateToLists) }) {
                         Icon(
                             painter = painterResource(R.drawable.paint_brush),
                             contentDescription = "Customization icon"
@@ -128,7 +150,6 @@ private fun WatchlistHomeScreen(
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets.statusBars
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -151,34 +172,19 @@ private fun WatchlistHomeScreen(
                     items(watchlist.itemCount) { index ->
                         val movie = watchlist[index]
                         movie?.let {
-                            val bottomWith = remember {
-                                (-80).dp
-                            }
-                            NewerDragListItem(
-                                bottomContentWidth = with(LocalDensity.current) { bottomWith.toPx() },
-                                bottomContent = {
-                                    Box(Modifier.align(Alignment.CenterEnd)) {
-                                        IconButton(
-                                            onClick = { pickedMovie = movie.id },
-                                            modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small)
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.trash),
-                                                contentDescription = stringResource(id = R.string.delete_icon)
-                                            )
-                                        }
-                                    }
-                                },
-                                modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.surfaceVariant, CardDefaults.elevatedShape
-                                ),
+                            SwipeToDismissContainer(
+                                visible = movie.id !in uiState.deletedMovieIds,
+                                onDismissFromEndToStart = {
+                                    onEvent(WatchlistHomeEvent.OnDeleteMovie(movie.id))
+                                }
                             ) {
                                 MovieLandCard(
                                     movie = movie,
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier
+                                        .fillMaxWidth()
                                         .background(MaterialTheme.colorScheme.surface),
                                 ) {
-                                    onMovieDetails(movie.id)
+                                    onEvent(WatchlistHomeEvent.NavigateToDetails(movie.id))
                                 }
                             }
                         }

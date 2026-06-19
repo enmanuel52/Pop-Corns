@@ -148,6 +148,7 @@ fun MoviesScreen(
                 ExpandedSearchBarContent(
                     movies = moviesSearch,
                     searchSuggestions = uiData.searchSuggestions,
+                    searchSuggestionsDeleted = uiData.searchSuggestionsDeleted,
                     onSuggestionEvent = viewModel::onSuggestionEvent,
                     textFieldState = textFieldState,
                     onMovieDetails = onDetails,

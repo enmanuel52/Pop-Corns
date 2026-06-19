@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="the_movie_couldn_t_be_deleted_from_the_watchlist">Movie couldn\'t be removed from watchlist</string>
+    <string name="movie_removed_from_watchlist">Movie removed from watchlist</string>
+</resources>

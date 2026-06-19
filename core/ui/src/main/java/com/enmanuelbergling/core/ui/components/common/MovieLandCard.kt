@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +46,7 @@ import com.enmanuelbergling.core.ui.theme.CornTimeTheme
 fun MovieLandCard(
     movie: Movie,
     modifier: Modifier = Modifier,
+    shape: Shape = MaterialTheme.shapes.medium,
     onClick: () -> Unit,
 ) {
     val outline = MaterialTheme.colorScheme.outline
@@ -68,7 +70,7 @@ fun MovieLandCard(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .aspectRatio(1.5f)
-                    .clip(MaterialTheme.shapes.medium)
+                    .clip(shape)
             )
         },
         supportingContent = {

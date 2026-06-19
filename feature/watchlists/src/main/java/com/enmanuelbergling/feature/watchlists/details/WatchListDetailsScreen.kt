@@ -3,57 +3,54 @@ package com.enmanuelbergling.feature.watchlists.details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.common.android_util.isDynamicShortcutActive
-import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.components.DeleteMovieConfirmationDialog
 import com.enmanuelbergling.core.ui.components.HandleUiState
-import com.enmanuelbergling.core.ui.components.NewerDragListItem
 import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
+import com.enmanuelbergling.core.ui.components.SwipeToDismissContainer
 import com.enmanuelbergling.core.ui.components.common.MovieLandCard
 import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
+import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isRefreshing
 import com.enmanuelbergling.core.ui.core.shimmerIf
 import com.enmanuelbergling.core.ui.model.WatchlistShortcut
 import com.enmanuelbergling.core.ui.util.watchlistShortcutId
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -80,66 +77,103 @@ fun WatchListDetailsRoute(
         )
     }
 
+    val snackBarState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val deleteMovieErrorMessage =
+        stringResource(com.enmanuelbergling.feature.watchlists.R.string.the_movie_couldn_t_be_deleted_from_the_watchlist)
+    val movieDeletedMessage =
+        stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_removed_from_watchlist)
+    val undoMessage = stringResource(R.string.undo)
+    val retryMessage = stringResource(R.string.retry)
+
+    ObserveAsEvents(viewModel.sideEffectChannel) {
+        when (it) {
+            WatchlistDetailsSideEffect.NavigateBack -> onBack()
+            is WatchlistDetailsSideEffect.NavigateToDetails -> onMovieDetails(it.movieId)
+            WatchlistDetailsSideEffect.OnAddShortcut -> {
+                onAddShortcut(WatchlistShortcut(listId, listName))
+                onPinned(true)
+            }
+
+            WatchlistDetailsSideEffect.OnDeleteShortCut -> {
+                onDeleteShortcut(listId)
+                onPinned(false)
+            }
+
+            is WatchlistDetailsSideEffect.UndoDeleteMovie -> scope.launch {
+                val result = snackBarState.showSnackbar(
+                    message = movieDeletedMessage,
+                    actionLabel = undoMessage,
+                    duration = SnackbarDuration.Short,
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(
+                        WatchlistDetailsEvent.DeleteMovie(
+                            it.movieId
+                        )
+                    )
+
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(WatchlistDetailsEvent.UndoDelete)
+                }
+            }
+
+            is WatchlistDetailsSideEffect.DeleteMovieError -> scope.launch {
+                val result = snackBarState.showSnackbar(
+                    message = deleteMovieErrorMessage,
+                    actionLabel = retryMessage,
+                    duration = SnackbarDuration.Indefinite,
+                    withDismissAction = true
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(
+                        WatchlistDetailsEvent.OnDeleteMovieErrorDismissed(it.movieId)
+                    )
+
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(
+                        WatchlistDetailsEvent.DeleteMovie(it.movieId)
+                    )
+                }
+            }
+        }
+    }
+
     WatchListDetailsScreen(
         listName = listName,
         movies = movies,
         uiState = uiState,
         isPinned = isPinned,
-        onDeleteMovie = viewModel::deleteMovieFromList,
-        onMovieDetails = onMovieDetails,
-        onBack = onBack,
-        onIdle = viewModel::onIdle,
-        onAddShortcut = {
-            onAddShortcut(WatchlistShortcut(listId, listName))
-            onPinned(true)
-        },
-        onDeleteShortcut = {
-            onDeleteShortcut(listId)
-            onPinned(false)
-        }
+        snackbarHostState = snackBarState,
+        onEvent = viewModel::onEvent
     )
 }
 
-private const val NO_MOVIE = -1
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WatchListDetailsScreen(
+internal fun WatchListDetailsScreen(
     listName: String,
     movies: LazyPagingItems<Movie>,
-    uiState: SimplerUi,
     isPinned: Boolean,
-    onDeleteMovie: (Int) -> Unit,
-    onMovieDetails: (movieId: Int) -> Unit,
-    onBack: () -> Unit,
-    onIdle: () -> Unit,
-    onAddShortcut: () -> Unit,
-    onDeleteShortcut: () -> Unit,
+    snackbarHostState: SnackbarHostState,
+    uiState: WatchlistDetailsState,
+    onEvent: (WatchlistDetailsEvent) -> Unit,
 ) {
-    HandleUiState(uiState = uiState, onIdle = onIdle, movies::refresh)
+    HandleUiState(
+        uiState = uiState.uiState,
+        onIdle = { onEvent(WatchlistDetailsEvent.DismissDialog) },
+        onSuccess = movies::refresh
+    )
 
     val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    var pickedMovie by rememberSaveable {
-        mutableIntStateOf(NO_MOVIE)
-    }
-
-    if (pickedMovie != NO_MOVIE) {
-        DeleteMovieConfirmationDialog(
-            onDismiss = { pickedMovie = NO_MOVIE },
-            onDelete = {
-                onDeleteMovie(pickedMovie)
-                pickedMovie = NO_MOVIE
-            })
-    }
-
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { Text(text = listName) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { onEvent(WatchlistDetailsEvent.NavigateBack) }) {
                         Icon(
                             imageVector = Icons.Rounded.ArrowBackIosNew,
                             contentDescription = stringResource(id = R.string.back_icon)
@@ -149,8 +183,11 @@ fun WatchListDetailsScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            if (isPinned) onDeleteShortcut()
-                            else onAddShortcut()
+                            if (isPinned) {
+                                onEvent(WatchlistDetailsEvent.OnDeleteShortCut)
+                            } else {
+                                onEvent(WatchlistDetailsEvent.OnAddShortcut)
+                            }
                         }
                     ) {
                         Icon(
@@ -162,7 +199,6 @@ fun WatchListDetailsScreen(
                 scrollBehavior = scrollBehaviour
             )
         },
-        contentWindowInsets = WindowInsets.statusBars,
     ) {
         Box(
             modifier = Modifier
@@ -188,38 +224,20 @@ fun WatchListDetailsScreen(
                     items(movies.itemCount) { index ->
                         val movie = movies[index]
                         movie?.let {
-                            val bottomWith by remember {
-                                mutableStateOf((-80).dp)
-                            }
-
-                            NewerDragListItem(
-                                bottomContentWidth = with(LocalDensity.current) { bottomWith.toPx() },
-                                bottomContent = {
-                                    Box(Modifier.align(Alignment.CenterEnd)) {
-
-                                        IconButton(
-                                            onClick = { pickedMovie = it.id },
-                                            modifier = Modifier
-                                                .padding(horizontal = MaterialTheme.dimen.small)
-
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.trash),
-                                                contentDescription = stringResource(R.string.delete_icon)
-                                            )
-                                        }
-                                    }
+                            SwipeToDismissContainer(
+                                visible = movie.id !in uiState.deletedMovieIds,
+                                onDismissFromEndToStart = {
+                                    onEvent(WatchlistDetailsEvent.OnDeleteMovie(movie.id))
                                 },
-                                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant),
                             ) {
-
                                 MovieLandCard(
                                     movie = movie,
+                                    shape = MaterialTheme.shapes.medium,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .background(MaterialTheme.colorScheme.surface),
                                 ) {
-                                    onMovieDetails(movie.id)
+                                    onEvent(WatchlistDetailsEvent.NavigateToDetails(movie.id))
                                 }
                             }
                         }

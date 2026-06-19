@@ -3,9 +3,12 @@ package com.enmanuelbergling.core.ui.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
@@ -101,10 +104,10 @@ fun NewerDragListItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeToDismissContainer(
+    visible: Boolean,
     modifier: Modifier = Modifier,
     onDismissFromStartToEnd: (() -> Unit)? = null,
     onDismissFromEndToStart: (() -> Unit)? = null,
-    exitTransition: ExitTransition = shrinkOut() + fadeOut(),
     containerColorDismissFromStart: Color = MaterialTheme.colorScheme.primaryContainer,
     containerColorDismissFromEnd: Color = MaterialTheme.colorScheme.errorContainer,
     shape: CornerBasedShape = CircleShape,
@@ -115,37 +118,32 @@ fun SwipeToDismissContainer(
     spaceBetween: Dp = 2.dp,
     content: @Composable RowScope.() -> Unit,
 ) {
-    var onDismissedFromStart by remember {
-        mutableStateOf(false)
-    }
-    var onDismissedFromEnd by remember {
-        mutableStateOf(false)
-    }
+    val swipeToDismissState = rememberSwipeToDismissBoxState(
+        initialValue = SwipeToDismissBoxValue.Settled,
+        positionalThreshold = { distance: Float -> distance * 0.4f }
+    )
 
-    LaunchedEffect(onDismissedFromStart, onDismissedFromEnd) {
-        delay(300.milliseconds)
-        if (onDismissedFromStart) onDismissFromStartToEnd?.invoke()
+    var swipeToDismissOffset by remember { mutableFloatStateOf(0f) }
 
-        if (onDismissedFromEnd) onDismissFromEndToStart?.invoke()
-    }
-
-    AnimatedVisibility(
-        visible = !onDismissedFromStart && !onDismissedFromEnd,
-        exit = exitTransition,
-        modifier = modifier
-    ) {
-        val swipeToDismissState = rememberSwipeToDismissBoxState(
-            initialValue = SwipeToDismissBoxValue.Settled,
-            positionalThreshold = { distance: Float -> distance * 0.4f })
-
-        var swipeToDismissOffset by remember { mutableFloatStateOf(0f) }
-
-        LaunchedEffect(swipeToDismissState) {
+    LaunchedEffect(swipeToDismissState) {
+        runCatching {
             snapshotFlow { swipeToDismissState.requireOffset() }.collect {
                 swipeToDismissOffset = it
             }
         }
+    }
+    LaunchedEffect(visible) {
+        if (visible) runCatching{
+            swipeToDismissState.snapTo(SwipeToDismissBoxValue.Settled)
+        }
+    }
 
+    AnimatedVisibility(
+        visible,
+        modifier = modifier,
+        exit = shrinkVertically(),
+        enter = expandVertically() + fadeIn(),
+    ) {
         SwipeToDismissBox(
             state = swipeToDismissState,
             backgroundContent = {
@@ -187,8 +185,8 @@ fun SwipeToDismissContainer(
             enableDismissFromStartToEnd = onDismissFromStartToEnd != null,
             onDismiss = {
                 when (it) {
-                    SwipeToDismissBoxValue.StartToEnd -> onDismissedFromStart = true
-                    SwipeToDismissBoxValue.EndToStart -> onDismissedFromEnd = true
+                    SwipeToDismissBoxValue.StartToEnd -> onDismissFromStartToEnd?.invoke()
+                    SwipeToDismissBoxValue.EndToStart -> onDismissFromEndToStart?.invoke()
                     SwipeToDismissBoxValue.Settled -> Unit
                 }
             },
