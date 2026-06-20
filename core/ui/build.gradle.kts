@@ -51,6 +51,7 @@ dependencies {
     api(libs.haze)
     api(libs.haze.blur)
     api(libs.liquid)
+    api(libs.lottie.compose)
 
     //shared element transition
     api(libs.androidx.animation)
