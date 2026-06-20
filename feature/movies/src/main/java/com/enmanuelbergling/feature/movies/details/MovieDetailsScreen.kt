@@ -44,6 +44,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.enmanuelbergling.core.ui.components.OnceLottieAnimation
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -146,15 +147,17 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     } else {
                         state.accountStates?.let {
                             IconButton(onClick = { onAction(MovieDetailsAction.OnFavoriteClick) }) {
-                                Icon(
-                                    painter = painterResource(
-                                        if (it.favorite) R.drawable.heart_solid
-                                        else R.drawable.heart_outline
-                                    ),
-                                    contentDescription = stringResource(R.string.favorites),
-                                    tint = if (it.favorite) MaterialTheme.colorScheme.primary
-                                    else LocalContentColor.current
-                                )
+                                if (it.favorite) {
+                                    OnceLottieAnimation(
+                                        resId = R.raw.add_to_favorite,
+                                        modifier = Modifier.size(24.dp),
+                                    )
+                                } else {
+                                    Icon(
+                                        painter = painterResource(R.drawable.heart_outline),
+                                        contentDescription = stringResource(R.string.favorites),
+                                    )
+                                }
                             }
                         }
                     }
