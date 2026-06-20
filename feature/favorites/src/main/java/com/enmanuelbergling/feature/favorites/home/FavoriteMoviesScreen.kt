@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,7 +35,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.components.SwipeToDismissContainer
+import com.enmanuelbergling.core.ui.components.TinderSwipeToDismissContainer
 import com.enmanuelbergling.core.ui.components.common.MovieCard
 import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.enmanuelbergling.core.ui.core.ObserveAsEvents
@@ -60,12 +59,9 @@ fun FavoriteMoviesRoute(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val removeMovieErrorMessage =
-        stringResource(com.enmanuelbergling.feature.favorites.R.string.the_movie_could_not_be_removed_from_favorites)
     val movieRemovedMessage =
         stringResource(com.enmanuelbergling.feature.favorites.R.string.movie_removed_from_favorites)
     val undoMessage = stringResource(R.string.undo)
-    val retryMessage = stringResource(R.string.retry)
 
     ObserveAsEvents(viewModel.sideEffectChannel) {
         when (it) {
@@ -76,27 +72,8 @@ fun FavoriteMoviesRoute(
                     actionLabel = undoMessage,
                     duration = SnackbarDuration.Short,
                 )
-                when (result) {
-                    SnackbarResult.Dismissed -> viewModel.onEvent(FavoriteMoviesEvent.RemoveMovie(it.movieId))
-                    SnackbarResult.ActionPerformed -> viewModel.onEvent(FavoriteMoviesEvent.UndoRemove)
-                }
-            }
-
-            is FavoriteMoviesSideEffect.RemoveMovieError -> scope.launch {
-                val result = snackbarHostState.showSnackbar(
-                    message = removeMovieErrorMessage,
-                    actionLabel = retryMessage,
-                    duration = SnackbarDuration.Indefinite,
-                    withDismissAction = true,
-                )
-                when (result) {
-                    SnackbarResult.Dismissed -> viewModel.onEvent(
-                        FavoriteMoviesEvent.OnRemoveMovieErrorDismissed(it.movieId)
-                    )
-
-                    SnackbarResult.ActionPerformed -> viewModel.onEvent(
-                        FavoriteMoviesEvent.RemoveMovie(it.movieId)
-                    )
+                if (result == SnackbarResult.ActionPerformed) {
+                    viewModel.onEvent(FavoriteMoviesEvent.UndoRemove)
                 }
             }
         }
@@ -165,7 +142,7 @@ private fun FavoriteMoviesScreen(
                 } else {
                     items(favorites, key = { movie -> movie.id }) { movie ->
                         movie?.let {
-                            SwipeToDismissContainer(
+                            TinderSwipeToDismissContainer(
                                 visible = movie.id !in uiState.deletedMovieIds,
                                 onDismissFromStartToEnd = {
                                     onEvent(FavoriteMoviesEvent.OnRemoveMovie(movie.id))
@@ -173,7 +150,6 @@ private fun FavoriteMoviesScreen(
                                 onDismissFromEndToStart = {
                                     onEvent(FavoriteMoviesEvent.OnRemoveMovie(movie.id))
                                 },
-                                containerColorDismissFromEnd = Color.Transparent
                             ) {
                                 MovieCard(
                                     imageUrl = movie.posterPath,
