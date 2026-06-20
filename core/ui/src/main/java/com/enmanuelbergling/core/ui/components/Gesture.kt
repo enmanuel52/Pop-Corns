@@ -103,7 +103,7 @@ fun SwipeToDismissContainer(
     modifier: Modifier = Modifier,
     onDismissFromStartToEnd: (() -> Unit)? = null,
     onDismissFromEndToStart: (() -> Unit)? = null,
-    containerColorDismissFromStart: Color = MaterialTheme.colorScheme.primaryContainer,
+    containerColorDismissFromStart: Color = Color.Transparent,
     containerColorDismissFromEnd: Color = MaterialTheme.colorScheme.errorContainer,
     shape: CornerBasedShape = CircleShape,
     backgroundIcon: @Composable (SwipeToDismissBoxValue) -> Unit = {

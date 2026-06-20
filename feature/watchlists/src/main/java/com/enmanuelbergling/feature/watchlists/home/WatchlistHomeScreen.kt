@@ -1,6 +1,7 @@
 package com.enmanuelbergling.feature.watchlists.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -200,6 +202,7 @@ private fun WatchlistHomeScreen(
                     .shimmerIf { watchlist.isRefreshing }
                     .padding(horizontal = MaterialTheme.dimen.verySmall),
                 contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
             ) {
                 if (watchlist.isRefreshing) {
                     items(12) {
@@ -217,16 +220,17 @@ private fun WatchlistHomeScreen(
                                 onDismissFromEndToStart = {
                                     onEvent(WatchlistHomeEvent.OnDeleteMovie(movie.id))
                                 },
-                                containerColorDismissFromStart = MaterialTheme.colorScheme.primaryContainer,
+                                containerColorDismissFromStart = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .3f),
+                                containerColorDismissFromEnd = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f),
                                 backgroundIcon = { direction ->
                                     when (direction) {
                                         SwipeToDismissBoxValue.StartToEnd -> OnceLottieAnimation(
                                             resId = R.raw.add_to_favorite,
-                                            modifier = Modifier.size(48.dp),
+                                            modifier = Modifier.size(48.dp).scale(1.5f),
                                         )
                                         SwipeToDismissBoxValue.EndToStart -> OnceLottieAnimation(
                                             resId = R.raw.delete,
-                                            modifier = Modifier.size(48.dp),
+                                            modifier = Modifier.size(48.dp).scale(2.2f),
                                         )
                                         SwipeToDismissBoxValue.Settled -> Unit
                                     }

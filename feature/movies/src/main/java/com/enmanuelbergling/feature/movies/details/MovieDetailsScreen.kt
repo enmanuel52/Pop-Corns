@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import com.enmanuelbergling.core.ui.components.OnceLottieAnimation
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -150,7 +151,7 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                                 if (it.favorite) {
                                     OnceLottieAnimation(
                                         resId = R.raw.add_to_favorite,
-                                        modifier = Modifier.size(24.dp),
+                                        modifier = Modifier.size(24.dp).scale(3f),
                                     )
                                 } else {
                                     Icon(

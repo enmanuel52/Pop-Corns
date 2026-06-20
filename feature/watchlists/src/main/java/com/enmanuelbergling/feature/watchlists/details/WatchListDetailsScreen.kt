@@ -33,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -278,16 +279,17 @@ internal fun WatchListDetailsScreen(
                                 onDismissFromEndToStart = {
                                     onEvent(WatchlistDetailsEvent.OnDeleteMovie(movie.id))
                                 },
-                                containerColorDismissFromStart = MaterialTheme.colorScheme.primary,
+                                containerColorDismissFromStart = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .3f),
+                                containerColorDismissFromEnd = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f),
                                 backgroundIcon = { direction ->
                                     when (direction) {
                                         SwipeToDismissBoxValue.StartToEnd -> OnceLottieAnimation(
                                             resId = R.raw.add_to_favorite,
-                                            modifier = Modifier.size(48.dp),
+                                            modifier = Modifier.size(48.dp).scale(1.5f),
                                         )
                                         SwipeToDismissBoxValue.EndToStart -> OnceLottieAnimation(
                                             resId = R.raw.delete,
-                                            modifier = Modifier.size(48.dp),
+                                            modifier = Modifier.size(48.dp).scale(2.2f),
                                         )
                                         SwipeToDismissBoxValue.Settled -> Unit
                                     }

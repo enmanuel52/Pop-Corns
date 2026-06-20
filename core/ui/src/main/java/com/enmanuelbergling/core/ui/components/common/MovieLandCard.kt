@@ -1,7 +1,6 @@
 package com.enmanuelbergling.core.ui.components.common
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,19 +14,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -49,19 +44,15 @@ fun MovieLandCard(
     shape: Shape = MaterialTheme.shapes.medium,
     onClick: () -> Unit,
 ) {
-    val outline = MaterialTheme.colorScheme.outline
-
-    ListItem(
-        headlineContent = {
-            Column {
-                Text(
-                    text = movie.title + "(${movie.releaseYear})",
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                )
-            }
-        },
-        leadingContent = {
+    Card(
+        onClick = onClick,
+        modifier = modifier
+            .heightIn(max = 90.dp)
+    ) {
+        Row(
+            Modifier.padding(MaterialTheme.dimen.small),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             AsyncImage(
                 model = BASE_BACKDROP_IMAGE_URL + movie.backdropPath,
                 contentDescription = "movie image",
@@ -69,31 +60,25 @@ fun MovieLandCard(
                 placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .padding(
+                        horizontal = MaterialTheme.dimen.small,
+                        vertical = MaterialTheme.dimen.verySmall
+                    )
                     .aspectRatio(1.5f)
                     .clip(shape)
             )
-        },
-        supportingContent = {
-            RatingStars(value = movie.voteAverage.div(2).toFloat(), spaceBetween = 1.dp,
+
+            Column {
+                Text(
+                    text = movie.title + "(${movie.releaseYear})",
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
                 )
-        },
-        modifier = modifier
-            .clickable {
-                onClick()
+
+                RatingStars(value = movie.voteAverage.div(2).toFloat(), spaceBetween = 1.dp)
             }
-            .heightIn(max = 90.dp)
-            .drawBehind{
-                drawLine(
-                    color = outline,
-                    start = Offset(0f, size.height),
-                    end = Offset(size.width, size.height),
-                    strokeWidth = 1.dp.toPx()
-                )
-            },
-        colors = ListItemDefaults.colors(
-            containerColor = Color.Transparent
-        )
-    )
+        }
+    }
 }
 
 @Preview
@@ -110,7 +95,10 @@ fun MovieLandCardPlaceholder(
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(horizontal = MaterialTheme.dimen.mediumSmall, vertical = MaterialTheme.dimen.small)
+                    .padding(
+                        horizontal = MaterialTheme.dimen.mediumSmall,
+                        vertical = MaterialTheme.dimen.small
+                    )
                     .aspectRatio(1.5f)
                     .background(
                         MaterialTheme.colorScheme.surfaceVariant,
