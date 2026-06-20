@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveMovieFromFavoritesUC
+import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.feature.favorites.paging.GetPaginatedFavoriteMoviesUC
@@ -35,10 +36,27 @@ internal class FavoriteMoviesVM(
     fun onEvent(event: FavoriteMoviesEvent) {
         when (event) {
             is FavoriteMoviesEvent.OnRemoveMovie -> onRemoveMovie(event.movieId)
+            is FavoriteMoviesEvent.RemoveMovie -> removeFromFavorites(event.movieId)
             FavoriteMoviesEvent.UndoRemove -> undoRemove()
             is FavoriteMoviesEvent.NavigateToDetails -> viewModelScope.launch {
                 _sideEffectChannel.send(FavoriteMoviesSideEffect.NavigateToDetails(event.movieId))
             }
+
+            is FavoriteMoviesEvent.OnRemoveMovieErrorDismissed -> {
+                _uiState.update {
+                    it.copy(deletedMovieIds = it.deletedMovieIds - event.movieId)
+                }
+            }
+        }
+    }
+
+    private fun removeFromFavorites(movieId: Int) = viewModelScope.launch {
+        when (removeMovieFromFavoritesUC(movieId)) {
+            is ResultHandler.Error<*> -> _sideEffectChannel.send(
+                FavoriteMoviesSideEffect.RemoveMovieError(movieId)
+            )
+
+            is ResultHandler.Success<*> -> {}
         }
     }
 
@@ -64,10 +82,13 @@ internal data class FavoriteMoviesState(
 internal sealed interface FavoriteMoviesSideEffect {
     data class NavigateToDetails(val movieId: Int) : FavoriteMoviesSideEffect
     data class UndoRemoveMovie(val movieId: Int) : FavoriteMoviesSideEffect
+    data class RemoveMovieError(val movieId: Int) : FavoriteMoviesSideEffect
 }
 
 internal sealed interface FavoriteMoviesEvent {
     data class OnRemoveMovie(val movieId: Int) : FavoriteMoviesEvent
+    data class RemoveMovie(val movieId: Int) : FavoriteMoviesEvent
     data class NavigateToDetails(val movieId: Int) : FavoriteMoviesEvent
     data object UndoRemove : FavoriteMoviesEvent
+    data class OnRemoveMovieErrorDismissed(val movieId: Int) : FavoriteMoviesEvent
 }

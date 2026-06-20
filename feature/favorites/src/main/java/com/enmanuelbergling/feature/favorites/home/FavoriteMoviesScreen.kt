@@ -59,9 +59,12 @@ fun FavoriteMoviesRoute(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    val removeMovieErrorMessage =
+        stringResource(com.enmanuelbergling.feature.favorites.R.string.the_movie_could_not_be_removed_from_favorites)
     val movieRemovedMessage =
         stringResource(com.enmanuelbergling.feature.favorites.R.string.movie_removed_from_favorites)
     val undoMessage = stringResource(R.string.undo)
+    val retryMessage = stringResource(R.string.retry)
 
     ObserveAsEvents(viewModel.sideEffectChannel) {
         when (it) {
@@ -72,8 +75,27 @@ fun FavoriteMoviesRoute(
                     actionLabel = undoMessage,
                     duration = SnackbarDuration.Short,
                 )
-                if (result == SnackbarResult.ActionPerformed) {
-                    viewModel.onEvent(FavoriteMoviesEvent.UndoRemove)
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(FavoriteMoviesEvent.RemoveMovie(it.movieId))
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(FavoriteMoviesEvent.UndoRemove)
+                }
+            }
+
+            is FavoriteMoviesSideEffect.RemoveMovieError -> scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = removeMovieErrorMessage,
+                    actionLabel = retryMessage,
+                    duration = SnackbarDuration.Indefinite,
+                    withDismissAction = true,
+                )
+                when (result) {
+                    SnackbarResult.Dismissed -> viewModel.onEvent(
+                        FavoriteMoviesEvent.OnRemoveMovieErrorDismissed(it.movieId)
+                    )
+
+                    SnackbarResult.ActionPerformed -> viewModel.onEvent(
+                        FavoriteMoviesEvent.RemoveMovie(it.movieId)
+                    )
                 }
             }
         }
@@ -126,6 +148,7 @@ private fun FavoriteMoviesScreen(
         ) {
             LazyVerticalGrid(
                 modifier = Modifier
+                    .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .shimmerIf { favorites.isRefreshing },
                 state = listState,
