@@ -11,9 +11,8 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +45,7 @@ import com.enmanuelbergling.core.common.android_util.isDynamicShortcutActive
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
+import com.enmanuelbergling.core.ui.components.OnceLottieAnimation
 import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
 import com.enmanuelbergling.core.ui.components.SwipeToDismissContainer
 import com.enmanuelbergling.core.ui.components.common.MovieLandCard
@@ -281,13 +281,13 @@ internal fun WatchListDetailsScreen(
                                 containerColorDismissFromStart = MaterialTheme.colorScheme.primary,
                                 backgroundIcon = { direction ->
                                     when (direction) {
-                                        SwipeToDismissBoxValue.StartToEnd -> Icon(
-                                            Icons.Rounded.Favorite,
-                                            contentDescription = "Add to favorites"
+                                        SwipeToDismissBoxValue.StartToEnd -> OnceLottieAnimation(
+                                            resId = R.raw.add_to_favorite,
+                                            modifier = Modifier.size(48.dp),
                                         )
-                                        SwipeToDismissBoxValue.EndToStart -> Icon(
-                                            Icons.Rounded.Delete,
-                                            contentDescription = "Delete"
+                                        SwipeToDismissBoxValue.EndToStart -> OnceLottieAnimation(
+                                            resId = R.raw.delete,
+                                            modifier = Modifier.size(48.dp),
                                         )
                                         SwipeToDismissBoxValue.Settled -> Unit
                                     }
