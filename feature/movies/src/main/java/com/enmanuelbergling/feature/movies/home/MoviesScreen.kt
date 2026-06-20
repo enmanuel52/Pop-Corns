@@ -200,6 +200,14 @@ private fun MoviesTopAppBar(
                     SearchBarInputField(
                         textFieldState = textFieldState,
                         searchBarState = searchBarState,
+                        trailingIcon = {
+                            IconButton(onClick = onFilter) {
+                                Icon(
+                                    painter = painterResource(R.drawable.funnel),
+                                    contentDescription = stringResource(R.string.filter_icon)
+                                )
+                            }
+                        }
                     )
                 },
             )
@@ -213,12 +221,6 @@ private fun MoviesTopAppBar(
                     )
                 }
             }
-            IconButton(onClick = onFilter) {
-                Icon(
-                    painter = painterResource(R.drawable.funnel),
-                    contentDescription = stringResource(R.string.filter_icon)
-                )
-            }
         }
     )
 }
@@ -228,6 +230,7 @@ private fun MoviesTopAppBar(
 fun SearchBarInputField(
     textFieldState: TextFieldState,
     searchBarState: SearchBarState,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     SearchBarDefaults.InputField(
         textFieldState = textFieldState,
@@ -240,6 +243,7 @@ fun SearchBarInputField(
                 modifier = Modifier.fillMaxWidth()
             )
         },
+        trailingIcon = trailingIcon,
     )
 }
 
