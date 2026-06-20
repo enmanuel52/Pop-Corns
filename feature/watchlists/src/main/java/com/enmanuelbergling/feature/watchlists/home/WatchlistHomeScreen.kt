@@ -2,15 +2,14 @@ package com.enmanuelbergling.feature.watchlists.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.ui.unit.dp
+import com.enmanuelbergling.core.ui.components.OnceLottieAnimation
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -221,13 +220,13 @@ private fun WatchlistHomeScreen(
                                 containerColorDismissFromStart = MaterialTheme.colorScheme.primaryContainer,
                                 backgroundIcon = { direction ->
                                     when (direction) {
-                                        SwipeToDismissBoxValue.StartToEnd -> Icon(
-                                            Icons.Rounded.Favorite,
-                                            contentDescription = "Add to favorites"
+                                        SwipeToDismissBoxValue.StartToEnd -> OnceLottieAnimation(
+                                            resId = R.raw.add_to_favorite,
+                                            modifier = Modifier.size(48.dp),
                                         )
-                                        SwipeToDismissBoxValue.EndToStart -> Icon(
-                                            Icons.Rounded.Delete,
-                                            contentDescription = "Delete"
+                                        SwipeToDismissBoxValue.EndToStart -> OnceLottieAnimation(
+                                            resId = R.raw.delete,
+                                            modifier = Modifier.size(48.dp),
                                         )
                                         SwipeToDismissBoxValue.Settled -> Unit
                                     }
