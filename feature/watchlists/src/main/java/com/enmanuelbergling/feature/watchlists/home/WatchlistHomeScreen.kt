@@ -179,12 +179,12 @@ private fun WatchlistHomeScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onEvent(WatchlistHomeEvent.NavigateToLists) }) {
+                    /*IconButton(onClick = { onEvent(WatchlistHomeEvent.NavigateToLists) }) {
                         Icon(
                             painter = painterResource(R.drawable.paint_brush),
                             contentDescription = "Customization icon"
                         )
-                    }
+                    }*/
                 }
             )
         },
