@@ -86,6 +86,22 @@ https://github.com/enmanuel52/Pop-Corns/assets/102194318/28650503-9817-4394-9f62
 
 https://github.com/enmanuel52/Pop-Corns/assets/102194318/a861613e-1fa6-47d7-ac84-de16294fd042
 
+### Swipe to dismiss animations:
+
+#### Gmail-like
+
+
+https://github.com/user-attachments/assets/5d28f4d1-41a7-47e2-ae49-2d82a8e657e1
+
+
+
+#### Tinder-like
+
+
+
+https://github.com/user-attachments/assets/d20f021e-697a-4a44-8688-644c8f323b91
+
+
 
 
 ### Shaders
