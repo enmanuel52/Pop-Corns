@@ -13,8 +13,8 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
-import androidx.compose.foundation.gestures.draggable2D
-import androidx.compose.foundation.gestures.rememberDraggable2DState
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.RowScope
@@ -48,6 +48,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -205,6 +207,7 @@ fun SwipeToDismissContainer(
         )
     }
 }
+
 private fun Size.offsetSize(offset: Offset): Size =
     Size(this.width - offset.x, this.height - offset.y)
 
@@ -261,8 +264,8 @@ fun TinderSwipeToDismissContainer(
     var cardSize by remember { mutableStateOf(IntSize.Zero) }
     var grabbedFromTop by remember { mutableStateOf(true) }
 
-    val dragState = rememberDraggable2DState { delta ->
-        scope.launch { offset.snapTo(offset.value + delta) }
+    LaunchedEffect(visible) {
+        if (visible) offset.snapTo(Offset.Zero)
     }
 
     AnimatedVisibility(
@@ -283,31 +286,62 @@ fun TinderSwipeToDismissContainer(
                     else (offset.value.x / cardSize.width).coerceIn(-1f, 1f) *
                             MAX_ROTATION_DEGREES * if (grabbedFromTop) 1f else -1f
                 }
-                .draggable2D(
-                    state = dragState,
-                    onDragStarted = { start ->
-                        grabbedFromTop = start.y < cardSize.height / 2f
-                    },
-                    onDragStopped = {
-                        val x = offset.value.x
-                        val threshold = cardSize.width * dismissThreshold
-                        scope.launch {
-                            when {
-                                onDismissFromStartToEnd != null && x > threshold -> {
-                                    offset.animateTo(Offset(cardSize.width * 2f, offset.value.y))
-                                    onDismissFromStartToEnd()
-                                }
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        // onDragStarted
+                        val down = awaitFirstDown(requireUnconsumed = false)
+                        grabbedFromTop = down.position.y < cardSize.height / 2f
+                        var horizontallyDragged: Boolean? = null
 
-                                onDismissFromEndToStart != null && x < -threshold -> {
-                                    offset.animateTo(Offset(-cardSize.width * 2f, offset.value.y))
-                                    onDismissFromEndToStart()
-                                }
+                        // onDrag
+                        do {
+                            val event = awaitPointerEvent()
+                            val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                            val posChange = change.positionChange()
 
-                                else -> offset.animateTo(Offset.Zero)
+                            if (horizontallyDragged == null && posChange != Offset.Zero) {
+                                horizontallyDragged = posChange.x.absoluteValue > 15f
+                            }
+
+                            if (horizontallyDragged == true) {
+                                change.consume()
+                                scope.launch { offset.snapTo(offset.value + posChange) }
+                            }
+                            // horizontallyDragged == false → don't consume, forwards to parent
+                        } while (event.changes.any { it.pressed })
+
+                        // onDragEnd
+                        if (horizontallyDragged == true) {
+                            val x = offset.value.x
+                            val threshold = cardSize.width * dismissThreshold
+                            scope.launch {
+                                when {
+                                    onDismissFromStartToEnd != null && x > threshold -> {
+                                        offset.animateTo(
+                                            Offset(
+                                                cardSize.width * 2f,
+                                                offset.value.y
+                                            )
+                                        )
+                                        onDismissFromStartToEnd()
+                                    }
+
+                                    onDismissFromEndToStart != null && x < -threshold -> {
+                                        offset.animateTo(
+                                            Offset(
+                                                -cardSize.width * 2f,
+                                                offset.value.y
+                                            )
+                                        )
+                                        onDismissFromEndToStart()
+                                    }
+
+                                    else -> offset.animateTo(Offset.Zero)
+                                }
                             }
                         }
                     }
-                )
+                }
         ) {
             content()
 
