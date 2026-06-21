@@ -302,7 +302,7 @@ fun TinderSwipeToDismissContainer(
                             val posChange = change.positionChange()
 
                             if (horizontallyDragged == null && posChange != Offset.Zero) {
-                                horizontallyDragged = posChange.x.absoluteValue > 15f
+                                horizontallyDragged = posChange.x.absoluteValue > posChange.y.absoluteValue
                             }
 
                             if (horizontallyDragged == true) {
