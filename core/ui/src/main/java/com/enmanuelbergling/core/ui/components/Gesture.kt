@@ -1,6 +1,7 @@
 package com.enmanuelbergling.core.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
@@ -19,9 +20,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,6 +56,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
@@ -251,28 +256,25 @@ fun TinderSwipeToDismissContainer(
     onDismissFromStartToEnd: (() -> Unit)? = null,
     onDismissFromEndToStart: (() -> Unit)? = null,
     dismissThreshold: Float = 0.4f,
-    startToEndIcon: @Composable () -> Unit = {
-        Icon(Icons.Rounded.Favorite, contentDescription = "like")
-    },
-    endToStartIcon: @Composable () -> Unit = {
-        Icon(Icons.Rounded.Delete, contentDescription = "delete")
-    },
+    startToEndIcon: @Composable () -> Unit = { FavoriteIcon() },
+    endToStartIcon: @Composable () -> Unit = { IgnoreIcon() },
     content: @Composable () -> Unit,
 ) {
+    val windowInfo = LocalWindowInfo.current
     val scope = rememberCoroutineScope()
     val offset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     var cardSize by remember { mutableStateOf(IntSize.Zero) }
     var grabbedFromTop by remember { mutableStateOf(true) }
 
     LaunchedEffect(visible) {
-        if (visible) offset.snapTo(Offset.Zero)
+        if (visible) offset.animateTo(Offset.Zero)
     }
 
     AnimatedVisibility(
         visible = visible,
         modifier = modifier,
         exit = shrinkVertically(),
-        enter = expandVertically() + fadeIn(),
+        enter = EnterTransition.None,
     ) {
         // Translation, rotation and the corner stamps live here so they move and rotate together
         // with the content.
@@ -319,7 +321,7 @@ fun TinderSwipeToDismissContainer(
                                     onDismissFromStartToEnd != null && x > threshold -> {
                                         offset.animateTo(
                                             Offset(
-                                                cardSize.width * 2f,
+                                                windowInfo.containerSize.width * 2f,
                                                 offset.value.y
                                             )
                                         )
@@ -329,7 +331,7 @@ fun TinderSwipeToDismissContainer(
                                     onDismissFromEndToStart != null && x < -threshold -> {
                                         offset.animateTo(
                                             Offset(
-                                                -cardSize.width * 2f,
+                                                -windowInfo.containerSize.width * 2f,
                                                 offset.value.y
                                             )
                                         )
@@ -370,5 +372,29 @@ fun TinderSwipeToDismissContainer(
             }
         }
     }
+}
+
+@Composable
+private fun FavoriteIcon() {
+    Icon(
+        imageVector = Icons.Rounded.Favorite,
+        contentDescription = "like",
+        modifier = Modifier
+            .padding(8.dp)
+            .size(48.dp),
+        tint = Color.Red
+    )
+}
+
+@Composable
+private fun IgnoreIcon() {
+    Icon(
+        imageVector = Icons.Rounded.Clear,
+        contentDescription = "ignore",
+        modifier = Modifier
+            .padding(8.dp)
+            .size(48.dp),
+        tint = Color.White
+    )
 }
 

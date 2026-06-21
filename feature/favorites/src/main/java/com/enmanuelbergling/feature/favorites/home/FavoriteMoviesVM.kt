@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveMovieFromFavoritesUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -14,6 +15,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,8 +30,11 @@ internal class FavoriteMoviesVM(
     private val _uiState = MutableStateFlow(FavoriteMoviesState())
     val uiState = _uiState.asStateFlow()
 
-    val favorites: Flow<PagingData<Movie>> =
-        getPaginatedFavoriteMovies().cachedIn(viewModelScope)
+    val favorites: Flow<PagingData<Movie>> = getPaginatedFavoriteMovies()
+        .cachedIn(viewModelScope)
+        .combine(uiState.map { it.deletedMovieIds }) { paging, deletedMovies ->
+            paging.filter { it.id !in deletedMovies }
+        }
 
     private val _sideEffectChannel = Channel<FavoriteMoviesSideEffect>()
     val sideEffectChannel get() = _sideEffectChannel.receiveAsFlow()
