@@ -1,10 +1,8 @@
 import java.io.FileInputStream
 import java.util.Properties
 
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.corntime.android.library)
-
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
     alias(libs.plugins.de.jensklingenberg.ktorfit)

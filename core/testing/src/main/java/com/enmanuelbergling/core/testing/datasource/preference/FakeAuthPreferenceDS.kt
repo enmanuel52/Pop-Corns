@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.flowOf
 
 class FakeAuthPreferenceDS: AuthPreferenceDS {
     private var _sessionId = ""
-    override fun saveSessionId(sessionId: String) {
+    override suspend fun saveSessionId(sessionId: String) {
         _sessionId = sessionId
     }
 
     override fun getSessionId(): Flow<String> = flowOf(_sessionId)
 
-    override fun clear() {
+    override suspend fun clear() {
         _sessionId = ""
     }
 }

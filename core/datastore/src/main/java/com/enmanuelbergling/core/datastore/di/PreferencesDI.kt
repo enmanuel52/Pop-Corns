@@ -1,7 +1,7 @@
 package com.enmanuelbergling.core.datastore.di
 
 import android.content.Context
-import com.enmanuelbergling.core.datastore.AuthPreferenceDSImpl
+import com.enmanuelbergling.core.datastore.encryption.AuthPreferenceDSImpl
 import com.enmanuelbergling.core.datastore.OnboardingPreferenceDSImpl
 import com.enmanuelbergling.core.datastore.SearchSuggestionDSImpl
 import com.enmanuelbergling.core.datastore.SettingsPreferencesDSImpl

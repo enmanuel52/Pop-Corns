@@ -1,6 +1,6 @@
 [versions]
 android-compileSdk = "37"
-android-minSdk = "24"
+android-minSdk = "26"
 android-targetSdk = "37"
 androidx-activity = "1.13.0"
 androidx-datastore = "1.2.1"
