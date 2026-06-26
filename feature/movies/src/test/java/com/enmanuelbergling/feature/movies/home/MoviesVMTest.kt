@@ -73,6 +73,9 @@ class MoviesVMTest {
         // Initial State
 
         // When
+        backgroundScope.launch {
+            moviesVM.uiState.collect()
+        }
         moviesVM.loadUi()
         advanceUntilIdle()
 
@@ -85,7 +88,7 @@ class MoviesVMTest {
     }
 
     @Test
-    fun `movie lists remain empty when one of them fails and uiState is error`() = runTest {
+    fun `lists left remain empty when one of them fails and uiState is error`() = runTest {
         //Given
         val readTimeOutException = NetworkException.ReadTimeOutException
         val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
@@ -112,6 +115,34 @@ class MoviesVMTest {
         assertThat(moviesVM.uiDataState.value.popular).isEmpty()
         assertThat(moviesVM.uiDataState.value.topRated).isEmpty()
         assertThat(moviesVM.uiDataState.value.nowPlaying).isEmpty()
+    }
+
+    @Test
+    fun `movie lists are partially saved when the third chain handler fails`() = runTest {
+        // Given
+        val readTimeOutException = NetworkException.ReadTimeOutException
+        val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
+            throwError(MovieRemoteDsFunction.GetNowPlayingMovies to readTimeOutException)
+        }
+
+        koinExtension.replaceDependencies {
+            single<MovieRemoteDS> { fakeMovieRemoteDS }
+        }
+        moviesVM = koinExtension.inject<MoviesVM> { parametersOf(false) }.value
+
+        // When
+        backgroundScope.launch {
+            moviesVM.uiState.collect()
+        }
+        moviesVM.loadUi()
+        advanceUntilIdle()
+
+        // Then
+        assertThat(moviesVM.uiState.value).isEqualTo(SimplerUi.Error(readTimeOutException.messageResource))
+        assertThat(moviesVM.uiDataState.value.upcoming).isNotEmpty()
+        assertThat(moviesVM.uiDataState.value.topRated).isNotEmpty()
+        assertThat(moviesVM.uiDataState.value.nowPlaying).isEmpty()
+        assertThat(moviesVM.uiDataState.value.popular).isEmpty()
     }
 
     @Test

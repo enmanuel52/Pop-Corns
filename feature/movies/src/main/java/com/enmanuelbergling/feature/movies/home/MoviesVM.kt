@@ -93,14 +93,14 @@ class MoviesVM(
 
     fun loadUi() = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
-        runCatching {
-            val request = MoviesRequest(
-                upcoming = _uiDataState.value.upcoming,
-                topRated = _uiDataState.value.topRated,
-                nowPlaying = _uiDataState.value.nowPlaying,
-                popular = _uiDataState.value.popular,
-            )
+        val request = MoviesRequest(
+            upcoming = _uiDataState.value.upcoming,
+            topRated = _uiDataState.value.topRated,
+            nowPlaying = _uiDataState.value.nowPlaying,
+            popular = _uiDataState.value.popular,
+        )
 
+        runCatching {
             val chain = moviesChain.upcomingHandler.apply {
                 nextChainHandler = moviesChain.topRatedHandler.apply {
                     nextChainHandler = moviesChain.nowPlayingHandler.apply {
@@ -109,16 +109,21 @@ class MoviesVM(
                 }
             }
 
-            chain.invoke(request)
-
-            _uiDataState.update {
-                it.copy(
-                    upcoming = request.upcoming,
-                    topRated = request.topRated,
-                    nowPlaying = request.nowPlaying,
-                    popular = request.popular,
-                )
+            try {
+                chain.invoke(request)
+            } catch (e: Exception) {
+                throw e
+            } finally {
+                _uiDataState.update {
+                    it.copy(
+                        upcoming = request.upcoming,
+                        topRated = request.topRated,
+                        nowPlaying = request.nowPlaying,
+                        popular = request.popular,
+                    )
+                }
             }
+
         }.onFailure {
             val networkException = (it as? CannotHandleException)?.throwable as? NetworkException
             val messageRes = networkException?.messageResource
