@@ -12,14 +12,8 @@ dependencies {
     // Needed JUnit version
     api( libs.koin.test.junit4)
 
-    //Kotest
-    api(libs.kotest.runner.junit5)
-
     api(libs.kotlinx.coroutines.test)
 
     api(libs.junit)
-
-    //Kotest
-    testImplementation(libs.kotest.runner.junit5)
 
 }
