@@ -1,4 +1,5 @@
-import util.libs
+import org.gradle.kotlin.dsl.androidTestImplementation
+import util.libs as libsUtil
 
 plugins {
     alias(libs.plugins.corntime.android.application)
@@ -11,7 +12,7 @@ android {
     defaultConfig {
 
         applicationId = "com.enmanuelbergling.ktormovies"
-        targetSdk = libs.findVersion("android-targetSdk").get().toString().toInt()
+        targetSdk = libsUtil.findVersion("android-targetSdk").get().toString().toInt()
         versionCode = 1
         versionName = "2.0"
 
@@ -55,14 +56,14 @@ dependencies {
 
     testImplementation(project(":core:testing"))
 
-    implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.espresso.core)
 
-    implementation("androidx.core:core-splashscreen:1.2.0")
+    implementation(libs.androidx.core.splashscreen)
 
 //    implementation(libs.walkthrough)
 }
