@@ -51,6 +51,10 @@ class MoviesVMTest {
         moviesVM = koinExtension.inject<MoviesVM> { parametersOf(false) }.value
     }
 
+    @AfterEach
+    fun tearDown() {
+    }
+
     @Test
     fun `isLoggedIn updates when user is saved or cleared`() = runTest {
         moviesVM.isLoggedIn.test {
@@ -76,7 +80,8 @@ class MoviesVMTest {
         backgroundScope.launch {
             moviesVM.uiState.collect()
         }
-        moviesVM.loadUi()
+        // this is already called when the uiState is collected
+//        moviesVM.loadUi()
         advanceUntilIdle()
 
         // Then
@@ -203,9 +208,5 @@ class MoviesVMTest {
         // Then - Final state
         assertThat(moviesVM.uiDataState.value.searchSuggestions).doesNotContain(query)
         assertThat(moviesVM.uiDataState.value.searchSuggestionsDeleted).isEmpty()
-    }
-
-    @AfterEach
-    fun tearDown() {
     }
 }

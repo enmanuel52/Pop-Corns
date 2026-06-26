@@ -71,6 +71,8 @@ internal class MovieDetailsVM(
             try {
                 detailsChain.invoke(request)
             } catch (e: Exception) {
+                throw e
+            } finally {
                 _uiState.update {
                     it.copy(
                         details = request.details,
@@ -78,18 +80,11 @@ internal class MovieDetailsVM(
                         accountStates = request.accountStates
                     )
                 }
-                throw e
             }
 
-            _uiState.update {
-                it.copy(
-                    details = request.details,
-                    credits = request.credits,
-                    accountStates = request.accountStates
-                )
-            }
         }.onFailure { throwable ->
-            val networkException = (throwable as? CannotHandleException)?.throwable as? NetworkException
+            val networkException =
+                (throwable as? CannotHandleException)?.throwable as? NetworkException
             val messageRes = networkException?.messageResource
                 ?: NetworkException.DefaultException.messageResource
 
