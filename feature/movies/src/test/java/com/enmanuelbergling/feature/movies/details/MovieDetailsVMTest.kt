@@ -3,16 +3,15 @@ package com.enmanuelbergling.feature.movies.details
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import assertk.assertions.isFalse
 import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.testing.datasource.remote.FakeMovieRemoteDS
-import com.enmanuelbergling.core.testing.datasource.remote.FakeUserRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.MovieRemoteDsFunction
 import com.enmanuelbergling.core.testing.datasource.remote.UserRemoteDsFunction
 import com.enmanuelbergling.core.testing.extension.KoinExtension
@@ -24,21 +23,27 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.koin.core.parameter.parametersOf
+import org.koin.test.KoinTest
 import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(MainCoroutineExtension::class)
-class MovieDetailsVMTest {
+class MovieDetailsVMTest : KoinTest {
+
+    private val testDispatcher = StandardTestDispatcher()
 
     @JvmField
     @RegisterExtension
     val koinExtension = KoinExtension(moviesModule)
+
+    @JvmField
+    @RegisterExtension
+    val mainCoroutineExtension = MainCoroutineExtension(testDispatcher)
 
     private lateinit var viewModel: MovieDetailsVM
     private val movieId = 123
@@ -104,10 +109,12 @@ class MovieDetailsVMTest {
 
                 // When
                 viewModel.onAction(MovieDetailsAction.OnWatchlistClick)
+                runCurrent() // Start coroutine and reach first suspension point (data source)
 
                 // Then
                 assertThat(awaitItem().isWatchlistLoading).isTrue()
                 
+                advanceUntilIdle() // Finish coroutine
                 val finalItem = awaitItem()
                 assertThat(finalItem.isWatchlistLoading).isFalse()
                 assertThat(finalItem.accountStates?.watchlist).isEqualTo(true)
@@ -120,7 +127,7 @@ class MovieDetailsVMTest {
         val exception = NetworkException.AuthorizationException
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
-                FakeUserRemoteDS().apply {
+                com.enmanuelbergling.core.testing.datasource.remote.FakeUserRemoteDS().apply {
                     throwError(UserRemoteDsFunction.AddMovieToAccountWatchlist to exception)
                 }
             }
@@ -156,10 +163,12 @@ class MovieDetailsVMTest {
 
                 // When
                 viewModel.onAction(MovieDetailsAction.OnFavoriteClick)
+                runCurrent() // Start coroutine and reach first suspension point (data source)
 
                 // Then
                 assertThat(awaitItem().isFavoriteLoading).isTrue()
                 
+                advanceUntilIdle() // Finish coroutine
                 val finalItem = awaitItem()
                 assertThat(finalItem.isFavoriteLoading).isFalse()
                 assertThat(finalItem.accountStates?.favorite).isEqualTo(true)
@@ -172,7 +181,7 @@ class MovieDetailsVMTest {
         val exception = NetworkException.AuthorizationException
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
-                FakeUserRemoteDS().apply {
+                com.enmanuelbergling.core.testing.datasource.remote.FakeUserRemoteDS().apply {
                     throwError(UserRemoteDsFunction.AddMovieToFavorites to exception)
                 }
             }

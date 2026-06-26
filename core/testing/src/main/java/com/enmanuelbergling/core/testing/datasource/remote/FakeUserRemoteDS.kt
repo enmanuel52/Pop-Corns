@@ -127,6 +127,7 @@ class FakeUserRemoteDS(
     override suspend fun addMovieToAccountWatchlist(
         movieId: Int,
     ): ResultHandler<WatchResponse> {
+        kotlinx.coroutines.yield()
         return checkError(UserRemoteDsFunction.AddMovieToAccountWatchlist) ?: ResultHandler.Success(
             DEFAULT_WATCH_RESPONSE
         )
@@ -135,6 +136,7 @@ class FakeUserRemoteDS(
     override suspend fun removeMovieFromAccountWatchlist(
         movieId: Int,
     ): ResultHandler<WatchResponse> {
+        kotlinx.coroutines.yield()
         return checkError(UserRemoteDsFunction.RemoveMovieFromAccountWatchlist)
             ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
     }
@@ -143,12 +145,14 @@ class FakeUserRemoteDS(
         checkError(UserRemoteDsFunction.GetAccountFavoriteMovies) ?: ResultHandler.Success(emptyList<Movie>().asPage())
 
     override suspend fun addMovieToFavorites(movieId: Int): ResultHandler<WatchResponse> {
+        kotlinx.coroutines.yield()
         return checkError(UserRemoteDsFunction.AddMovieToFavorites) ?: ResultHandler.Success(
             DEFAULT_WATCH_RESPONSE
         )
     }
 
     override suspend fun removeMovieFromFavorites(movieId: Int): ResultHandler<WatchResponse> {
+        kotlinx.coroutines.yield()
         return checkError(UserRemoteDsFunction.RemoveMovieFromFavorites) ?: ResultHandler.Success(
             DEFAULT_WATCH_RESPONSE
         )
