@@ -2,7 +2,7 @@ package com.enmanuelbergling.core.domain.usecase.movie
 
 import com.enmanuelbergling.core.domain.datasource.preferences.SearchSuggestionDS
 
-class GetSearchSuggestionsUC constructor(
+class GetSearchSuggestionsUC(
     private val localDs: SearchSuggestionDS,
 ) {
     operator fun invoke() = localDs.getSuggestions()
