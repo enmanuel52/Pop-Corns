@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.enmanuelbergling.core.domain.design.CannotHandleException
 import com.enmanuelbergling.core.domain.usecase.movie.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.SyncUserDetailsUC
@@ -12,6 +13,7 @@ import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.QueryString
 import com.enmanuelbergling.core.ui.components.messageResource
+import com.enmanuelbergling.feature.movies.R
 import com.enmanuelbergling.feature.movies.home.model.MoviesChain
 import com.enmanuelbergling.feature.movies.home.model.MoviesRequest
 import com.enmanuelbergling.feature.movies.home.model.MoviesUiData
@@ -57,7 +59,7 @@ class MoviesVM(
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
     val uiState = _uiState
-        .onStart { syncUserUC() }
+        .onStart { syncUserUC(); loadUi() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -82,8 +84,6 @@ class MoviesVM(
 
 
     init {
-        loadUi()
-
         getSearchSuggestionsUC()
             .onEach { suggestions ->
                 _uiDataState.update { it.copy(searchSuggestions = suggestions) }
@@ -119,8 +119,11 @@ class MoviesVM(
                     popular = request.popular,
                 )
             }
-        }.onFailure { _ ->
-            _uiState.update { SimplerUi.Error(NetworkException.ReadTimeOutException.messageResource) }
+        }.onFailure {
+            val networkException = (it as? CannotHandleException)?.throwable as? NetworkException
+            val messageRes = networkException?.messageResource
+                ?: com.enmanuelbergling.core.ui.R.string.default_net_exception_message
+            _uiState.update { SimplerUi.Error(messageRes) }
         }.onSuccess {
             _uiState.update { SimplerUi.Idle }
         }
