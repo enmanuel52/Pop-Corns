@@ -1,6 +1,7 @@
 package com.enmanuelbergling.core.testing.datasource.remote
 
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
+import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.PageModel
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.asPage
@@ -36,12 +37,16 @@ class FakeUserRemoteDS(
 
     private val _watchListMovieIds = mutableListOf<MovieId>()
 
+    var errorToThrow: NetworkException? = null
+
+    private fun <T> checkError(): ResultHandler<T>? = errorToThrow?.let { ResultHandler.Error(it) }
+
     override suspend fun getAccount(): ResultHandler<UserDetails> =
-        ResultHandler.Success(userResponse)
+        checkError() ?: ResultHandler.Success(userResponse)
 
     override suspend fun createWatchList(
         listPost: CreateListPost,
-    ) = ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+    ) = checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         _watchList = EMPTY_WATCH_LIST.copy(
             description = listPost.description,
             name = listPost.name
@@ -51,7 +56,7 @@ class FakeUserRemoteDS(
     override suspend fun deleteMovieFromList(
         movieId: Int,
         listId: Int,
-    ) = ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+    ) = checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         if (_watchList != null) {
             _watchListMovieIds.remove(movieId)
         }
@@ -60,23 +65,23 @@ class FakeUserRemoteDS(
     override suspend fun addMovieToList(
         movieId: Int,
         listId: Int,
-    ) = ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+    ) = checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         if (_watchList != null) {
             _watchListMovieIds.add(movieId)
         }
     }
 
     override suspend fun deleteList(listId: Int) =
-        ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
             _watchList = null
             _watchListMovieIds.clear()
         }
 
     override suspend fun checkItemStatus(listId: Int, movieId: Int): ResultHandler<Boolean> =
-        ResultHandler.Success(_watchListMovieIds.any { id -> id == movieId })
+        checkError() ?: ResultHandler.Success(_watchListMovieIds.any { id -> id == movieId })
 
     override suspend fun getWatchListMovies(listId: Int, page: Int): ResultHandler<PageModel<Movie>> =
-        ResultHandler.Success(
+        checkError() ?: ResultHandler.Success(
             _watchListMovieIds.map { movieId ->
                 FakeMovieData.MOVIES.first().copy(id = movieId)
             }.asPage()
@@ -86,7 +91,7 @@ class FakeUserRemoteDS(
         accountId: String,
         page: Int,
     ): ResultHandler<PageModel<WatchList>> =
-        if (_watchList != null) {
+        checkError() ?: if (_watchList != null) {
             ResultHandler.Success(listOf(_watchList!!).asPage())
         } else {
             ResultHandler.Success(emptyList<WatchList>().asPage())
@@ -94,22 +99,25 @@ class FakeUserRemoteDS(
 
     override suspend fun getAccountWatchlistMovies(
         page: Int,
-    ): ResultHandler<PageModel<Movie>> = ResultHandler.Success(emptyList<Movie>().asPage())
+    ): ResultHandler<PageModel<Movie>> =
+        checkError() ?: ResultHandler.Success(emptyList<Movie>().asPage())
 
     override suspend fun addMovieToAccountWatchlist(
         movieId: Int,
-    ): ResultHandler<WatchResponse> = ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+    ): ResultHandler<WatchResponse> =
+        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 
     override suspend fun removeMovieFromAccountWatchlist(
         movieId: Int,
-    ): ResultHandler<WatchResponse> = ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+    ): ResultHandler<WatchResponse> =
+        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 
     override suspend fun getAccountFavoriteMovies(page: Int): ResultHandler<PageModel<Movie>> =
-        ResultHandler.Success(emptyList<Movie>().asPage())
+        checkError() ?: ResultHandler.Success(emptyList<Movie>().asPage())
 
     override suspend fun addMovieToFavorites(movieId: Int): ResultHandler<WatchResponse> =
-        ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 
     override suspend fun removeMovieFromFavorites(movieId: Int): ResultHandler<WatchResponse> =
-        ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 }
