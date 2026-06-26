@@ -44,6 +44,7 @@ class MoviesVM(
     private val syncUserUC: SyncUserDetailsUC,
     getSavedUserUC: GetSavedUserUC,
     getFilteredMoviesUC: GetFilteredMoviesUC,
+    searchMovieShortCutClicked: Boolean
 ) : ViewModel() {
 
     val isLoggedIn: StateFlow<Boolean> = getSavedUserUC()
@@ -63,7 +64,8 @@ class MoviesVM(
             initialValue = SimplerUi.Idle
         )
 
-    private val _uiDataState = MutableStateFlow(MoviesUiData())
+    private val _uiDataState =
+        MutableStateFlow(MoviesUiData(startOnSearch = searchMovieShortCutClicked))
     val uiDataState get() = _uiDataState.asStateFlow()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)

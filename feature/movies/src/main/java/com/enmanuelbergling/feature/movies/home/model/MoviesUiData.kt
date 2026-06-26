@@ -11,4 +11,5 @@ data class MoviesUiData(
     val searchQuery: String = "",
     val searchSuggestions: List<StringQuery> = emptyList(),
     val searchSuggestionsDeleted: List<StringQuery> = emptyList(),
+    val startOnSearch: Boolean = false,
 )

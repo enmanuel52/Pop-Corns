@@ -65,7 +65,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
 
             LaunchedEffect(key1 = Unit) {
                 if (searchMovieShortCutClicked) {
-                    TODO("trigger searching")
+                    println("search shortcut was clicked")
                 }
             }
 

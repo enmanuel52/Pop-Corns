@@ -1,5 +1,6 @@
 package com.enmanuelbergling.feature.movies.home
 
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -40,6 +41,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarState
+import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -50,6 +52,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,6 +86,7 @@ import com.enmanuelbergling.feature.movies.search.ExpandedSearchBarContent
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,8 +97,12 @@ fun MoviesScreen(
     onFavorites: () -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
+    val activity = LocalActivity.current
+    val searchMovieShortCutClicked: Boolean =
+        rememberSaveable { activity?.intent?.getStringExtra("search_movie_extra") != null }
 
-    val viewModel = koinViewModel<MoviesVM>()
+    val viewModel = koinViewModel<MoviesVM> { parametersOf(searchMovieShortCutClicked) }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
 
@@ -107,8 +115,13 @@ fun MoviesScreen(
         SnackbarHostState()
     }
 
-    val searchBarState = rememberSearchBarState()
+    val searchBarState =
+        rememberSearchBarState(
+            initialValue = if (uiData.startOnSearch) SearchBarValue.Expanded
+            else SearchBarValue.Collapsed,
+        )
     val textFieldState = rememberTextFieldState("")
+
 
     LaunchedEffect(textFieldState.text) {
         viewModel.onQueryChange(textFieldState.text.toString())
