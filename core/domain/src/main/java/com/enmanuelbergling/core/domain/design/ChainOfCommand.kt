@@ -1,5 +1,7 @@
 package com.enmanuelbergling.core.domain.design
 
+import com.enmanuelbergling.core.model.core.NetworkException
+
 /**
  * This way is more flexible:
  * request goes through every handler, and next handler is mutable
@@ -16,4 +18,5 @@ interface ChainHandler<T> {
     }
 }
 
-class CannotHandleException(val msg: String) : Exception(msg)
+class CannotHandleException(msg: String, val throwable: Throwable) :
+    Exception(msg, throwable)

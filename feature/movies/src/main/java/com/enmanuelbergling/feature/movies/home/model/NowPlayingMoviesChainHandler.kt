@@ -13,7 +13,10 @@ class NowPlayingMoviesChainHandler(
     override suspend fun handle(request: MoviesRequest): MoviesRequest =
         if (request.nowPlaying.isNotEmpty()) request
         else when (val result = getNowPlayingMoviesUC()) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply {
                 nowPlaying = result.data?.results.orEmpty()
             }

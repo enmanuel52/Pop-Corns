@@ -13,7 +13,10 @@ class ActorKnownMoviesChainHandler(
     override suspend fun handle(request: ActorDetailsRequest): ActorDetailsRequest =
         if (request.knownMovies.isNotEmpty()) request
         else when (val result = getMoviesByActorUC(request.actorId)) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply { knownMovies = result.data.orEmpty() }
         }
 }

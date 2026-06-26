@@ -13,7 +13,10 @@ class UpcomingMoviesChainHandler(
     override suspend fun handle(request: MoviesRequest): MoviesRequest =
         if (request.upcoming.isNotEmpty()) request
         else when (val result = getUpcomingMoviesUC()) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply {
                 upcoming = result.data?.results.orEmpty().shuffled()
             }
