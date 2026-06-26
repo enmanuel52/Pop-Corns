@@ -1,14 +1,17 @@
 package com.enmanuelbergling.feature.movies.home
 
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.doesNotContain
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
+import com.enmanuelbergling.core.domain.datasource.preferences.UserPreferenceDS
 import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.model.user.UserDetails
 import com.enmanuelbergling.core.testing.datasource.remote.FakeMovieRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.MovieRemoteDsFunction
 import com.enmanuelbergling.core.testing.extension.KoinExtension
@@ -19,7 +22,9 @@ import com.enmanuelbergling.feature.movies.home.model.SuggestionEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -28,6 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.koin.core.parameter.parametersOf
 import org.koin.test.inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MainCoroutineExtension::class)
@@ -38,9 +44,27 @@ class MoviesVMTest {
 
     lateinit var moviesVM: MoviesVM
 
+    val userPreferenceDS: UserPreferenceDS by koinExtension.inject()
+
     @BeforeEach
     fun setup() {
         moviesVM = koinExtension.inject<MoviesVM> { parametersOf(false) }.value
+    }
+
+    @Test
+    fun `isLoggedIn updates when user is saved or cleared`() = runTest {
+        moviesVM.isLoggedIn.test {
+            // Initial state: logged out
+            assertThat(awaitItem()).isEqualTo(false)
+
+            // When user is saved
+            userPreferenceDS.updateUser(UserDetails(id = 1, username = "test"))
+            assertThat(awaitItem()).isEqualTo(true)
+
+            // When user is cleared
+            userPreferenceDS.clear()
+            assertThat(awaitItem()).isEqualTo(false)
+        }
     }
 
     @Test
@@ -94,6 +118,9 @@ class MoviesVMTest {
     fun `when onSuggestionEvent Add is called, suggestion is added to ui state`() = runTest {
         // Given
         val query = "Avengers"
+        backgroundScope.launch {
+            moviesVM.uiDataState.collect()
+        }
 
         // When
         moviesVM.onSuggestionEvent(SuggestionEvent.Add(query))
@@ -106,6 +133,9 @@ class MoviesVMTest {
     @Test
     fun `when onSuggestionEvent Clear is called, suggestions are cleared from ui state`() = runTest {
         // Given
+        backgroundScope.launch {
+            moviesVM.uiDataState.collect()
+        }
         moviesVM.onSuggestionEvent(SuggestionEvent.Add("Avengers"))
         advanceUntilIdle()
         assertThat(moviesVM.uiDataState.value.searchSuggestions).isNotEmpty()
@@ -122,15 +152,26 @@ class MoviesVMTest {
     fun `when onSuggestionEvent Delete is called, suggestion is first added to deleted list then removed`() = runTest {
         // Given
         val query = "Avengers"
+        backgroundScope.launch {
+            moviesVM.uiDataState.collect()
+        }
         moviesVM.onSuggestionEvent(SuggestionEvent.Add(query))
         advanceUntilIdle()
 
         // When
         moviesVM.onSuggestionEvent(SuggestionEvent.Delete(query))
-        advanceUntilIdle()
+        runCurrent()
 
-        // Then
+        // Then - Immediate state (animation starting)
+        assertThat(moviesVM.uiDataState.value.searchSuggestionsDeleted).contains(query)
+
+        // When - Wait for animation
+        advanceTimeBy(200.milliseconds)
+        runCurrent()
+
+        // Then - Final state
         assertThat(moviesVM.uiDataState.value.searchSuggestions).doesNotContain(query)
+        assertThat(moviesVM.uiDataState.value.searchSuggestionsDeleted).isEmpty()
     }
 
     @AfterEach

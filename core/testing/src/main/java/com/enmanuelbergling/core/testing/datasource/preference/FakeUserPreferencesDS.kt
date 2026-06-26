@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class FakeUserPreferencesDS : UserPreferenceDS {
-    private val _user = MutableStateFlow(UserDetails())
-    override fun getCurrentUser(): Flow<UserDetails> = _user.asStateFlow()
+    private val _user = MutableStateFlow<UserDetails?>(null)
+    override fun getCurrentUser(): Flow<UserDetails?> = _user.asStateFlow()
 
     override suspend fun updateUser(userDetails: UserDetails) {
         _user.update { userDetails }
     }
 
     override suspend fun clear() {
-        _user.update { UserDetails() }
+        _user.update { null }
     }
 }

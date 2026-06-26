@@ -21,5 +21,6 @@ dependencies {
     api(libs.junit.platform.launcher)
 
     api(libs.assertk)
+    api(libs.turbine)
 
 }
