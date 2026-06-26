@@ -8,17 +8,29 @@ import com.enmanuelbergling.core.model.core.asPage
 import com.enmanuelbergling.core.testing.data.FakeActorData
 import com.enmanuelbergling.core.testing.data.FakeMovieData
 
+enum class ActorRemoteDsFunction {
+    GetActorDetails,
+    GetMoviesByActor,
+    GetPopularActors
+}
+
 class FakeActorRemoteDS : ActorRemoteDS {
 
-    var errorToThrow: NetworkException? = null
+    private val errors = mutableMapOf<ActorRemoteDsFunction, NetworkException>()
 
-    private fun <T> checkError(): ResultHandler<T>? = errorToThrow?.let { ResultHandler.Error(it) }
+    fun throwError(vararg errors: Pair<ActorRemoteDsFunction, NetworkException>) {
+        this.errors.putAll(errors)
+    }
+
+    private fun <T> checkError(function: ActorRemoteDsFunction): ResultHandler<T>? =
+        errors[function]?.let { ResultHandler.Error(it) }
 
     override suspend fun getActorDetails(id: Int) =
-        checkError() ?: ResultHandler.Success(FakeActorData.ACTOR_DETAILS)
+        checkError(ActorRemoteDsFunction.GetActorDetails)
+            ?: ResultHandler.Success(FakeActorData.ACTOR_DETAILS)
 
     override suspend fun getMoviesByActor(actorId: Int) =
-        checkError() ?: ResultHandler.Success(FakeMovieData.MOVIES.map { movie ->
+        checkError(ActorRemoteDsFunction.GetMoviesByActor) ?: ResultHandler.Success(FakeMovieData.MOVIES.map { movie ->
             KnownMovie(
                 id = movie.id,
                 posterPath = movie.posterPath,
@@ -28,5 +40,6 @@ class FakeActorRemoteDS : ActorRemoteDS {
         })
 
     override suspend fun getPopularActors(page: Int) =
-        checkError() ?: ResultHandler.Success(data = listOf(FakeActorData.ACTOR).asPage())
+        checkError(ActorRemoteDsFunction.GetPopularActors)
+            ?: ResultHandler.Success(data = listOf(FakeActorData.ACTOR).asPage())
 }

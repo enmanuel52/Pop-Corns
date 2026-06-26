@@ -10,6 +10,7 @@ import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.testing.datasource.remote.FakeMovieRemoteDS
+import com.enmanuelbergling.core.testing.datasource.remote.MovieRemoteDsFunction
 import com.enmanuelbergling.core.testing.extension.KoinExtension
 import com.enmanuelbergling.core.testing.extension.MainCoroutineExtension
 import com.enmanuelbergling.core.ui.components.messageResource
@@ -64,7 +65,7 @@ class MoviesVMTest {
         //Given
         val readTimeOutException = NetworkException.ReadTimeOutException
         val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
-            errorToThrow = readTimeOutException
+            throwError(MovieRemoteDsFunction.GetUpcomingMovies to readTimeOutException)
         }
 
         koinExtension.replaceDependencies {

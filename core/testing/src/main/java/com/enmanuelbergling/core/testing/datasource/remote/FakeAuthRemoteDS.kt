@@ -7,18 +7,29 @@ import com.enmanuelbergling.core.model.auth.CreateSessionPost
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.ResultHandler
 
+enum class AuthRemoteDsFunction {
+    CreateRequestToken,
+    CreateSessionFromLogin,
+    CreateSessionId
+}
+
 class FakeAuthRemoteDS : AuthRemoteDS {
 
-    var errorToThrow: NetworkException? = null
+    private val errors = mutableMapOf<AuthRemoteDsFunction, NetworkException>()
 
-    private fun <T> checkError(): ResultHandler<T>? = errorToThrow?.let { ResultHandler.Error(it) }
+    fun throwError(vararg errors: Pair<AuthRemoteDsFunction, NetworkException>) {
+        this.errors.putAll(errors)
+    }
+
+    private fun <T> checkError(function: AuthRemoteDsFunction): ResultHandler<T>? =
+        errors[function]?.let { ResultHandler.Error(it) }
 
     override suspend fun createRequestToken(): ResultHandler<RequestToken> =
-        checkError() ?: ResultHandler.Success("new token")
+        checkError(AuthRemoteDsFunction.CreateRequestToken) ?: ResultHandler.Success("new token")
 
     override suspend fun createSessionFromLogin(sessionPost: CreateSessionPost): ResultHandler<RequestToken> =
-        checkError() ?: ResultHandler.Success("latest token")
+        checkError(AuthRemoteDsFunction.CreateSessionFromLogin) ?: ResultHandler.Success("latest token")
 
     override suspend fun createSessionId(token: RequestToken): ResultHandler<SessionId> =
-        checkError() ?: ResultHandler.Success("new session id")
+        checkError(AuthRemoteDsFunction.CreateSessionId) ?: ResultHandler.Success("new session id")
 }

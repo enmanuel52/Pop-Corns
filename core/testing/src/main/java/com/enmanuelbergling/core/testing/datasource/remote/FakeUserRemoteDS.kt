@@ -27,6 +27,23 @@ val EMPTY_WATCH_LIST = WatchList(
 
 typealias MovieId = Int
 
+enum class UserRemoteDsFunction {
+    GetAccount,
+    CreateWatchList,
+    DeleteMovieFromList,
+    AddMovieToList,
+    DeleteList,
+    CheckItemStatus,
+    GetWatchListMovies,
+    GetWatchLists,
+    GetAccountWatchlistMovies,
+    AddMovieToAccountWatchlist,
+    RemoveMovieFromAccountWatchlist,
+    GetAccountFavoriteMovies,
+    AddMovieToFavorites,
+    RemoveMovieFromFavorites
+}
+
 /**
  * Watch list operation are made against a single one
  * */
@@ -37,16 +54,21 @@ class FakeUserRemoteDS(
 
     private val _watchListMovieIds = mutableListOf<MovieId>()
 
-    var errorToThrow: NetworkException? = null
+    private val errors = mutableMapOf<UserRemoteDsFunction, NetworkException>()
 
-    private fun <T> checkError(): ResultHandler<T>? = errorToThrow?.let { ResultHandler.Error(it) }
+    fun throwError(vararg errors: Pair<UserRemoteDsFunction, NetworkException>) {
+        this.errors.putAll(errors)
+    }
+
+    private fun <T> checkError(function: UserRemoteDsFunction): ResultHandler<T>? =
+        errors[function]?.let { ResultHandler.Error(it) }
 
     override suspend fun getAccount(): ResultHandler<UserDetails> =
-        checkError() ?: ResultHandler.Success(userResponse)
+        checkError(UserRemoteDsFunction.GetAccount) ?: ResultHandler.Success(userResponse)
 
     override suspend fun createWatchList(
         listPost: CreateListPost,
-    ) = checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+    ) = checkError(UserRemoteDsFunction.CreateWatchList) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         _watchList = EMPTY_WATCH_LIST.copy(
             description = listPost.description,
             name = listPost.name
@@ -56,7 +78,7 @@ class FakeUserRemoteDS(
     override suspend fun deleteMovieFromList(
         movieId: Int,
         listId: Int,
-    ) = checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+    ) = checkError(UserRemoteDsFunction.DeleteMovieFromList) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         if (_watchList != null) {
             _watchListMovieIds.remove(movieId)
         }
@@ -65,23 +87,23 @@ class FakeUserRemoteDS(
     override suspend fun addMovieToList(
         movieId: Int,
         listId: Int,
-    ) = checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+    ) = checkError(UserRemoteDsFunction.AddMovieToList) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
         if (_watchList != null) {
             _watchListMovieIds.add(movieId)
         }
     }
 
     override suspend fun deleteList(listId: Int) =
-        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
+        checkError(UserRemoteDsFunction.DeleteList) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE).also {
             _watchList = null
             _watchListMovieIds.clear()
         }
 
     override suspend fun checkItemStatus(listId: Int, movieId: Int): ResultHandler<Boolean> =
-        checkError() ?: ResultHandler.Success(_watchListMovieIds.any { id -> id == movieId })
+        checkError(UserRemoteDsFunction.CheckItemStatus) ?: ResultHandler.Success(_watchListMovieIds.any { id -> id == movieId })
 
     override suspend fun getWatchListMovies(listId: Int, page: Int): ResultHandler<PageModel<Movie>> =
-        checkError() ?: ResultHandler.Success(
+        checkError(UserRemoteDsFunction.GetWatchListMovies) ?: ResultHandler.Success(
             _watchListMovieIds.map { movieId ->
                 FakeMovieData.MOVIES.first().copy(id = movieId)
             }.asPage()
@@ -91,7 +113,7 @@ class FakeUserRemoteDS(
         accountId: String,
         page: Int,
     ): ResultHandler<PageModel<WatchList>> =
-        checkError() ?: if (_watchList != null) {
+        checkError(UserRemoteDsFunction.GetWatchLists) ?: if (_watchList != null) {
             ResultHandler.Success(listOf(_watchList!!).asPage())
         } else {
             ResultHandler.Success(emptyList<WatchList>().asPage())
@@ -100,24 +122,24 @@ class FakeUserRemoteDS(
     override suspend fun getAccountWatchlistMovies(
         page: Int,
     ): ResultHandler<PageModel<Movie>> =
-        checkError() ?: ResultHandler.Success(emptyList<Movie>().asPage())
+        checkError(UserRemoteDsFunction.GetAccountWatchlistMovies) ?: ResultHandler.Success(emptyList<Movie>().asPage())
 
     override suspend fun addMovieToAccountWatchlist(
         movieId: Int,
     ): ResultHandler<WatchResponse> =
-        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+        checkError(UserRemoteDsFunction.AddMovieToAccountWatchlist) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 
     override suspend fun removeMovieFromAccountWatchlist(
         movieId: Int,
     ): ResultHandler<WatchResponse> =
-        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+        checkError(UserRemoteDsFunction.RemoveMovieFromAccountWatchlist) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 
     override suspend fun getAccountFavoriteMovies(page: Int): ResultHandler<PageModel<Movie>> =
-        checkError() ?: ResultHandler.Success(emptyList<Movie>().asPage())
+        checkError(UserRemoteDsFunction.GetAccountFavoriteMovies) ?: ResultHandler.Success(emptyList<Movie>().asPage())
 
     override suspend fun addMovieToFavorites(movieId: Int): ResultHandler<WatchResponse> =
-        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+        checkError(UserRemoteDsFunction.AddMovieToFavorites) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 
     override suspend fun removeMovieFromFavorites(movieId: Int): ResultHandler<WatchResponse> =
-        checkError() ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
+        checkError(UserRemoteDsFunction.RemoveMovieFromFavorites) ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
 }
