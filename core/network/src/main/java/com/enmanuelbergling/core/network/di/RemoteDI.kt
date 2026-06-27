@@ -3,15 +3,18 @@ package com.enmanuelbergling.core.network.di
 import com.enmanuelbergling.core.domain.datasource.remote.ActorRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.AuthRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.network.ktor.datasource.ActorRemoteDSImpl
 import com.enmanuelbergling.core.network.ktor.datasource.AuthRemoteDSImpl
 import com.enmanuelbergling.core.network.ktor.datasource.MovieRemoteDSImpl
+import com.enmanuelbergling.core.network.ktor.datasource.TvRemoteDSImpl
 import com.enmanuelbergling.core.network.ktor.datasource.UserRemoteDSImpl
 import com.enmanuelbergling.core.network.ktor.ktorClient
 import com.enmanuelbergling.core.network.ktor.service.ActorService
 import com.enmanuelbergling.core.network.ktor.service.AuthService
 import com.enmanuelbergling.core.network.ktor.service.MovieService
+import com.enmanuelbergling.core.network.ktor.service.TvService
 import com.enmanuelbergling.core.network.ktor.service.UserService
 import com.enmanuelbergling.core.network.ktorfit.KtorfitClient
 import com.enmanuelbergling.core.network.ktorfit.service.MoviesFilterService
@@ -27,6 +30,8 @@ val remoteModule = module {
 
     singleOf(::MovieService)
 
+    singleOf(::TvService)
+
     singleOf(::ActorService)
 
     singleOf(::AuthService)
@@ -36,6 +41,8 @@ val remoteModule = module {
 
 val remoteDsModule = module {
     single<MovieRemoteDS> { MovieRemoteDSImpl(get(), get(), get(), get()) }
+
+    single<TvRemoteDS> { TvRemoteDSImpl(get(), get()) }
 
     single<ActorRemoteDS> { ActorRemoteDSImpl(get()) }
 
