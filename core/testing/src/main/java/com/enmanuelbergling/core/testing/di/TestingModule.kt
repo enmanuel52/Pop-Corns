@@ -8,6 +8,7 @@ import com.enmanuelbergling.core.domain.datasource.preferences.UserPreferenceDS
 import com.enmanuelbergling.core.domain.datasource.remote.ActorRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.AuthRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
+import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.testing.datasource.preference.FakeAuthPreferenceDS
 import com.enmanuelbergling.core.testing.datasource.preference.FakeOnboardingPreferenceDS
@@ -17,6 +18,7 @@ import com.enmanuelbergling.core.testing.datasource.preference.FakeUserPreferenc
 import com.enmanuelbergling.core.testing.datasource.remote.FakeActorRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.FakeAuthRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.FakeMovieRemoteDS
+import com.enmanuelbergling.core.testing.datasource.remote.FakeTvRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.FakeUserRemoteDS
 import org.koin.dsl.module
 
@@ -32,6 +34,8 @@ val testingPreferenceModule = module {
 
 val testingRemoteModule = module {
     single<MovieRemoteDS> { FakeMovieRemoteDS() }
+
+    single<TvRemoteDS> { FakeTvRemoteDS() }
 
     single<ActorRemoteDS> { FakeActorRemoteDS() }
 
