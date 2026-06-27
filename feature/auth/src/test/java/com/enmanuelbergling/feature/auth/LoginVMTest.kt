@@ -48,6 +48,10 @@ class LoginVMTest : KoinTest {
 
     @Test
     fun `when OnUsernameChange is called, username is updated and error cleared`() = runTest {
+        viewModel.onAction(LoginAction.OnLoginClick)
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.usernameError).isNotNull()
+
         viewModel.onAction(LoginAction.OnUsernameChange("john"))
 
         assertThat(viewModel.uiState.value.username).isEqualTo("john")
@@ -56,6 +60,10 @@ class LoginVMTest : KoinTest {
 
     @Test
     fun `when OnPasswordChange is called, password is updated and error cleared`() = runTest {
+        viewModel.onAction(LoginAction.OnLoginClick)
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.passwordError).isNotNull()
+
         viewModel.onAction(LoginAction.OnPasswordChange("secret"))
 
         assertThat(viewModel.uiState.value.password).isEqualTo("secret")
