@@ -24,7 +24,13 @@ fun NavGraphBuilder.seriesGraph(
 ) {
     navigation<SeriesGraphDestination>(startDestination = SeriesDestination) {
         topComposable<SeriesDestination> {
-            SeriesScreen(onOpenDrawer)
+            SeriesScreen(
+                onDetails = {},
+                onMore = {},
+                onFavorites = {},
+                onWatchlist = {},
+                onOpenDrawer = onOpenDrawer,
+            )
         }
     }
 }
