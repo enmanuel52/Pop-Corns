@@ -17,22 +17,35 @@ import com.enmanuelbergling.core.domain.usecase.movie.GetTopRatedMoviesUC
 import com.enmanuelbergling.core.domain.usecase.movie.GetUpcomingMoviesUC
 import com.enmanuelbergling.core.domain.usecase.onboarding.FinishOnboardingUC
 import com.enmanuelbergling.core.domain.usecase.onboarding.IsOnboardingUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetAiringTodayTvUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetEpisodeDetailsUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetOnTheAirTvUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetPopularTvUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetSeasonDetailsUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetTopRatedTvUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetTvAccountStatesUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetTvDetailsUC
+import com.enmanuelbergling.core.domain.usecase.tv.SearchTvUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDarkThemeUC
 import com.enmanuelbergling.core.domain.usecase.settings.SetDynamicColorUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.favorite.AddMovieToFavoritesUC
+import com.enmanuelbergling.core.domain.usecase.user.favorite.AddTvToFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveMovieFromFavoritesUC
+import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveTvFromFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.SyncUserDetailsUC
 import com.enmanuelbergling.core.domain.usecase.user.LogoutUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddTvToAccountWatchlistUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CheckItemStatusUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.CreateListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.DeleteMovieFromListUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
+import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveTvFromAccountWatchlistUC
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -60,6 +73,18 @@ val moviesUcModule = module {
     singleOf(::GetMovieAccountStatesUC)
 }
 
+val tvUcModule = module {
+    singleOf(::GetPopularTvUC)
+    singleOf(::GetTopRatedTvUC)
+    singleOf(::GetOnTheAirTvUC)
+    singleOf(::GetAiringTodayTvUC)
+    singleOf(::GetTvDetailsUC)
+    singleOf(::GetSeasonDetailsUC)
+    singleOf(::GetEpisodeDetailsUC)
+    singleOf(::GetTvAccountStatesUC)
+    singleOf(::SearchTvUC)
+}
+
 val settingModule = module {
     singleOf(::SetDarkThemeUC)
     singleOf(::GetDarkThemeUC)
@@ -85,11 +110,15 @@ val listsUcModule = module {
     singleOf(::CheckItemStatusUC)
     singleOf(::RemoveMovieFromAccountWatchlistUC)
     singleOf(::AddMovieToAccountWatchlistUC)
+    singleOf(::RemoveTvFromAccountWatchlistUC)
+    singleOf(::AddTvToAccountWatchlistUC)
 }
 
 val favoritesUcModule = module {
     singleOf(::AddMovieToFavoritesUC)
     singleOf(::RemoveMovieFromFavoritesUC)
+    singleOf(::AddTvToFavoritesUC)
+    singleOf(::RemoveTvFromFavoritesUC)
 }
 
 val searchSuggestionUcModule = module {
@@ -100,6 +129,7 @@ val ucModule = listOf(
     authUcModule,
     formValidationUcModule,
     moviesUcModule,
+    tvUcModule,
     userUcModule,
     onboardingUcModule,
     listsUcModule,
