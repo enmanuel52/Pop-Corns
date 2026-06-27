@@ -6,7 +6,12 @@ import com.enmanuelbergling.feature.series.home.model.OnTheAirSeriesChainHandler
 import com.enmanuelbergling.feature.series.home.model.PopularSeriesChainHandler
 import com.enmanuelbergling.feature.series.home.model.SeriesChain
 import com.enmanuelbergling.feature.series.home.model.TopRatedSeriesChainHandler
+import com.enmanuelbergling.feature.series.list.viewmodel.AiringTodaySeriesVM
+import com.enmanuelbergling.feature.series.list.viewmodel.OnTheAirSeriesVM
+import com.enmanuelbergling.feature.series.list.viewmodel.PopularSeriesVM
+import com.enmanuelbergling.feature.series.list.viewmodel.TopRatedSeriesVM
 import com.enmanuelbergling.feature.series.paging.usecase.GetFilteredSeriesUC
+import com.enmanuelbergling.feature.series.paging.usecase.GetSectionSeriesUC
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -21,6 +26,7 @@ internal val seriesScreenModule = module {
 
 private val pagingModule = module {
     singleOf(::GetFilteredSeriesUC)
+    singleOf(::GetSectionSeriesUC)
 }
 
 val seriesModule = module {
@@ -28,4 +34,9 @@ val seriesModule = module {
     includes(seriesScreenModule)
 
     viewModelOf(::SeriesVM)
+
+    viewModelOf(::PopularSeriesVM)
+    viewModelOf(::TopRatedSeriesVM)
+    viewModelOf(::OnTheAirSeriesVM)
+    viewModelOf(::AiringTodaySeriesVM)
 }

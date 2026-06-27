@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.androidx.paging.paging.compose)
 
     testImplementation(project(":core:testing"))
+    testImplementation(libs.androidx.paging.testing)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
