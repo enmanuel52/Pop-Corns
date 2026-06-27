@@ -2,6 +2,7 @@ package com.enmanuelbergling.feature.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.enmanuelbergling.core.domain.design.CannotHandleException
 import com.enmanuelbergling.core.domain.usecase.form.BasicFormValidationUC
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -74,7 +75,10 @@ class LoginVM(
 
             chain.invoke(request)
         }.onFailure {
-            _uiState.update { it.copy(uiState = SimplerUi.Error(NetworkException.DefaultException.messageResource)) }
+            val networkException = (it as? CannotHandleException)?.throwable as? NetworkException
+            val messageRes = networkException?.messageResource
+                ?: com.enmanuelbergling.core.ui.R.string.default_net_exception_message
+            _uiState.update { it.copy(uiState = SimplerUi.Error(messageRes)) }
         }.onSuccess {
             _uiState.update { it.copy(uiState = SimplerUi.Idle) }
             _uiEvents.send(LoginEvent.LoginSuccess)

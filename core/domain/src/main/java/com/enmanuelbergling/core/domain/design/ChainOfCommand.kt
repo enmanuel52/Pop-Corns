@@ -12,6 +12,7 @@ interface ChainHandler<T> {
 
     suspend fun handle(request: T): T
 
+    @Throws(CannotHandleException::class)
     suspend operator fun invoke(request: T) {
         val updatedRequest = handle(request)
         nextChainHandler?.invoke(updatedRequest)

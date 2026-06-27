@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
@@ -116,10 +117,11 @@ class LoginVMTest : KoinTest {
     @Test
     fun `when OnLoginClick fails, uiState is error and no event is emitted`() = runTest {
         // Given the login chain fails
+        val networkException = NetworkException.DefaultException
         koinExtension.replaceDependencies {
             single<AuthRemoteDS> {
                 FakeAuthRemoteDS().apply {
-                    throwError(AuthRemoteDsFunction.CreateRequestToken to NetworkException.ReadTimeOutException)
+                    throwError(AuthRemoteDsFunction.CreateRequestToken to networkException)
                 }
             }
         }
@@ -134,7 +136,7 @@ class LoginVMTest : KoinTest {
 
             // Then
             assertThat(viewModel.uiState.value.uiState)
-                .isEqualTo(SimplerUi.Error(NetworkException.DefaultException.messageResource))
+                .isEqualTo(SimplerUi.Error(networkException.messageResource))
             expectNoEvents()
         }
     }
@@ -154,6 +156,7 @@ class LoginVMTest : KoinTest {
         viewModel.onAction(LoginAction.OnPasswordChange("secret"))
         viewModel.onAction(LoginAction.OnLoginClick)
         advanceUntilIdle()
+        assertThat(viewModel.uiState.value.uiState).isInstanceOf(SimplerUi.Error::class.java)
 
         // When
         viewModel.onIdle()
