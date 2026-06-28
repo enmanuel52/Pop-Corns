@@ -39,5 +39,9 @@ gradlePlugin{
             id = "corntime.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("androidTestCoverage") {
+            id = "corntime.android.test.coverage"
+            implementationClass = "AndroidTestCoverageConventionPlugin"
+        }
     }
 }

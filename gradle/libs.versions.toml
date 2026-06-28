@@ -132,3 +132,4 @@ corntime-android-application = { id = "corntime.android.application", version = 
 corntime-android-library = { id = "corntime.android.library", version = "unspecified" }
 corntime-android-compose = { id = "corntime.android.compose", version = "unspecified" }
 corntime-jvm-library = { id = "corntime.jvm.library", version = "unspecified" }
+corntime-android-test-coverage = { id = "corntime.android.test.coverage", version = "unspecified" }
