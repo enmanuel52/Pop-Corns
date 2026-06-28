@@ -4,6 +4,7 @@ import util.libs as libsUtil
 plugins {
     alias(libs.plugins.corntime.android.application)
     alias(libs.plugins.corntime.android.compose)
+    alias(libs.plugins.corntime.android.application.jacoco)
 }
 
 android {

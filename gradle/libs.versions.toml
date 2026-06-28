@@ -19,6 +19,7 @@ gradle = "9.2.1"
 haze = "2.0.0-alpha03"
 io-coil-kt = "2.7.0"
 io-ktor = "3.5.0"
+jacoco = "0.8.13"
 junit5 = "5.11.4"
 koin-core = "4.2.1"
 koin-test = "4.2.1"
@@ -132,4 +133,5 @@ corntime-android-application = { id = "corntime.android.application", version = 
 corntime-android-library = { id = "corntime.android.library", version = "unspecified" }
 corntime-android-compose = { id = "corntime.android.compose", version = "unspecified" }
 corntime-jvm-library = { id = "corntime.jvm.library", version = "unspecified" }
-corntime-android-test-coverage = { id = "corntime.android.test.coverage", version = "unspecified" }
+corntime-android-library-jacoco = { id = "corntime.android.library.jacoco", version = "unspecified" }
+corntime-android-application-jacoco = { id = "corntime.android.application.jacoco", version = "unspecified" }
