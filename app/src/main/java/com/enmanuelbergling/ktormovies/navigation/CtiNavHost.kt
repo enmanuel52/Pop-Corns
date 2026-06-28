@@ -18,6 +18,10 @@ import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
+import com.enmanuelbergling.feature.series.navigation.navigateToFavoriteSeries
+import com.enmanuelbergling.feature.series.navigation.navigateToSeriesDetailFlow
+import com.enmanuelbergling.feature.series.navigation.navigateToSeriesSection
+import com.enmanuelbergling.feature.series.navigation.navigateToWatchlistSeries
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.settings.navigation.settingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
@@ -56,7 +60,19 @@ fun CtiNavHost(
             onOpenDrawer = onOpenDrawer,
         )
 
-        seriesGraph(onOpenDrawer = onOpenDrawer)
+        seriesGraph(
+            onSeries = navController::navigateToSeriesDetailFlow,
+            onSection = navController::navigateToSeriesSection,
+            onFavorites = navController::navigateToFavoriteSeries,
+            onWatchlist = navController::navigateToWatchlistSeries,
+            onActor = { action ->
+                navController.navigateToActorsDetails(
+                    action.id, action.imageUrl, action.name
+                )
+            },
+            onBack = navController::navigateUp,
+            onOpenDrawer = onOpenDrawer,
+        )
 
         favoritesGraph(
             onMovieDetails = navController::navigateToMoviesDetails,

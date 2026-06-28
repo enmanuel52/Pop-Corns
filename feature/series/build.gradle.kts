@@ -27,6 +27,12 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
 
+    //navigation 3 + adaptive supporting pane
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation3)
+
     testImplementation(project(":core:testing"))
     testImplementation(libs.androidx.paging.testing)
 

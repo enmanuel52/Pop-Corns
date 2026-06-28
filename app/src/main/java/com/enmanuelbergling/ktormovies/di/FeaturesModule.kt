@@ -4,6 +4,7 @@ import com.enmanuelbergling.feature.actor.di.actorsModule
 import com.enmanuelbergling.feature.auth.di.loginModule
 import com.enmanuelbergling.feature.favorites.di.favoritesModule
 import com.enmanuelbergling.feature.movies.di.moviesModule
+import com.enmanuelbergling.feature.series.di.seriesModule
 import com.enmanuelbergling.feature.settings.di.settingsModule
 import com.enmanuelbergling.feature.watchlists.di.watchlistModule
 import com.enmanuelbergling.ktormovies.ui.CornTimeVM
@@ -14,6 +15,7 @@ val featuresModule = module {
     includes(
         listOf(
             moviesModule,
+            seriesModule,
             actorsModule,
             watchlistModule,
             favoritesModule,
