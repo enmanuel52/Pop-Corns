@@ -227,6 +227,7 @@ private fun PersonCard(
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
             maxLines = 2,
+            minLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
     }
@@ -266,29 +267,31 @@ private fun LazyListScope.information(
 ) {
     item {
         Column(Modifier.padding(MaterialTheme.dimen.small)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Spacer(Modifier.height(MaterialTheme.dimen.small))
+
             Row(
                 Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.dimen.small),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = if (year.isBlank()) title else "$title ($year)",
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
-                    fontWeight = FontWeight.SemiBold
-                )
 
+                Text(
+                    text = "Duration $duration ($year)",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Light
+                )
                 RatingStars(value = rating.div(2))
             }
 
-            Text(
-                text = duration,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Light
-            )
         }
     }
 }
