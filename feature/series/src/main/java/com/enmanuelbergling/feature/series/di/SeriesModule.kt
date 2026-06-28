@@ -1,5 +1,6 @@
 package com.enmanuelbergling.feature.series.di
 
+import com.enmanuelbergling.feature.series.episodes.EpisodesVM
 import com.enmanuelbergling.feature.series.favorite.FavoriteSeriesVM
 import com.enmanuelbergling.feature.series.home.SeriesVM
 import com.enmanuelbergling.feature.series.home.model.AiringTodaySeriesChainHandler
@@ -51,4 +52,5 @@ val seriesModule = module {
     viewModelOf(::WatchlistSeriesVM)
 
     viewModelOf(::SeasonsVM)
+    viewModelOf(::EpisodesVM)
 }
