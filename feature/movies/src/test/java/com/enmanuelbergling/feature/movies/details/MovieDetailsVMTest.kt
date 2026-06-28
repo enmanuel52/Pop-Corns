@@ -71,7 +71,7 @@ class MovieDetailsVMTest : KoinTest {
     @Test
     fun `loadPage partially saves state when the third chain handler fails`() = runTest {
         // Given
-        val exception = NetworkException.ReadTimeOutException
+        val exception = NetworkException.ReadTimeOutException()
         val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
             throwError(MovieRemoteDsFunction.GetMovieAccountStates to exception)
         }
@@ -124,7 +124,7 @@ class MovieDetailsVMTest : KoinTest {
     @Test
     fun `when onAction OnWatchlistClick fails, uiState is error`() = runTest {
         // Given
-        val exception = NetworkException.AuthorizationException
+        val exception = NetworkException.AuthorizationException()
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
                 com.enmanuelbergling.core.testing.datasource.remote.FakeUserRemoteDS().apply {
@@ -178,7 +178,7 @@ class MovieDetailsVMTest : KoinTest {
     @Test
     fun `when onAction OnFavoriteClick fails, uiState is error`() = runTest {
         // Given
-        val exception = NetworkException.AuthorizationException
+        val exception = NetworkException.AuthorizationException()
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
                 com.enmanuelbergling.core.testing.datasource.remote.FakeUserRemoteDS().apply {

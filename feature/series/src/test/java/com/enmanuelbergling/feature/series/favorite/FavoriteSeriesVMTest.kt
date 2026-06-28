@@ -48,7 +48,7 @@ class FavoriteSeriesVMTest {
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.RemoveTvFromFavorites to NetworkException.AuthorizationException)
+                    throwError(TvRemoteDsFunction.RemoveTvFromFavorites to NetworkException.AuthorizationException())
                 }
             }
         }

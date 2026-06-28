@@ -117,7 +117,7 @@ class LoginVMTest : KoinTest {
     @Test
     fun `when OnLoginClick fails, uiState is error and no event is emitted`() = runTest {
         // Given the login chain fails
-        val networkException = NetworkException.DefaultException
+        val networkException = NetworkException.DefaultException()
         koinExtension.replaceDependencies {
             single<AuthRemoteDS> {
                 FakeAuthRemoteDS().apply {
@@ -147,7 +147,7 @@ class LoginVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<AuthRemoteDS> {
                 FakeAuthRemoteDS().apply {
-                    throwError(AuthRemoteDsFunction.CreateRequestToken to NetworkException.ReadTimeOutException)
+                    throwError(AuthRemoteDsFunction.CreateRequestToken to NetworkException.ReadTimeOutException())
                 }
             }
         }

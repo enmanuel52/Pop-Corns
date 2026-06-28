@@ -77,7 +77,7 @@ class FavoriteMoviesVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
                 FakeUserRemoteDS().apply {
-                    throwError(UserRemoteDsFunction.RemoveMovieFromFavorites to NetworkException.AuthorizationException)
+                    throwError(UserRemoteDsFunction.RemoveMovieFromFavorites to NetworkException.AuthorizationException())
                 }
             }
         }

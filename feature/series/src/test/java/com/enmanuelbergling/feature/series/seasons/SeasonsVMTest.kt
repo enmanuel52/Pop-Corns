@@ -63,7 +63,7 @@ class SeasonsVMTest : KoinTest {
 
     @Test
     fun `loadPage sets error and leaves details null when details fail`() = runTest {
-        val exception = NetworkException.ReadTimeOutException
+        val exception = NetworkException.ReadTimeOutException()
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {
@@ -85,7 +85,7 @@ class SeasonsVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.GetTvAccountStates to NetworkException.AuthorizationException)
+                    throwError(TvRemoteDsFunction.GetTvAccountStates to NetworkException.AuthorizationException())
                 }
             }
         }
@@ -125,7 +125,7 @@ class SeasonsVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.AddTvToAccountWatchlist to NetworkException.AuthorizationException)
+                    throwError(TvRemoteDsFunction.AddTvToAccountWatchlist to NetworkException.AuthorizationException())
                 }
             }
         }
@@ -139,7 +139,7 @@ class SeasonsVMTest : KoinTest {
 
         assertThat(viewModel.uiState.value.isWatchlistLoading).isFalse()
         assertThat(viewModel.uiState.value.uiState).isEqualTo(
-            SimplerUi.Error(NetworkException.AuthorizationException.messageResource)
+            SimplerUi.Error(NetworkException.AuthorizationException().messageResource)
         )
     }
 
@@ -169,7 +169,7 @@ class SeasonsVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.AddTvToFavorites to NetworkException.AuthorizationException)
+                    throwError(TvRemoteDsFunction.AddTvToFavorites to NetworkException.AuthorizationException())
                 }
             }
         }
@@ -183,7 +183,7 @@ class SeasonsVMTest : KoinTest {
 
         assertThat(viewModel.uiState.value.isFavoriteLoading).isFalse()
         assertThat(viewModel.uiState.value.uiState).isEqualTo(
-            SimplerUi.Error(NetworkException.AuthorizationException.messageResource)
+            SimplerUi.Error(NetworkException.AuthorizationException().messageResource)
         )
     }
 }

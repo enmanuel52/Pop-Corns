@@ -91,7 +91,7 @@ class CreatedWatchListsVMTest : KoinTest {
     @Test
     fun `when Submit fails, uiState is Error`() = runTest {
         // Given
-        val exception = NetworkException.AuthorizationException
+        val exception = NetworkException.AuthorizationException()
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
                 FakeUserRemoteDS().apply {
@@ -145,7 +145,7 @@ class CreatedWatchListsVMTest : KoinTest {
 
     @Test
     fun `when deleteList fails, uiState is Error`() = runTest {
-        val exception = NetworkException.AuthorizationException
+        val exception = NetworkException.AuthorizationException()
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
                 FakeUserRemoteDS().apply {

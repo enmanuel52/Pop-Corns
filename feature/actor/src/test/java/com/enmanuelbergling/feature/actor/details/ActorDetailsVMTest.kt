@@ -59,7 +59,7 @@ class ActorDetailsVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<ActorRemoteDS> {
                 FakeActorRemoteDS().apply {
-                    throwError(ActorRemoteDsFunction.GetActorDetails to NetworkException.ReadTimeOutException)
+                    throwError(ActorRemoteDsFunction.GetActorDetails to NetworkException.ReadTimeOutException())
                 }
             }
         }
@@ -70,7 +70,7 @@ class ActorDetailsVMTest : KoinTest {
 
         // Then
         assertThat(viewModel.uiState.value.uiState)
-            .isEqualTo(SimplerUi.Error(NetworkException.DefaultException.messageResource))
+            .isEqualTo(SimplerUi.Error(NetworkException.DefaultException().messageResource))
     }
 
     @Test
@@ -79,7 +79,7 @@ class ActorDetailsVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<ActorRemoteDS> {
                 FakeActorRemoteDS().apply {
-                    throwError(ActorRemoteDsFunction.GetMoviesByActor to NetworkException.ReadTimeOutException)
+                    throwError(ActorRemoteDsFunction.GetMoviesByActor to NetworkException.ReadTimeOutException())
                 }
             }
         }
@@ -90,7 +90,7 @@ class ActorDetailsVMTest : KoinTest {
 
         // Then
         assertThat(viewModel.uiState.value.uiState)
-            .isEqualTo(SimplerUi.Error(NetworkException.DefaultException.messageResource))
+            .isEqualTo(SimplerUi.Error(NetworkException.DefaultException().messageResource))
     }
 
     @Test

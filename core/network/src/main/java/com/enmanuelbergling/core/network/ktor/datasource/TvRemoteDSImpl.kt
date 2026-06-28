@@ -74,7 +74,7 @@ internal class TvRemoteDSImpl(
     override suspend fun getTvAccountStates(seriesId: Int): ResultHandler<TvAccountStates> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -85,7 +85,7 @@ internal class TvRemoteDSImpl(
     override suspend fun getAccountFavoriteTv(page: Int): ResultHandler<PageModel<TvShow>> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -97,7 +97,7 @@ internal class TvRemoteDSImpl(
     override suspend fun addTvToFavorites(seriesId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -112,7 +112,7 @@ internal class TvRemoteDSImpl(
     override suspend fun removeTvFromFavorites(seriesId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -127,7 +127,7 @@ internal class TvRemoteDSImpl(
     override suspend fun getAccountWatchlistTv(page: Int): ResultHandler<PageModel<TvShow>> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -139,7 +139,7 @@ internal class TvRemoteDSImpl(
     override suspend fun addTvToAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -154,7 +154,7 @@ internal class TvRemoteDSImpl(
     override suspend fun removeTvFromAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {

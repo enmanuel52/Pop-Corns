@@ -29,7 +29,7 @@ class UserRemoteDSImpl(
     override suspend fun getAccount(): ResultHandler<UserDetails> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -42,7 +42,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall { service.createWatchList(listPost.asBody(), sessionId).toModel() }
@@ -54,7 +54,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -72,7 +72,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -89,7 +89,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -118,7 +118,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<PageModel<WatchList>> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -134,7 +134,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<PageModel<Movie>> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -150,7 +150,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -167,7 +167,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -184,7 +184,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<PageModel<Movie>> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -200,7 +200,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
@@ -217,7 +217,7 @@ class UserRemoteDSImpl(
     ): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {

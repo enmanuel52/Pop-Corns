@@ -59,7 +59,7 @@ class EpisodesVMTest : KoinTest {
 
     @Test
     fun `loadPage sets error when season details fail`() = runTest {
-        val exception = NetworkException.ReadTimeOutException
+        val exception = NetworkException.ReadTimeOutException()
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {

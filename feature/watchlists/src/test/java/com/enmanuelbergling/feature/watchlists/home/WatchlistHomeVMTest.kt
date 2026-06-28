@@ -75,7 +75,7 @@ class WatchlistHomeVMTest : KoinTest {
         koinExtension.replaceDependencies {
             single<UserRemoteDS> {
                 FakeUserRemoteDS().apply {
-                    throwError(UserRemoteDsFunction.RemoveMovieFromAccountWatchlist to NetworkException.AuthorizationException)
+                    throwError(UserRemoteDsFunction.RemoveMovieFromAccountWatchlist to NetworkException.AuthorizationException())
                 }
             }
         }
@@ -153,7 +153,7 @@ class WatchlistHomeVMTest : KoinTest {
             koinExtension.replaceDependencies {
                 single<UserRemoteDS> {
                     FakeUserRemoteDS().apply {
-                        throwError(UserRemoteDsFunction.AddMovieToFavorites to NetworkException.AuthorizationException)
+                        throwError(UserRemoteDsFunction.AddMovieToFavorites to NetworkException.AuthorizationException())
                     }
                 }
             }
@@ -174,7 +174,7 @@ class WatchlistHomeVMTest : KoinTest {
             koinExtension.replaceDependencies {
                 single<UserRemoteDS> {
                     FakeUserRemoteDS().apply {
-                        throwError(UserRemoteDsFunction.RemoveMovieFromAccountWatchlist to NetworkException.AuthorizationException)
+                        throwError(UserRemoteDsFunction.RemoveMovieFromAccountWatchlist to NetworkException.AuthorizationException())
                     }
                 }
             }

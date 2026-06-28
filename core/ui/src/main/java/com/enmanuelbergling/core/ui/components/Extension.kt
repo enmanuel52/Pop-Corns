@@ -22,7 +22,8 @@ val DarkTheme.icon: ImageVector
 
 val NetworkException.messageResource: Int
     get() = when(this){
-        NetworkException.AuthorizationException -> R.string.user_unauthorized_message
-        NetworkException.DefaultException -> R.string.default_net_exception_message
-        NetworkException.ReadTimeOutException -> R.string.net_time_out_exception_message
+        is NetworkException.AuthorizationException -> R.string.user_unauthorized_message
+        is NetworkException.DefaultException -> R.string.default_net_exception_message
+        is NetworkException.ReadTimeOutException -> R.string.net_time_out_exception_message
+        else -> R.string.default_net_exception_message
     }

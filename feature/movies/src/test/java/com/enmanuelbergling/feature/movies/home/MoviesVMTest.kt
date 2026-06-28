@@ -95,7 +95,7 @@ class MoviesVMTest {
     @Test
     fun `lists left remain empty when one of them fails and uiState is error`() = runTest {
         //Given
-        val readTimeOutException = NetworkException.ReadTimeOutException
+        val readTimeOutException = NetworkException.ReadTimeOutException()
         val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
             throwError(MovieRemoteDsFunction.GetUpcomingMovies to readTimeOutException)
         }
@@ -125,7 +125,7 @@ class MoviesVMTest {
     @Test
     fun `movie lists are partially saved when the third chain handler fails`() = runTest {
         // Given
-        val readTimeOutException = NetworkException.ReadTimeOutException
+        val readTimeOutException = NetworkException.ReadTimeOutException()
         val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
             throwError(MovieRemoteDsFunction.GetNowPlayingMovies to readTimeOutException)
         }

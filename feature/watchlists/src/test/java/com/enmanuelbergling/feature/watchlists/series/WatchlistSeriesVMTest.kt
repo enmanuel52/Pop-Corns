@@ -48,7 +48,7 @@ class WatchlistSeriesVMTest {
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.RemoveTvFromAccountWatchlist to NetworkException.AuthorizationException)
+                    throwError(TvRemoteDsFunction.RemoveTvFromAccountWatchlist to NetworkException.AuthorizationException())
                 }
             }
         }
@@ -73,7 +73,7 @@ class WatchlistSeriesVMTest {
         koinExtension.replaceDependencies {
             single<TvRemoteDS> {
                 FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.AddTvToFavorites to NetworkException.AuthorizationException)
+                    throwError(TvRemoteDsFunction.AddTvToFavorites to NetworkException.AuthorizationException())
                 }
             }
         }

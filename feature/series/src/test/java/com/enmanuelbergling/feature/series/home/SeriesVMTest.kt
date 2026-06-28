@@ -81,7 +81,7 @@ class SeriesVMTest {
     @Test
     fun `lists left remain empty when one of them fails and uiState is error`() = runTest {
         // Given
-        val readTimeOutException = NetworkException.ReadTimeOutException
+        val readTimeOutException = NetworkException.ReadTimeOutException()
         val fakeTvRemoteDS = FakeTvRemoteDS().apply {
             throwError(TvRemoteDsFunction.GetPopularTv to readTimeOutException)
         }
@@ -108,7 +108,7 @@ class SeriesVMTest {
     @Test
     fun `series lists are partially saved when the third chain handler fails`() = runTest {
         // Given
-        val readTimeOutException = NetworkException.ReadTimeOutException
+        val readTimeOutException = NetworkException.ReadTimeOutException()
         val fakeTvRemoteDS = FakeTvRemoteDS().apply {
             throwError(TvRemoteDsFunction.GetOnTheAirTv to readTimeOutException)
         }
