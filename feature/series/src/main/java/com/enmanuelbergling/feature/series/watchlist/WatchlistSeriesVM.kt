@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.enmanuelbergling.core.domain.usecase.user.favorite.AddTvToFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveTvFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 internal class WatchlistSeriesVM(
     getPaginatedWatchlistSeries: GetPaginatedWatchlistSeriesUC,
     private val removeTvFromAccountWatchlistUC: RemoveTvFromAccountWatchlistUC,
+    private val addTvToFavoritesUC: AddTvToFavoritesUC,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WatchlistSeriesState())
@@ -32,8 +34,8 @@ internal class WatchlistSeriesVM(
 
     val watchlist: Flow<PagingData<TvShow>> = getPaginatedWatchlistSeries()
         .cachedIn(viewModelScope)
-        .combine(uiState.map { it.deletedSeriesIds }) { paging, deletedSeries ->
-            paging.filter { it.id !in deletedSeries }
+        .combine(uiState.map { it.removedItems }) { paging, removed ->
+            paging.filter { it.id !in removed }
         }
 
     private val _sideEffectChannel = Channel<WatchlistSeriesSideEffect>()
@@ -51,6 +53,15 @@ internal class WatchlistSeriesVM(
             is WatchlistSeriesEvent.OnRemoveSeriesErrorDismissed -> {
                 _uiState.update {
                     it.copy(deletedSeriesIds = it.deletedSeriesIds - event.seriesId)
+                }
+            }
+
+            is WatchlistSeriesEvent.OnAddToFavorites -> onAddToFavorites(event.seriesId)
+            is WatchlistSeriesEvent.AddToFavorites -> addToFavoritesAndRemoveFromWatchlist(event.seriesId)
+            WatchlistSeriesEvent.UndoAddToFavorites -> undoAddToFavorites()
+            is WatchlistSeriesEvent.OnAddToFavoritesErrorDismissed -> {
+                _uiState.update {
+                    it.copy(favoritedSeriesIds = it.favoritedSeriesIds - event.seriesId)
                 }
             }
         }
@@ -77,18 +88,44 @@ internal class WatchlistSeriesVM(
             _sideEffectChannel.send(WatchlistSeriesSideEffect.UndoRemoveSeries(seriesId))
         }
     }
+
+    private fun onAddToFavorites(seriesId: Int) {
+        _uiState.update { it.copy(favoritedSeriesIds = it.favoritedSeriesIds + seriesId) }
+        viewModelScope.launch {
+            _sideEffectChannel.send(WatchlistSeriesSideEffect.UndoAddToFavoritesSeries(seriesId))
+        }
+    }
+
+    private fun addToFavoritesAndRemoveFromWatchlist(seriesId: Int) = viewModelScope.launch {
+        val favResult = addTvToFavoritesUC(seriesId)
+        val watchlistResult = removeTvFromAccountWatchlistUC(seriesId)
+        if (favResult is ResultHandler.Error<*> || watchlistResult is ResultHandler.Error<*>) {
+            _sideEffectChannel.send(WatchlistSeriesSideEffect.AddToFavoritesError(seriesId))
+        }
+    }
+
+    private fun undoAddToFavorites() {
+        val seriesId = _uiState.value.favoritedSeriesIds.lastOrNull() ?: return
+        _uiState.update { it.copy(favoritedSeriesIds = it.favoritedSeriesIds - seriesId) }
+    }
 }
 
 @Stable
 internal data class WatchlistSeriesState(
     val uiState: SimplerUi = SimplerUi.Idle,
     val deletedSeriesIds: List<Int> = emptyList(),
+    val favoritedSeriesIds: List<Int> = emptyList(),
 )
+
+internal val WatchlistSeriesState.removedItems: List<Int>
+    get() = deletedSeriesIds + favoritedSeriesIds
 
 internal sealed interface WatchlistSeriesSideEffect {
     data class NavigateToDetails(val seriesId: Int) : WatchlistSeriesSideEffect
     data class UndoRemoveSeries(val seriesId: Int) : WatchlistSeriesSideEffect
     data class RemoveSeriesError(val seriesId: Int) : WatchlistSeriesSideEffect
+    data class UndoAddToFavoritesSeries(val seriesId: Int) : WatchlistSeriesSideEffect
+    data class AddToFavoritesError(val seriesId: Int) : WatchlistSeriesSideEffect
 }
 
 internal sealed interface WatchlistSeriesEvent {
@@ -97,4 +134,8 @@ internal sealed interface WatchlistSeriesEvent {
     data class NavigateToDetails(val seriesId: Int) : WatchlistSeriesEvent
     data object UndoRemove : WatchlistSeriesEvent
     data class OnRemoveSeriesErrorDismissed(val seriesId: Int) : WatchlistSeriesEvent
+    data class OnAddToFavorites(val seriesId: Int) : WatchlistSeriesEvent
+    data class AddToFavorites(val seriesId: Int) : WatchlistSeriesEvent
+    data object UndoAddToFavorites : WatchlistSeriesEvent
+    data class OnAddToFavoritesErrorDismissed(val seriesId: Int) : WatchlistSeriesEvent
 }

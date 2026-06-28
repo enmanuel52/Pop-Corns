@@ -58,4 +58,29 @@ class WatchlistSeriesVMTest {
             assertThat(awaitItem()).isInstanceOf(WatchlistSeriesSideEffect.RemoveSeriesError::class)
         }
     }
+
+    @Test
+    fun `OnAddToFavorites emits UndoAddToFavoritesSeries side effect`() = runTest {
+        val vm = viewModel()
+        vm.sideEffectChannel.test {
+            vm.onEvent(WatchlistSeriesEvent.OnAddToFavorites(1))
+            assertThat(awaitItem()).isInstanceOf(WatchlistSeriesSideEffect.UndoAddToFavoritesSeries::class)
+        }
+    }
+
+    @Test
+    fun `AddToFavorites emits error side effect when adding to favorites fails`() = runTest {
+        koinExtension.replaceDependencies {
+            single<TvRemoteDS> {
+                FakeTvRemoteDS().apply {
+                    throwError(TvRemoteDsFunction.AddTvToFavorites to NetworkException.AuthorizationException)
+                }
+            }
+        }
+        val vm = viewModel()
+        vm.sideEffectChannel.test {
+            vm.onEvent(WatchlistSeriesEvent.AddToFavorites(1))
+            assertThat(awaitItem()).isInstanceOf(WatchlistSeriesSideEffect.AddToFavoritesError::class)
+        }
+    }
 }
