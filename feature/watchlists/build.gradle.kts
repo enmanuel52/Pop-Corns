@@ -23,11 +23,15 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
 
+    //adaptive navigation suite (bottom bar / nav rail)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+
     //paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.paging.compose)
 
     testImplementation(project(":core:testing"))
+    testImplementation(libs.androidx.paging.testing)
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.espresso.core)

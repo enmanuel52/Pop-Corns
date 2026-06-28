@@ -15,10 +15,8 @@ import com.enmanuelbergling.feature.series.list.viewmodel.PopularSeriesVM
 import com.enmanuelbergling.feature.series.list.viewmodel.TopRatedSeriesVM
 import com.enmanuelbergling.feature.series.paging.usecase.GetFilteredSeriesUC
 import com.enmanuelbergling.feature.series.paging.usecase.GetPaginatedFavoriteSeriesUC
-import com.enmanuelbergling.feature.series.paging.usecase.GetPaginatedWatchlistSeriesUC
 import com.enmanuelbergling.feature.series.paging.usecase.GetSectionSeriesUC
 import com.enmanuelbergling.feature.series.seasons.SeasonsVM
-import com.enmanuelbergling.feature.series.watchlist.WatchlistSeriesVM
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -35,7 +33,6 @@ private val pagingModule = module {
     singleOf(::GetFilteredSeriesUC)
     singleOf(::GetSectionSeriesUC)
     singleOf(::GetPaginatedFavoriteSeriesUC)
-    singleOf(::GetPaginatedWatchlistSeriesUC)
 }
 
 val seriesModule = module {
@@ -50,7 +47,6 @@ val seriesModule = module {
     viewModelOf(::AiringTodaySeriesVM)
 
     viewModelOf(::FavoriteSeriesVM)
-    viewModelOf(::WatchlistSeriesVM)
 
     viewModelOf(::SeasonsVM)
     viewModelOf(::EpisodesVM)

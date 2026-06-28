@@ -15,7 +15,6 @@ import com.enmanuelbergling.feature.series.list.AiringTodaySeriesScreen
 import com.enmanuelbergling.feature.series.list.OnTheAirSeriesScreen
 import com.enmanuelbergling.feature.series.list.PopularSeriesScreen
 import com.enmanuelbergling.feature.series.list.TopRatedSeriesScreen
-import com.enmanuelbergling.feature.series.watchlist.WatchlistSeriesRoute
 import kotlinx.serialization.Serializable
 
 
@@ -34,9 +33,6 @@ data class SeriesSectionDestination(val section: String)
 @Serializable
 data object FavoriteSeriesDestination
 
-@Serializable
-data object WatchlistSeriesDestination
-
 fun NavHostController.navigateToSeriesGraph(navOptions: NavOptions) {
     navigate(SeriesGraphDestination, navOptions)
 }
@@ -54,10 +50,6 @@ fun NavHostController.navigateToSeriesSection(
 
 fun NavHostController.navigateToFavoriteSeries(navOptions: NavOptions? = null) {
     navigate(FavoriteSeriesDestination, navOptions)
-}
-
-fun NavHostController.navigateToWatchlistSeries(navOptions: NavOptions? = null) {
-    navigate(WatchlistSeriesDestination, navOptions)
 }
 
 fun NavGraphBuilder.seriesGraph(
@@ -104,10 +96,6 @@ fun NavGraphBuilder.seriesGraph(
 
         composable<FavoriteSeriesDestination> {
             FavoriteSeriesRoute(onSeriesDetails = onSeries, onBack = onBack)
-        }
-
-        composable<WatchlistSeriesDestination> {
-            WatchlistSeriesRoute(onSeriesDetails = onSeries, onBack = onBack)
         }
     }
 }

@@ -21,12 +21,12 @@ import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
 import com.enmanuelbergling.feature.series.navigation.navigateToFavoriteSeries
 import com.enmanuelbergling.feature.series.navigation.navigateToSeriesDetailFlow
 import com.enmanuelbergling.feature.series.navigation.navigateToSeriesSection
-import com.enmanuelbergling.feature.series.navigation.navigateToWatchlistSeries
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.settings.navigation.settingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListsScreen
+import com.enmanuelbergling.feature.watchlists.navigation.navigateToWatchlistSeriesTab
 import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
 
 
@@ -64,7 +64,7 @@ fun CtiNavHost(
             onSeries = navController::navigateToSeriesDetailFlow,
             onSection = navController::navigateToSeriesSection,
             onFavorites = navController::navigateToFavoriteSeries,
-            onWatchlist = navController::navigateToWatchlistSeries,
+            onWatchlist = navController::navigateToWatchlistSeriesTab,
             onActor = { action ->
                 navController.navigateToActorsDetails(
                     action.id, action.imageUrl, action.name
@@ -107,6 +107,7 @@ fun CtiNavHost(
             onDetails = navController::navigateToListDetailsScreen,
             onNavigateToLists = navController::navigateToListsScreen,
             onMovieDetails = navController::navigateToMoviesDetails,
+            onSeriesDetails = navController::navigateToSeriesDetailFlow,
             onAddShortcut = { watchlist -> state.addWatchlistShortcut(context, watchlist) },
             onDeleteShortcut = { watchlistId ->
                 state.deleteWatchlistShortcut(

@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.series.watchlist
+package com.enmanuelbergling.feature.watchlists.series
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
@@ -11,7 +11,7 @@ import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveTvFromAccou
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.tv.TvShow
-import com.enmanuelbergling.feature.series.paging.usecase.GetPaginatedWatchlistSeriesUC
+import com.enmanuelbergling.feature.watchlists.paging.GetPaginatedWatchlistSeriesUC
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

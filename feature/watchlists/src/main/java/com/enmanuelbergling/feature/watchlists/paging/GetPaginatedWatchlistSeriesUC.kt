@@ -1,11 +1,10 @@
-package com.enmanuelbergling.feature.series.paging.usecase
+package com.enmanuelbergling.feature.watchlists.paging
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 import com.enmanuelbergling.core.model.tv.TvShow
-import com.enmanuelbergling.feature.series.paging.source.WatchlistSeriesSource
 import kotlinx.coroutines.flow.Flow
 
 internal class GetPaginatedWatchlistSeriesUC(private val remoteDS: TvRemoteDS) {

@@ -1,17 +1,17 @@
-package com.enmanuelbergling.feature.series.watchlist
+package com.enmanuelbergling.feature.watchlists.series
 
+import androidx.paging.testing.asSnapshot
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
-import androidx.paging.testing.asSnapshot
 import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.testing.datasource.remote.FakeTvRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.TvRemoteDsFunction
 import com.enmanuelbergling.core.testing.extension.KoinExtension
 import com.enmanuelbergling.core.testing.extension.MainCoroutineExtension
-import com.enmanuelbergling.feature.series.di.seriesModule
+import com.enmanuelbergling.feature.watchlists.di.watchlistModule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
@@ -24,7 +24,7 @@ import org.koin.test.inject
 class WatchlistSeriesVMTest {
     @JvmField
     @RegisterExtension
-    val koinExtension = KoinExtension(seriesModule)
+    val koinExtension = KoinExtension(watchlistModule)
 
     private fun viewModel(): WatchlistSeriesVM =
         koinExtension.inject<WatchlistSeriesVM>().value
