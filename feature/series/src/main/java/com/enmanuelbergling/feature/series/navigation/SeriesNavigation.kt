@@ -56,7 +56,6 @@ fun NavGraphBuilder.seriesGraph(
     onSeries: (id: Int) -> Unit,
     onSection: (SeriesSection) -> Unit,
     onFavorites: () -> Unit,
-    onWatchlist: () -> Unit,
     onActor: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
     onOpenDrawer: () -> Unit,
@@ -67,7 +66,6 @@ fun NavGraphBuilder.seriesGraph(
                 onDetails = onSeries,
                 onMore = onSection,
                 onFavorites = onFavorites,
-                onWatchlist = onWatchlist,
                 onOpenDrawer = onOpenDrawer,
             )
         }

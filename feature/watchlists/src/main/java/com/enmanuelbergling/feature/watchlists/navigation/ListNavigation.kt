@@ -57,20 +57,15 @@ fun NavGraphBuilder.listGraph(
     onAddShortcut: (WatchlistShortcut) -> Unit,
     onDeleteShortcut: (watchlistId: Int) -> Unit,
     onBack: () -> Unit,
-    onOpenDrawer: () -> Unit,
 ) {
     navigation<ListGraphDestination>(startDestination = WatchListDestination()) {
-        topComposable<WatchListDestination> { backStackEntry ->
-            val initialTab = runCatching {
-                WatchlistTab.valueOf(backStackEntry.toRoute<WatchListDestination>().initialTab)
-            }.getOrDefault(WatchlistTab.Movies)
+        topComposable<WatchListDestination> {
 
             WatchlistHomeRoute(
                 onMovieDetails = onMovieDetails,
                 onSeriesDetails = onSeriesDetails,
                 onNavigateToLists = onNavigateToLists,
-                onOpenDrawer = onOpenDrawer,
-                initialTab = initialTab,
+                onBack = onBack,
             )
         }
 

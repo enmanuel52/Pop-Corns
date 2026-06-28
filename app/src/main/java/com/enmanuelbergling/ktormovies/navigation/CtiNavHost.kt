@@ -64,7 +64,6 @@ fun CtiNavHost(
             onSeries = navController::navigateToSeriesDetailFlow,
             onSection = navController::navigateToSeriesSection,
             onFavorites = navController::navigateToFavoriteSeries,
-            onWatchlist = navController::navigateToWatchlistSeriesTab,
             onActor = { action ->
                 navController.navigateToActorsDetails(
                     action.id, action.imageUrl, action.name
@@ -116,7 +115,6 @@ fun CtiNavHost(
                 )
             },
             onBack = navController::navigateUp,
-            onOpenDrawer = onOpenDrawer,
         )
 
         moviesFilterScreen(navController::navigateToMoviesDetails, navController::navigateUp)

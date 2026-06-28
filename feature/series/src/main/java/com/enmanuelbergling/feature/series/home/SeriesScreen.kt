@@ -91,7 +91,6 @@ fun SeriesScreen(
     onDetails: (id: Int) -> Unit,
     onMore: (SeriesSection) -> Unit,
     onFavorites: () -> Unit,
-    onWatchlist: () -> Unit,
     onOpenDrawer: () -> Unit,
 ) {
     val viewModel = koinViewModel<SeriesVM> { parametersOf(false) }
@@ -122,7 +121,6 @@ fun SeriesScreen(
                 searchBarState = searchBarState,
                 textFieldState = textFieldState,
                 onFavorites = onFavorites,
-                onWatchlist = onWatchlist,
                 isLoggedIn = isLoggedIn,
             )
         },
@@ -176,7 +174,6 @@ private fun SeriesTopAppBar(
     searchBarState: SearchBarState,
     textFieldState: TextFieldState,
     onFavorites: () -> Unit,
-    onWatchlist: () -> Unit,
     isLoggedIn: Boolean,
 ) {
     TopAppBar(
@@ -205,12 +202,6 @@ private fun SeriesTopAppBar(
                     Icon(
                         painter = painterResource(R.drawable.heart_outline),
                         contentDescription = stringResource(R.string.favorites)
-                    )
-                }
-                IconButton(onClick = onWatchlist) {
-                    Icon(
-                        painter = painterResource(R.drawable.bookmark_outline),
-                        contentDescription = stringResource(R.string.watchlist)
                     )
                 }
             }

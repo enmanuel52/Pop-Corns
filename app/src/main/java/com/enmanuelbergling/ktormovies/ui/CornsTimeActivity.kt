@@ -54,7 +54,6 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                 CornsTimeApp(
                     state = appState,
                     userDetails = userDetails,
-                    onLogout = viewModel::logout
                 )
 
                 if (isOnboarding) {

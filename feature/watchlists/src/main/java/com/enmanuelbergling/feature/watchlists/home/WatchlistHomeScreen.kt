@@ -4,6 +4,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +51,7 @@ fun WatchlistHomeRoute(
     onMovieDetails: (movieId: Int) -> Unit,
     onSeriesDetails: (seriesId: Int) -> Unit,
     onNavigateToLists: () -> Unit,
-    onOpenDrawer: () -> Unit,
+    onBack: () -> Unit,
     initialTab: WatchlistTab = WatchlistTab.Movies,
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(initialTab) }
@@ -80,9 +83,9 @@ fun WatchlistHomeRoute(
                 TopAppBar(
                     title = { Text(text = stringResource(id = R.string.watchlist)) },
                     navigationIcon = {
-                        IconButton(onClick = onOpenDrawer) {
+                        IconButton(onClick = onBack) {
                             Icon(
-                                painter = painterResource(R.drawable.bars_bottom_left),
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Sandwich menu icon"
                             )
                         }
