@@ -44,7 +44,6 @@ class SeriesVM(
     private val syncUserUC: SyncUserDetailsUC,
     getSavedUserUC: GetSavedUserUC,
     getFilteredSeriesUC: GetFilteredSeriesUC,
-    searchSeriesShortCutClicked: Boolean,
 ) : ViewModel() {
 
     val isLoggedIn: StateFlow<Boolean> = getSavedUserUC()
@@ -65,7 +64,7 @@ class SeriesVM(
         )
 
     private val _uiDataState =
-        MutableStateFlow(SeriesUiData(startOnSearch = searchSeriesShortCutClicked))
+        MutableStateFlow(SeriesUiData())
     val uiDataState get() = _uiDataState.asStateFlow()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)

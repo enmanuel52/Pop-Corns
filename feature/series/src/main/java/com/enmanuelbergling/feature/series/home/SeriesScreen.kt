@@ -40,7 +40,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarState
-import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -106,10 +105,7 @@ fun SeriesScreen(
 
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val searchBarState = rememberSearchBarState(
-        initialValue = if (uiData.startOnSearch) SearchBarValue.Expanded
-        else SearchBarValue.Collapsed,
-    )
+    val searchBarState = rememberSearchBarState()
     val textFieldState = rememberTextFieldState("")
 
     LaunchedEffect(textFieldState.text) {
