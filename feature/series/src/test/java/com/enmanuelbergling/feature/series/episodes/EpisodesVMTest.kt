@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -74,5 +75,40 @@ class EpisodesVMTest : KoinTest {
 
         assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Error(exception.messageResource))
         assertThat(viewModel.uiState.value.seasonDetails).isNull()
+    }
+
+    @Test
+    fun `OnEpisodeLongClick expands episode and collapses on second click`() = runTest {
+        backgroundScope.launch { viewModel.uiState.collect() }
+        advanceUntilIdle()
+
+        val episodeId = viewModel.uiState.value.seasonDetails!!.episodes.first().id
+        assertThat(viewModel.uiState.value.expandedEpisodeId).isNull()
+
+        viewModel.onAction(EpisodesAction.OnEpisodeLongClick(episodeId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedEpisodeId).isEqualTo(episodeId)
+
+        viewModel.onAction(EpisodesAction.OnEpisodeLongClick(episodeId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedEpisodeId).isNull()
+    }
+
+    @Test
+    fun `OnEpisodeLongClick collapses previous and expands new episode`() = runTest {
+        backgroundScope.launch { viewModel.uiState.collect() }
+        advanceUntilIdle()
+
+        val episodes = viewModel.uiState.value.seasonDetails!!.episodes
+        val firstId = episodes[0].id
+        val secondId = episodes[1].id
+
+        viewModel.onAction(EpisodesAction.OnEpisodeLongClick(firstId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedEpisodeId).isEqualTo(firstId)
+
+        viewModel.onAction(EpisodesAction.OnEpisodeLongClick(secondId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedEpisodeId).isEqualTo(secondId)
     }
 }

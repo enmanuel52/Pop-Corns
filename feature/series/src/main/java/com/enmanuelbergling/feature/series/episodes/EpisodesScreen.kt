@@ -34,9 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -129,6 +127,8 @@ private fun EpisodesScreen(
             items(state.seasonDetails?.episodes.orEmpty(), key = { it.id }) { episode ->
                 EpisodeRow(
                     episode = episode,
+                    expanded = state.expandedEpisodeId == episode.id,
+                    onLongClick = { onAction(EpisodesAction.OnEpisodeLongClick(episode.id)) },
                     onOpen = { onAction(EpisodesAction.OnEpisodeClick(episode.episodeNumber)) }
                 )
             }
@@ -139,15 +139,15 @@ private fun EpisodesScreen(
 @Composable
 private fun EpisodeRow(
     episode: Episode,
+    expanded: Boolean,
+    onLongClick: () -> Unit,
     onOpen: () -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clip(CardDefaults.shape)
-            .combinedClickable(onLongClick = { expanded = !expanded }, onClick = onOpen)
+            .combinedClickable(onLongClick = onLongClick, onClick = onOpen)
     ) {
         Column(
             modifier = Modifier

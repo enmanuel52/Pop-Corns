@@ -45,6 +45,9 @@ internal class EpisodesVM(
             is EpisodesAction.OnEpisodeClick -> viewModelScope.launch {
                 _uiEvents.send(EpisodesEvent.NavigateToEpisodeDetails(action.episodeNumber))
             }
+            is EpisodesAction.OnEpisodeLongClick -> _uiState.update {
+                it.copy(expandedEpisodeId = action.episodeId.takeUnless { id -> id == it.expandedEpisodeId })
+            }
         }
     }
 

@@ -186,4 +186,39 @@ class SeasonsVMTest : KoinTest {
             SimplerUi.Error(NetworkException.AuthorizationException().messageResource)
         )
     }
+
+    @Test
+    fun `OnSeasonLongClick expands season and collapses on second click`() = runTest {
+        backgroundScope.launch { viewModel.uiState.collect() }
+        advanceUntilIdle()
+
+        val seasonId = viewModel.uiState.value.details!!.seasons.first().id
+        assertThat(viewModel.uiState.value.expandedSeasonId).isNull()
+
+        viewModel.onAction(SeasonsAction.OnSeasonLongClick(seasonId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedSeasonId).isEqualTo(seasonId)
+
+        viewModel.onAction(SeasonsAction.OnSeasonLongClick(seasonId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedSeasonId).isNull()
+    }
+
+    @Test
+    fun `OnSeasonLongClick collapses previous and expands new season`() = runTest {
+        backgroundScope.launch { viewModel.uiState.collect() }
+        advanceUntilIdle()
+
+        val seasons = viewModel.uiState.value.details!!.seasons
+        val firstId = seasons[0].id
+        val secondId = seasons[1].id
+
+        viewModel.onAction(SeasonsAction.OnSeasonLongClick(firstId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedSeasonId).isEqualTo(firstId)
+
+        viewModel.onAction(SeasonsAction.OnSeasonLongClick(secondId))
+        runCurrent()
+        assertThat(viewModel.uiState.value.expandedSeasonId).isEqualTo(secondId)
+    }
 }

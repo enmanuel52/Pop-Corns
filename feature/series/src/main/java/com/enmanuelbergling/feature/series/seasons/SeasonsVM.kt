@@ -54,6 +54,9 @@ internal class SeasonsVM(
             is SeasonsAction.OnSeasonClick -> viewModelScope.launch {
                 _uiEvents.send(SeasonsEvent.NavigateToEpisodes(action.seasonNumber))
             }
+            is SeasonsAction.OnSeasonLongClick -> _uiState.update {
+                it.copy(expandedSeasonId = action.seasonId.takeUnless { id -> id == it.expandedSeasonId })
+            }
         }
     }
 
