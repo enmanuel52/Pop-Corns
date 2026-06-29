@@ -1,12 +1,11 @@
 package com.enmanuelbergling.feature.series.home
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -23,18 +22,20 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExpandedFullScreenSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -44,6 +45,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.carousel.HorizontalCenteredHeroCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,6 +55,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -69,13 +73,11 @@ import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.tv.TvShow
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
-import com.enmanuelbergling.core.ui.components.common.HeaderMovieInfo
-import com.enmanuelbergling.core.ui.components.common.HeaderMoviePlaceholder
+import com.enmanuelbergling.core.ui.components.blendMode
+import com.enmanuelbergling.core.ui.components.common.HeaderMovieTitle
 import com.enmanuelbergling.core.ui.components.common.MovieCard
 import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.enmanuelbergling.core.ui.components.listItemWindAnimation
-import com.enmanuelbergling.core.ui.components.walkthrough.components.InstagramPager
-import com.enmanuelbergling.core.ui.components.walkthrough.components.ShiftIndicator
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.core.isScrollingForward
 import com.enmanuelbergling.feature.series.home.model.SuggestionEvent
@@ -154,7 +156,7 @@ fun SeriesScreen(
                 )
             }
 
-            SeriesGrid(
+            SeriesList(
                 popular = uiData.popular.take(5),
                 topRated = uiData.topRated,
                 onTheAir = uiData.onTheAir,
@@ -272,7 +274,7 @@ private fun ExpandedSearchBarInputField(
 }
 
 @Composable
-private fun SeriesGrid(
+private fun SeriesList(
     popular: List<TvShow>,
     topRated: List<TvShow>,
     onTheAir: List<TvShow>,
@@ -370,6 +372,7 @@ private fun LazyListScope.seriesSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 private fun LazyListScope.headerSeries(
     popular: List<TvShow>,
     onDetails: (id: Int) -> Unit,
@@ -378,9 +381,14 @@ private fun LazyListScope.headerSeries(
 ) {
     item {
         if (popular.isEmpty() && isLoading) {
-            HeaderMoviePlaceholder(Modifier.shimmer())
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                LoadingIndicator(
+                    modifier = Modifier
+                        .padding(MaterialTheme.dimen.medium),
+                )
+            }
         } else {
-            val pagerState = rememberPagerState { popular.count() }
+            val carouselState = rememberCarouselState { popular.count() }
             Column {
                 SectionHeader(
                     title = stringResource(R.string.popular),
@@ -390,58 +398,56 @@ private fun LazyListScope.headerSeries(
 
                 Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                InstagramPager(
-                    state = pagerState,
-                    pageSpacing = MaterialTheme.dimen.verySmall,
-                    boxAngle = 20
-                ) { page, pageModifier ->
+                HorizontalCenteredHeroCarousel(
+                    state = carouselState,
+                    itemSpacing = MaterialTheme.dimen.small,
+                    maxItemWidth = 300.dp,
+                    contentPadding = PaddingValues(horizontal = MaterialTheme.dimen.small)
+                ) { page ->
                     val tvShow = popular.getOrNull(page)
                     tvShow?.let {
-                        ElevatedCard(onClick = { onDetails(tvShow.id) }, modifier = pageModifier) {
-                            AsyncImage(
-                                model = BASE_BACKDROP_IMAGE_URL + tvShow.backdropPath.orEmpty(),
-                                contentDescription = "header image",
-                                placeholder = painterResource(
-                                    id = R.drawable.pop_corn_and_cinema_backdrop
-                                ),
-                                error = painterResource(
-                                    id = R.drawable.pop_corn_and_cinema_backdrop
-                                ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1.78f),
-                                contentScale = ContentScale.FillWidth
-                            )
+                        SeriesHeaderCard(
+                            tvShow = tvShow,
+                            modifier = Modifier.maskClip(CardDefaults.shape)
+                        ) {
+                            onDetails(tvShow.id)
                         }
                     }
                 }
-
-                AnimatedContent(
-                    targetState = pagerState.currentPage,
-                    transitionSpec = {
-                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up) togetherWith
-                                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
-                    },
-                    label = "series info animation",
-                    modifier = Modifier.padding(MaterialTheme.dimen.small)
-                ) { page ->
-                    val tvShow = popular.getOrNull(page)
-
-                    HeaderMovieInfo(
-                        title = tvShow?.name.orEmpty(),
-                        rating = tvShow?.voteAverage ?: .0
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(MaterialTheme.dimen.verySmall))
-
-                ShiftIndicator(
-                    pagerState = pagerState,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    stepSize = MaterialTheme.dimen.small,
-                    spaceBetween = MaterialTheme.dimen.small
-                )
             }
+        }
+    }
+}
+
+@Composable
+private fun SeriesHeaderCard(
+    tvShow: TvShow,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    ElevatedCard(onClick = onClick, modifier = modifier) {
+        Box(contentAlignment = Alignment.BottomStart) {
+            AsyncImage(
+                model = BASE_BACKDROP_IMAGE_URL + tvShow.backdropPath.orEmpty(),
+                contentDescription = "header image",
+                placeholder = painterResource(
+                    id = R.drawable.pop_corn_and_cinema_backdrop
+                ),
+                error = painterResource(
+                    id = R.drawable.pop_corn_and_cinema_backdrop
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.4f),
+                contentScale = ContentScale.Crop
+            )
+
+            HeaderMovieTitle(
+                title = tvShow.name,
+                modifier = Modifier
+                    .padding(MaterialTheme.dimen.small)
+                    .blendMode(BlendMode.Difference),
+            )
         }
     }
 }
