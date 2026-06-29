@@ -3,6 +3,7 @@ package com.enmanuelbergling.core.network.ktor.service
 import com.enmanuelbergling.core.network.dto.tv.EpisodeDetailsDTO
 import com.enmanuelbergling.core.network.dto.tv.SeasonDetailsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvAccountStatesDTO
+import com.enmanuelbergling.core.network.dto.tv.TvCreditsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvShowDetailsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvShowPageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.FavoriteBody
@@ -40,6 +41,10 @@ internal class TvService(private val httpClient: KtorClient) {
 
     suspend fun getTvDetails(tvShowId: Int): TvShowDetailsDTO = httpClient
         .get("tv/$tvShowId")
+        .body()
+
+    suspend fun getTvCredits(tvShowId: Int): TvCreditsDTO = httpClient
+        .get("tv/$tvShowId/credits")
         .body()
 
     suspend fun getSeasonDetails(tvShowId: Int, seasonNumber: Int): SeasonDetailsDTO = httpClient

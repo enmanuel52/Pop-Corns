@@ -8,6 +8,7 @@ import com.enmanuelbergling.core.model.tv.EpisodeDetails
 import com.enmanuelbergling.core.model.tv.Season
 import com.enmanuelbergling.core.model.tv.SeasonDetails
 import com.enmanuelbergling.core.model.tv.TvAccountStates
+import com.enmanuelbergling.core.model.tv.TvCredits
 import com.enmanuelbergling.core.model.tv.TvShow
 import com.enmanuelbergling.core.model.tv.TvShowDetails
 
@@ -148,5 +149,11 @@ object FakeTvData {
         id = 1,
         favorite = false,
         watchlist = false,
+    )
+
+    val DEFAULT_TV_CREDITS = TvCredits(
+        id = 1,
+        cast = (1..4).map { DEFAULT_CAST.copy(id = it) },
+        crew = (1..4).map { DEFAULT_CREW.copy(id = it) },
     )
 }

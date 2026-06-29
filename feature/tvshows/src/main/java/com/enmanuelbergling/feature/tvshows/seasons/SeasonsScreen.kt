@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,12 +20,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -40,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -53,7 +48,6 @@ import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_POSTER_IMAGE_URL
 import com.enmanuelbergling.core.model.tv.Season
 import com.enmanuelbergling.core.ui.components.HandleUiState
-import com.enmanuelbergling.core.ui.components.OnceLottieAnimation
 import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.feature.tvshows.R
@@ -109,57 +103,6 @@ private fun SeasonsScreen(
                             imageVector = Icons.Rounded.ArrowBackIosNew,
                             contentDescription = stringResource(CoreR.string.back_icon)
                         )
-                    }
-                },
-                actions = {
-                    if (state.isFavoriteLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .padding(horizontal = MaterialTheme.dimen.small)
-                                .size(24.dp),
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        state.accountStates?.let {
-                            IconButton(onClick = { onAction(SeasonsAction.OnFavoriteClick) }) {
-                                if (it.favorite) {
-                                    OnceLottieAnimation(
-                                        resId = CoreR.raw.add_to_favorite,
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                            .scale(3f),
-                                    )
-                                } else {
-                                    Icon(
-                                        painter = painterResource(CoreR.drawable.heart_outline),
-                                        contentDescription = stringResource(CoreR.string.favorites),
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    if (state.isWatchlistLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .padding(horizontal = MaterialTheme.dimen.small)
-                                .size(24.dp),
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        state.accountStates?.let {
-                            IconButton(onClick = { onAction(SeasonsAction.OnWatchlistClick) }) {
-                                Icon(
-                                    painter = painterResource(
-                                        if (it.watchlist) CoreR.drawable.bookmark_solid
-                                        else CoreR.drawable.bookmark_outline
-                                    ),
-                                    contentDescription = stringResource(CoreR.string.watchlist),
-                                    tint = if (it.watchlist) MaterialTheme.colorScheme.primary
-                                    else LocalContentColor.current
-                                )
-                            }
-                        }
                     }
                 },
             )

@@ -8,6 +8,7 @@ import com.enmanuelbergling.core.model.core.asPage
 import com.enmanuelbergling.core.model.tv.EpisodeDetails
 import com.enmanuelbergling.core.model.tv.SeasonDetails
 import com.enmanuelbergling.core.model.tv.TvAccountStates
+import com.enmanuelbergling.core.model.tv.TvCredits
 import com.enmanuelbergling.core.model.tv.TvShow
 import com.enmanuelbergling.core.model.tv.TvShowDetails
 import com.enmanuelbergling.core.model.user.WatchResponse
@@ -19,6 +20,7 @@ enum class TvRemoteDsFunction {
     GetOnTheAirTv,
     GetAiringTodayTv,
     GetTvDetails,
+    GetTvCredits,
     GetSeasonDetails,
     GetEpisodeDetails,
     SearchTv,
@@ -61,6 +63,10 @@ class FakeTvRemoteDS : TvRemoteDS {
     override suspend fun getTvDetails(tvShowId: Int): ResultHandler<TvShowDetails> =
         checkError(TvRemoteDsFunction.GetTvDetails)
             ?: ResultHandler.Success(FakeTvData.DEFAULT_TV_SHOW_DETAILS)
+
+    override suspend fun getTvCredits(tvShowId: Int): ResultHandler<TvCredits> =
+        checkError(TvRemoteDsFunction.GetTvCredits)
+            ?: ResultHandler.Success(FakeTvData.DEFAULT_TV_CREDITS)
 
     override suspend fun getSeasonDetails(
         tvShowId: Int,

@@ -1,12 +1,9 @@
 package com.enmanuelbergling.feature.tvshows.seasons
 
-import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
-import assertk.assertions.isTrue
 import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -52,13 +49,12 @@ class SeasonsVMTest : KoinTest {
     }
 
     @Test
-    fun `loadPage successfully updates state with details and account states`() = runTest {
+    fun `loadPage successfully updates state with details`() = runTest {
         backgroundScope.launch { viewModel.uiState.collect() }
         advanceUntilIdle()
 
         assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Idle)
         assertThat(viewModel.uiState.value.details).isNotNull()
-        assertThat(viewModel.uiState.value.accountStates).isNotNull()
     }
 
     @Test
@@ -78,113 +74,6 @@ class SeasonsVMTest : KoinTest {
 
         assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Error(exception.messageResource))
         assertThat(viewModel.uiState.value.details).isNull()
-    }
-
-    @Test
-    fun `loadPage keeps details and stays idle when account states fail`() = runTest {
-        koinExtension.replaceDependencies {
-            single<TvRemoteDS> {
-                FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.GetTvAccountStates to NetworkException.AuthorizationException())
-                }
-            }
-        }
-        viewModel = koinExtension.get { parametersOf(tvShowId) }
-
-        backgroundScope.launch { viewModel.uiState.collect() }
-        advanceUntilIdle()
-
-        assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Idle)
-        assertThat(viewModel.uiState.value.details).isNotNull()
-        assertThat(viewModel.uiState.value.accountStates).isNull()
-    }
-
-    @Test
-    fun `OnWatchlistClick toggles watchlist and updates loading flag`() = runTest {
-        backgroundScope.launch { viewModel.uiState.collect() }
-        advanceUntilIdle()
-        assertThat(viewModel.uiState.value.accountStates?.watchlist).isEqualTo(false)
-
-        viewModel.uiState.test {
-            awaitItem() // current
-
-            viewModel.onAction(SeasonsAction.OnWatchlistClick)
-            runCurrent()
-
-            assertThat(awaitItem().isWatchlistLoading).isTrue()
-
-            advanceUntilIdle()
-            val finalItem = awaitItem()
-            assertThat(finalItem.isWatchlistLoading).isFalse()
-            assertThat(finalItem.accountStates?.watchlist).isEqualTo(true)
-        }
-    }
-
-    @Test
-    fun `OnWatchlistClick fails sets error`() = runTest {
-        koinExtension.replaceDependencies {
-            single<TvRemoteDS> {
-                FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.AddTvToAccountWatchlist to NetworkException.AuthorizationException())
-                }
-            }
-        }
-        viewModel = koinExtension.get { parametersOf(tvShowId) }
-
-        backgroundScope.launch { viewModel.uiState.collect() }
-        advanceUntilIdle()
-
-        viewModel.onAction(SeasonsAction.OnWatchlistClick)
-        advanceUntilIdle()
-
-        assertThat(viewModel.uiState.value.isWatchlistLoading).isFalse()
-        assertThat(viewModel.uiState.value.uiState).isEqualTo(
-            SimplerUi.Error(NetworkException.AuthorizationException().messageResource)
-        )
-    }
-
-    @Test
-    fun `OnFavoriteClick toggles favorite and updates loading flag`() = runTest {
-        backgroundScope.launch { viewModel.uiState.collect() }
-        advanceUntilIdle()
-        assertThat(viewModel.uiState.value.accountStates?.favorite).isEqualTo(false)
-
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.onAction(SeasonsAction.OnFavoriteClick)
-            runCurrent()
-
-            assertThat(awaitItem().isFavoriteLoading).isTrue()
-
-            advanceUntilIdle()
-            val finalItem = awaitItem()
-            assertThat(finalItem.isFavoriteLoading).isFalse()
-            assertThat(finalItem.accountStates?.favorite).isEqualTo(true)
-        }
-    }
-
-    @Test
-    fun `OnFavoriteClick fails sets error`() = runTest {
-        koinExtension.replaceDependencies {
-            single<TvRemoteDS> {
-                FakeTvRemoteDS().apply {
-                    throwError(TvRemoteDsFunction.AddTvToFavorites to NetworkException.AuthorizationException())
-                }
-            }
-        }
-        viewModel = koinExtension.get { parametersOf(tvShowId) }
-
-        backgroundScope.launch { viewModel.uiState.collect() }
-        advanceUntilIdle()
-
-        viewModel.onAction(SeasonsAction.OnFavoriteClick)
-        advanceUntilIdle()
-
-        assertThat(viewModel.uiState.value.isFavoriteLoading).isFalse()
-        assertThat(viewModel.uiState.value.uiState).isEqualTo(
-            SimplerUi.Error(NetworkException.AuthorizationException().messageResource)
-        )
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.tv.EpisodeDetails
 import com.enmanuelbergling.core.model.tv.SeasonDetails
 import com.enmanuelbergling.core.model.tv.TvAccountStates
+import com.enmanuelbergling.core.model.tv.TvCredits
 import com.enmanuelbergling.core.model.tv.TvShow
 import com.enmanuelbergling.core.model.tv.TvShowDetails
 import com.enmanuelbergling.core.model.user.WatchResponse
@@ -48,6 +49,10 @@ internal class TvRemoteDSImpl(
 
     override suspend fun getTvDetails(tvShowId: Int): ResultHandler<TvShowDetails> = safeKtorCall {
         service.getTvDetails(tvShowId).toModel()
+    }
+
+    override suspend fun getTvCredits(tvShowId: Int): ResultHandler<TvCredits> = safeKtorCall {
+        service.getTvCredits(tvShowId).toModel()
     }
 
     override suspend fun getSeasonDetails(

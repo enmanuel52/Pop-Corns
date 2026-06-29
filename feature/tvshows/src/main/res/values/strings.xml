@@ -7,4 +7,7 @@
     <string name="episodes">Episodes</string>
     <string name="episode_details">Episode Details</string>
     <string name="episode_count">%1$d episodes</string>
+    <string name="season_count">%1$d seasons</string>
+    <string name="see_all">See all</string>
+    <string name="overview">Overview</string>
 </resources>

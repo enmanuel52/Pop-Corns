@@ -2,12 +2,7 @@ package com.enmanuelbergling.feature.tvshows.seasons
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.enmanuelbergling.core.domain.usecase.tv.GetTvAccountStatesUC
 import com.enmanuelbergling.core.domain.usecase.tv.GetTvDetailsUC
-import com.enmanuelbergling.core.domain.usecase.user.favorite.AddTvToFavoritesUC
-import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveTvFromFavoritesUC
-import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddTvToAccountWatchlistUC
-import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveTvFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.messageResource
@@ -22,11 +17,6 @@ import kotlinx.coroutines.launch
 
 internal class SeasonsVM(
     private val getTvDetailsUC: GetTvDetailsUC,
-    private val getTvAccountStatesUC: GetTvAccountStatesUC,
-    private val addTvToAccountWatchlistUC: AddTvToAccountWatchlistUC,
-    private val removeTvFromAccountWatchlistUC: RemoveTvFromAccountWatchlistUC,
-    private val addTvToFavoritesUC: AddTvToFavoritesUC,
-    private val removeTvFromFavoritesUC: RemoveTvFromFavoritesUC,
     private val tvShowId: Int,
 ) : ViewModel() {
 
@@ -49,11 +39,10 @@ internal class SeasonsVM(
             }
 
             SeasonsAction.OnRetry -> loadPage()
-            SeasonsAction.OnWatchlistClick -> addOrRemoveFromWatchlist()
-            SeasonsAction.OnFavoriteClick -> addOrRemoveFromFavorites()
             is SeasonsAction.OnSeasonClick -> viewModelScope.launch {
                 _uiEvents.send(SeasonsEvent.NavigateToEpisodes(action.seasonNumber))
             }
+
             is SeasonsAction.OnSeasonLongClick -> _uiState.update {
                 it.copy(expandedSeasonId = action.seasonId.takeUnless { id -> id == it.expandedSeasonId })
             }
@@ -64,81 +53,12 @@ internal class SeasonsVM(
         _uiState.update { it.copy(uiState = SimplerUi.Loading) }
 
         when (val detailsResult = getTvDetailsUC(tvShowId)) {
-            is ResultHandler.Error -> {
-                _uiState.update {
-                    it.copy(uiState = SimplerUi.Error(detailsResult.exception.messageResource))
-                }
-                return@launch
-            }
-
-            is ResultHandler.Success -> _uiState.update { it.copy(details = detailsResult.data) }
-        }
-
-        // Account states require an authenticated user; a failure here is non-fatal:
-        // the seasons still show, just without the watchlist/favorite actions.
-        when (val statesResult = getTvAccountStatesUC(tvShowId)) {
             is ResultHandler.Error -> _uiState.update {
-                it.copy(accountStates = null, uiState = SimplerUi.Idle)
+                it.copy(uiState = SimplerUi.Error(detailsResult.exception.messageResource))
             }
 
             is ResultHandler.Success -> _uiState.update {
-                it.copy(accountStates = statesResult.data, uiState = SimplerUi.Idle)
-            }
-        }
-    }
-
-    private fun addOrRemoveFromWatchlist() = viewModelScope.launch {
-        val inWatchlist = _uiState.value.accountStates?.watchlist ?: false
-
-        _uiState.update { it.copy(isWatchlistLoading = true) }
-
-        val result = if (inWatchlist) {
-            removeTvFromAccountWatchlistUC(tvShowId)
-        } else {
-            addTvToAccountWatchlistUC(tvShowId)
-        }
-
-        when (result) {
-            is ResultHandler.Error -> _uiState.update {
-                it.copy(
-                    isWatchlistLoading = false,
-                    uiState = SimplerUi.Error(result.exception.messageResource)
-                )
-            }
-
-            is ResultHandler.Success -> _uiState.update {
-                it.copy(
-                    isWatchlistLoading = false,
-                    accountStates = it.accountStates?.copy(watchlist = !inWatchlist)
-                )
-            }
-        }
-    }
-
-    private fun addOrRemoveFromFavorites() = viewModelScope.launch {
-        val isFavorite = _uiState.value.accountStates?.favorite ?: false
-
-        _uiState.update { it.copy(isFavoriteLoading = true) }
-
-        val result = if (isFavorite) {
-            removeTvFromFavoritesUC(tvShowId)
-        } else {
-            addTvToFavoritesUC(tvShowId)
-        }
-
-        when (result) {
-            is ResultHandler.Error -> _uiState.update {
-                it.copy(
-                    isFavoriteLoading = false,
-                    uiState = SimplerUi.Error(result.exception.messageResource)
-                )
-            }
-
-            is ResultHandler.Success -> _uiState.update {
-                it.copy(
-                    isFavoriteLoading = false,
-                    accountStates = it.accountStates?.copy(favorite = !isFavorite)
-                )
+                it.copy(details = detailsResult.data, uiState = SimplerUi.Idle)
             }
         }
     }

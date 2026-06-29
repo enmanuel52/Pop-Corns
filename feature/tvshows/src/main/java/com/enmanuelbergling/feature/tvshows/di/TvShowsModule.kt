@@ -17,6 +17,11 @@ import com.enmanuelbergling.feature.tvshows.paging.usecase.GetFilteredTvShowsUC
 import com.enmanuelbergling.feature.tvshows.paging.usecase.GetPaginatedFavoriteTvShowsUC
 import com.enmanuelbergling.feature.tvshows.paging.usecase.GetSectionTvShowsUC
 import com.enmanuelbergling.feature.tvshows.seasons.SeasonsVM
+import com.enmanuelbergling.feature.tvshows.tvshowdetails.TvShowDetailsVM
+import com.enmanuelbergling.feature.tvshows.tvshowdetails.model.TvAccountStatesChainHandler
+import com.enmanuelbergling.feature.tvshows.tvshowdetails.model.TvCreditsChainHandler
+import com.enmanuelbergling.feature.tvshows.tvshowdetails.model.TvShowDetailsChain
+import com.enmanuelbergling.feature.tvshows.tvshowdetails.model.TvShowDetailsChainHandler
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -29,6 +34,13 @@ internal val tvShowsScreenModule = module {
     singleOf(::TvShowsChain)
 }
 
+internal val tvShowDetailsScreenModule = module {
+    singleOf(::TvShowDetailsChainHandler)
+    singleOf(::TvCreditsChainHandler)
+    singleOf(::TvAccountStatesChainHandler)
+    singleOf(::TvShowDetailsChain)
+}
+
 private val pagingModule = module {
     singleOf(::GetFilteredTvShowsUC)
     singleOf(::GetSectionTvShowsUC)
@@ -38,6 +50,7 @@ private val pagingModule = module {
 val tvShowsModule = module {
     includes(pagingModule)
     includes(tvShowsScreenModule)
+    includes(tvShowDetailsScreenModule)
 
     viewModelOf(::TvShowsVM)
 
@@ -48,6 +61,7 @@ val tvShowsModule = module {
 
     viewModelOf(::FavoriteTvShowsVM)
 
+    viewModelOf(::TvShowDetailsVM)
     viewModelOf(::SeasonsVM)
     viewModelOf(::EpisodesVM)
     viewModelOf(::EpisodeDetailsVM)

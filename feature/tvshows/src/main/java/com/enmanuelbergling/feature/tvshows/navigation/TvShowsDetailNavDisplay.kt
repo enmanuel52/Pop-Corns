@@ -27,6 +27,7 @@ import com.enmanuelbergling.feature.tvshows.R
 import com.enmanuelbergling.feature.tvshows.episodedetails.EpisodeDetailsScreen
 import com.enmanuelbergling.feature.tvshows.episodes.EpisodesScreen
 import com.enmanuelbergling.feature.tvshows.seasons.SeasonsScreen
+import com.enmanuelbergling.feature.tvshows.tvshowdetails.TvShowDetailsScreen
 
 /**
  * Self-contained Navigation 3 flow for a single tvShows, hosted inside the global
@@ -41,7 +42,7 @@ internal fun SharedTransitionScope.TvShowsDetailNavDisplay(
     onActor: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
 ) {
-    val backStack = rememberNavBackStack(SeasonsKey(tvShowId))
+    val backStack = rememberNavBackStack(TvShowDetailsKey(tvShowId))
     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
     NavDisplay(
@@ -60,9 +61,22 @@ internal fun SharedTransitionScope.TvShowsDetailNavDisplay(
         ),
         sharedTransitionScope = this,
         entryProvider = entryProvider {
+            entry<TvShowDetailsKey> { key ->
+                TvShowDetailsScreen(
+                    tvShowId = key.tvShowId,
+                    onSeeAllSeasons = { backStack.add(SeasonsKey(key.tvShowId)) },
+                    onSeason = { seasonNumber ->
+                        backStack.add(SeasonsKey(key.tvShowId))
+                        backStack.add(EpisodesKey(key.tvShowId, seasonNumber))
+                    },
+                    onActor = onActor,
+                    onBack = onBack,
+                )
+            }
+
             entry<SeasonsKey>(
                 metadata = listMetadata(
-                    placeholder = if (backStack.size == 1) stringResource(R.string.episodes)
+                    placeholder = if (backStack.none { it is EpisodesKey }) stringResource(R.string.episodes)
                     else stringResource(R.string.episode_details)
                 )
             ) { key ->
@@ -72,7 +86,7 @@ internal fun SharedTransitionScope.TvShowsDetailNavDisplay(
                         backStack.removeAll { it is EpisodesKey }
                         backStack.add(EpisodesKey(key.tvShowId, seasonNumber))
                     },
-                    onBack = onBack,
+                    onBack = { backStack.removeLastOrNull() },
                 )
             }
 
@@ -88,7 +102,9 @@ internal fun SharedTransitionScope.TvShowsDetailNavDisplay(
                             EpisodeDetailsKey(key.tvShowId, key.seasonNumber, episodeNumber)
                         )
                     },
-                    onBack = { backStack.removeAll { it !is SeasonsKey } },
+                    onBack = {
+                        backStack.removeAll { it is EpisodesKey || it is EpisodeDetailsKey }
+                    },
                 )
             }
 
