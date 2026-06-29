@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,7 +76,11 @@ fun MovieLandCard(
                     maxLines = 1,
                 )
 
-                RatingStars(value = movie.voteAverage.div(2).toFloat(), spaceBetween = 1.dp)
+                RatingStars(
+                    value = movie.voteAverage.div(2).toFloat(),
+                    spaceBetween = 1.dp,
+                    surfaceVariant = LocalContentColor.current,
+                )
             }
         }
     }
