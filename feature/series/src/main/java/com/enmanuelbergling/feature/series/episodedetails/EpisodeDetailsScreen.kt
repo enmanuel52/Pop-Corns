@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,8 +29,10 @@ import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -54,7 +57,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
 import com.enmanuelbergling.core.common.util.BASE_POSTER_IMAGE_URL
-import com.enmanuelbergling.core.model.tv.EpisodeDetails
+import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.RatingStars
 import com.enmanuelbergling.core.ui.core.ObserveAsEvents
@@ -88,7 +91,7 @@ fun EpisodeDetailsScreen(
     EpisodeDetailsScreen(state = state, onAction = viewModel::onAction)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun EpisodeDetailsScreen(
     state: EpisodeDetailsState,
@@ -102,7 +105,7 @@ private fun EpisodeDetailsScreen(
         uiState = state.uiState,
         snackState = snackbarHostState,
         onRetry = { onAction(EpisodeDetailsAction.OnRetry) },
-        getFocus = details == null
+        getFocus = false
     )
 
     val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -134,6 +137,14 @@ private fun EpisodeDetailsScreen(
                 .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
             contentPadding = WindowInsets.navigationBars.asPaddingValues(),
         ) {
+            if (state.uiState == SimplerUi.Loading) item {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                    LoadingIndicator(
+                        modifier = Modifier
+                            .padding(MaterialTheme.dimen.medium),
+                    )
+                }
+            }
             details?.let {
                 stillImage(BASE_BACKDROP_IMAGE_URL + details.stillPath.orEmpty())
 

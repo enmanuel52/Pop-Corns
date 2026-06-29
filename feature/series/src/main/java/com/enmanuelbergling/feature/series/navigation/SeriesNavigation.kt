@@ -1,5 +1,7 @@
 package com.enmanuelbergling.feature.series.navigation
 
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.material3.Surface
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
@@ -72,11 +74,15 @@ fun NavGraphBuilder.seriesGraph(
 
         composable<SeriesDetailFlowDestination> { backStackEntry ->
             val seriesId = backStackEntry.toRoute<SeriesDetailFlowDestination>().seriesId
-            SeriesDetailNavDisplay(
-                seriesId = seriesId,
-                onActor = onActor,
-                onBack = onBack,
-            )
+            Surface {
+                SharedTransitionLayout {
+                    SeriesDetailNavDisplay(
+                        seriesId = seriesId,
+                        onActor = onActor,
+                        onBack = onBack,
+                    )
+                }
+            }
         }
 
         composable<SeriesSectionDestination> { backStackEntry ->
@@ -84,10 +90,25 @@ fun NavGraphBuilder.seriesGraph(
             val sectionResult = runCatching { SeriesSection.valueOf(stringSection) }
             sectionResult.onSuccess { section ->
                 when (section) {
-                    SeriesSection.Popular -> PopularSeriesScreen(onSeries = onSeries, onBack = onBack)
-                    SeriesSection.TopRated -> TopRatedSeriesScreen(onSeries = onSeries, onBack = onBack)
-                    SeriesSection.OnTheAir -> OnTheAirSeriesScreen(onSeries = onSeries, onBack = onBack)
-                    SeriesSection.AiringToday -> AiringTodaySeriesScreen(onSeries = onSeries, onBack = onBack)
+                    SeriesSection.Popular -> PopularSeriesScreen(
+                        onSeries = onSeries,
+                        onBack = onBack
+                    )
+
+                    SeriesSection.TopRated -> TopRatedSeriesScreen(
+                        onSeries = onSeries,
+                        onBack = onBack
+                    )
+
+                    SeriesSection.OnTheAir -> OnTheAirSeriesScreen(
+                        onSeries = onSeries,
+                        onBack = onBack
+                    )
+
+                    SeriesSection.AiringToday -> AiringTodaySeriesScreen(
+                        onSeries = onSeries,
+                        onBack = onBack
+                    )
                 }
             }.onFailure { onBack() }
         }

@@ -3,6 +3,7 @@ package com.enmanuelbergling.feature.series.episodes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,8 +25,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -48,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
+import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.tv.Episode
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.RatingStars
@@ -78,7 +82,7 @@ fun EpisodesScreen(
     EpisodesScreen(state = state, onAction = viewModel::onAction)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun EpisodesScreen(
     state: EpisodesState,
@@ -90,7 +94,7 @@ private fun EpisodesScreen(
         uiState = state.uiState,
         snackState = snackbarHostState,
         onRetry = { onAction(EpisodesAction.OnRetry) },
-        getFocus = state.seasonDetails == null
+        getFocus = false
     )
 
     val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -115,6 +119,7 @@ private fun EpisodesScreen(
         },
         contentWindowInsets = WindowInsets.statusBars,
     ) { paddingValues ->
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
             modifier = Modifier
@@ -124,6 +129,14 @@ private fun EpisodesScreen(
                 .nestedScroll(topBarScrollBehavior.nestedScrollConnection),
             contentPadding = WindowInsets.navigationBars.asPaddingValues(),
         ) {
+            if (state.uiState == SimplerUi.Loading) item {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                    LoadingIndicator(
+                        modifier = Modifier
+                            .padding(MaterialTheme.dimen.medium),
+                    )
+                }
+            }
             items(state.seasonDetails?.episodes.orEmpty(), key = { it.id }) { episode ->
                 EpisodeRow(
                     episode = episode,

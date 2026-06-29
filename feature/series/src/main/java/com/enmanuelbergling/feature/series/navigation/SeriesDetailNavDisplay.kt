@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3AdaptiveApi::class)
+
 package com.enmanuelbergling.feature.series.navigation
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -33,7 +36,7 @@ import com.enmanuelbergling.feature.series.seasons.SeasonsScreen
  */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-internal fun SeriesDetailNavDisplay(
+internal fun SharedTransitionScope.SeriesDetailNavDisplay(
     seriesId: Int,
     onActor: (ActorDetailNavAction) -> Unit,
     onBack: () -> Unit,
@@ -55,45 +58,37 @@ internal fun SeriesDetailNavDisplay(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
+        sharedTransitionScope = this,
         entryProvider = entryProvider {
-            entry<SeasonsKey> { key ->
+            entry<SeasonsKey>(
+                metadata = listMetadata(
+                    placeholder = if (backStack.size == 1) stringResource(R.string.episodes)
+                    else stringResource(R.string.episode_details)
+                )
+            ) { key ->
                 SeasonsScreen(
                     seriesId = key.seriesId,
                     onSeason = { seasonNumber ->
+                        backStack.removeAll { it is EpisodesKey }
                         backStack.add(EpisodesKey(key.seriesId, seasonNumber))
                     },
-                    onBack = {
-                        if (backStack.size <= 1) onBack() else backStack.removeLastOrNull()
-                    },
+                    onBack = onBack,
                 )
             }
 
             entry<EpisodesKey>(
-                metadata = ListDetailSceneStrategy.listPane(
-                    detailPlaceholder = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.episode_details),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-                    }
-                )
+                metadata = ListDetailSceneStrategy.extraPane()
             ) { key ->
                 EpisodesScreen(
                     seriesId = key.seriesId,
                     seasonNumber = key.seasonNumber,
                     onEpisode = { episodeNumber ->
+                        backStack.removeAll { it is EpisodeDetailsKey }
                         backStack.add(
                             EpisodeDetailsKey(key.seriesId, key.seasonNumber, episodeNumber)
                         )
                     },
-                    onBack = { backStack.removeLastOrNull() },
+                    onBack = { backStack.removeAll { it !is SeasonsKey } },
                 )
             }
 
@@ -111,3 +106,19 @@ internal fun SeriesDetailNavDisplay(
         }
     )
 }
+
+fun listMetadata(placeholder: String) = ListDetailSceneStrategy.listPane(
+    detailPlaceholder = {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = placeholder,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    }
+)
