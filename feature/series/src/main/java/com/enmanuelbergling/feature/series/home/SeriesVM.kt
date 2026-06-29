@@ -114,7 +114,7 @@ class SeriesVM(
                 _uiDataState.update {
                     it.copy(
                         popular = request.popular,
-                        topRated = request.topRated,
+                        topRated = request.topRated.sortedByDescending(TvShow::voteAverage),
                         onTheAir = request.onTheAir,
                         airingToday = request.airingToday,
                     )

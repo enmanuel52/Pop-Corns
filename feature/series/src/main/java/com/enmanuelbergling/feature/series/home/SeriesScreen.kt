@@ -1,7 +1,6 @@
 package com.enmanuelbergling.feature.series.home
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -74,15 +74,12 @@ import com.enmanuelbergling.core.model.tv.TvShow
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.HandleUiState
 import com.enmanuelbergling.core.ui.components.blendMode
-import com.enmanuelbergling.core.ui.components.common.HeaderMovieTitle
-import com.enmanuelbergling.core.ui.components.common.MovieCard
-import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
-import com.enmanuelbergling.core.ui.components.listItemWindAnimation
+import com.enmanuelbergling.core.ui.components.common.HeaderTvShowTitle
+import com.enmanuelbergling.core.ui.components.common.TvShowCard
+import com.enmanuelbergling.core.ui.components.common.TvShowLandCard
 import com.enmanuelbergling.core.ui.core.dimen
-import com.enmanuelbergling.core.ui.core.isScrollingForward
 import com.enmanuelbergling.feature.series.home.model.SuggestionEvent
 import com.enmanuelbergling.feature.series.search.ExpandedSearchBarContent
-import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -160,7 +157,7 @@ fun SeriesScreen(
                 popular = uiData.popular.take(5),
                 topRated = uiData.topRated,
                 onTheAir = uiData.onTheAir,
-                airingToday = uiData.airingToday,
+                airingToday = uiData.airingToday.take(5),
                 onDetails = onDetails,
                 onMore = onMore,
                 isLoading = uiState == SimplerUi.Loading
@@ -273,6 +270,7 @@ private fun ExpandedSearchBarInputField(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SeriesList(
     popular: List<TvShow>,
@@ -284,87 +282,77 @@ private fun SeriesList(
     onMore: (SeriesSection) -> Unit,
     isLoading: Boolean,
 ) {
-    LazyColumn(
+    if (isLoading) Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+        LoadingIndicator(
+            modifier = Modifier
+                .padding(MaterialTheme.dimen.medium),
+        )
+    } else LazyColumn(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = MaterialTheme.dimen.verySmall),
         contentPadding = WindowInsets.navigationBars.asPaddingValues(),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
     ) {
-        headerSeries(popular, onDetails, isLoading) { onMore(SeriesSection.Popular) }
 
-        forYouText()
+        if (popular.isNotEmpty()) headerSeries(
+            popular = popular,
+            onDetails = onDetails,
+        ) { onMore(SeriesSection.Popular) }
 
-        seriesSection(
+        if ((topRated + onTheAir + airingToday).isNotEmpty()) forYouText()
+
+        if (topRated.isNotEmpty()) seriesRowSection(
             title = R.string.top_rated,
             series = topRated,
             onDetails = onDetails,
-            isLoading = isLoading
         ) { onMore(SeriesSection.TopRated) }
 
-        seriesSection(
+        if (onTheAir.isNotEmpty()) seriesRowSection(
             title = R.string.on_the_air,
             series = onTheAir,
             onDetails = onDetails,
-            isLoading = isLoading
         ) { onMore(SeriesSection.OnTheAir) }
 
-        seriesSection(
+        if (airingToday.isNotEmpty()) seriesColumnSection(
             title = R.string.airing_today,
             series = airingToday,
             onDetails = onDetails,
-            isLoading = isLoading
         ) { onMore(SeriesSection.AiringToday) }
     }
 }
 
-private fun LazyListScope.seriesSection(
+private fun LazyListScope.seriesRowSection(
     @StringRes title: Int,
     series: List<TvShow>,
     onDetails: (id: Int) -> Unit,
-    isLoading: Boolean,
     onMore: () -> Unit,
 ) {
     item {
-        if (series.isEmpty() && isLoading) {
-            Row(Modifier.shimmer()) {
-                repeat(5) {
-                    MovieCardPlaceholder(
+        Column {
+            SectionHeader(
+                title = stringResource(title),
+                modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
+                onMore = onMore
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+
+            val listState = rememberLazyListState()
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
+                state = listState,
+                contentPadding = PaddingValues(horizontal = MaterialTheme.dimen.small)
+            ) {
+                items(series) { tvShow ->
+                    TvShowCard(
+                        imageUrl = tvShow.posterPath.orEmpty(),
+                        title = tvShow.name,
+                        rating = tvShow.voteAverage,
                         modifier = Modifier
-                            .padding(start = MaterialTheme.dimen.small)
-                            .width(180.dp)
-                    )
-                }
-            }
-        } else {
-            Column {
-                SectionHeader(
-                    title = stringResource(title),
-                    modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
-                    onMore = onMore
-                )
-
-                Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
-
-                val listState = rememberLazyListState()
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small),
-                    state = listState
-                ) {
-                    items(series) { tvShow ->
-                        MovieCard(
-                            imageUrl = tvShow.posterPath.orEmpty(),
-                            title = tvShow.name,
-                            rating = tvShow.voteAverage,
-                            modifier = Modifier
-                                .width(180.dp)
-                                .listItemWindAnimation(
-                                    listState.isScrollingForward(),
-                                    Orientation.Horizontal
-                                )
-                        ) {
-                            onDetails(tvShow.id)
-                        }
+                            .width(120.dp)
+                    ) {
+                        onDetails(tvShow.id)
                     }
                 }
             }
@@ -372,46 +360,63 @@ private fun LazyListScope.seriesSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+private fun LazyListScope.seriesColumnSection(
+    @StringRes title: Int,
+    series: List<TvShow>,
+    onDetails: (id: Int) -> Unit,
+    onMore: () -> Unit,
+) {
+    item {
+        SectionHeader(
+            title = stringResource(title),
+            modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
+            onMore = onMore
+        )
+    }
+    items(series) { tvShow ->
+        TvShowLandCard(
+            tvShow = tvShow,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.dimen.small)
+        ) {
+            onDetails(tvShow.id)
+        }
+    }
+
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 private fun LazyListScope.headerSeries(
     popular: List<TvShow>,
     onDetails: (id: Int) -> Unit,
-    isLoading: Boolean,
     onMore: () -> Unit,
 ) {
     item {
-        if (popular.isEmpty() && isLoading) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                LoadingIndicator(
-                    modifier = Modifier
-                        .padding(MaterialTheme.dimen.medium),
-                )
-            }
-        } else {
-            val carouselState = rememberCarouselState { popular.count() }
-            Column {
-                SectionHeader(
-                    title = stringResource(R.string.popular),
-                    modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
-                    onMore = onMore
-                )
+        val carouselState = rememberCarouselState { popular.count() }
+        Column {
+            SectionHeader(
+                title = stringResource(R.string.popular),
+                modifier = Modifier.padding(horizontal = MaterialTheme.dimen.small),
+                onMore = onMore
+            )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
+            Spacer(modifier = Modifier.height(MaterialTheme.dimen.small))
 
-                HorizontalCenteredHeroCarousel(
-                    state = carouselState,
-                    itemSpacing = MaterialTheme.dimen.small,
-                    maxItemWidth = 300.dp,
-                    contentPadding = PaddingValues(horizontal = MaterialTheme.dimen.small)
-                ) { page ->
-                    val tvShow = popular.getOrNull(page)
-                    tvShow?.let {
-                        SeriesHeaderCard(
-                            tvShow = tvShow,
-                            modifier = Modifier.maskClip(CardDefaults.shape)
-                        ) {
-                            onDetails(tvShow.id)
-                        }
+            HorizontalCenteredHeroCarousel(
+                state = carouselState,
+                itemSpacing = MaterialTheme.dimen.small,
+                maxItemWidth = 300.dp,
+                contentPadding = PaddingValues(horizontal = MaterialTheme.dimen.small)
+            ) { page ->
+                val tvShow = popular.getOrNull(page)
+                tvShow?.let {
+                    SeriesHeaderCard(
+                        tvShow = tvShow,
+                        modifier = Modifier.maskClip(CardDefaults.shape)
+                    ) {
+                        onDetails(tvShow.id)
                     }
                 }
             }
@@ -442,7 +447,7 @@ private fun SeriesHeaderCard(
                 contentScale = ContentScale.Crop
             )
 
-            HeaderMovieTitle(
+            HeaderTvShowTitle(
                 title = tvShow.name,
                 modifier = Modifier
                     .padding(MaterialTheme.dimen.small)
