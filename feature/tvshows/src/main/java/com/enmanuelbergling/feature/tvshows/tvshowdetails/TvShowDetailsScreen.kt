@@ -263,13 +263,13 @@ private fun LazyListScope.seasonsSection(
                 items(seasons, key = { it.id }) { season ->
                     SeasonCard(
                         season = season,
-                        modifier = Modifier.width(110.dp),
+                        modifier = Modifier.width(80.dp),
                         onClick = { onSeason(season.seasonNumber) }
                     )
                 }
                 item {
                     SeeAllCard(
-                        modifier = Modifier.width(110.dp),
+                        modifier = Modifier.width(80.dp),
                         onClick = onSeeAll,
                     )
                 }
@@ -285,7 +285,7 @@ private fun SeasonCard(
     onClick: () -> Unit,
 ) {
     Column(modifier) {
-        ElevatedCard(onClick = onClick) {
+        ElevatedCard(onClick = onClick, shape = MaterialTheme.shapes.extraLarge) {
             AsyncImage(
                 model = BASE_POSTER_IMAGE_URL + season.posterPath.orEmpty(),
                 contentDescription = "season poster",
@@ -293,7 +293,7 @@ private fun SeasonCard(
                 placeholder = painterResource(id = CoreR.drawable.pop_corn_and_cinema_poster),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(.65f),
+                    .aspectRatio(.8f),
                 contentScale = ContentScale.Crop
             )
         }
@@ -308,6 +308,7 @@ private fun SeasonCard(
         Text(
             text = stringResource(R.string.episode_count, season.episodeCount),
             style = MaterialTheme.typography.bodySmall,
+            maxLines = 1,
         )
     }
 }
@@ -317,12 +318,12 @@ private fun SeeAllCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    Column(modifier) {
-        ElevatedCard(onClick = onClick) {
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        ElevatedCard(onClick = onClick, shape = MaterialTheme.shapes.extraLarge) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(.65f),
+                    .aspectRatio(.8f),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

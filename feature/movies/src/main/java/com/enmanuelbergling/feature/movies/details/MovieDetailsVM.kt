@@ -88,7 +88,9 @@ internal class MovieDetailsVM(
             val messageRes = networkException?.messageResource
                 ?: NetworkException.DefaultException().messageResource
 
-            _uiState.update { it.copy(uiState = SimplerUi.Error(messageRes)) }
+            if (networkException is NetworkException.AuthorizationException)
+                _uiState.update { it.copy(uiState = SimplerUi.Idle) }
+            else _uiState.update { it.copy(uiState = SimplerUi.Error(messageRes)) }
         }.onSuccess {
             _uiState.update { it.copy(uiState = SimplerUi.Idle) }
         }

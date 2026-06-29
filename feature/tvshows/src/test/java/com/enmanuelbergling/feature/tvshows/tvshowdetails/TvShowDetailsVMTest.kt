@@ -4,13 +4,17 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isNotInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.testing.datasource.remote.FakeMovieRemoteDS
 import com.enmanuelbergling.core.testing.datasource.remote.FakeTvRemoteDS
+import com.enmanuelbergling.core.testing.datasource.remote.MovieRemoteDsFunction
 import com.enmanuelbergling.core.testing.datasource.remote.TvRemoteDsFunction
 import com.enmanuelbergling.core.testing.extension.KoinExtension
 import com.enmanuelbergling.core.testing.extension.MainCoroutineExtension
@@ -81,6 +85,32 @@ class TvShowDetailsVMTest : KoinTest {
         assertThat(viewModel.uiState.value.details).isNotNull()
         assertThat(viewModel.uiState.value.credits).isNotNull()
         assertThat(viewModel.uiState.value.accountStates).isNull()
+    }
+
+
+
+    @Test
+    fun `loadPage doesn't prompt error when account state failure is authentication`() = runTest {
+        // Given
+        val exception = NetworkException.AuthorizationException()
+        val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
+            throwError(MovieRemoteDsFunction.GetMovieAccountStates to exception)
+        }
+
+        koinExtension.replaceDependencies {
+            single<MovieRemoteDS> { fakeMovieRemoteDS }
+        }
+        viewModel = koinExtension.get<TvShowDetailsVM> { parametersOf(tvShowId) }
+
+        // When
+        backgroundScope.launch {
+            viewModel.uiState.collect()
+        }
+        advanceUntilIdle()
+
+        // Then
+        assertThat(viewModel.uiState.value.uiState).isNotInstanceOf(SimplerUi.Error::class)
+        assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Idle)
     }
 
     @Test

@@ -7,6 +7,7 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import assertk.assertions.isFalse
+import assertk.assertions.isNotInstanceOf
 import com.enmanuelbergling.core.domain.datasource.remote.MovieRemoteDS
 import com.enmanuelbergling.core.domain.datasource.remote.UserRemoteDS
 import com.enmanuelbergling.core.model.core.NetworkException
@@ -69,11 +70,11 @@ class MovieDetailsVMTest : KoinTest {
     }
 
     @Test
-    fun `loadPage partially saves state when the third chain handler fails`() = runTest {
+    fun `loadPage partially saves state when the second chain handler fails`() = runTest {
         // Given
         val exception = NetworkException.ReadTimeOutException()
         val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
-            throwError(MovieRemoteDsFunction.GetMovieAccountStates to exception)
+            throwError(MovieRemoteDsFunction.GetMovieCredits to exception)
         }
 
         koinExtension.replaceDependencies {
@@ -90,8 +91,31 @@ class MovieDetailsVMTest : KoinTest {
         // Then
         assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Error(exception.messageResource))
         assertThat(viewModel.uiState.value.details).isNotNull()
-        assertThat(viewModel.uiState.value.credits).isNotNull()
-        assertThat(viewModel.uiState.value.accountStates).isNull()
+        assertThat(viewModel.uiState.value.credits).isNull()
+    }
+
+    @Test
+    fun `loadPage doesn't prompt error when when account state failure is authentication`() = runTest {
+        // Given
+        val exception = NetworkException.AuthorizationException()
+        val fakeMovieRemoteDS = FakeMovieRemoteDS().apply {
+            throwError(MovieRemoteDsFunction.GetMovieAccountStates to exception)
+        }
+
+        koinExtension.replaceDependencies {
+            single<MovieRemoteDS> { fakeMovieRemoteDS }
+        }
+        viewModel = koinExtension.get<MovieDetailsVM> { parametersOf(movieId) }
+
+        // When
+        backgroundScope.launch {
+            viewModel.uiState.collect()
+        }
+        advanceUntilIdle()
+
+        // Then
+        assertThat(viewModel.uiState.value.uiState).isNotInstanceOf(SimplerUi.Error::class)
+        assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Idle)
     }
 
     @Test
