@@ -24,6 +24,7 @@ import com.enmanuelbergling.core.domain.usecase.tv.GetPopularTvUC
 import com.enmanuelbergling.core.domain.usecase.tv.GetSeasonDetailsUC
 import com.enmanuelbergling.core.domain.usecase.tv.GetTopRatedTvUC
 import com.enmanuelbergling.core.domain.usecase.tv.GetTvAccountStatesUC
+import com.enmanuelbergling.core.domain.usecase.tv.GetTvCreditsUC
 import com.enmanuelbergling.core.domain.usecase.tv.GetTvDetailsUC
 import com.enmanuelbergling.core.domain.usecase.tv.SearchTvUC
 import com.enmanuelbergling.core.domain.usecase.settings.GetDarkThemeUC
@@ -79,6 +80,7 @@ val tvUcModule = module {
     singleOf(::GetOnTheAirTvUC)
     singleOf(::GetAiringTodayTvUC)
     singleOf(::GetTvDetailsUC)
+    singleOf(::GetTvCreditsUC)
     singleOf(::GetSeasonDetailsUC)
     singleOf(::GetEpisodeDetailsUC)
     singleOf(::GetTvAccountStatesUC)

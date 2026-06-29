@@ -33,8 +33,8 @@ fun NavHostController.navigateToListGraph(navOptions: NavOptions? = null) {
     navigate(ListGraphDestination, navOptions)
 }
 
-fun NavHostController.navigateToWatchlistSeriesTab(navOptions: NavOptions? = null) {
-    navigate(WatchListDestination(initialTab = WatchlistTab.Series.name), navOptions)
+fun NavHostController.navigateToWatchlistTvShowsTab(navOptions: NavOptions? = null) {
+    navigate(WatchListDestination(initialTab = WatchlistTab.TvShows.name), navOptions)
 }
 
 fun NavHostController.navigateToListDetailsScreen(
@@ -53,7 +53,7 @@ fun NavGraphBuilder.listGraph(
     onDetails: (listId: Int, listName: String) -> Unit,
     onNavigateToLists: () -> Unit,
     onMovieDetails: (movieId: Int) -> Unit,
-    onSeriesDetails: (seriesId: Int) -> Unit,
+    onTvShowsDetails: (tvShowId: Int) -> Unit,
     onAddShortcut: (WatchlistShortcut) -> Unit,
     onDeleteShortcut: (watchlistId: Int) -> Unit,
     onBack: () -> Unit,
@@ -63,7 +63,7 @@ fun NavGraphBuilder.listGraph(
 
             WatchlistHomeRoute(
                 onMovieDetails = onMovieDetails,
-                onSeriesDetails = onSeriesDetails,
+                onTvShowsDetails = onTvShowsDetails,
                 onNavigateToLists = onNavigateToLists,
                 onBack = onBack,
             )

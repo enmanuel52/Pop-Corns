@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -158,17 +159,22 @@ fun HeaderMovieInfo(
     modifier: Modifier = Modifier,
 ) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            modifier = Modifier.weight(1f),
-            overflow = TextOverflow.Ellipsis
-        )
+        HeaderMovieTitle(title = title, modifier = Modifier.weight(1f))
         Spacer(modifier = Modifier.width(MaterialTheme.dimen.verySmall))
         RatingStars(value = rating.div(2).toFloat(), spaceBetween = 1.dp)
     }
+}
+
+@Composable
+fun HeaderMovieTitle(title: String, modifier: Modifier = Modifier) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.SemiBold,
+        maxLines = 1,
+        modifier = modifier,
+        overflow = TextOverflow.Ellipsis
+    )
 }
 
 @Preview

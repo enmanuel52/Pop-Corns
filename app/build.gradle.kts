@@ -50,7 +50,7 @@ dependencies {
     implementation(project(":feature:actor"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:movies"))
-    implementation(project(":feature:series"))
+    implementation(project(":feature:tvshows"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:watchlists"))
     implementation(project(":feature:favorites"))

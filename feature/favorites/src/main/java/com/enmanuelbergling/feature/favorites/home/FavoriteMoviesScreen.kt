@@ -1,7 +1,5 @@
 package com.enmanuelbergling.feature.favorites.home
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,10 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +40,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.core.ui.components.TinderSwipeToDismissContainer
+import com.enmanuelbergling.core.ui.components.blendMode
 import com.enmanuelbergling.core.ui.components.common.MovieCard
 import com.enmanuelbergling.core.ui.components.common.MovieCardPlaceholder
 import com.enmanuelbergling.core.ui.core.ObserveAsEvents
@@ -226,21 +222,4 @@ private fun SeeIcon() {
             .blendMode(BlendMode.Difference),
         tint = Color.White,
     )
-}
-
-private fun Modifier.blendMode(blendMode: BlendMode): Modifier {
-    return this.drawWithCache {
-        val graphicsLayer = obtainGraphicsLayer()
-
-        graphicsLayer.apply {
-            record {
-                drawContent()
-            }
-            this.blendMode = blendMode
-        }
-
-        onDrawWithContent {
-            drawLayer(graphicsLayer)
-        }
-    }
 }

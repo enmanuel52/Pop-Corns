@@ -8,6 +8,7 @@ import com.enmanuelbergling.core.model.core.asPage
 import com.enmanuelbergling.core.model.tv.EpisodeDetails
 import com.enmanuelbergling.core.model.tv.SeasonDetails
 import com.enmanuelbergling.core.model.tv.TvAccountStates
+import com.enmanuelbergling.core.model.tv.TvCredits
 import com.enmanuelbergling.core.model.tv.TvShow
 import com.enmanuelbergling.core.model.tv.TvShowDetails
 import com.enmanuelbergling.core.model.user.WatchResponse
@@ -19,6 +20,7 @@ enum class TvRemoteDsFunction {
     GetOnTheAirTv,
     GetAiringTodayTv,
     GetTvDetails,
+    GetTvCredits,
     GetSeasonDetails,
     GetEpisodeDetails,
     SearchTv,
@@ -58,19 +60,23 @@ class FakeTvRemoteDS : TvRemoteDS {
         checkError(TvRemoteDsFunction.GetAiringTodayTv)
             ?: ResultHandler.Success(FakeTvData.TV_SHOWS.asPage())
 
-    override suspend fun getTvDetails(seriesId: Int): ResultHandler<TvShowDetails> =
+    override suspend fun getTvDetails(tvShowId: Int): ResultHandler<TvShowDetails> =
         checkError(TvRemoteDsFunction.GetTvDetails)
             ?: ResultHandler.Success(FakeTvData.DEFAULT_TV_SHOW_DETAILS)
 
+    override suspend fun getTvCredits(tvShowId: Int): ResultHandler<TvCredits> =
+        checkError(TvRemoteDsFunction.GetTvCredits)
+            ?: ResultHandler.Success(FakeTvData.DEFAULT_TV_CREDITS)
+
     override suspend fun getSeasonDetails(
-        seriesId: Int,
+        tvShowId: Int,
         seasonNumber: Int,
     ): ResultHandler<SeasonDetails> =
         checkError(TvRemoteDsFunction.GetSeasonDetails)
             ?: ResultHandler.Success(FakeTvData.DEFAULT_SEASON_DETAILS)
 
     override suspend fun getEpisodeDetails(
-        seriesId: Int,
+        tvShowId: Int,
         seasonNumber: Int,
         episodeNumber: Int,
     ): ResultHandler<EpisodeDetails> =
@@ -81,21 +87,21 @@ class FakeTvRemoteDS : TvRemoteDS {
         checkError(TvRemoteDsFunction.SearchTv)
             ?: ResultHandler.Success(FakeTvData.TV_SHOWS.asPage())
 
-    override suspend fun getTvAccountStates(seriesId: Int): ResultHandler<TvAccountStates> =
+    override suspend fun getTvAccountStates(tvShowId: Int): ResultHandler<TvAccountStates> =
         checkError(TvRemoteDsFunction.GetTvAccountStates)
-            ?: ResultHandler.Success(FakeTvData.DEFAULT_TV_ACCOUNT_STATES.copy(id = seriesId))
+            ?: ResultHandler.Success(FakeTvData.DEFAULT_TV_ACCOUNT_STATES.copy(id = tvShowId))
 
     override suspend fun getAccountFavoriteTv(page: Int): ResultHandler<PageModel<TvShow>> =
         checkError(TvRemoteDsFunction.GetAccountFavoriteTv)
             ?: ResultHandler.Success(FakeTvData.TV_SHOWS.asPage())
 
-    override suspend fun addTvToFavorites(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun addTvToFavorites(tvShowId: Int): ResultHandler<WatchResponse> {
         kotlinx.coroutines.yield()
         return checkError(TvRemoteDsFunction.AddTvToFavorites)
             ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
     }
 
-    override suspend fun removeTvFromFavorites(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun removeTvFromFavorites(tvShowId: Int): ResultHandler<WatchResponse> {
         kotlinx.coroutines.yield()
         return checkError(TvRemoteDsFunction.RemoveTvFromFavorites)
             ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
@@ -105,13 +111,13 @@ class FakeTvRemoteDS : TvRemoteDS {
         checkError(TvRemoteDsFunction.GetAccountWatchlistTv)
             ?: ResultHandler.Success(FakeTvData.TV_SHOWS.asPage())
 
-    override suspend fun addTvToAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun addTvToAccountWatchlist(tvShowId: Int): ResultHandler<WatchResponse> {
         kotlinx.coroutines.yield()
         return checkError(TvRemoteDsFunction.AddTvToAccountWatchlist)
             ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)
     }
 
-    override suspend fun removeTvFromAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun removeTvFromAccountWatchlist(tvShowId: Int): ResultHandler<WatchResponse> {
         kotlinx.coroutines.yield()
         return checkError(TvRemoteDsFunction.RemoveTvFromAccountWatchlist)
             ?: ResultHandler.Success(DEFAULT_WATCH_RESPONSE)

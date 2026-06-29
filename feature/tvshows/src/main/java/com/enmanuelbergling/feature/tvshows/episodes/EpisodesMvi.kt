@@ -1,0 +1,26 @@
+package com.enmanuelbergling.feature.tvshows.episodes
+
+import androidx.compose.runtime.Stable
+import com.enmanuelbergling.core.model.core.SimplerUi
+import com.enmanuelbergling.core.model.tv.SeasonDetails
+
+@Stable
+internal data class EpisodesState(
+    val tvShowId: Int,
+    val seasonNumber: Int,
+    val seasonDetails: SeasonDetails? = null,
+    val uiState: SimplerUi = SimplerUi.Idle,
+    val expandedEpisodeId: Int? = null,
+)
+
+internal sealed interface EpisodesAction {
+    data object OnBack : EpisodesAction
+    data object OnRetry : EpisodesAction
+    data class OnEpisodeClick(val episodeNumber: Int) : EpisodesAction
+    data class OnEpisodeLongClick(val episodeId: Int) : EpisodesAction
+}
+
+internal sealed interface EpisodesEvent {
+    data object NavigateBack : EpisodesEvent
+    data class NavigateToEpisodeDetails(val episodeNumber: Int) : EpisodesEvent
+}

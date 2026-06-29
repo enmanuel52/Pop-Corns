@@ -45,7 +45,7 @@
     <string name="dark_theme_animation">dark theme animation</string>
     <string name="nav_bar_icon">nav bar icon</string>
     <string name="home">Home</string>
-    <string name="series">Series</string>
+    <string name="tv_shows">TV Shows</string>
     <string name="movies">Movies</string>
     <string name="popularity">Popularity</string>
     <string name="vote_average">Vote Average</string>

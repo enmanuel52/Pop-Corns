@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.feature.watchlists.series.WatchlistSeriesContent
+import com.enmanuelbergling.feature.watchlists.tvShows.WatchlistTvShowsContent
 
 enum class WatchlistTab(
     @StringRes val labelRes: Int,
@@ -38,8 +38,8 @@ enum class WatchlistTab(
         R.drawable.film_solid,
         R.drawable.film_outline,
     ),
-    Series(
-        com.enmanuelbergling.feature.watchlists.R.string.watchlist_series,
+    TvShows(
+        com.enmanuelbergling.feature.watchlists.R.string.watchlist_tv_shows,
         R.drawable.tv_solid,
         R.drawable.tv_outline,
     ),
@@ -49,7 +49,7 @@ enum class WatchlistTab(
 @Composable
 fun WatchlistHomeRoute(
     onMovieDetails: (movieId: Int) -> Unit,
-    onSeriesDetails: (seriesId: Int) -> Unit,
+    onTvShowsDetails: (tvShowId: Int) -> Unit,
     onNavigateToLists: () -> Unit,
     onBack: () -> Unit,
     initialTab: WatchlistTab = WatchlistTab.Movies,
@@ -101,9 +101,9 @@ fun WatchlistHomeRoute(
                     modifier = Modifier.padding(paddingValues),
                 )
 
-                WatchlistTab.Series -> WatchlistSeriesContent(
+                WatchlistTab.TvShows -> WatchlistTvShowsContent(
                     snackbarHostState = snackbarHostState,
-                    onSeriesDetails = onSeriesDetails,
+                    onTvShowsDetails = onTvShowsDetails,
                     modifier = Modifier.padding(paddingValues),
                 )
             }

@@ -5,6 +5,7 @@ import com.enmanuelbergling.core.model.tv.EpisodeDetails
 import com.enmanuelbergling.core.model.tv.Season
 import com.enmanuelbergling.core.model.tv.SeasonDetails
 import com.enmanuelbergling.core.model.tv.TvAccountStates
+import com.enmanuelbergling.core.model.tv.TvCredits
 import com.enmanuelbergling.core.model.tv.TvShow
 import com.enmanuelbergling.core.model.tv.TvShowDetails
 import com.enmanuelbergling.core.network.dto.tv.EpisodeDTO
@@ -13,7 +14,11 @@ import com.enmanuelbergling.core.network.dto.tv.SeasonDTO
 import com.enmanuelbergling.core.network.dto.tv.SeasonDetailsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvAccountStatesDTO
 import com.enmanuelbergling.core.network.dto.tv.TvShowDTO
+import com.enmanuelbergling.core.network.dto.tv.TvCreditsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvShowDetailsDTO
+
+internal fun TvCreditsDTO.toModel() =
+    TvCredits(id = id, cast = cast.map { it.toModel() }, crew = crew.map { it.toModel() })
 
 internal fun TvShowDTO.toModel() = TvShow(
     id = id,

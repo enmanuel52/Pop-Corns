@@ -3,6 +3,7 @@ package com.enmanuelbergling.core.network.ktor.service
 import com.enmanuelbergling.core.network.dto.tv.EpisodeDetailsDTO
 import com.enmanuelbergling.core.network.dto.tv.SeasonDetailsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvAccountStatesDTO
+import com.enmanuelbergling.core.network.dto.tv.TvCreditsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvShowDetailsDTO
 import com.enmanuelbergling.core.network.dto.tv.TvShowPageDTO
 import com.enmanuelbergling.core.network.dto.user.watch.FavoriteBody
@@ -38,20 +39,24 @@ internal class TvService(private val httpClient: KtorClient) {
             url { parameters.append(name = "page", value = "$page") }
         }.body()
 
-    suspend fun getTvDetails(seriesId: Int): TvShowDetailsDTO = httpClient
-        .get("tv/$seriesId")
+    suspend fun getTvDetails(tvShowId: Int): TvShowDetailsDTO = httpClient
+        .get("tv/$tvShowId")
         .body()
 
-    suspend fun getSeasonDetails(seriesId: Int, seasonNumber: Int): SeasonDetailsDTO = httpClient
-        .get("tv/$seriesId/season/$seasonNumber")
+    suspend fun getTvCredits(tvShowId: Int): TvCreditsDTO = httpClient
+        .get("tv/$tvShowId/credits")
+        .body()
+
+    suspend fun getSeasonDetails(tvShowId: Int, seasonNumber: Int): SeasonDetailsDTO = httpClient
+        .get("tv/$tvShowId/season/$seasonNumber")
         .body()
 
     suspend fun getEpisodeDetails(
-        seriesId: Int,
+        tvShowId: Int,
         seasonNumber: Int,
         episodeNumber: Int,
     ): EpisodeDetailsDTO = httpClient
-        .get("tv/$seriesId/season/$seasonNumber/episode/$episodeNumber")
+        .get("tv/$tvShowId/season/$seasonNumber/episode/$episodeNumber")
         .body()
 
     suspend fun searchTv(query: String, page: Int): TvShowPageDTO = httpClient
@@ -62,8 +67,8 @@ internal class TvService(private val httpClient: KtorClient) {
             }
         }.body()
 
-    suspend fun getTvAccountStates(seriesId: Int, sessionId: String): TvAccountStatesDTO = httpClient
-        .get("tv/$seriesId/account_states") {
+    suspend fun getTvAccountStates(tvShowId: Int, sessionId: String): TvAccountStatesDTO = httpClient
+        .get("tv/$tvShowId/account_states") {
             url { parameters.append("session_id", sessionId) }
         }.body()
 

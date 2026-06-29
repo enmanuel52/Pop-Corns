@@ -46,7 +46,7 @@ fun TvShowLandCard(
         ) {
             AsyncImage(
                 model = BASE_BACKDROP_IMAGE_URL + tvShow.backdropPath,
-                contentDescription = "series image",
+                contentDescription = "tv show image",
                 error = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 placeholder = painterResource(id = R.drawable.pop_corn_and_cinema_poster),
                 contentScale = ContentScale.Crop,

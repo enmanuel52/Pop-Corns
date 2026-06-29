@@ -5,6 +5,6 @@ import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 class GetEpisodeDetailsUC(
     private val remoteDS: TvRemoteDS,
 ) {
-    suspend operator fun invoke(seriesId: Int, seasonNumber: Int, episodeNumber: Int) =
-        remoteDS.getEpisodeDetails(seriesId, seasonNumber, episodeNumber)
+    suspend operator fun invoke(tvShowId: Int, seasonNumber: Int, episodeNumber: Int) =
+        remoteDS.getEpisodeDetails(tvShowId, seasonNumber, episodeNumber)
 }

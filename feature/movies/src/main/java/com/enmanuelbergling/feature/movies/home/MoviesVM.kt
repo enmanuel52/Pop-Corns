@@ -57,13 +57,13 @@ class MoviesVM(
             initialValue = false
         )
 
-    private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
+    private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Loading)
     val uiState = _uiState
         .onStart { syncUserUC(); loadUi() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = SimplerUi.Idle
+            initialValue = SimplerUi.Loading
         )
 
     private val _uiDataState =
