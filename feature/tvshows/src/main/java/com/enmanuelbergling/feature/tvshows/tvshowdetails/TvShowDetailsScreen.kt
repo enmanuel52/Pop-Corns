@@ -115,7 +115,7 @@ private fun TvShowDetailsScreen(
         uiState = state.uiState,
         snackState = snackbarHostState,
         onRetry = { onAction(TvShowDetailsAction.OnRetry) },
-        getFocus = details == null
+        getFocus = false
     )
 
     val topBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
