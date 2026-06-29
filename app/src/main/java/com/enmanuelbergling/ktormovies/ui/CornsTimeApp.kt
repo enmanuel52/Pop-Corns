@@ -68,7 +68,7 @@ import com.enmanuelbergling.core.ui.components.shaders.HotPlasmaShader
 import com.enmanuelbergling.core.ui.core.LocalSharedTransitionScope
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.theme.CornTimeTheme
-import com.enmanuelbergling.feature.series.navigation.SeriesDestination
+import com.enmanuelbergling.feature.tvshows.navigation.TvShowsDestination
 import com.enmanuelbergling.feature.settings.home.SPEED
 import com.enmanuelbergling.ktormovies.R
 import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
@@ -336,7 +336,7 @@ private fun DrawerContentPrev() {
     CornTimeTheme {
         DrawerContent(
             onDrawerDestination = {},
-            isSelected = { it == SeriesDestination },
+            isSelected = { it == TvShowsDestination },
             userLoggedIn = true,
             modifier = Modifier
                 .width(NewDrawerWidth)

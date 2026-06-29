@@ -20,7 +20,7 @@ import com.enmanuelbergling.feature.actor.navigation.navigateToActorsGraph
 import com.enmanuelbergling.feature.movies.navigation.MoviesDestination
 import com.enmanuelbergling.feature.movies.navigation.MoviesGraphDestination
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
-import com.enmanuelbergling.feature.series.navigation.navigateToSeriesGraph
+import com.enmanuelbergling.feature.tvshows.navigation.navigateToTvShowsGraph
 import com.enmanuelbergling.feature.settings.navigation.navigateToSettingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListGraph
 import com.enmanuelbergling.ktormovies.R
@@ -52,7 +52,7 @@ class CornTimeAppState(
 
     val mainDrawerEnabled: Boolean
         @Composable get() = currentDestination?.let { destination ->
-            listOf(TopDestination.Movies, TopDestination.Series, TopDestination.Actors)
+            listOf(TopDestination.Movies, TopDestination.TvShows, TopDestination.Actors)
                 .map { it.route }
                 .any { route -> destination.hasRoute(route::class) }
         } ?: false
@@ -70,7 +70,7 @@ class CornTimeAppState(
                 }
             )
 
-            TopDestination.Series -> navController.navigateToSeriesGraph(
+            TopDestination.TvShows -> navController.navigateToTvShowsGraph(
                 navOptions {
                     popUpTo<MoviesDestination>()
                 }

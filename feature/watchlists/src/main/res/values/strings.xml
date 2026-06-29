@@ -4,10 +4,10 @@
     <string name="movie_removed_from_watchlist">Movie removed from watchlist</string>
     <string name="movie_added_to_favorites">Movie added to favorites</string>
     <string name="movie_could_not_be_added_to_favorites">Movie couldn\'t be added to favorites</string>
-    <string name="series_removed_from_watchlist">Series removed from watchlist</string>
-    <string name="the_series_could_not_be_removed_from_watchlist">Series couldn\'t be removed from watchlist</string>
-    <string name="series_added_to_favorites">Series added to favorites</string>
-    <string name="series_could_not_be_added_to_favorites">Series couldn\'t be added to favorites</string>
+    <string name="tv_show_removed_from_watchlist">TV Show removed from watchlist</string>
+    <string name="the_tv_show_could_not_be_removed_from_watchlist">TV Show couldn\'t be removed from watchlist</string>
+    <string name="tv_show_added_to_favorites">TV Show added to favorites</string>
+    <string name="tv_show_could_not_be_added_to_favorites">TV Show couldn\'t be added to favorites</string>
     <string name="watchlist_movies">Movies</string>
-    <string name="watchlist_series">Series</string>
+    <string name="watchlist_tv_shows">TV Shows</string>
 </resources>

@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.enmanuelbergling.core.ui.R
 import com.enmanuelbergling.feature.actor.navigation.ActorsDestination
 import com.enmanuelbergling.feature.movies.navigation.MoviesDestination
-import com.enmanuelbergling.feature.series.navigation.SeriesDestination
+import com.enmanuelbergling.feature.tvshows.navigation.TvShowsDestination
 import com.enmanuelbergling.feature.settings.navigation.SettingsDestination
 import com.enmanuelbergling.feature.watchlists.navigation.WatchListDestination
 
@@ -21,11 +21,11 @@ enum class TopDestination(
         R.drawable.film_outline,
         MoviesDestination
     ),
-    Series(
-        R.string.series,
+    TvShows(
+        R.string.tv_shows,
         R.drawable.tv_solid,
         R.drawable.tv_outline,
-        SeriesDestination
+        TvShowsDestination
     ),
     Actors(
         R.string.actors,

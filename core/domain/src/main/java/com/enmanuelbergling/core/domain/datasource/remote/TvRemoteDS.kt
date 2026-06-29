@@ -19,32 +19,32 @@ interface TvRemoteDS : RemoteDataSource {
 
     suspend fun getAiringTodayTv(page: Int = 1): ResultHandler<PageModel<TvShow>>
 
-    suspend fun getTvDetails(seriesId: Int): ResultHandler<TvShowDetails>
+    suspend fun getTvDetails(tvShowId: Int): ResultHandler<TvShowDetails>
 
     suspend fun getSeasonDetails(
-        seriesId: Int,
+        tvShowId: Int,
         seasonNumber: Int,
     ): ResultHandler<SeasonDetails>
 
     suspend fun getEpisodeDetails(
-        seriesId: Int,
+        tvShowId: Int,
         seasonNumber: Int,
         episodeNumber: Int,
     ): ResultHandler<EpisodeDetails>
 
     suspend fun searchTv(query: String, page: Int): ResultHandler<PageModel<TvShow>>
 
-    suspend fun getTvAccountStates(seriesId: Int): ResultHandler<TvAccountStates>
+    suspend fun getTvAccountStates(tvShowId: Int): ResultHandler<TvAccountStates>
 
     suspend fun getAccountFavoriteTv(page: Int = 1): ResultHandler<PageModel<TvShow>>
 
-    suspend fun addTvToFavorites(seriesId: Int): ResultHandler<WatchResponse>
+    suspend fun addTvToFavorites(tvShowId: Int): ResultHandler<WatchResponse>
 
-    suspend fun removeTvFromFavorites(seriesId: Int): ResultHandler<WatchResponse>
+    suspend fun removeTvFromFavorites(tvShowId: Int): ResultHandler<WatchResponse>
 
     suspend fun getAccountWatchlistTv(page: Int = 1): ResultHandler<PageModel<TvShow>>
 
-    suspend fun addTvToAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse>
+    suspend fun addTvToAccountWatchlist(tvShowId: Int): ResultHandler<WatchResponse>
 
-    suspend fun removeTvFromAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse>
+    suspend fun removeTvFromAccountWatchlist(tvShowId: Int): ResultHandler<WatchResponse>
 }

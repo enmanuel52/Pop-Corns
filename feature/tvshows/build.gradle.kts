@@ -1,0 +1,43 @@
+plugins {
+    alias(libs.plugins.corntime.android.library)
+    alias(libs.plugins.corntime.android.compose)
+    alias(libs.plugins.corntime.android.library.jacoco)
+}
+
+
+android {
+    namespace = "com.enmanuelbergling.feature.tvshows"
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
+}
+
+dependencies {
+    implementation(project(":core:common:util"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:network"))
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
+
+    //paging
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.paging.compose)
+
+    //navigation 3 + adaptive supporting pane
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation3)
+
+    testImplementation(project(":core:testing"))
+    testImplementation(libs.androidx.paging.testing)
+
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}

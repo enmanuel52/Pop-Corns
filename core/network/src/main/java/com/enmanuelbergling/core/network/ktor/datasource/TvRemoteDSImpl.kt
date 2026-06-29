@@ -46,23 +46,23 @@ internal class TvRemoteDSImpl(
             PageModel(result.results.map { it.toModel() }, result.totalPages)
         }
 
-    override suspend fun getTvDetails(seriesId: Int): ResultHandler<TvShowDetails> = safeKtorCall {
-        service.getTvDetails(seriesId).toModel()
+    override suspend fun getTvDetails(tvShowId: Int): ResultHandler<TvShowDetails> = safeKtorCall {
+        service.getTvDetails(tvShowId).toModel()
     }
 
     override suspend fun getSeasonDetails(
-        seriesId: Int,
+        tvShowId: Int,
         seasonNumber: Int,
     ): ResultHandler<SeasonDetails> = safeKtorCall {
-        service.getSeasonDetails(seriesId, seasonNumber).toModel()
+        service.getSeasonDetails(tvShowId, seasonNumber).toModel()
     }
 
     override suspend fun getEpisodeDetails(
-        seriesId: Int,
+        tvShowId: Int,
         seasonNumber: Int,
         episodeNumber: Int,
     ): ResultHandler<EpisodeDetails> = safeKtorCall {
-        service.getEpisodeDetails(seriesId, seasonNumber, episodeNumber).toModel()
+        service.getEpisodeDetails(tvShowId, seasonNumber, episodeNumber).toModel()
     }
 
     override suspend fun searchTv(query: String, page: Int): ResultHandler<PageModel<TvShow>> =
@@ -71,14 +71,14 @@ internal class TvRemoteDSImpl(
             PageModel(result.results.map { it.toModel() }, result.totalPages)
         }
 
-    override suspend fun getTvAccountStates(seriesId: Int): ResultHandler<TvAccountStates> {
+    override suspend fun getTvAccountStates(tvShowId: Int): ResultHandler<TvAccountStates> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
             return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {
-            service.getTvAccountStates(seriesId, sessionId).toModel()
+            service.getTvAccountStates(tvShowId, sessionId).toModel()
         }
     }
 
@@ -94,7 +94,7 @@ internal class TvRemoteDSImpl(
         }
     }
 
-    override suspend fun addTvToFavorites(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun addTvToFavorites(tvShowId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
             return ResultHandler.Error(NetworkException.AuthorizationException())
@@ -104,12 +104,12 @@ internal class TvRemoteDSImpl(
             service.addToFavorites(
                 accountId = BuildConfig.ACCOUNT_ID,
                 sessionId = sessionId,
-                favoriteBody = FavoriteBody(mediaType = "tv", mediaId = seriesId, favorite = true)
+                favoriteBody = FavoriteBody(mediaType = "tv", mediaId = tvShowId, favorite = true)
             ).toModel()
         }
     }
 
-    override suspend fun removeTvFromFavorites(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun removeTvFromFavorites(tvShowId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
             return ResultHandler.Error(NetworkException.AuthorizationException())
@@ -119,7 +119,7 @@ internal class TvRemoteDSImpl(
             service.addToFavorites(
                 accountId = BuildConfig.ACCOUNT_ID,
                 sessionId = sessionId,
-                favoriteBody = FavoriteBody(mediaType = "tv", mediaId = seriesId, favorite = false)
+                favoriteBody = FavoriteBody(mediaType = "tv", mediaId = tvShowId, favorite = false)
             ).toModel()
         }
     }
@@ -136,7 +136,7 @@ internal class TvRemoteDSImpl(
         }
     }
 
-    override suspend fun addTvToAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun addTvToAccountWatchlist(tvShowId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
             return ResultHandler.Error(NetworkException.AuthorizationException())
@@ -146,12 +146,12 @@ internal class TvRemoteDSImpl(
             service.addToWatchlist(
                 accountId = BuildConfig.ACCOUNT_ID,
                 sessionId = sessionId,
-                watchlistBody = WatchlistBody(mediaType = "tv", mediaId = seriesId, watchlist = true)
+                watchlistBody = WatchlistBody(mediaType = "tv", mediaId = tvShowId, watchlist = true)
             ).toModel()
         }
     }
 
-    override suspend fun removeTvFromAccountWatchlist(seriesId: Int): ResultHandler<WatchResponse> {
+    override suspend fun removeTvFromAccountWatchlist(tvShowId: Int): ResultHandler<WatchResponse> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
             return ResultHandler.Error(NetworkException.AuthorizationException())
@@ -163,7 +163,7 @@ internal class TvRemoteDSImpl(
                 sessionId = sessionId,
                 watchlistBody = WatchlistBody(
                     mediaType = "tv",
-                    mediaId = seriesId,
+                    mediaId = tvShowId,
                     watchlist = false
                 )
             ).toModel()

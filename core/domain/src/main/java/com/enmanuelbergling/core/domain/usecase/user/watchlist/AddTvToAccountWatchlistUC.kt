@@ -4,5 +4,5 @@ import com.enmanuelbergling.core.domain.datasource.remote.TvRemoteDS
 
 class AddTvToAccountWatchlistUC(private val remoteDS: TvRemoteDS) {
 
-    suspend operator fun invoke(seriesId: Int) = remoteDS.addTvToAccountWatchlist(seriesId)
+    suspend operator fun invoke(tvShowId: Int) = remoteDS.addTvToAccountWatchlist(tvShowId)
 }
