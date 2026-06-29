@@ -13,7 +13,10 @@ class ActorDetailsChainHandler(
     override suspend fun handle(request: ActorDetailsRequest): ActorDetailsRequest =
         if (request.details != null) request
         else when (val result = getActorDetailsUC(request.actorId)) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply { details = result.data }
         }
 }

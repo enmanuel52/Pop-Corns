@@ -59,7 +59,7 @@ class ActorDetailsVM(
                 )
             }
         }.onFailure {
-            _uiState.update { it.copy(uiState = SimplerUi.Error(NetworkException.DefaultException.messageResource)) }
+            _uiState.update { it.copy(uiState = SimplerUi.Error(NetworkException.DefaultException().messageResource)) }
         }.onSuccess {
             _uiState.update { it.copy(uiState = SimplerUi.Idle) }
         }

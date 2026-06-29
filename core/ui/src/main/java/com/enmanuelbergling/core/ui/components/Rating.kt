@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Density
@@ -28,6 +29,7 @@ fun RatingStars(
     modifier: Modifier = Modifier,
     size: Dp = 20.dp,
     spaceBetween: Dp = 2.dp,
+    surfaceVariant: Color = MaterialTheme.colorScheme.surfaceVariant
 ) {
     Box(modifier = modifier) {
         Row(horizontalArrangement = Arrangement.spacedBy(spaceBetween)) {
@@ -35,7 +37,7 @@ fun RatingStars(
                 Icon(
                     imageVector = Icons.Rounded.Star,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.surfaceVariant,
+                    tint = surfaceVariant,
                     modifier = Modifier.size(size)
                 )
             }

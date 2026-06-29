@@ -1,258 +1,111 @@
 package com.enmanuelbergling.feature.watchlists.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.ui.unit.dp
-import com.enmanuelbergling.core.ui.components.OnceLottieAnimation
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.ui.R
-import com.enmanuelbergling.core.ui.components.LoadingDialog
-import com.enmanuelbergling.core.ui.components.PullToRefreshContainer
-import com.enmanuelbergling.core.ui.components.SwipeToDismissContainer
-import com.enmanuelbergling.core.ui.components.common.MovieLandCard
-import com.enmanuelbergling.core.ui.components.common.MovieLandCardPlaceholder
-import com.enmanuelbergling.core.ui.core.ObserveAsEvents
-import com.enmanuelbergling.core.ui.core.dimen
-import com.enmanuelbergling.core.ui.core.isRefreshing
-import com.enmanuelbergling.core.ui.core.shimmerIf
-import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import com.enmanuelbergling.feature.watchlists.series.WatchlistSeriesContent
 
-@Composable
-fun WatchlistHomeRoute(
-    onMovieDetails: (movieId: Int) -> Unit,
-    onNavigateToLists: () -> Unit,
-    onOpenDrawer: () -> Unit,
+enum class WatchlistTab(
+    @StringRes val labelRes: Int,
+    @DrawableRes val selectedIconRes: Int,
+    @DrawableRes val unselectedIconRes: Int,
 ) {
-    val viewModel = koinViewModel<WatchlistHomeVM>()
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val watchlist = viewModel.watchlist.collectAsLazyPagingItems()
-
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        watchlist.refresh()
-    }
-
-    val deleteMovieErrorMessage =
-        stringResource(com.enmanuelbergling.feature.watchlists.R.string.the_movie_could_not_be_deleted_from_the_watchlist)
-    val movieDeletedMessage =
-        stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_removed_from_watchlist)
-    val movieAddedToFavoritesMessage =
-        stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_added_to_favorites)
-    val addToFavoritesErrorMessage =
-        stringResource(com.enmanuelbergling.feature.watchlists.R.string.movie_could_not_be_added_to_favorites)
-    val undoMessage = stringResource(R.string.undo)
-    val retryMessage = stringResource(R.string.retry)
-    ObserveAsEvents(viewModel.sideEffectChannel) {
-        when (it) {
-            is WatchlistHomeSideEffect.NavigateToDetails -> onMovieDetails(it.movieId)
-            is WatchlistHomeSideEffect.UndoDeleteMovie -> scope.launch {
-                val result = snackbarHostState.showSnackbar(
-                    message = movieDeletedMessage,
-                    actionLabel = undoMessage,
-                    duration = SnackbarDuration.Short,
-                )
-                when (result) {
-                    SnackbarResult.Dismissed -> viewModel.onEvent(WatchlistHomeEvent.DeleteMovie(it.movieId))
-                    SnackbarResult.ActionPerformed -> viewModel.onEvent(WatchlistHomeEvent.UndoDelete)
-                }
-            }
-
-            is WatchlistHomeSideEffect.DeleteMovieError -> scope.launch {
-                val result = snackbarHostState.showSnackbar(
-                    message = deleteMovieErrorMessage,
-                    actionLabel = retryMessage,
-                    duration = SnackbarDuration.Indefinite,
-                    withDismissAction = true,
-                )
-                when (result) {
-                    SnackbarResult.Dismissed -> viewModel.onEvent(
-                        WatchlistHomeEvent.OnDeleteMovieErrorDismissed(it.movieId)
-                    )
-
-                    SnackbarResult.ActionPerformed -> viewModel.onEvent(
-                        WatchlistHomeEvent.DeleteMovie(it.movieId)
-                    )
-                }
-            }
-
-            is WatchlistHomeSideEffect.UndoAddToFavoritesMovie -> scope.launch {
-                val result = snackbarHostState.showSnackbar(
-                    message = movieAddedToFavoritesMessage,
-                    actionLabel = undoMessage,
-                    duration = SnackbarDuration.Short,
-                )
-                when (result) {
-                    SnackbarResult.Dismissed -> viewModel.onEvent(WatchlistHomeEvent.AddToFavorites(it.movieId))
-                    SnackbarResult.ActionPerformed -> viewModel.onEvent(WatchlistHomeEvent.UndoAddToFavorites)
-                }
-            }
-
-            is WatchlistHomeSideEffect.AddToFavoritesError -> scope.launch {
-                val result = snackbarHostState.showSnackbar(
-                    message = addToFavoritesErrorMessage,
-                    actionLabel = retryMessage,
-                    duration = SnackbarDuration.Indefinite,
-                    withDismissAction = true,
-                )
-                when (result) {
-                    SnackbarResult.Dismissed -> viewModel.onEvent(
-                        WatchlistHomeEvent.OnAddToFavoritesErrorDismissed(it.movieId)
-                    )
-
-                    SnackbarResult.ActionPerformed -> viewModel.onEvent(
-                        WatchlistHomeEvent.AddToFavorites(it.movieId)
-                    )
-                }
-            }
-
-            WatchlistHomeSideEffect.NavigateToLists -> onNavigateToLists()
-            WatchlistHomeSideEffect.OpenDrawer -> onOpenDrawer()
-        }
-    }
-
-    when (uiState.uiState) {
-        is SimplerUi.Error, SimplerUi.Idle -> Unit
-        SimplerUi.Success -> watchlist.refresh()
-        SimplerUi.Loading -> LoadingDialog()
-    }
-
-    WatchlistHomeScreen(
-        watchlist = watchlist,
-        uiState = uiState,
-        snackbarHostState = snackbarHostState,
-        onEvent = viewModel::onEvent,
-    )
+    Movies(
+        com.enmanuelbergling.feature.watchlists.R.string.watchlist_movies,
+        R.drawable.film_solid,
+        R.drawable.film_outline,
+    ),
+    Series(
+        com.enmanuelbergling.feature.watchlists.R.string.watchlist_series,
+        R.drawable.tv_solid,
+        R.drawable.tv_outline,
+    ),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WatchlistHomeScreen(
-    watchlist: LazyPagingItems<Movie>,
-    uiState: WatchlistHomeState,
-    snackbarHostState: SnackbarHostState,
-    onEvent: (WatchlistHomeEvent) -> Unit,
+fun WatchlistHomeRoute(
+    onMovieDetails: (movieId: Int) -> Unit,
+    onSeriesDetails: (seriesId: Int) -> Unit,
+    onNavigateToLists: () -> Unit,
+    onBack: () -> Unit,
+    initialTab: WatchlistTab = WatchlistTab.Movies,
 ) {
+    var selectedTab by rememberSaveable { mutableStateOf(initialTab) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.watchlist)) },
-                navigationIcon = {
-                    IconButton(onClick = { onEvent(WatchlistHomeEvent.OpenDrawer) }) {
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            WatchlistTab.entries.forEach { tab ->
+                val selected = tab == selectedTab
+                item(
+                    selected = selected,
+                    onClick = { selectedTab = tab },
+                    icon = {
                         Icon(
-                            painter = painterResource(R.drawable.bars_bottom_left),
-                            contentDescription = "Sandwich menu icon"
+                            painter = painterResource(
+                                if (selected) tab.selectedIconRes else tab.unselectedIconRes
+                            ),
+                            contentDescription = stringResource(tab.labelRes),
                         )
-                    }
-                },
-                actions = {
-                    /*IconButton(onClick = { onEvent(WatchlistHomeEvent.NavigateToLists) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.paint_brush),
-                            contentDescription = "Customization icon"
-                        )
-                    }*/
-                }
-            )
+                    },
+                    label = { Text(stringResource(tab.labelRes)) },
+                )
+            }
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            PullToRefreshContainer(
-                refreshing = false,
-                onRefresh = watchlist::refresh,
-                modifier = Modifier
-                    .shimmerIf { watchlist.isRefreshing }
-                    .padding(horizontal = MaterialTheme.dimen.verySmall),
-                contentPadding = WindowInsets.navigationBars.asPaddingValues(),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimen.small)
-            ) {
-                if (watchlist.isRefreshing) {
-                    items(12) {
-                        MovieLandCardPlaceholder(Modifier.fillMaxWidth())
-                    }
-                } else {
-                    items(watchlist.itemCount) { index ->
-                        val movie = watchlist[index]
-                        movie?.let {
-                            SwipeToDismissContainer(
-                                visible = movie.id !in uiState.removedItems,
-                                onDismissFromStartToEnd = {
-                                    onEvent(WatchlistHomeEvent.OnAddToFavorites(movie.id))
-                                },
-                                onDismissFromEndToStart = {
-                                    onEvent(WatchlistHomeEvent.OnDeleteMovie(movie.id))
-                                },
-                                containerColorDismissFromStart = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .3f),
-                                containerColorDismissFromEnd = MaterialTheme.colorScheme.errorContainer.copy(alpha = .3f),
-                                backgroundIcon = { direction ->
-                                    when (direction) {
-                                        SwipeToDismissBoxValue.StartToEnd -> OnceLottieAnimation(
-                                            resId = R.raw.add_to_favorite,
-                                            modifier = Modifier.size(48.dp).scale(1.5f),
-                                        )
-                                        SwipeToDismissBoxValue.EndToStart -> OnceLottieAnimation(
-                                            resId = R.raw.delete,
-                                            modifier = Modifier.size(48.dp).scale(2.2f),
-                                        )
-                                        SwipeToDismissBoxValue.Settled -> Unit
-                                    }
-                                },
-                            ) {
-                                MovieLandCard(
-                                    movie = movie,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(MaterialTheme.colorScheme.surface),
-                                ) {
-                                    onEvent(WatchlistHomeEvent.NavigateToDetails(movie.id))
-                                }
-                            }
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = stringResource(id = R.string.watchlist)) },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Sandwich menu icon"
+                            )
                         }
-                    }
-                }
+                    },
+                )
+            },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+        ) { paddingValues ->
+            when (selectedTab) {
+                WatchlistTab.Movies -> WatchlistMoviesContent(
+                    snackbarHostState = snackbarHostState,
+                    onMovieDetails = onMovieDetails,
+                    modifier = Modifier.padding(paddingValues),
+                )
+
+                WatchlistTab.Series -> WatchlistSeriesContent(
+                    snackbarHostState = snackbarHostState,
+                    onSeriesDetails = onSeriesDetails,
+                    modifier = Modifier.padding(paddingValues),
+                )
             }
         }
     }

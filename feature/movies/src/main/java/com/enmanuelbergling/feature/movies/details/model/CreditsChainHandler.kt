@@ -14,7 +14,10 @@ class CreditsChainHandler(
         if (request.skipCredits) return request
 
         return when (val result = getMovieCreditsUC(request.movieId)) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply { credits = result.data }
         }
     }

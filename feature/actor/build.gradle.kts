@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.corntime.android.library)
     alias(libs.plugins.corntime.android.compose)
+    alias(libs.plugins.corntime.android.library.jacoco)
 }
 
 android {

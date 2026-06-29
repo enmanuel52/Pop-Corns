@@ -27,6 +27,8 @@
     <string name="now_playing">Now playing</string>
     <string name="popular">Popular</string>
     <string name="upcoming">Upcoming</string>
+    <string name="on_the_air">On The Air</string>
+    <string name="airing_today">Airing Today</string>
     <string name="more_icon">more icon</string>
     <string name="clear_string_icon">clear string icon</string>
     <string name="delete_icon">delete icon</string>

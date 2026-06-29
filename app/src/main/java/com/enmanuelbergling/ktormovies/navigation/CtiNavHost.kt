@@ -18,11 +18,15 @@ import com.enmanuelbergling.feature.movies.navigation.navigateToMovieFilter
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesDetails
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesGraph
 import com.enmanuelbergling.feature.movies.navigation.navigateToMoviesSection
+import com.enmanuelbergling.feature.series.navigation.navigateToFavoriteSeries
+import com.enmanuelbergling.feature.series.navigation.navigateToSeriesDetailFlow
+import com.enmanuelbergling.feature.series.navigation.navigateToSeriesSection
 import com.enmanuelbergling.feature.series.navigation.seriesGraph
 import com.enmanuelbergling.feature.settings.navigation.settingsGraph
 import com.enmanuelbergling.feature.watchlists.navigation.listGraph
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListDetailsScreen
 import com.enmanuelbergling.feature.watchlists.navigation.navigateToListsScreen
+import com.enmanuelbergling.feature.watchlists.navigation.navigateToWatchlistSeriesTab
 import com.enmanuelbergling.ktormovies.ui.CornTimeAppState
 
 
@@ -56,7 +60,18 @@ fun CtiNavHost(
             onOpenDrawer = onOpenDrawer,
         )
 
-        seriesGraph(onOpenDrawer = onOpenDrawer)
+        seriesGraph(
+            onSeries = navController::navigateToSeriesDetailFlow,
+            onSection = navController::navigateToSeriesSection,
+            onFavorites = navController::navigateToFavoriteSeries,
+            onActor = { action ->
+                navController.navigateToActorsDetails(
+                    action.id, action.imageUrl, action.name
+                )
+            },
+            onBack = navController::navigateUp,
+            onOpenDrawer = onOpenDrawer,
+        )
 
         favoritesGraph(
             onMovieDetails = navController::navigateToMoviesDetails,
@@ -91,6 +106,7 @@ fun CtiNavHost(
             onDetails = navController::navigateToListDetailsScreen,
             onNavigateToLists = navController::navigateToListsScreen,
             onMovieDetails = navController::navigateToMoviesDetails,
+            onSeriesDetails = navController::navigateToSeriesDetailFlow,
             onAddShortcut = { watchlist -> state.addWatchlistShortcut(context, watchlist) },
             onDeleteShortcut = { watchlistId ->
                 state.deleteWatchlistShortcut(
@@ -99,7 +115,6 @@ fun CtiNavHost(
                 )
             },
             onBack = navController::navigateUp,
-            onOpenDrawer = onOpenDrawer,
         )
 
         moviesFilterScreen(navController::navigateToMoviesDetails, navController::navigateUp)

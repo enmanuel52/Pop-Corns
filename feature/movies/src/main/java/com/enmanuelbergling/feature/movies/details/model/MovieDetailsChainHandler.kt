@@ -14,7 +14,10 @@ class MovieDetailsChainHandler(
         if (request.skipDetails) return request
 
         return when (val result = getMovieDetailsUC(request.movieId)) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply { details = result.data }
         }
     }

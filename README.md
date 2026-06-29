@@ -14,7 +14,6 @@ Can you guess the best way to eat them? Of course watching a movie :).
 * **🎉  Cool animations:** it can't be missed 😅. Shared element transitions everywhere.
 * **🔗🔗 Chain of command(design pattern)** applied to sort api calls in Home Screen.
 * **🛠   Modularization**
-* **🧪 Testing:** Behaviour Driven Development using [Kotest](https://github.com/kotest/kotest "kotest repo")
 * 🌛 **Dark theme and dynamic color support**.
 * 📌 **Shortcuts:** Static and dynamic.
 * 🔐 **Autofill support:** Faster sign-in with saved credentials.

@@ -2,7 +2,8 @@ package com.enmanuelbergling.core.model.core
 
 sealed class NetworkException : Exception() {
 
-    data object DefaultException : NetworkException()
-    data object ReadTimeOutException : NetworkException()
-    data object AuthorizationException : NetworkException()
+    class DefaultException : NetworkException()
+    class ReadTimeOutException : NetworkException()
+    class AuthorizationException : NetworkException()
+    data class SerializationException(val stringMessage: String?) : NetworkException()
 }

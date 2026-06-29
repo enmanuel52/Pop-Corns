@@ -13,7 +13,10 @@ class PopularMoviesChainHandler(
     override suspend fun handle(request: MoviesRequest): MoviesRequest =
         if (request.popular.isNotEmpty()) request
         else when (val result = getPopularMoviesUC()) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply {
                 popular = result.data?.results.orEmpty()
             }

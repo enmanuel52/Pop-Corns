@@ -75,7 +75,6 @@ import com.enmanuelbergling.ktormovies.navigation.CtiNavHost
 import com.enmanuelbergling.ktormovies.navigation.TopDestination
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import com.enmanuelbergling.core.ui.R as RCore
 
 enum class NewDrawerState {
     Open, Closed
@@ -88,7 +87,6 @@ val NewDrawerWidth = 200.dp
 fun CornsTimeApp(
     state: CornTimeAppState = rememberCornTimeAppState(),
     userDetails: UserDetails?,
-    onLogout: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -162,17 +160,11 @@ fun CornsTimeApp(
                     }
                 },
                 isSelected = { route -> state.matchRoute(route = route) },
-                userDetails = userDetails,
-                onCloseDrawer = {
-                    scope.launch {
-                        draggableState.animateTo(NewDrawerState.Closed)
-                    }
-                },
+                userLoggedIn = userDetails != null,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .width(NewDrawerWidth)
                     .padding(MaterialTheme.dimen.medium),
-                onLogout = onLogout
             )
 
             SharedTransitionLayout {
@@ -249,10 +241,8 @@ val OnSurfaceLight = Color(0xFF231918)
 @Composable
 fun DrawerContent(
     onDrawerDestination: (TopDestination) -> Unit,
-    onCloseDrawer: () -> Unit,
     isSelected: @Composable (route: Any) -> Boolean,
-    userDetails: UserDetails?,
-    onLogout: () -> Unit,
+    userLoggedIn: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -269,7 +259,7 @@ fun DrawerContent(
             Spacer(modifier = Modifier.height(MaterialTheme.dimen.mediumSmall))
 
             TopDestination.entries
-                .filterNot { it.loginRequired && userDetails == null }
+                .filterNot { it.loginRequired && !userLoggedIn }
                 .forEach { destination ->
                     val selected = isSelected(destination.route)
                     NavDrawerItem(
@@ -280,17 +270,6 @@ fun DrawerContent(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-
-            if (userDetails != null) NavDrawerItem(
-                label = stringResource(id = R.string.logout),
-                selected = false,
-                iconRes = RCore.drawable.power_outline,
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    onLogout()
-                    onCloseDrawer()
-                },
-            )
         }
     }
 }
@@ -358,12 +337,10 @@ private fun DrawerContentPrev() {
         DrawerContent(
             onDrawerDestination = {},
             isSelected = { it == SeriesDestination },
-            userDetails = null,
+            userLoggedIn = true,
             modifier = Modifier
                 .width(NewDrawerWidth)
                 .padding(12.dp),
-            onCloseDrawer = {},
-            onLogout = {},
         )
     }
 }

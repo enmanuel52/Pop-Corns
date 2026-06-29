@@ -1,55 +1,167 @@
 package com.enmanuelbergling.feature.auth
 
+import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
+import assertk.assertions.isTrue
+import com.enmanuelbergling.core.domain.datasource.remote.AuthRemoteDS
+import com.enmanuelbergling.core.model.core.NetworkException
 import com.enmanuelbergling.core.model.core.SimplerUi
-import com.enmanuelbergling.core.testing.test.BaseBehaviorTest
+import com.enmanuelbergling.core.testing.datasource.remote.AuthRemoteDsFunction
+import com.enmanuelbergling.core.testing.datasource.remote.FakeAuthRemoteDS
+import com.enmanuelbergling.core.testing.extension.KoinExtension
+import com.enmanuelbergling.core.testing.extension.MainCoroutineExtension
+import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.auth.di.loginModule
-import com.enmanuelbergling.feature.auth.model.LoginEvent
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
-import org.koin.test.inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
+import org.koin.test.KoinTest
+import org.koin.test.get
 
-class LoginVMTest : BaseBehaviorTest(
-    loginModule
-) {
-    private val loginVM: LoginVM by inject()
+@OptIn(ExperimentalCoroutinesApi::class)
+class LoginVMTest : KoinTest {
 
-    init {
-        Given("Login is open") {
+    private val testDispatcher = StandardTestDispatcher()
 
-            Then("ui is Idle") {
-                loginVM.uiState.value shouldBe SimplerUi.Idle
-            }
+    @JvmField
+    @RegisterExtension
+    val koinExtension = KoinExtension(*loginModule.toTypedArray())
 
-            When("user fill out the form") {
+    @JvmField
+    @RegisterExtension
+    val mainCoroutineExtension = MainCoroutineExtension(testDispatcher)
 
-                beforeEach {
-                    loginVM.onLoginFormEvent(LoginEvent.Submit)
-                }
+    private lateinit var viewModel: LoginVM
 
-                And("form is valid") {
-                    loginVM.onLoginFormEvent(LoginEvent.Username("Emmanuel"))
-                    loginVM.onLoginFormEvent(LoginEvent.Password("Pass123"))
+    @BeforeEach
+    fun setUp() {
+        viewModel = koinExtension.get()
+    }
 
-                    Then("user has been logged") {
-                        loginVM.uiState.value shouldBeSameInstanceAs SimplerUi.Success
-                    }
-                }
+    @Test
+    fun `when OnUsernameChange is called, username is updated and error cleared`() = runTest {
+        viewModel.onAction(LoginAction.OnLoginClick)
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.usernameError).isNotNull()
 
-                And("form is blank") {
-                    loginVM.onLoginFormEvent(LoginEvent.Username("   "))
-                    loginVM.onLoginFormEvent(LoginEvent.Password("  "))
+        viewModel.onAction(LoginAction.OnUsernameChange("john"))
 
-                    Then("Error appears on form") {
+        assertThat(viewModel.uiState.value.username).isEqualTo("john")
+        assertThat(viewModel.uiState.value.usernameError).isNull()
+    }
 
-                        with(loginVM.loginFormState.value) {
-                            usernameError shouldNotBe null
-                            passwordError shouldNotBe null
-                        }
-                        loginVM.uiState.value shouldBeSameInstanceAs SimplerUi.Idle
-                    }
+    @Test
+    fun `when OnPasswordChange is called, password is updated and error cleared`() = runTest {
+        viewModel.onAction(LoginAction.OnLoginClick)
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.passwordError).isNotNull()
+
+        viewModel.onAction(LoginAction.OnPasswordChange("secret"))
+
+        assertThat(viewModel.uiState.value.password).isEqualTo("secret")
+        assertThat(viewModel.uiState.value.passwordError).isNull()
+    }
+
+    @Test
+    fun `when OnPasswordVisibilityClick is called, visibility toggles`() = runTest {
+        assertThat(viewModel.uiState.value.isPasswordVisible).isFalse()
+
+        viewModel.onAction(LoginAction.OnPasswordVisibilityClick)
+        assertThat(viewModel.uiState.value.isPasswordVisible).isTrue()
+
+        viewModel.onAction(LoginAction.OnPasswordVisibilityClick)
+        assertThat(viewModel.uiState.value.isPasswordVisible).isFalse()
+    }
+
+    @Test
+    fun `when OnLoginClick is called with blank fields, errors are set and login is not attempted`() =
+        runTest {
+            // Given blank username and password (default state)
+
+            // When
+            viewModel.onAction(LoginAction.OnLoginClick)
+            advanceUntilIdle()
+
+            // Then
+            assertThat(viewModel.uiState.value.usernameError).isNotNull()
+            assertThat(viewModel.uiState.value.passwordError).isNotNull()
+            assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Idle)
+        }
+
+    @Test
+    fun `when OnLoginClick succeeds, uiState is Idle and LoginSuccess is emitted`() = runTest {
+        // Given valid fields
+        viewModel.onAction(LoginAction.OnUsernameChange("john"))
+        viewModel.onAction(LoginAction.OnPasswordChange("secret"))
+
+        viewModel.uiEvents.test {
+            // When
+            viewModel.onAction(LoginAction.OnLoginClick)
+            advanceUntilIdle()
+
+            // Then
+            assertThat(awaitItem()).isEqualTo(LoginEvent.LoginSuccess)
+            assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Idle)
+        }
+    }
+
+    @Test
+    fun `when OnLoginClick fails, uiState is error and no event is emitted`() = runTest {
+        // Given the login chain fails
+        val networkException = NetworkException.DefaultException()
+        koinExtension.replaceDependencies {
+            single<AuthRemoteDS> {
+                FakeAuthRemoteDS().apply {
+                    throwError(AuthRemoteDsFunction.CreateRequestToken to networkException)
                 }
             }
         }
+        viewModel = koinExtension.get()
+        viewModel.onAction(LoginAction.OnUsernameChange("john"))
+        viewModel.onAction(LoginAction.OnPasswordChange("secret"))
+
+        viewModel.uiEvents.test {
+            // When
+            viewModel.onAction(LoginAction.OnLoginClick)
+            advanceUntilIdle()
+
+            // Then
+            assertThat(viewModel.uiState.value.uiState)
+                .isEqualTo(SimplerUi.Error(networkException.messageResource))
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `when onIdle is called, uiState is reset to Idle`() = runTest {
+        // Given an error state
+        koinExtension.replaceDependencies {
+            single<AuthRemoteDS> {
+                FakeAuthRemoteDS().apply {
+                    throwError(AuthRemoteDsFunction.CreateRequestToken to NetworkException.ReadTimeOutException())
+                }
+            }
+        }
+        viewModel = koinExtension.get()
+        viewModel.onAction(LoginAction.OnUsernameChange("john"))
+        viewModel.onAction(LoginAction.OnPasswordChange("secret"))
+        viewModel.onAction(LoginAction.OnLoginClick)
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.uiState).isInstanceOf(SimplerUi.Error::class.java)
+
+        // When
+        viewModel.onIdle()
+
+        // Then
+        assertThat(viewModel.uiState.value.uiState).isEqualTo(SimplerUi.Idle)
     }
 }

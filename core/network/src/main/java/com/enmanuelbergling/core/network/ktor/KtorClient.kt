@@ -17,6 +17,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
+import io.ktor.serialization.JsonConvertException
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -38,6 +39,12 @@ val ktorClient = HttpClient(OkHttp) {
     }
 
     HttpResponseValidator {
+        handleResponseException {
+            if (it is JsonConvertException){
+                throw NetworkException.SerializationException(it.message)
+            }
+        }
+
         validateResponse { httpResponse ->
             val statusCode = httpResponse.status.value
             Log.d(
@@ -48,13 +55,13 @@ val ktorClient = HttpClient(OkHttp) {
             /*if (httpResponse.responseTime.seconds >= 30) {
                 Log.d(TAG, "networkCall: read time out")
 
-                throw NetworkException.ReadTimeOutException
+                throw NetworkException.ReadTimeOutException()
             }*/
 
             when (statusCode) {
-                in 200 until 300 -> {}
-                401 -> throw NetworkException.AuthorizationException
-                else -> throw NetworkException.DefaultException
+                in 200 until 300 -> Unit
+                401 -> throw NetworkException.AuthorizationException()
+                else -> throw NetworkException.DefaultException()
             }
         }
     }

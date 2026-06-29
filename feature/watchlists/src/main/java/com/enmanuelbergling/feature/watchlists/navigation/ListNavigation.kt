@@ -11,6 +11,7 @@ import com.enmanuelbergling.core.ui.model.WatchlistShortcut
 import com.enmanuelbergling.feature.watchlists.created.CreatedWatchListsRoute
 import com.enmanuelbergling.feature.watchlists.details.WatchListDetailsRoute
 import com.enmanuelbergling.feature.watchlists.home.WatchlistHomeRoute
+import com.enmanuelbergling.feature.watchlists.home.WatchlistTab
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,7 +21,7 @@ data object ListGraphDestination
 data object ListsDestination
 
 @Serializable
-data object WatchListDestination
+data class WatchListDestination(val initialTab: String = WatchlistTab.Movies.name)
 
 @Serializable
 data class ListDetailsDestination(
@@ -30,6 +31,10 @@ data class ListDetailsDestination(
 
 fun NavHostController.navigateToListGraph(navOptions: NavOptions? = null) {
     navigate(ListGraphDestination, navOptions)
+}
+
+fun NavHostController.navigateToWatchlistSeriesTab(navOptions: NavOptions? = null) {
+    navigate(WatchListDestination(initialTab = WatchlistTab.Series.name), navOptions)
 }
 
 fun NavHostController.navigateToListDetailsScreen(
@@ -48,17 +53,19 @@ fun NavGraphBuilder.listGraph(
     onDetails: (listId: Int, listName: String) -> Unit,
     onNavigateToLists: () -> Unit,
     onMovieDetails: (movieId: Int) -> Unit,
+    onSeriesDetails: (seriesId: Int) -> Unit,
     onAddShortcut: (WatchlistShortcut) -> Unit,
     onDeleteShortcut: (watchlistId: Int) -> Unit,
     onBack: () -> Unit,
-    onOpenDrawer: () -> Unit,
 ) {
-    navigation<ListGraphDestination>(startDestination = WatchListDestination) {
+    navigation<ListGraphDestination>(startDestination = WatchListDestination()) {
         topComposable<WatchListDestination> {
+
             WatchlistHomeRoute(
                 onMovieDetails = onMovieDetails,
+                onSeriesDetails = onSeriesDetails,
                 onNavigateToLists = onNavigateToLists,
-                onOpenDrawer = onOpenDrawer
+                onBack = onBack,
             )
         }
 

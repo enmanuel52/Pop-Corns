@@ -9,8 +9,11 @@ interface RemoteDataSource {
         val result = request()
         ResultHandler.Success(result)
     } catch (exception: NetworkException) {
+        if (exception is NetworkException.SerializationException){
+            println("Serialization Exception: ${exception.stringMessage}")
+        }
         ResultHandler.Error(exception)
-    } catch (exception: Exception) {
-        ResultHandler.Error(NetworkException.DefaultException)
+    } catch (_: Exception) {
+        ResultHandler.Error(NetworkException.DefaultException())
     }
 }

@@ -54,7 +54,6 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
                 CornsTimeApp(
                     state = appState,
                     userDetails = userDetails,
-                    onLogout = viewModel::logout
                 )
 
                 if (isOnboarding) {
@@ -65,7 +64,7 @@ class CornsTimeActivity : ComponentActivity(), KoinComponent {
 
             LaunchedEffect(key1 = Unit) {
                 if (searchMovieShortCutClicked) {
-                    TODO("trigger searching")
+                    println("search shortcut was clicked")
                 }
             }
 

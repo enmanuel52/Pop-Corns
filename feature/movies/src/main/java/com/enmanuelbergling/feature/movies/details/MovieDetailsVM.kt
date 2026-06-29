@@ -2,7 +2,7 @@ package com.enmanuelbergling.feature.movies.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.enmanuelbergling.core.domain.usecase.movie.GetMovieAccountStatesUC
+import com.enmanuelbergling.core.domain.design.CannotHandleException
 import com.enmanuelbergling.core.domain.usecase.user.favorite.AddMovieToFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveMovieFromFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.AddMovieToAccountWatchlistUC
@@ -14,8 +14,10 @@ import com.enmanuelbergling.core.ui.components.messageResource
 import com.enmanuelbergling.feature.movies.details.model.MovieDetailsChain
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,14 +31,16 @@ internal class MovieDetailsVM(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailsState(movieId = movieId))
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState
+        .onStart { loadPage() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = MovieDetailsState(movieId = movieId)
+        )
 
     private val _uiEvents = Channel<MovieDetailsEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
-
-    init {
-        loadPage()
-    }
 
     fun onAction(action: MovieDetailsAction) {
         when (action) {
@@ -55,26 +59,36 @@ internal class MovieDetailsVM(
 
     private fun loadPage() = viewModelScope.launch {
         _uiState.update { it.copy(uiState = SimplerUi.Loading) }
-        runCatching {
-            val request = _uiState.value.toChainRequest()
+        val request = _uiState.value.toChainRequest()
 
+        runCatching {
             val detailsChain = movieDetailsChain.detailsHandler.apply {
                 nextChainHandler = movieDetailsChain.creditsHandler.apply {
                     nextChainHandler = movieDetailsChain.accountStatesHandler
                 }
             }
 
-            detailsChain.invoke(request)
-
-            _uiState.update {
-                it.copy(
-                    details = request.details,
-                    credits = request.credits,
-                    accountStates = request.accountStates
-                )
+            try {
+                detailsChain.invoke(request)
+            } catch (e: Exception) {
+                throw e
+            } finally {
+                _uiState.update {
+                    it.copy(
+                        details = request.details,
+                        credits = request.credits,
+                        accountStates = request.accountStates
+                    )
+                }
             }
+
         }.onFailure { throwable ->
-            _uiState.update { it.copy(uiState = SimplerUi.Error(NetworkException.DefaultException.messageResource)) }
+            val networkException =
+                (throwable as? CannotHandleException)?.throwable as? NetworkException
+            val messageRes = networkException?.messageResource
+                ?: NetworkException.DefaultException().messageResource
+
+            _uiState.update { it.copy(uiState = SimplerUi.Error(messageRes)) }
         }.onSuccess {
             _uiState.update { it.copy(uiState = SimplerUi.Idle) }
         }

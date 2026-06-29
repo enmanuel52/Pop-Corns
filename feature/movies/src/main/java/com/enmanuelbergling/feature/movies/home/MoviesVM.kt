@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.enmanuelbergling.core.domain.design.CannotHandleException
 import com.enmanuelbergling.core.domain.usecase.movie.GetSearchSuggestionsUC
 import com.enmanuelbergling.core.domain.usecase.user.GetSavedUserUC
 import com.enmanuelbergling.core.domain.usecase.user.SyncUserDetailsUC
@@ -12,6 +13,7 @@ import com.enmanuelbergling.core.model.core.SimplerUi
 import com.enmanuelbergling.core.model.movie.Movie
 import com.enmanuelbergling.core.model.movie.QueryString
 import com.enmanuelbergling.core.ui.components.messageResource
+import com.enmanuelbergling.feature.movies.R
 import com.enmanuelbergling.feature.movies.home.model.MoviesChain
 import com.enmanuelbergling.feature.movies.home.model.MoviesRequest
 import com.enmanuelbergling.feature.movies.home.model.MoviesUiData
@@ -44,6 +46,7 @@ class MoviesVM(
     private val syncUserUC: SyncUserDetailsUC,
     getSavedUserUC: GetSavedUserUC,
     getFilteredMoviesUC: GetFilteredMoviesUC,
+    searchMovieShortCutClicked: Boolean
 ) : ViewModel() {
 
     val isLoggedIn: StateFlow<Boolean> = getSavedUserUC()
@@ -56,14 +59,15 @@ class MoviesVM(
 
     private val _uiState = MutableStateFlow<SimplerUi>(SimplerUi.Idle)
     val uiState = _uiState
-        .onStart { syncUserUC() }
+        .onStart { syncUserUC(); loadUi() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = SimplerUi.Idle
         )
 
-    private val _uiDataState = MutableStateFlow(MoviesUiData())
+    private val _uiDataState =
+        MutableStateFlow(MoviesUiData(startOnSearch = searchMovieShortCutClicked))
     val uiDataState get() = _uiDataState.asStateFlow()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -80,8 +84,6 @@ class MoviesVM(
 
 
     init {
-        loadUi()
-
         getSearchSuggestionsUC()
             .onEach { suggestions ->
                 _uiDataState.update { it.copy(searchSuggestions = suggestions) }
@@ -91,14 +93,14 @@ class MoviesVM(
 
     fun loadUi() = viewModelScope.launch {
         _uiState.update { SimplerUi.Loading }
-        runCatching {
-            val request = MoviesRequest(
-                upcoming = _uiDataState.value.upcoming,
-                topRated = _uiDataState.value.topRated,
-                nowPlaying = _uiDataState.value.nowPlaying,
-                popular = _uiDataState.value.popular,
-            )
+        val request = MoviesRequest(
+            upcoming = _uiDataState.value.upcoming,
+            topRated = _uiDataState.value.topRated,
+            nowPlaying = _uiDataState.value.nowPlaying,
+            popular = _uiDataState.value.popular,
+        )
 
+        runCatching {
             val chain = moviesChain.upcomingHandler.apply {
                 nextChainHandler = moviesChain.topRatedHandler.apply {
                     nextChainHandler = moviesChain.nowPlayingHandler.apply {
@@ -107,18 +109,26 @@ class MoviesVM(
                 }
             }
 
-            chain.invoke(request)
-
-            _uiDataState.update {
-                it.copy(
-                    upcoming = request.upcoming,
-                    topRated = request.topRated,
-                    nowPlaying = request.nowPlaying,
-                    popular = request.popular,
-                )
+            try {
+                chain.invoke(request)
+            } catch (e: Exception) {
+                throw e
+            } finally {
+                _uiDataState.update {
+                    it.copy(
+                        upcoming = request.upcoming,
+                        topRated = request.topRated,
+                        nowPlaying = request.nowPlaying,
+                        popular = request.popular,
+                    )
+                }
             }
-        }.onFailure { _ ->
-            _uiState.update { SimplerUi.Error(NetworkException.ReadTimeOutException.messageResource) }
+
+        }.onFailure {
+            val networkException = (it as? CannotHandleException)?.throwable as? NetworkException
+            val messageRes = networkException?.messageResource
+                ?: com.enmanuelbergling.core.ui.R.string.default_net_exception_message
+            _uiState.update { SimplerUi.Error(messageRes) }
         }.onSuccess {
             _uiState.update { SimplerUi.Idle }
         }

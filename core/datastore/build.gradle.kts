@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.corntime.android.library)
     alias(libs.plugins.com.google.protobuf)
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 android {
     namespace = "com.enmanuelbergling.core.datastore"
@@ -17,6 +18,8 @@ dependencies {
     implementation(libs.androidx.datastore.datastore.preferences)
     implementation(libs.androidx.datastore)
     implementation(libs.com.google.protobuf.javalite)
+
+    implementation(libs.kotlinx.serialization.json)
 
     //Koin
     implementation(libs.koin.core)

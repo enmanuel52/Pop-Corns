@@ -23,7 +23,7 @@ internal data class CastDTO(
     @SerialName("profile_path")
     val profilePath: String?,
     @SerialName("cast_id")
-    val castId: Int,
+    val castId: Int = -1,
     @SerialName("character")
     val character: String,
     @SerialName("credit_id")

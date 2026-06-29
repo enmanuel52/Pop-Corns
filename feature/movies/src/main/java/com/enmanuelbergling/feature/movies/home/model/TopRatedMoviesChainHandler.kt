@@ -13,7 +13,10 @@ class TopRatedMoviesChainHandler(
     override suspend fun handle(request: MoviesRequest): MoviesRequest =
         if (request.topRated.isNotEmpty()) request
         else when (val result = getTopRatedMoviesUC()) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request.apply {
                 topRated = result.data?.results.orEmpty()
             }

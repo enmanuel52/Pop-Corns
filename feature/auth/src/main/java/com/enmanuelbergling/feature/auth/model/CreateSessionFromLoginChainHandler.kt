@@ -13,7 +13,10 @@ class CreateSessionFromLoginChainHandler(
 
     override suspend fun handle(request: LoginRequest): LoginRequest =
         when (val result = createSessionFromLoginUC(request.toCreateSessionPost())) {
-            is ResultHandler.Error -> throw CannotHandleException(result.exception.message.orEmpty())
+            is ResultHandler.Error -> throw CannotHandleException(
+                result.exception.message.orEmpty(),
+                result.exception
+            )
             is ResultHandler.Success -> request
         }
 }

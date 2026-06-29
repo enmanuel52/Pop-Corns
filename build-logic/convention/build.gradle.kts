@@ -39,5 +39,13 @@ gradlePlugin{
             id = "corntime.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("androidLibraryJacoco") {
+            id = "corntime.android.library.jacoco"
+            implementationClass = "AndroidLibraryJacocoConventionPlugin"
+        }
+        register("androidApplicationJacoco") {
+            id = "corntime.android.application.jacoco"
+            implementationClass = "AndroidApplicationJacocoConventionPlugin"
+        }
     }
 }

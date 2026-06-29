@@ -94,7 +94,7 @@ internal class MovieRemoteDSImpl(
     ): ResultHandler<MovieAccountStates> {
         val sessionId = getSessionId()
         if (sessionId.isNullOrBlank()) {
-            return ResultHandler.Error(NetworkException.AuthorizationException)
+            return ResultHandler.Error(NetworkException.AuthorizationException())
         }
 
         return safeKtorCall {

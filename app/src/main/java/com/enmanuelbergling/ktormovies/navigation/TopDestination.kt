@@ -37,7 +37,7 @@ enum class TopDestination(
         R.string.watch_lists,
         R.drawable.bookmark_solid,
         R.drawable.bookmark_outline,
-        WatchListDestination
+        WatchListDestination()
     ),
     Settings(
         R.string.settings,
