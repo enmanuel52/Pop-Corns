@@ -66,5 +66,8 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
 
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.workmanager)
+
 //    implementation(libs.walkthrough)
 }

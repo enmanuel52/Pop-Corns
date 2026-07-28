@@ -46,6 +46,9 @@ dependencies {
     //Koin
     implementation(libs.koin.core)
 
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.workmanager)
+
     //ktor client
     implementation(libs.io.ktor.ktor.client.core)
 
@@ -65,4 +68,8 @@ dependencies {
     //Ktorfit
     implementation(libs.de.jensklingenberg.ktorfit.ktorfit.lib.light)
     ksp(libs.de.jensklingenberg.ktorfit.ktorfit.ksp)
+
+    //Workmanager
+    implementation(libs.androidx.work.runtime.ktx)
+
 }
