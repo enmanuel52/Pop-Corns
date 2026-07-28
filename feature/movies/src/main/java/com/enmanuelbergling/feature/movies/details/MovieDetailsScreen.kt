@@ -30,9 +30,12 @@ import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -55,6 +58,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.graphics.shapes.RoundedPolygon
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.enmanuelbergling.core.common.util.BASE_BACKDROP_IMAGE_URL
@@ -67,6 +71,7 @@ import com.enmanuelbergling.core.ui.components.common.ActorsRowPlaceholder
 import com.enmanuelbergling.core.ui.core.ObserveAsEvents
 import com.enmanuelbergling.core.ui.core.dimen
 import com.enmanuelbergling.core.ui.navigation.ActorDetailNavAction
+import com.enmanuelbergling.core.ui.theme.Heart
 import com.enmanuelbergling.feature.movies.details.model.PersonUiItem
 import com.enmanuelbergling.feature.movies.details.model.toPersonUi
 import org.koin.androidx.compose.koinViewModel
@@ -96,7 +101,9 @@ fun AnimatedContentScope.MovieDetailsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
 private fun AnimatedContentScope.MovieDetailsScreen(
     state: MovieDetailsState,
@@ -139,11 +146,12 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                 },
                 actions = {
                     if (state.isFavoriteLoading) {
-                        CircularProgressIndicator(
+                        LoadingIndicator(
                             modifier = Modifier
                                 .padding(horizontal = MaterialTheme.dimen.small)
-                                .size(24.dp),
-                            strokeWidth = 2.dp
+                                .size(MaterialTheme.dimen.veryLarge),
+                            color = Heart,
+                            polygons = List(2){MaterialShapes.Triangle}
                         )
                     } else {
                         state.accountStates?.let {
@@ -164,11 +172,11 @@ private fun AnimatedContentScope.MovieDetailsScreen(
                     }
 
                     if (state.isWatchlistLoading) {
-                        CircularProgressIndicator(
+                        LoadingIndicator(
                             modifier = Modifier
                                 .padding(horizontal = MaterialTheme.dimen.small)
-                                .size(24.dp),
-                            strokeWidth = 2.dp
+                                .size(MaterialTheme.dimen.veryLarge),
+                            polygons = List(2){MaterialShapes.Pill}
                         )
                     } else {
                         state.accountStates?.let {
