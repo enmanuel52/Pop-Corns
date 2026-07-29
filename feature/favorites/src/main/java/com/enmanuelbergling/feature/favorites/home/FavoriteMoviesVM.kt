@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.enmanuelbergling.core.domain.usecase.user.SyncMoviesUC
 import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveMovieFromFavoritesUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 internal class FavoriteMoviesVM(
     getPaginatedFavoriteMovies: GetPaginatedFavoriteMoviesUC,
     private val removeMovieFromFavoritesUC: RemoveMovieFromFavoritesUC,
+    private val syncMoviesUC: SyncMoviesUC,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoriteMoviesState())
@@ -62,7 +64,9 @@ internal class FavoriteMoviesVM(
                 FavoriteMoviesSideEffect.RemoveMovieError(movieId)
             )
 
-            is ResultHandler.Success<*> -> {}
+            is ResultHandler.Success -> {
+                _uiState.update { it.copy(deleteCompletedMovieIds = it.deleteCompletedMovieIds + movieId) }
+            }
         }
     }
 
@@ -77,13 +81,23 @@ internal class FavoriteMoviesVM(
             _sideEffectChannel.send(FavoriteMoviesSideEffect.UndoRemoveMovie(movieId))
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        syncMoviesUC.deleteFromFavorite(
+            movieIds = _uiState.value.optForDelete,
+        )
+    }
 }
 
 @Stable
 internal data class FavoriteMoviesState(
     val uiState: SimplerUi = SimplerUi.Idle,
     val deletedMovieIds: List<Int> = emptyList(),
-)
+    val deleteCompletedMovieIds: List<Int> = emptyList(),
+){
+    val optForDelete: List<Int> = deletedMovieIds - deleteCompletedMovieIds.toSet()
+}
 
 internal sealed interface FavoriteMoviesSideEffect {
     data class NavigateToDetails(val movieId: Int) : FavoriteMoviesSideEffect

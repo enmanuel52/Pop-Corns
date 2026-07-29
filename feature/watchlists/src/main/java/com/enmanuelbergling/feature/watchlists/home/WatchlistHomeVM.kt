@@ -139,7 +139,6 @@ internal class WatchlistHomeVM(
 
     override fun onCleared() {
         super.onCleared()
-        println("on cleared")
         syncMoviesUC.watchlist(
             deletedMovieIds = _uiState.value.optForDelete,
             favoriteMovieIds = _uiState.value.optForLike

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.enmanuelbergling.core.domain.usecase.user.SyncTvShowsUC
 import com.enmanuelbergling.core.domain.usecase.user.favorite.RemoveTvFromFavoritesUC
 import com.enmanuelbergling.core.model.core.ResultHandler
 import com.enmanuelbergling.core.model.core.SimplerUi
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 internal class FavoriteTvShowsVM(
     getPaginatedFavoriteTvShows: GetPaginatedFavoriteTvShowsUC,
     private val removeTvFromFavoritesUC: RemoveTvFromFavoritesUC,
+    private val syncTvShowsUC: SyncTvShowsUC,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoriteTvShowsState())
@@ -62,7 +64,9 @@ internal class FavoriteTvShowsVM(
                 FavoriteTvShowsSideEffect.RemoveTvShowsError(tvShowId)
             )
 
-            is ResultHandler.Success<*> -> {}
+            is ResultHandler.Success -> {
+                _uiState.update { it.copy(deleteCompletedTvShowsIds = it.deleteCompletedTvShowsIds + tvShowId) }
+            }
         }
     }
 
@@ -77,13 +81,23 @@ internal class FavoriteTvShowsVM(
             _sideEffectChannel.send(FavoriteTvShowsSideEffect.UndoRemoveTvShows(tvShowId))
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        syncTvShowsUC.deleteFromFavorite(
+            tvShowIds = _uiState.value.optForDelete,
+        )
+    }
 }
 
 @Stable
 internal data class FavoriteTvShowsState(
     val uiState: SimplerUi = SimplerUi.Idle,
     val deletedTvShowsIds: List<Int> = emptyList(),
-)
+    val deleteCompletedTvShowsIds: List<Int> = emptyList(),
+) {
+    val optForDelete: List<Int> = deletedTvShowsIds - deleteCompletedTvShowsIds.toSet()
+}
 
 internal sealed interface FavoriteTvShowsSideEffect {
     data class NavigateToDetails(val tvShowId: Int) : FavoriteTvShowsSideEffect
