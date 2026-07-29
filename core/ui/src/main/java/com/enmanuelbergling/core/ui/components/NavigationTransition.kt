@@ -30,7 +30,7 @@ val TopDestinationExitTransition: AnimatedContentTransitionScope<NavBackStackEnt
  * Wrapper for top destination screens with defined animations
  * */
 inline fun <reified T : Any> NavGraphBuilder.topComposable(
-    noinline content: @Composable() (AnimatedContentScope.(NavBackStackEntry) -> Unit),
+    noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
 ) {
     composable<T>(
         content = content

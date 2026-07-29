@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.watchlists.tvShows
+package com.enmanuelbergling.feature.watchlists.series
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.enmanuelbergling.core.domain.usecase.user.SyncTvShowsUC
 import com.enmanuelbergling.core.domain.usecase.user.favorite.AddTvToFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveTvFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.ResultHandler
@@ -27,6 +28,7 @@ internal class WatchlistTvShowsVM(
     getPaginatedWatchlistTvShows: GetPaginatedWatchlistTvShowsUC,
     private val removeTvFromAccountWatchlistUC: RemoveTvFromAccountWatchlistUC,
     private val addTvToFavoritesUC: AddTvToFavoritesUC,
+    private val syncTvShowsUC: SyncTvShowsUC,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WatchlistTvShowsState())
@@ -61,7 +63,7 @@ internal class WatchlistTvShowsVM(
             WatchlistTvShowsEvent.UndoAddToFavorites -> undoAddToFavorites()
             is WatchlistTvShowsEvent.OnAddToFavoritesErrorDismissed -> {
                 _uiState.update {
-                    it.copy(favoritedTvShowsIds = it.favoritedTvShowsIds - event.tvShowId)
+                    it.copy(likedTvShowsIds = it.likedTvShowsIds - event.tvShowId)
                 }
             }
         }
@@ -73,7 +75,9 @@ internal class WatchlistTvShowsVM(
                 WatchlistTvShowsSideEffect.RemoveTvShowsError(tvShowId)
             )
 
-            is ResultHandler.Success<*> -> {}
+            is ResultHandler.Success -> {
+                _uiState.update { it.copy(deleteCompletedTvShowIds = it.deleteCompletedTvShowIds + tvShowId) }
+            }
         }
     }
 
@@ -90,7 +94,7 @@ internal class WatchlistTvShowsVM(
     }
 
     private fun onAddToFavorites(tvShowId: Int) {
-        _uiState.update { it.copy(favoritedTvShowsIds = it.favoritedTvShowsIds + tvShowId) }
+        _uiState.update { it.copy(likedTvShowsIds = it.likedTvShowsIds + tvShowId) }
         viewModelScope.launch {
             _sideEffectChannel.send(WatchlistTvShowsSideEffect.UndoAddToFavoritesTvShows(tvShowId))
         }
@@ -98,15 +102,33 @@ internal class WatchlistTvShowsVM(
 
     private fun addToFavoritesAndRemoveFromWatchlist(tvShowId: Int) = viewModelScope.launch {
         val favResult = addTvToFavoritesUC(tvShowId)
-        val watchlistResult = removeTvFromAccountWatchlistUC(tvShowId)
-        if (favResult is ResultHandler.Error<*> || watchlistResult is ResultHandler.Error<*>) {
+        if (!favResult.isSuccess) {
             _sideEffectChannel.send(WatchlistTvShowsSideEffect.AddToFavoritesError(tvShowId))
+            return@launch
+        } else {
+            _uiState.update { it.copy(likeCompletedTvShowIds = it.likeCompletedTvShowIds + tvShowId) }
+        }
+
+        val watchlistResult = removeTvFromAccountWatchlistUC(tvShowId)
+        if (!watchlistResult.isSuccess) {
+            _sideEffectChannel.send(WatchlistTvShowsSideEffect.AddToFavoritesError(tvShowId))
+        } else {
+            _uiState.update { it.copy(deleteCompletedTvShowIds = it.deleteCompletedTvShowIds + tvShowId) }
         }
     }
 
     private fun undoAddToFavorites() {
-        val tvShowId = _uiState.value.favoritedTvShowsIds.lastOrNull() ?: return
-        _uiState.update { it.copy(favoritedTvShowsIds = it.favoritedTvShowsIds - tvShowId) }
+        val tvShowId = _uiState.value.likedTvShowsIds.lastOrNull() ?: return
+        _uiState.update { it.copy(likedTvShowsIds = it.likedTvShowsIds - tvShowId) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        syncTvShowsUC.watchlist(
+            deletedTvShowIds = _uiState.value.optForDelete,
+            favoriteTvShowIds = _uiState.value.optForLike
+        )
     }
 }
 
@@ -114,11 +136,16 @@ internal class WatchlistTvShowsVM(
 internal data class WatchlistTvShowsState(
     val uiState: SimplerUi = SimplerUi.Idle,
     val deletedTvShowsIds: List<Int> = emptyList(),
-    val favoritedTvShowsIds: List<Int> = emptyList(),
-)
+    val likedTvShowsIds: List<Int> = emptyList(),
+    val deleteCompletedTvShowIds: List<Int> = emptyList(),
+    val likeCompletedTvShowIds: List<Int> = emptyList(),
+){
+    val removedItems: List<Int>
+        get() = deletedTvShowsIds + likedTvShowsIds
 
-internal val WatchlistTvShowsState.removedItems: List<Int>
-    get() = deletedTvShowsIds + favoritedTvShowsIds
+    val optForDelete: List<Int> = deletedTvShowsIds - deleteCompletedTvShowIds.toSet()
+    val optForLike: List<Int> = likedTvShowsIds - likeCompletedTvShowIds.toSet()
+}
 
 internal sealed interface WatchlistTvShowsSideEffect {
     data class NavigateToDetails(val tvShowId: Int) : WatchlistTvShowsSideEffect

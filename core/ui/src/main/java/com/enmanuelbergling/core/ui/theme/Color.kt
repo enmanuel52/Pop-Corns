@@ -2,6 +2,7 @@ package com.enmanuelbergling.core.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Gold = Color(0xFFFFAA1C)
+val Heart = Color(0xFFE53935)
 
 val primaryLight = Color(0xFF705289)
 val onPrimaryLight = Color(0xFFFFFFFF)

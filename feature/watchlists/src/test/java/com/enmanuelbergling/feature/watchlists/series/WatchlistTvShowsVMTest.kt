@@ -12,6 +12,9 @@ import com.enmanuelbergling.core.testing.datasource.remote.TvRemoteDsFunction
 import com.enmanuelbergling.core.testing.extension.KoinExtension
 import com.enmanuelbergling.core.testing.extension.MainCoroutineExtension
 import com.enmanuelbergling.feature.watchlists.di.watchlistModule
+import com.enmanuelbergling.feature.watchlists.series.WatchlistTvShowsEvent
+import com.enmanuelbergling.feature.watchlists.series.WatchlistTvShowsSideEffect
+import com.enmanuelbergling.feature.watchlists.series.WatchlistTvShowsVM
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test

@@ -131,7 +131,7 @@ class WatchlistHomeVMTest : KoinTest {
                 viewModel.onEvent(WatchlistHomeEvent.OnAddToFavorites(movieId))
                 advanceUntilIdle()
 
-                assertThat(viewModel.uiState.value.favoritedMovieIds).contains(movieId)
+                assertThat(viewModel.uiState.value.likedMovieIds).contains(movieId)
                 assertThat(awaitItem())
                     .isEqualTo(WatchlistHomeSideEffect.UndoAddToFavoritesMovie(movieId))
             }
@@ -197,7 +197,7 @@ class WatchlistHomeVMTest : KoinTest {
         viewModel.onEvent(WatchlistHomeEvent.UndoAddToFavorites)
         advanceUntilIdle()
 
-        assertThat(viewModel.uiState.value.favoritedMovieIds).doesNotContain(movieId)
+        assertThat(viewModel.uiState.value.likedMovieIds).doesNotContain(movieId)
     }
 
     @Test
@@ -205,7 +205,7 @@ class WatchlistHomeVMTest : KoinTest {
         viewModel.onEvent(WatchlistHomeEvent.UndoAddToFavorites)
         advanceUntilIdle()
 
-        assertThat(viewModel.uiState.value.favoritedMovieIds).isEmpty()
+        assertThat(viewModel.uiState.value.likedMovieIds).isEmpty()
     }
 
     @Test
@@ -217,7 +217,7 @@ class WatchlistHomeVMTest : KoinTest {
             viewModel.onEvent(WatchlistHomeEvent.OnAddToFavoritesErrorDismissed(movieId))
             advanceUntilIdle()
 
-            assertThat(viewModel.uiState.value.favoritedMovieIds).doesNotContain(movieId)
+            assertThat(viewModel.uiState.value.likedMovieIds).doesNotContain(movieId)
         }
 
     // endregion
