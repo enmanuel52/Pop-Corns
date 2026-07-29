@@ -23,13 +23,13 @@ class SyncMoviesUCImpl(
     ) {
         val removeFromWatchlistRequest = OneTimeWorkRequestBuilder<RemoveFromWatchlistWorker>()
             .setInputData(
-                workDataOf(MOVIE_IDS to deletedMovieIds.plus(favoriteMovieIds))
+                workDataOf(MOVIE_IDS to deletedMovieIds.plus(favoriteMovieIds).toTypedArray())
             )
             .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
             .build()
 
         val addToFavoriteRequest = OneTimeWorkRequestBuilder<AddToFavoriteWorker>()
-            .setInputData(workDataOf(MOVIE_IDS to favoriteMovieIds))
+            .setInputData(workDataOf(MOVIE_IDS to favoriteMovieIds.toTypedArray()))
             .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
             .build()
 
@@ -40,7 +40,7 @@ class SyncMoviesUCImpl(
 
     override fun deleteFromFavorite(movieIds: List<Int>) {
         val removeRequest = OneTimeWorkRequestBuilder<RemoveFromFavoriteWorker>()
-            .setInputData(workDataOf(MOVIE_IDS to movieIds))
+            .setInputData(workDataOf(MOVIE_IDS to movieIds.toTypedArray()))
             .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
             .build()
 
