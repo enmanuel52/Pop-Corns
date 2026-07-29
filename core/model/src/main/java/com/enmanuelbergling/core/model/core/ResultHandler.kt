@@ -10,4 +10,7 @@ sealed interface ResultHandler<T> {
         is Error<*> -> null
         is Success -> data
     }
+
+    val isSuccess: Boolean
+        get() = this is Success
 }

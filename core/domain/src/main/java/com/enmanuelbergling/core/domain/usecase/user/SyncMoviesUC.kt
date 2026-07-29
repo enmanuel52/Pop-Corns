@@ -1,6 +1,6 @@
 package com.enmanuelbergling.core.domain.usecase.user
 
-interface SyncWatchlistUC {
+interface SyncMoviesUC {
 
     /**
      * 2 actions move from watchlist to favorite and delete from watchlist

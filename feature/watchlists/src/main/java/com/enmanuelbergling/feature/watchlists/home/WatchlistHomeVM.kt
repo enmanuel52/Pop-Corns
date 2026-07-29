@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.enmanuelbergling.core.domain.usecase.user.SyncMoviesUC
 import com.enmanuelbergling.core.domain.usecase.user.favorite.AddMovieToFavoritesUC
 import com.enmanuelbergling.core.domain.usecase.user.watchlist.RemoveMovieFromAccountWatchlistUC
 import com.enmanuelbergling.core.model.core.ResultHandler
@@ -23,6 +24,7 @@ internal class WatchlistHomeVM(
     getPaginatedAccountWatchlist: GetPaginatedAccountWatchlistUC,
     private val removeMovieFromAccountWatchlistUC: RemoveMovieFromAccountWatchlistUC,
     private val addMovieToFavoritesUC: AddMovieToFavoritesUC,
+    private val syncMoviesUC: SyncMoviesUC,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WatchlistHomeState())
@@ -65,7 +67,7 @@ internal class WatchlistHomeVM(
             WatchlistHomeEvent.UndoAddToFavorites -> undoAddToFavorites()
             is WatchlistHomeEvent.OnAddToFavoritesErrorDismissed -> {
                 _uiState.update {
-                    it.copy(favoritedMovieIds = it.favoritedMovieIds - event.movieId)
+                    it.copy(likedMovieIds = it.likedMovieIds - event.movieId)
                 }
             }
         }
@@ -76,7 +78,9 @@ internal class WatchlistHomeVM(
             is ResultHandler.Error<*> -> _sideEffectChannel.send(
                 WatchlistHomeSideEffect.DeleteMovieError(movieId)
             )
-            is ResultHandler.Success<*> -> {}
+            is ResultHandler.Success -> {
+                _uiState.update { it.copy(deleteCompletedMovieIds = it.deleteCompletedMovieIds + movieId) }
+            }
         }
     }
 
@@ -98,7 +102,7 @@ internal class WatchlistHomeVM(
 
     private fun onAddToFavorites(movieId: Int) {
         _uiState.update {
-            it.copy(favoritedMovieIds = it.favoritedMovieIds + movieId)
+            it.copy(likedMovieIds = it.likedMovieIds + movieId)
         }
         viewModelScope.launch {
             _sideEffectChannel.send(WatchlistHomeSideEffect.UndoAddToFavoritesMovie(movieId))
@@ -107,21 +111,39 @@ internal class WatchlistHomeVM(
 
     private fun addToFavoritesAndRemoveFromWatchlist(movieId: Int) = viewModelScope.launch {
         val favResult = addMovieToFavoritesUC(movieId)
-        val watchlistResult = removeMovieFromAccountWatchlistUC(movieId)
-        if (favResult is ResultHandler.Error<*> || watchlistResult is ResultHandler.Error<*>) {
+        if (!favResult.isSuccess) {
             _sideEffectChannel.send(WatchlistHomeSideEffect.AddToFavoritesError(movieId))
+            return@launch
+        } else {
+            _uiState.update { it.copy(likeCompletedMovieIds = it.likeCompletedMovieIds + movieId) }
+        }
+
+        val watchlistResult = removeMovieFromAccountWatchlistUC(movieId)
+        if (!watchlistResult.isSuccess) {
+            _sideEffectChannel.send(WatchlistHomeSideEffect.AddToFavoritesError(movieId))
+        } else {
+            _uiState.update { it.copy(deleteCompletedMovieIds = it.deleteCompletedMovieIds + movieId) }
         }
     }
 
     private fun undoAddToFavorites() = viewModelScope.launch {
-        val movieId = _uiState.value.favoritedMovieIds.lastOrNull() ?: return@launch
+        val movieId = _uiState.value.likedMovieIds.lastOrNull() ?: return@launch
         _uiState.update {
-            it.copy(favoritedMovieIds = it.favoritedMovieIds - movieId)
+            it.copy(likedMovieIds = it.likedMovieIds - movieId)
         }
     }
 
     private fun onIdle() {
         _uiState.update { it.copy(uiState = SimplerUi.Idle) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        println("on cleared")
+        syncMoviesUC.watchlist(
+            deletedMovieIds = _uiState.value.optForDelete,
+            favoriteMovieIds = _uiState.value.optForLike
+        )
     }
 }
 
@@ -129,11 +151,16 @@ internal class WatchlistHomeVM(
 internal data class WatchlistHomeState(
     val uiState: SimplerUi = SimplerUi.Idle,
     val deletedMovieIds: List<Int> = emptyList(),
-    val favoritedMovieIds: List<Int> = emptyList(),
-)
+    val likedMovieIds: List<Int> = emptyList(),
+    val deleteCompletedMovieIds: List<Int> = emptyList(),
+    val likeCompletedMovieIds: List<Int> = emptyList(),
+) {
+    val removedItems: List<Int>
+        get() = deletedMovieIds + likedMovieIds
 
-internal val WatchlistHomeState.removedItems: List<Int>
-    get() = deletedMovieIds + favoritedMovieIds
+    val optForDelete: List<Int> = deletedMovieIds - deleteCompletedMovieIds.toSet()
+    val optForLike: List<Int> = likedMovieIds - likeCompletedMovieIds.toSet()
+}
 
 internal sealed interface WatchlistHomeSideEffect {
     data class NavigateToDetails(val movieId: Int) : WatchlistHomeSideEffect

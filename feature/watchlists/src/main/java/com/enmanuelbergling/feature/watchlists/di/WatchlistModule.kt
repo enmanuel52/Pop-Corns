@@ -7,7 +7,7 @@ import com.enmanuelbergling.feature.watchlists.paging.GetPaginatedAccountWatchli
 import com.enmanuelbergling.feature.watchlists.paging.GetPaginatedWatchlistTvShowsUC
 import com.enmanuelbergling.feature.watchlists.paging.GetWatchListMoviesUC
 import com.enmanuelbergling.feature.watchlists.paging.GetUserWatchListsUC
-import com.enmanuelbergling.feature.watchlists.tvShows.WatchlistTvShowsVM
+import com.enmanuelbergling.feature.watchlists.series.WatchlistTvShowsVM
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

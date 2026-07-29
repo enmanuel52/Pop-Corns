@@ -6,15 +6,15 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.enmanuelbergling.core.domain.usecase.user.SyncWatchlistUC
+import com.enmanuelbergling.core.domain.usecase.user.SyncMoviesUC
 import com.enmanuelbergling.core.network.sync.worker.AddToFavoriteWorker
 import com.enmanuelbergling.core.network.sync.worker.MOVIE_IDS
 import com.enmanuelbergling.core.network.sync.worker.RemoveFromFavoriteWorker
 import com.enmanuelbergling.core.network.sync.worker.RemoveFromWatchlistWorker
 
-class SyncWatchlistUCImpl(
+class SyncMoviesUCImpl(
     private val appContext: Context,
-) : SyncWatchlistUC {
+) : SyncMoviesUC {
     private val workManager by lazy { WorkManager.getInstance(appContext) }
 
     override fun watchlist(

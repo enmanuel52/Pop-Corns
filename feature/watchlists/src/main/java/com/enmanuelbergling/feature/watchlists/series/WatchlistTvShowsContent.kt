@@ -1,4 +1,4 @@
-package com.enmanuelbergling.feature.watchlists.tvShows
+package com.enmanuelbergling.feature.watchlists.series
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
